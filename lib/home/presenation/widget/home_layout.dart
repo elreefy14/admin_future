@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
 import '../../../core/flutter_flow/flutter_flow_widgets.dart';
 
@@ -174,46 +175,52 @@ class HomeLayout extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Container(
-                        width: 155.w,
-                        height: 160.h,
-                        decoration: BoxDecoration(
-                          color: Color(0xF1C6F1F7),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        alignment: AlignmentDirectional(0, 0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Container(
-                                width: 60,
-                                height: 60,
-                                decoration: BoxDecoration(
-                                  color: Color(0x00FFFFFF),
-                                ),
-                                alignment: AlignmentDirectional(0, 0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.asset(
-                                    'assets/images/frame23400.png',
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.fitWidth,
+                      InkWell(
+                        onTap: ()  {
+                   //push named to the page manage attendees
+                          Navigator.pushNamed(context, AppRoutes.manageAttendence);
+                        },
+                        child: Container(
+                          width: 155.w,
+                          height: 160.h,
+                          decoration: BoxDecoration(
+                            color: Color(0xF1C6F1F7),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          alignment: AlignmentDirectional(0, 0),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    color: Color(0x00FFFFFF),
+                                  ),
+                                  alignment: AlignmentDirectional(0, 0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.asset(
+                                      'assets/images/frame23400.png',
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.fitWidth,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Text(
-                                'ادارة الحضور',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                  fontFamily: 'Readex Pro',
-                                  color: Color(0xFF00D1FF),
-                                  fontSize: 16,
+                                Text(
+                                  'ادارة الحضور',
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .override(
+                                    fontFamily: 'Readex Pro',
+                                    color: Color(0xFF00D1FF),
+                                    fontSize: 16,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),

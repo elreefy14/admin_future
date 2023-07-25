@@ -114,7 +114,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute: AppRoutes.home,
+        initialRoute: AppRoutes.manageAttendence,
         onGenerateRoute:RouteGenerator.generateRoute,
       ),
 

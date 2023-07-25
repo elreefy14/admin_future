@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 class AppRoutes {
   //editProfile
+  //manageAttendence
+  static const String manageAttendence = "/manageAttendence";
   static const String editProfile = "/editProfile";
   //welcome
   static const String welcome = "/welcome";
