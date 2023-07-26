@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppRoutes {
-  //editProfile
+  //manageCoaches
+  static const String manageCoaches = "/manageCoaches";
   //manageAttendence
   static const String manageAttendence = "/manageAttendence";
   static const String editProfile = "/editProfile";

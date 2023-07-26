@@ -25,7 +25,7 @@ class HomeLayout extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Align(
-                    alignment: AlignmentDirectional(0, -1),
+                    alignment: const AlignmentDirectional(0, -1),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -33,9 +33,9 @@ class HomeLayout extends StatelessWidget {
                           width: 200,
                           height: 200,
                           decoration: BoxDecoration(
-                            color: Color(0x00FFFFFF),
+                            color: const Color(0x00FFFFFF),
                             border: Border.all(
-                              color: Color(0xFFB9B9B9),
+                              color: const Color(0xFFB9B9B9),
                               width: 1.5,
                             ),
                           ),
@@ -70,8 +70,8 @@ class HomeLayout extends StatelessWidget {
                           ),
                         ),
                       ]
-                          .divide(SizedBox(height: 10))
-                          .addToStart(SizedBox(height: 0)),
+                          .divide(const SizedBox(height: 10))
+                          .addToStart(const SizedBox(height: 0)),
                     ),
                   ),
                   // FFButtonWidget(
@@ -104,7 +104,7 @@ class HomeLayout extends StatelessWidget {
                     width: 240,
                     height: 50,
                     child: ElevatedButton(
-                    onPressed: (){}, child: Text('انشاء رمز QR'),
+                    onPressed: (){}, child: const Text('انشاء رمز QR'),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.blue,
                         onPrimary: Colors.white,
@@ -135,10 +135,10 @@ class HomeLayout extends StatelessWidget {
                           width: 155.w,
                           height: 160.h,
                           decoration: BoxDecoration(
-                            color: Color(0x4064B5F6),
+                            color: const Color(0x4064B5F6),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          alignment: AlignmentDirectional(0, 0),
+                          alignment: const AlignmentDirectional(0, 0),
                           child: SingleChildScrollView(
                             child: Column(
                               mainAxisSize: MainAxisSize.max,
@@ -146,10 +146,10 @@ class HomeLayout extends StatelessWidget {
                                 Container(
                                   width: 60,
                                   height: 60,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     color: Color(0x00FFFFFF),
                                   ),
-                                  alignment: AlignmentDirectional(0, 0),
+                                  alignment: const AlignmentDirectional(0, 0),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
                                     child: Image.asset(
@@ -184,10 +184,10 @@ class HomeLayout extends StatelessWidget {
                           width: 155.w,
                           height: 160.h,
                           decoration: BoxDecoration(
-                            color: Color(0xF1C6F1F7),
+                            color: const Color(0xF1C6F1F7),
                             borderRadius: BorderRadius.circular(12),
                           ),
-                          alignment: AlignmentDirectional(0, 0),
+                          alignment: const AlignmentDirectional(0, 0),
                           child: SingleChildScrollView(
                             child: Column(
                               mainAxisSize: MainAxisSize.max,
@@ -195,10 +195,10 @@ class HomeLayout extends StatelessWidget {
                                 Container(
                                   width: 60,
                                   height: 60,
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     color: Color(0x00FFFFFF),
                                   ),
-                                  alignment: AlignmentDirectional(0, 0),
+                                  alignment: const AlignmentDirectional(0, 0),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(8),
                                     child: Image.asset(
@@ -215,7 +215,7 @@ class HomeLayout extends StatelessWidget {
                                       .bodyMedium
                                       .override(
                                     fontFamily: 'Readex Pro',
-                                    color: Color(0xFF00D1FF),
+                                    color: const Color(0xFF00D1FF),
                                     fontSize: 16,
                                   ),
                                 ),
@@ -224,7 +224,7 @@ class HomeLayout extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ].divide(SizedBox(width: 20)),
+                    ].divide(const SizedBox(width: 20)),
                   ),
                   Row(
                     mainAxisSize: MainAxisSize.max,
@@ -234,10 +234,10 @@ class HomeLayout extends StatelessWidget {
                         width: 155.w,
                         height: 160.h,
                         decoration: BoxDecoration(
-                          color: Color(0xFF9AFFB6),
+                          color: const Color(0xFF9AFFB6),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        alignment: AlignmentDirectional(0, 0),
+                        alignment: const AlignmentDirectional(0, 0),
                         child: SingleChildScrollView(
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
@@ -245,10 +245,10 @@ class HomeLayout extends StatelessWidget {
                               Container(
                                 width: 60,
                                 height: 60,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   color: Color(0x00FFFFFF),
                                 ),
-                                alignment: AlignmentDirectional(0, 0),
+                                alignment: const AlignmentDirectional(0, 0),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
                                   child: Image.asset(
@@ -265,7 +265,7 @@ class HomeLayout extends StatelessWidget {
                                     .bodyMedium
                                     .override(
                                   fontFamily: 'Readex Pro',
-                                  color: Color(0xFF00CE3A),
+                                  color: const Color(0xFF00CE3A),
                                   fontSize: 16,
                                 ),
                               ),
@@ -277,10 +277,10 @@ class HomeLayout extends StatelessWidget {
                         width: 155.w,
                         height: 160.h,
                         decoration: BoxDecoration(
-                          color: Color(0xFFFEE3E8),
+                          color: const Color(0xFFFEE3E8),
                           borderRadius: BorderRadius.circular(12),
                         ),
-                        alignment: AlignmentDirectional(0, 0),
+                        alignment: const AlignmentDirectional(0, 0),
                         child: SingleChildScrollView(
                           child: Column(
                             mainAxisSize: MainAxisSize.max,
@@ -288,10 +288,10 @@ class HomeLayout extends StatelessWidget {
                               Container(
                                 width: 60,
                                 height: 60,
-                                decoration: BoxDecoration(
+                                decoration: const BoxDecoration(
                                   color: Color(0x00FFFFFF),
                                 ),
-                                alignment: AlignmentDirectional(0, 0),
+                                alignment: const AlignmentDirectional(0, 0),
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(8),
                                   child: Image.asset(
@@ -308,7 +308,7 @@ class HomeLayout extends StatelessWidget {
                                     .bodyMedium
                                     .override(
                                   fontFamily: 'Readex Pro',
-                                  color: Color(0xFFD92D20),
+                                  color: const Color(0xFFD92D20),
                                   fontSize: 16,
                                 ),
                               ),
@@ -316,11 +316,11 @@ class HomeLayout extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ].divide(SizedBox(width: 20)),
+                    ].divide(const SizedBox(width: 20)),
                   ),
-                ].divide(SizedBox(height: 20)),
+                ].divide(const SizedBox(height: 20)),
               ),
-            ].divide(SizedBox(height: 40)),
+            ].divide(const SizedBox(height: 40)),
           ),
         ),
       ),

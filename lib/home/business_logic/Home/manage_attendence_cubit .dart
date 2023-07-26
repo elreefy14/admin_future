@@ -246,4 +246,26 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
     }
   }
 
+// - *admins*: A collection to store the information of all admins.
+//   - Document ID: unique admin ID
+//   - Fields:*`phone`*, *`name`*, *`email`*, *`branch_id`* (list of string of the branches they're responsible for)
+//   - Subcollection: *`schedules`*
+//     - Document ID: unique schedule ID
+//     - Fields: *`branch_id`*, *`start_time`*, *`end_time`*, *`date`*, *`finished`*
+//     - Subcollection: *`users`*
+//       - Document ID: unique user ID
+//       - Fields: *`name`*, *`phone`*, *`hourly_rate`*, *`total_hours`*, *`total_salary`*, *`current_month_hours`*, *`current_month_salary`* ,*`finished`*
+//   - Subcollection: *`salaryHistory`*
+//     - Document ID: unique salary history ID (usually just the month and year)
+//     - Fields: *`month`*, *`year`*, *`total_hours`*, *`total_salary`*
+//   - Fields: *`branches`* (array of branch IDs that the admin is responsible for)
+//
+// - *branches*: A collection to store the information of all branches.
+//   - Document ID: unique branch ID
+//   - Fields: *`name`*, *`address`*
+//   - Subcollection: *`coaches`*
+//     - Document ID: unique coach ID who works at this branch
+
+
+
 }

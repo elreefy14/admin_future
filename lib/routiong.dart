@@ -12,6 +12,7 @@ import 'core/constants/routes_manager.dart';
 import 'core/constants/strings.dart';
 import 'home/presenation/widget/home_layout.dart';
 import 'home/presenation/widget/manage_attendence.dart';
+import 'home/presenation/widget/manage_coaches.dart';
 
 class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -35,6 +36,9 @@ class RouteGenerator {
               create: (context) => ManageAttendenceCubit(),
               child: ManageAttendence(),
             ));
+        //ManageCoaches
+      case AppRoutes.manageCoaches:
+        return MaterialPageRoute(builder: (_) =>ManageCoaches());
     // default:
     //   return _errorRoute();
     }
