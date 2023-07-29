@@ -1,6 +1,7 @@
 import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_state.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -101,6 +102,11 @@ class ManageAttendence extends StatelessWidget {
                     Expanded(
                       child: BlocBuilder<ManageAttendenceCubit,ManageAttendenceState >(
   builder: (context, state) {
+    return BlocConsumer<ManageAttendenceCubit, ManageAttendenceState>(
+  listener: (context, state) {
+    // TODO: implement listener
+  },
+  builder: (context, state) {
     return ListView.separated(
       shrinkWrap: true,
       itemBuilder: (context, index) {
@@ -197,152 +203,175 @@ class ManageAttendence extends StatelessWidget {
         Column(
         mainAxisSize: MainAxisSize.min,
         children: schedule['users'].map((Map<String, dynamic> user) {
-        return Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Container(
-              width: MediaQuery
-                  .sizeOf(context)
-                  .width * 0.2,
-              height: 35,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme
-                    .of(context)
-                    .secondaryBackground,
-                border: Border.all(
-                  color: Color(0xFFB4B4B4),
-                  width: 1,
-                ),
-              ),
-              child: Align(
-                alignment: AlignmentDirectional(0, 0),
-                child: Text(
-                  'دفع الراتب',
-                  textAlign: TextAlign.end,
-                  style: FlutterFlowTheme
-                      .of(context)
-                      .bodyMedium
-                      .override(
-                    fontFamily: 'Readex Pro',
-                    color: Colors.blue,
-                    fontSize: 10,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              width: MediaQuery
-                  .sizeOf(context)
-                  .width * 0.35,
-              height: 35,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme
-                    .of(context)
-                    .secondaryBackground,
-                border: Border.all(
-                  color: Color(0xFFB4B4B4),
-                  width: 1,
-                ),
-              ),
-              child: Align(
-                alignment: AlignmentDirectional(0, 0),
-                child: Text(
-                  user['hourly_rate'].toString(),
-                  textAlign: TextAlign.end,
-                  style: FlutterFlowTheme
-                      .of(context)
-                      .bodyMedium
-                      .override(
-                    fontFamily: 'Readex Pro',
-                    fontSize: 10,
-                    decoration: TextDecoration.underline,
-                  ),
-                ),
-              ),
-            ),
-            Align(
-              alignment: AlignmentDirectional(1, 0),
-              child: Container(
-                width: MediaQuery
-                    .sizeOf(context)
-                    .width * 0.35,
-                height: 35,
-                decoration: BoxDecoration(
-                  color: FlutterFlowTheme
-                      .of(context)
-                      .secondaryBackground,
-                  border: Border.all(
-                    color: Color(0xFFB4B4B4),
-                    width: 1,
-                  ),
-                ),
-                child: Align(
-                  alignment: AlignmentDirectional(0, 0),
-                  child: Text(
-                    user['name'].toString(),
-                    textAlign: TextAlign.end,
-                    style: FlutterFlowTheme
-                        .of(context)
-                        .bodyMedium
-                        .override(
-                      fontFamily: 'Readex Pro',
-                      fontSize: 10,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            Container(
-              width: MediaQuery
-                  .sizeOf(context)
-                  .width * 0.1,
-              height: 35,
-              decoration: BoxDecoration(
-                color: FlutterFlowTheme
-                    .of(context)
-                    .secondaryBackground,
-                border: Border.all(
-                  color: Color(0xFFB4B4B4),
-                  width: 1,
-                ),
-              ),
-              child: Stack(
-                alignment: AlignmentDirectional(0, 0),
+        return
+          StreamBuilder<DocumentSnapshot>(
+            stream: FirebaseFirestore.instance
+                .collection('admins')
+                .doc('JcElORFrvvpvtSsk4Iou')
+                .collection('schedules')
+                .doc(schedule['id'])
+                .collection('users')
+                .doc(user['id'])
+                .snapshots(),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData) {
+                return Container();
+              }
+              final userData = snapshot.data?.data() as Map<String, dynamic>? ?? {};
+              final bool finished = userData['finished'] ?? false;
+              return Row(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
-                    width: 20,
-                    height: 20,
-                    decoration: BoxDecoration(
-                      color: Color(0x00FFFFFF),
-                      borderRadius: BorderRadius.circular(5),
-                      border: Border.all(
-                        color: Colors.blue,
-                        width: 2,
+                  Row(
+                    mainAxisSize: MainAxisSize.max,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        width: MediaQuery
+                            .sizeOf(context)
+                            .width * 0.2,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          color: FlutterFlowTheme
+                              .of(context)
+                              .secondaryBackground,
+                          border: Border.all(
+                            color: Color(0xFFB4B4B4),
+                            width: 1,
+                          ),
+                        ),
+                        child: Align(
+                          alignment: AlignmentDirectional(0, 0),
+                          child: Text(
+                            'دفع الراتب',
+                            textAlign: TextAlign.end,
+                            style: FlutterFlowTheme
+                                .of(context)
+                                .bodyMedium
+                                .override(
+                              fontFamily: 'Readex Pro',
+                              color: Colors.blue,
+                              fontSize: 10,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: SvgPicture.asset(
-                        'assets/images/vector.svg',
-                        width: 300,
-                        height: 200,
-                        fit: BoxFit.cover,
+                      Container(
+                        width: MediaQuery
+                            .sizeOf(context)
+                            .width * 0.35,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          color: FlutterFlowTheme
+                              .of(context)
+                              .secondaryBackground,
+                          border: Border.all(
+                            color: Color(0xFFB4B4B4),
+                            width: 1,
+                          ),
+                        ),
+                        child: Align(
+                          alignment: AlignmentDirectional(0, 0),
+                          child: Text(
+                            user['hourly_rate'].toString(),
+                            textAlign: TextAlign.end,
+                            style: FlutterFlowTheme
+                                .of(context)
+                                .bodyMedium
+                                .override(
+                              fontFamily: 'Readex Pro',
+                              fontSize: 10,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      Align(
+                        alignment: AlignmentDirectional(1, 0),
+                        child: Container(
+                          width: MediaQuery
+                              .sizeOf(context)
+                              .width * 0.35,
+                          height: 35,
+                          decoration: BoxDecoration(
+                            color: FlutterFlowTheme
+                                .of(context)
+                                .secondaryBackground,
+                            border: Border.all(
+                              color: Color(0xFFB4B4B4),
+                              width: 1,
+                            ),
+                          ),
+                          child: Align(
+                            alignment: AlignmentDirectional(0, 0),
+                            child: Text(
+                              user['name'].toString(),
+                              textAlign: TextAlign.end,
+                              style: FlutterFlowTheme
+                                  .of(context)
+                                  .bodyMedium
+                                  .override(
+                                fontFamily: 'Readex Pro',
+                                fontSize: 10,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Container(
+                        width: MediaQuery
+                            .sizeOf(context)
+                            .width * 0.1,
+                        height: 35,
+                        decoration: BoxDecoration(
+                          color: FlutterFlowTheme
+                              .of(context)
+                              .secondaryBackground,
+                          border: Border.all(
+                            color: Color(0xFFB4B4B4),
+                            width: 1,
+                          ),
+                        ),
+                        child: Stack(
+                          alignment: AlignmentDirectional(0, 0),
+                          children: [
+                            Container(
+                              width: 20,
+                              height: 20,
+                              decoration: BoxDecoration(
+                                color: Color(0x00FFFFFF),
+                                borderRadius: BorderRadius.circular(5),
+                                border: Border.all(
+                                  color: Colors.blue,
+                                  width: 2,
+                                ),
+                              ),
+                              child: Checkbox(
+                                onChanged: (value) {
+                                  ManageAttendenceCubit.get(context).changeAttendance(
+                                      schedule['id'], user['id'], value);
+                                },
+
+                                hoverColor: Colors.blue,
+                                overlayColor: MaterialStateProperty.all(Colors.blue),
+                                checkColor: Colors.white,
+                                activeColor: Colors.blue,
+                                value: finished,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
-              ),
-            ),
-          ],
-        ),
-        ],
-        );
+              );
+            },
+          );
+
+
         }).toList().cast<Widget>(),
         ),
           ].divide(SizedBox(height: 20)),
@@ -353,6 +382,8 @@ class ManageAttendence extends StatelessWidget {
           .get(context)
           .schedulesList
           .length,);
+  },
+);
   },
 ),
                     ),

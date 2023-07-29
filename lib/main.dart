@@ -1,6 +1,7 @@
 import 'package:admin_future/routiong.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -46,9 +47,11 @@ Future<void> main() async {
   // 'ahemd@gmail.com',
   //    '123456789',
   // );
+  //enable persistance
+
   await Firebase.initializeApp(
-    //options: DefaultFirebaseOptions.currentPlatform,
   );
+  FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
   //if frebase login is null
   //late String mainRoute;
   if (FirebaseAuth.instance.currentUser == null) {
@@ -114,7 +117,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        initialRoute: AppRoutes.manageCoaches,
+        initialRoute: AppRoutes.manageAttendence,
         onGenerateRoute:RouteGenerator.generateRoute,
       ),
 

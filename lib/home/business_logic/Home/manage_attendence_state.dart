@@ -13,3 +13,9 @@ class GetSchedulesForAdminErrorState extends ManageAttendenceState {
   final String error;
   GetSchedulesForAdminErrorState(this.error);
 }
+//AttendanceChangedState
+class AttendanceChangedState extends ManageAttendenceState {
+//updatedFinishedValue
+  final bool updatedFinishedValue;
+  AttendanceChangedState(this.updatedFinishedValue);
+}
