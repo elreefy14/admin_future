@@ -338,15 +338,15 @@ class ManageAttendence extends StatelessWidget {
                           alignment: AlignmentDirectional(0, 0),
                           children: [
                             Container(
-                              width: 20,
-                              height: 20,
+                              width: 32,
+                              height: 32,
                               decoration: BoxDecoration(
                                 color: Color(0x00FFFFFF),
                                 borderRadius: BorderRadius.circular(5),
-                                border: Border.all(
-                                  color: Colors.blue,
-                                  width: 2,
-                                ),
+                               // border: Border.all(
+                               //   color: Colors.blue,
+                               //   width: 2,
+                               // ),
                               ),
                               child: Checkbox(
                                 onChanged: (value) {

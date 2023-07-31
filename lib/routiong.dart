@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
+import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/login_cubit.dart';
 import 'package:admin_future/registeration/presenation/login_screen.dart';
 import 'package:admin_future/registeration/presenation/welcome_screen.dart';
@@ -13,6 +14,7 @@ import 'core/constants/strings.dart';
 import 'home/presenation/widget/home_layout.dart';
 import 'home/presenation/widget/manage_attendence.dart';
 import 'home/presenation/widget/manage_coaches.dart';
+import 'home/presenation/widget/mange_salary.dart';
 
 class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -36,9 +38,20 @@ class RouteGenerator {
               create: (context) => ManageAttendenceCubit(),
               child: ManageAttendence(),
             ));
-        //ManageCoaches
+    //ManageCoaches
       case AppRoutes.manageCoaches:
-        return MaterialPageRoute(builder: (_) =>ManageCoaches());
+        return MaterialPageRoute(builder: (_) =>
+            BlocProvider(
+              create: (context) => ManageSalaryCubit(),
+              child: ManageCoaches(),
+            ));
+    // manage Salary
+      case AppRoutes.manageSalary:
+        return MaterialPageRoute(builder: (_) =>
+            BlocProvider(
+              create: (context) => ManageSalaryCubit(),
+              child: ManageSalary(),
+            ));
     // default:
     //   return _errorRoute();
     }

@@ -44,15 +44,8 @@ dependencies:
   from_css_color: 2.0.0
   upgrader:
   google_fonts: ^4.0.4
-  google_sign_in: ^5.2.1
-
-  google_sign_in_platform_interface: ^2.4.1
-  image_picker: ^0.8.9
-  image_picker_android: ^0.8.7+3
-  image_picker_platform_interface: ^2.8.0
   json_path: ^0.6.0
-  json_serializable: ^6.7.0
-  page_transition: ^2.0.9
+
   plugin_platform_interface: ^2.1.4
   provider: ^6.0.5
   firebase_remote_config: ^4.2.3
@@ -64,16 +57,12 @@ dependencies:
   visibility_detector: ^0.2.0
   sqflite: ^2.2.8+4
   timeago: ^3.4.0
-
   bloc: ^8.1.1
   flutter_bloc: ^8.1.2
   firebase_messaging: ^14.2.1
- # flutterfire_ui: ^0.4.3+20
-  dio: ^5.2.1+1
   flutter_screenutil: ^5.8.4
-  package_info_plus: ^4.0.2
-  url_launcher: ^6.1.12
 
+  url_launcher: ^6.1.12
   fluttertoast: ^8.0.8
   toast:
   conditional_builder_null_safety:

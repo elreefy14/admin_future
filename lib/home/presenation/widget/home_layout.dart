@@ -129,7 +129,7 @@ class HomeLayout extends StatelessWidget {
                         hoverColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                         onTap: () async {
-                          //await queryRecordOnce();
+                          Navigator.pushNamed(context, AppRoutes.manageCoaches);
                         },
                         child: Container(
                           width: 155.w,
@@ -273,46 +273,51 @@ class HomeLayout extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Container(
-                        width: 155.w,
-                        height: 160.h,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFFEE3E8),
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        alignment: const AlignmentDirectional(0, 0),
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.max,
-                            children: [
-                              Container(
-                                width: 60,
-                                height: 60,
-                                decoration: const BoxDecoration(
-                                  color: Color(0x00FFFFFF),
-                                ),
-                                alignment: const AlignmentDirectional(0, 0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8),
-                                  child: Image.asset(
-                                    'assets/images/dollar-sign-round_svgrepo.com.png',
-                                    width: 50,
-                                    height: 50,
-                                    fit: BoxFit.fitWidth,
+                      InkWell(
+                        onTap: () {
+                      Navigator.pushNamed(context, AppRoutes.manageSalary);
+                        },
+                        child: Container(
+                          width: 155.w,
+                          height: 160.h,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFFEE3E8),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          alignment: const AlignmentDirectional(0, 0),
+                          child: SingleChildScrollView(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.max,
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: const BoxDecoration(
+                                    color: Color(0x00FFFFFF),
+                                  ),
+                                  alignment: const AlignmentDirectional(0, 0),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.asset(
+                                      'assets/images/dollar-sign-round_svgrepo.com.png',
+                                      width: 50,
+                                      height: 50,
+                                      fit: BoxFit.fitWidth,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Text(
-                                'ادارة المرتب',
-                                style: FlutterFlowTheme.of(context)
-                                    .bodyMedium
-                                    .override(
-                                  fontFamily: 'Readex Pro',
-                                  color: const Color(0xFFD92D20),
-                                  fontSize: 16,
+                                Text(
+                                  'ادارة المرتب',
+                                  style: FlutterFlowTheme.of(context)
+                                      .bodyMedium
+                                      .override(
+                                    fontFamily: 'Readex Pro',
+                                    color: const Color(0xFFD92D20),
+                                    fontSize: 16,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ),

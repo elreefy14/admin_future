@@ -11,8 +11,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:google_sign_in/google_sign_in.dart';
-import 'package:image_picker/image_picker.dart';
 import '../../../../core/cashe_helper.dart';
 import '../../data/userModel.dart';
 import '../../data/user_cache_model.dart';
@@ -307,25 +305,7 @@ static LoginCubit get(context) => BlocProvider.of(context);
 
 
 
-    void getGoogleUserCredentials() async {
-      emit(LoginGoogleUserLoadingState());
-      GoogleSignIn googleSignIn = GoogleSignIn();
-      GoogleSignInAccount? googleSignInAccount = await googleSignIn.signIn();
-      GoogleSignInAuthentication googleSignInAuthentication = await googleSignInAccount!
-          .authentication;
-      AuthCredential credential = GoogleAuthProvider.credential(
-          idToken: googleSignInAuthentication.idToken,
-          accessToken: googleSignInAuthentication.accessToken);
-      FirebaseAuth.instance.signInWithCredential(credential).then((value) {
-        isUserExist(
-            uId: value.user!.uid,
-            name: value.user!.displayName,
-            phone: value.user!.phoneNumber,
-            email: value.user!.email,
-            profilePic: value.user!.photoURL
-        );
-      });
-    }
+
 
 
     void createGoogleUser({
