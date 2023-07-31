@@ -41,30 +41,43 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
 // // - Document ID: unique attendance ID (usually just the coach ID)
 // // - Fields: *`attended`, *`qr_code`**
   List<UserModel> users = [];
+  num globalTotalSalary = 0; // Declare globalTotalSalary variable as num
+
   Future<void> getUsers() async {
     emit(GetUsersLoadingState());
-    //if (await checkInternetConnection()) {
-      await FirebaseFirestore.instance
-          .collection('users')
-          .get(
-     GetOptions(
-       // source: Source.serverAndCache,
-        source: Source.serverAndCache,
-     )
-      )
-          .then((value) {
-        value.docs.forEach((element) {
-          users.add(UserModel.fromJson(element.data()));
-        });
-        emit(GetUsersSuccessState());
-      }).catchError((error) {
-        print(error.toString());
-        emit(GetUsersErrorState( error.toString()));
+    await FirebaseFirestore.instance
+        .collection('users')
+        .get(GetOptions(source: Source.serverAndCache))
+        .then((value) {
+      num totalSalary = 0; // Change the type of totalSalary to num
+      value.docs.forEach((element) {
+        users.add(UserModel.fromJson(element.data()));
+        totalSalary += element.data()['totalSalary'];
       });
-    // } else {
-    //   emit(GetUsersSuccessState());
-    // }
+      globalTotalSalary = totalSalary; // Assign totalSalary value to globalTotalSalary
+      print('Total salary of all users: $globalTotalSalary');
+      emit(GetUsersSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetUsersErrorState(error.toString()));
+    });
   }
+  // UserModel({
+//     this.name,
+//     this.email,
+//     this.level,
+//     this.hourlyRate,
+//     this.totalHours,
+//     this.totalSalary,
+//     this.currentMonthHours,
+//     this.currentMonthSalary,
+//     this.uId,
+//     this.phone,
+//     this.role,
+//
+//   });
+  //edit function to get sum of totalSalary of all users
+
   // List<Map<String, dynamic>>? users = [];
   //
   // void getUsers() async {
