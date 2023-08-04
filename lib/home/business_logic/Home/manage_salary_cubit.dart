@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 
@@ -42,6 +44,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
 // // - Fields: *`attended`, *`qr_code`**
   List<UserModel> users = [];
   num globalTotalSalary = 0; // Declare globalTotalSalary variable as num
+// salary textEditingController
+  TextEditingController salaryController = TextEditingController();
 
   Future<void> getUsers() async {
     emit(GetUsersLoadingState());
@@ -61,6 +65,58 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
       print(error.toString());
       emit(GetUsersErrorState(error.toString()));
     });
+  }
+// update total salary of all users
+  //make total salary = 0
+  //for user with this uid userId
+  //use catch error
+  Future<void>? paySalary({String? userId}) {
+    print('userId: $userId');
+    emit(PaySalaryLoadingState());
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .update({'totalSalary': 0})
+        .then((value) {
+      emit(PaySalarySuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(PaySalaryErrorState(error.toString()));
+    });
+
+
+  }
+  //minus salary from total salary in firestore for this user
+  //update total salary
+  //don't use globalTotalSalary
+  //use value from firestore
+  Future<void>? payPartialSalary({String? userId ,String? salary}) {
+    print('userId: $userId');
+    emit(PaySalaryLoadingState());
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .get(GetOptions(source: Source.serverAndCache)).then((value) {
+          int? totalSalary = value.data()!['totalSalary'];
+          //covert salary to int
+          int? salary14 = int.parse(salary!);
+          int? newTotalSalary = totalSalary! - salary14!;
+          print('newTotalSalary: $newTotalSalary');
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .update({'totalSalary': newTotalSalary})
+              .then((value) {
+            emit(PaySalarySuccessState());
+          }).catchError((error) {
+            print(error.toString());
+            emit(PaySalaryErrorState(error.toString()));
+          });
+    }).catchError((error) {
+      print(error.toString());
+      emit(PaySalaryErrorState(error.toString()));
+    });
+
   }
   // UserModel({
 //     this.name,

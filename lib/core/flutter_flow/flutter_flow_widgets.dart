@@ -79,9 +79,27 @@ class _FFButtonWidgetState extends State<FFButtonWidget> {
             child: Container(
               width: 23,
               height: 23,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation<Color>(
-                  widget.options.textStyle!.color ?? Colors.white,
+              child: //text
+              //Text(
+              //     'دفع جزئي',
+              //     textAlign: TextAlign.right,
+              //     style: TextStyle(
+              //         color: Colors.white,
+              //         fontSize: 18,
+              //         fontFamily: 'Montserrat-Arabic',
+              //         fontWeight: FontWeight.w400,
+              //         height: 1.44,
+              //     ),
+              // )
+              Text(
+                widget.text,
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontFamily: 'Montserrat-Arabic',
+                  fontWeight: FontWeight.w400,
+                  height: 1.44,
                 ),
               ),
             ),

@@ -59,7 +59,7 @@ class ManageAttendence extends StatelessWidget {
  // builder: (context, state) {
 
     return FutureBuilder(
-      future:  ManageAttendenceCubit.get(context).getSchedulesForAdmin('JcElORFrvvpvtSsk4Iou'),
+      future:  ManageAttendenceCubit.get(context).getSchedulesForAdmin(),
 
       builder: (context, snapshot) {
         return Scaffold(

@@ -35,7 +35,7 @@ class RouteGenerator {
       case AppRoutes.manageAttendence:
         return MaterialPageRoute(builder: (_) =>
             BlocProvider(
-              create: (context) => ManageAttendenceCubit(),
+              create: (context) => ManageAttendenceCubit()..generateRandomData(),
               child: ManageAttendence(),
             ));
     //ManageCoaches

@@ -125,6 +125,21 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
+  fonts:
+    - family: Montserrat-Arabic
+      fonts:
+        - asset: fonts/Montserrat-Arabic-Regular.ttf
+          weight: 400
+    - family: IBM Plex Sans Arabic
+      fonts:
+        - asset: fonts/IBMPlexSansArabic-Regular.ttf
+          weight: 400
+    - family: Inter
+      fonts:
+        - asset: fonts/Inter-Regular.ttf
+   # - family: IBM Plex Sans Devanagari
+     # fonts:
+     #2 - asset: audios/IBMPlexSansDevanagari-Regular.ttf
 
 
 
@@ -135,4 +150,5 @@ flutter:
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,
+  # see https://flutter.dev/custom-fonts/#from-packages
   # see https://flutter.dev/custom-fonts/#from-packages

@@ -1,78 +1,72 @@
-class UserCacheModel {
-   String? token;
-   String? uId;
-   String? email;
-   String? name;
-   String? phone;
-   String? image;
-   int? level;
-   int? hourlyRate;
-   int? totalHours;
-   int? totalSalary;
-   int? currentMonthHours;
-   int? currentMonthSalary;
-   String? fname;
-   String? lname;
-   String? role;
-//list of strings contain branches names
+import 'package:cloud_firestore/cloud_firestore.dart';
+//    AdminModel model = AdminModel(
+//         name: 'Write your name...',
+//         level: 3,
+//         hourlyRate: 0,
+//         totalHours: 0,
+//         totalSalary: 0,
+//         currentMonthHours: 0,
+//         currentMonthSalary: 0,
+//     );
+class AdminModel
+{
+//    AdminModel model = AdminModel(
+//         name: 'Write your name...',
+//         level: 3,
+//         hourlyRate: 0,
+//         totalHours: 0,
+//         totalSalary: 0,
+//         currentMonthHours: 0,
+//         currentMonthSalary: 0,
+//     );
+  String? name;
+  String? email;
+  String? id;
+  String? phone;
+  String? fname;
+  String? lname;
+  String? token;
+  String? totalSalary;
   List<String>? branches;
-  UserCacheModel({
 
-   this.token,
-   this.uId,
-   this.email,
-   this.name,
-   this.phone,
-   this.level,
-   this.hourlyRate,
-   this.totalHours,
-   this.totalSalary,
-   this.currentMonthHours,
-   this.currentMonthSalary,
-    this.image,
+
+
+
+  AdminModel({
+    this.name,
+    this.email,
+    this.id,
+    this.phone,
     this.fname,
     this.lname,
+    this.token,
+    this.totalSalary,
     this.branches,
-    this.role,
   });
 
-  factory UserCacheModel.fromJson(Map<String, dynamic> json) {
-    return UserCacheModel(
-      fname: json['fname'],
-      lname: json['lname'],
-      token: json['token'],
-      uId: json['uid'],
-      email: json['email'],
-      name: json['name'],
-      phone: json['phone'],
-      level: json['level'],
-      hourlyRate: json['hourly_rate'],
-      totalHours: json['total_hours'],
-      totalSalary: json['total_salary'],
-      currentMonthHours: json['current_month_hours'],
-      currentMonthSalary: json['current_month_salary'],
-      image: json['image'],
-      branches: json['branches'] != null ? List<String>.from(json['branches']) : null,
-      role: json['role'],
-    );
+  AdminModel.fromJson(Map<String, dynamic> json) {
+    name = json['name'];
+    email = json['email'];
+    id = json['id'];
+    phone = json['phone'];
+    fname = json['fname'];
+    lname = json['lname'];
+    token = json['token'];
+    totalSalary = json['totalSalary'];
+    branches = json['branches'].cast<String>();
   }
 
-  Map<String, dynamic> toJson() => {
-    'fname': fname,
-    'lname': lname,
-    'image': image,
-    'token': token,
-    'uid': uId,
-    'email': email,
-    'name': name,
-    'phone': phone,
-    'level': level,
-    'hourly_rate': hourlyRate,
-    'total_hours': totalHours,
-    'total_salary': totalSalary,
-    'current_month_hours': currentMonthHours,
-    'current_month_salary': currentMonthSalary,
-    'branches': branches,
-    'role': role,
-  };
+  Map<String, dynamic> toMap() {
+    return {
+      'name': name,
+      'email': email,
+      'id': id,
+      'phone': phone,
+      'fname': fname,
+      'lname': lname,
+      'token': token,
+      'totalSalary': totalSalary,
+      'branches': branches,
+    };
+  }
 }

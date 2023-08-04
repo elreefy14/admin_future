@@ -104,7 +104,17 @@ class HomeLayout extends StatelessWidget {
                     width: 240,
                     height: 50,
                     child: ElevatedButton(
-                    onPressed: (){}, child: const Text('انشاء رمز QR'),
+                    onPressed: (){}, child: const Text(
+                      'انشاء رمز Qr',
+                      textAlign: TextAlign.right,
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontFamily: 'Montserrat-Arabic',
+                        fontWeight: FontWeight.w400,
+                       // height: 1.44,
+                      ),
+                    ),
                       style: ElevatedButton.styleFrom(
                         primary: Colors.blue,
                         onPrimary: Colors.white,

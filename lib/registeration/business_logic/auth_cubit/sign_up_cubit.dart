@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../data/userModel.dart';
+import '../../data/user_cache_model.dart';
 import 'sign_up_state.dart';
 //**Collections and Documents:**
 // 1. **users**: A collection to store the information of all coaches.   - Document ID: unique coach ID   - Fields: `name`, `level`, `hourly_rate`, `total_hours`, `total_salary`, `current_month_hours`, `current_month_salary`
@@ -32,6 +33,15 @@ void changePasswordVisibility(){
   showPassword = !showPassword;
   emit(ChangePasswordVisibilityState());
 }
+//sign out
+  Future<void> signOut() async {
+    //emit(SignOutLoadingState());
+    await FirebaseAuth.instance.signOut().then((value) {
+     // emit(SignOutSuccessState());
+    }).catchError((error) {
+    //  emit(SignOutErrorState());
+    });
+  }
 //function to check if email and password are in firebase
 
 //make function yo update new password in firebase
@@ -146,18 +156,12 @@ void changePasswordVisibility(){
     required String? lname,
   }) {
     emit(CreateUserLoadingState());
-    UserModel model = UserModel(
+    AdminModel model = AdminModel(
       phone: phone,
-        uId: uId,
+        id: uId,
         name: 'Write your name...',
-        level: 3,
-        hourlyRate: 30,
-        totalHours: 0,
-        totalSalary: 0,
-        currentMonthHours: 0,
-        currentMonthSalary: 0,
     );
-    FirebaseFirestore.instance.collection('users').doc(uId).set(model.toMap())
+    FirebaseFirestore.instance.collection('admins').doc(uId).set(model.toMap())
         .then((value) {
       emit(CreateUserSuccessState(uId!));
     }).catchError((error) {

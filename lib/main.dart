@@ -1,3 +1,5 @@
+import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
+import 'package:admin_future/home/presenation/widget/mange_salary.dart';
 import 'package:admin_future/routiong.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
@@ -8,6 +10,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/bloc_observer.dart';
@@ -16,9 +19,12 @@ import 'core/constants/routes_manager.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   print('Handling a background message:\n\n\n ${message.messageId}');
-}late String mainRoute;
+}
+
+late String mainRoute;
 final remoteConfig = //firabase remote config
 FirebaseRemoteConfig.instance;
+
 Future<void> main() async {
   //await initializeDateFormatting('ar', null);
 
@@ -51,14 +57,17 @@ Future<void> main() async {
 
   await Firebase.initializeApp(
   );
-  FirebaseFirestore.instance.settings = const Settings(persistenceEnabled: true);
+  FirebaseFirestore.instance.settings =
+  const Settings(persistenceEnabled: true);
   //if frebase login is null
   //late String mainRoute;
   if (FirebaseAuth.instance.currentUser == null) {
     mainRoute = AppRoutes.welcome;
   } else {
+    print('user is not null');
+    //uid
+    print(FirebaseAuth.instance.currentUser!.uid);
     mainRoute = AppRoutes.home;
-
   }
   //await DioHelper.init();
   FirebaseMessaging.onMessage.listen((event) {
@@ -71,7 +80,6 @@ Future<void> main() async {
     print('onMessageOpenedApp\n\n\n\n\n\n\n');
     print(event.notification!.title);
     print(event.notification!.body);
-
   });
   // background notification
   FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
@@ -85,9 +93,8 @@ Future<void> main() async {
     provisional: false,
     sound: true,
   );
-  BlocOverrides.runZoned(() =>   runApp(const MyApp()),
+  BlocOverrides.runZoned(() => runApp(const MyApp()),
       blocObserver: MyBlocObserver());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -96,31 +103,36 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return ScreenUtilInit(
-      designSize: const Size(360, 690),
-      minTextAdapt: true,
-      splitScreenMode: true,
-      builder: (context , child) => MaterialApp(
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => ManageSalaryCubit()),
+      ],child:  ScreenUtilInit(
+        designSize: const Size(360, 690),
+        minTextAdapt: true,
+        splitScreenMode: true,
+        builder: (context, child) =>
+            MaterialApp(
 
-        // localizationsDelegates: [
-        //   GlobalMaterialLocalizations.delegate,
-        //   GlobalWidgetsLocalizations.delegate,
-        //   GlobalCupertinoLocalizations.delegate,
-        // ],
-        // supportedLocales: const [
-        //   Locale('ar', "AE"),
-        // ],
+              // localizationsDelegates: [
+              //   GlobalMaterialLocalizations.delegate,
+              //   GlobalWidgetsLocalizations.delegate,
+              //   GlobalCupertinoLocalizations.delegate,
+              // ],
+              // supportedLocales: const [
+              //   Locale('ar', "AE"),
+              // ],
 
-        builder: BotToastInit(),
-        navigatorObservers: [BotToastNavigatorObserver()],
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-        ),
-        initialRoute: AppRoutes.home,
-        onGenerateRoute:RouteGenerator.generateRoute,
+              builder: BotToastInit(),
+              navigatorObservers: [BotToastNavigatorObserver()],
+              debugShowCheckedModeBanner: false,
+              theme: ThemeData(
+                primarySwatch: Colors.blue,
+              ),
+              initialRoute: mainRoute,
+              onGenerateRoute: RouteGenerator.generateRoute,
+            ),
+
       ),
-
     );
   }
 }
