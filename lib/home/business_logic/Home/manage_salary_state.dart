@@ -22,3 +22,16 @@ class PaySalaryErrorState extends ManageSalaryState {
   final String error;
   PaySalaryErrorState(this.error);
 }
+//PayBonusLoadingState
+class PayBonusLoadingState extends ManageSalaryState {}
+//PayBonusSuccessState
+class PayBonusSuccessState extends ManageSalaryState {}
+//PayBonusErrorState
+class PayBonusErrorState extends ManageSalaryState {
+  final String error;
+  PayBonusErrorState(this.error);
+}
+//PayBonusSuccessStateWithoutInternet
+class PayBonusSuccessStateWithoutInternet extends ManageSalaryState {}
+//Stop
+class Stop extends ManageSalaryState {}

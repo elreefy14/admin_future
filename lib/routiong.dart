@@ -40,18 +40,10 @@ class RouteGenerator {
             ));
     //ManageCoaches
       case AppRoutes.manageCoaches:
-        return MaterialPageRoute(builder: (_) =>
-            BlocProvider(
-              create: (context) => ManageSalaryCubit(),
-              child: ManageCoaches(),
-            ));
+        return MaterialPageRoute(builder: (_) => ManageCoaches());
     // manage Salary
       case AppRoutes.manageSalary:
-        return MaterialPageRoute(builder: (_) =>
-            BlocProvider(
-              create: (context) => ManageSalaryCubit(),
-              child: ManageSalary(),
-            ));
+        return MaterialPageRoute(builder: (_) => ManageSalary());
     // default:
     //   return _errorRoute();
     }

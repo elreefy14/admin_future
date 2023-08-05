@@ -1,9 +1,12 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../registeration/data/userModel.dart';
 
@@ -42,30 +45,11 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
 // // - Subcollection: *`attendance`*
 // // - Document ID: unique attendance ID (usually just the coach ID)
 // // - Fields: *`attended`, *`qr_code`**
-  List<UserModel> users = [];
+
   num globalTotalSalary = 0; // Declare globalTotalSalary variable as num
 // salary textEditingController
   TextEditingController salaryController = TextEditingController();
 
-  Future<void> getUsers() async {
-    emit(GetUsersLoadingState());
-    await FirebaseFirestore.instance
-        .collection('users')
-        .get(GetOptions(source: Source.serverAndCache))
-        .then((value) {
-      num totalSalary = 0; // Change the type of totalSalary to num
-      value.docs.forEach((element) {
-        users.add(UserModel.fromJson(element.data()));
-        totalSalary += element.data()['totalSalary'];
-      });
-      globalTotalSalary = totalSalary; // Assign totalSalary value to globalTotalSalary
-      print('Total salary of all users: $globalTotalSalary');
-      emit(GetUsersSuccessState());
-    }).catchError((error) {
-      print(error.toString());
-      emit(GetUsersErrorState(error.toString()));
-    });
-  }
 // update total salary of all users
   //make total salary = 0
   //for user with this uid userId
@@ -118,6 +102,126 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     });
 
   }
+  Future<void> payBonus(String? userId, context, {String? salary}) async {
+    print('userId: $userId');
+    emit(PayBonusLoadingState());
+
+    try {
+      bool isConnected = await checkInternetConnectivity(); // Custom function to check internet connectivity
+
+      if (!isConnected) {
+        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .get(GetOptions(source: Source.serverAndCache));
+
+        Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+
+        if (userData != null) {
+          int? totalSalary = userData['totalSalary'];
+          int? salary14 = int.parse(salary!);
+          int? newTotalSalary = totalSalary! + salary14!;
+          print('newTotalSalary: $newTotalSalary');
+
+          // Store the updated salary locally until an internet connection is available
+          saveSalaryLocally(userId, newTotalSalary);
+
+          emit(PayBonusSuccessStateWithoutInternet());
+          return;
+        }
+      }
+
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get(GetOptions(source: Source.server));
+
+      Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+
+      if (userData != null) {
+        int? totalSalary = userData['totalSalary'];
+        int? salary14 = int.parse(salary!);
+        int? newTotalSalary = totalSalary! + salary14!;
+        print('newTotalSalary: $newTotalSalary');
+
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({'totalSalary': newTotalSalary});
+
+        // Update the user in the users list
+        UserModel updatedUser = UserModel.fromJson(userData);
+        updatedUser.totalSalary = newTotalSalary;
+        int userIndex = users.indexWhere((user) => user.uId == userId);
+        if (userIndex != -1) {
+          users[userIndex] = updatedUser;
+        }
+
+        emit(PayBonusSuccessState());
+      } else {
+        throw 'User data not found';
+      }
+    } catch (error) {
+      print(error.toString());
+      emit(PayBonusErrorState(error.toString()));
+    }
+  }
+  List<UserModel> users = [];
+  Future<void> getUsers() async {
+    emit(GetUsersLoadingState());
+    await FirebaseFirestore.instance
+        .collection('users')
+        .get(GetOptions(source: Source.serverAndCache))
+        .then((value) {
+      num totalSalary = 0; // Change the type of totalSalary to num
+      value.docs.forEach((element) {
+        users.add(UserModel.fromJson(element.data()));
+        totalSalary += element.data()['totalSalary'];
+      });
+      globalTotalSalary = totalSalary; // Assign totalSalary value to globalTotalSalary
+      print('Total salary of all users: $globalTotalSalary');
+      emit(GetUsersSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetUsersErrorState(error.toString()));
+    });
+  }
+
+  checkInternetConnectivity() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  void saveSalaryLocally(String? userId, int newTotalSalary) {
+    // Save the updated salary locally until an internet connection is available
+    SharedPreferences.getInstance().then((prefs) {
+      prefs.setInt(userId!, newTotalSalary);
+    });
+  }
+  //sync data from local to firestore when internet is available
+  //check if internet is available
+  void syncData() async {
+    bool isConnected = await checkInternetConnectivity();
+    if (isConnected) {
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.getKeys().forEach((key) async {
+          int? newTotalSalary = prefs.getInt(key);
+          if (newTotalSalary != null) {
+            await FirebaseFirestore.instance
+                .collection('users')
+                .doc(key)
+                .update({'totalSalary': newTotalSalary});
+          }
+        });
+      });
+    }
+
+  }
+
   // UserModel({
 //     this.name,
 //     this.email,
