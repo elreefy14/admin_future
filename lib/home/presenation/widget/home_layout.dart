@@ -6,6 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
 import '../../../core/flutter_flow/flutter_flow_widgets.dart';
+import '../../business_logic/Home/manage_salary_cubit.dart';
 
 class HomeLayout extends StatelessWidget {
   const HomeLayout({super.key});
@@ -139,6 +140,8 @@ class HomeLayout extends StatelessWidget {
                         hoverColor: Colors.transparent,
                         highlightColor: Colors.transparent,
                         onTap: () async {
+                          await ManageSalaryCubit.get(context).getUsers();
+                          ManageSalaryCubit.get(context).syncData();
                           Navigator.pushNamed(context, AppRoutes.manageCoaches);
                         },
                         child: Container(
@@ -284,7 +287,9 @@ class HomeLayout extends StatelessWidget {
                         ),
                       ),
                       InkWell(
-                        onTap: () {
+                        onTap: () async {
+                          await ManageSalaryCubit.get(context).getUsers();
+                         ManageSalaryCubit.get(context).syncData();
                       Navigator.pushNamed(context, AppRoutes.manageSalary);
                         },
                         child: Container(

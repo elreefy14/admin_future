@@ -105,8 +105,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => ManageSalaryCubit()..getUsers()
-        ..syncData()),
+        BlocProvider(create: (context) => ManageSalaryCubit()
+        ),
       ],child:  ScreenUtilInit(
         designSize: const Size(360, 690),
         minTextAdapt: true,

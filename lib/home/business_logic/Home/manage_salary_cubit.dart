@@ -54,54 +54,126 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   //make total salary = 0
   //for user with this uid userId
   //use catch error
-  Future<void>? paySalary({String? userId}) {
-    print('userId: $userId');
-    emit(PaySalaryLoadingState());
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .update({'totalSalary': 0})
-        .then((value) {
-      emit(PaySalarySuccessState());
-    }).catchError((error) {
+  Future<void> paySalary({String? userId}) async {
+    try {
+      print('userId: $userId');
+      emit(PaySalaryLoadingState());
+
+      bool isConnected = await checkInternetConnectivity(); // Custom function to check internet connectivity
+
+      if (!isConnected) {
+        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .get(GetOptions(source: Source.serverAndCache));
+
+        Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+
+        if (userData != null) {
+          int newTotalSalary = 0;
+
+          // Store the updated salary locally until an internet connection is available
+          saveSalaryLocally(userId, newTotalSalary);
+
+          // Update the user in the users list
+          UserModel updatedUser = UserModel.fromJson(userData);
+          updatedUser.totalSalary = newTotalSalary;
+          int userIndex = users.indexWhere((user) => user.uId == userId);
+          if (userIndex != -1) {
+            users[userIndex] = updatedUser;
+          }
+          emit(PaySalarySuccessStateWithoutInternet());
+          return;
+        }
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'totalSalary': 0});
+
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get(GetOptions(source: Source.server));
+
+      Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+
+      if (userData != null) {
+        int newTotalSalary = 0;
+
+        // Update the user in the users list
+        UserModel updatedUser = UserModel.fromJson(userData);
+        updatedUser.totalSalary = newTotalSalary;
+        int userIndex = users.indexWhere((user) => user.uId == userId);
+        if (userIndex != -1) {
+          users[userIndex] = updatedUser;
+        }
+
+        emit(PaySalarySuccessState());
+      } else {
+        throw 'User data not found';
+      }
+    } catch (error) {
       print(error.toString());
       emit(PaySalaryErrorState(error.toString()));
-    });
-
-
+    }
   }
   //minus salary from total salary in firestore for this user
   //update total salary
   //don't use globalTotalSalary
   //use value from firestore
-  Future<void>? payPartialSalary({String? userId ,String? salary}) {
-    print('userId: $userId');
-    emit(PaySalaryLoadingState());
-    FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId)
-        .get(GetOptions(source: Source.serverAndCache)).then((value) {
-          int? totalSalary = value.data()!['totalSalary'];
-          //covert salary to int
-          int? salary14 = int.parse(salary!);
-          int? newTotalSalary = totalSalary! - salary14!;
-          print('newTotalSalary: $newTotalSalary');
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(userId)
-              .update({'totalSalary': newTotalSalary})
-              .then((value) {
-            emit(PaySalarySuccessState());
-          }).catchError((error) {
-            print(error.toString());
-            emit(PaySalaryErrorState(error.toString()));
-          });
-    }).catchError((error) {
+  Future<void> payPartialSalary({String? userId, String? salary}) async {
+    try {
+      print('userId: $userId');
+      emit(PaySalaryLoadingState());
+
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get(GetOptions(source: Source.serverAndCache));
+
+      Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+
+      int? totalSalary = userData?['totalSalary'];
+      int? salary14 = int.parse(salary!);
+      int? newTotalSalary = totalSalary! - salary14!;
+      print('newTotalSalary: $newTotalSalary');
+
+      bool isConnected = await checkInternetConnectivity(); // Custom function to check internet connectivity
+
+      if (!isConnected) {
+        // Store the updated salary locally until an internet connection is available
+        saveSalaryLocally(userId, newTotalSalary);
+
+        // Update the user in the users list
+        int userIndex = users.indexWhere((user) => user.uId == userId);
+        if (userIndex != -1) {
+          users[userIndex].totalSalary = newTotalSalary;
+        }
+
+        emit(PaySalarySuccessStateWithoutInternet());
+        return;
+      }
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'totalSalary': newTotalSalary});
+      // Update the user in the users list
+      int userIndex = users.indexWhere((user) => user.uId == userId);
+      if (userIndex != -1) {
+        users[userIndex].totalSalary = newTotalSalary;
+      }
+
+
+      emit(PaySalarySuccessState());
+    } catch (error) {
       print(error.toString());
       emit(PaySalaryErrorState(error.toString()));
-    });
-
+    }
   }
+
   Future<void> payBonus(String? userId, context, {String? salary}) async {
     print('userId: $userId');
     emit(PayBonusLoadingState());
@@ -126,6 +198,13 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
           // Store the updated salary locally until an internet connection is available
           saveSalaryLocally(userId, newTotalSalary);
 
+          // Update the user in the users list
+          UserModel updatedUser = UserModel.fromJson(userData);
+          updatedUser.totalSalary = newTotalSalary;
+          int userIndex = users.indexWhere((user) => user.uId == userId);
+          if (userIndex != -1) {
+            users[userIndex] = updatedUser;
+          }
           emit(PayBonusSuccessStateWithoutInternet());
           return;
         }
@@ -169,6 +248,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   List<UserModel> users = [];
   Future<void> getUsers() async {
     emit(GetUsersLoadingState());
+    users = [];
     await FirebaseFirestore.instance
         .collection('users')
         .get(GetOptions(source: Source.serverAndCache))
@@ -217,6 +297,10 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
                 .update({'totalSalary': newTotalSalary});
           }
         });
+      });
+      //clear local data
+      SharedPreferences.getInstance().then((prefs) {
+        prefs.clear();
       });
     }
 

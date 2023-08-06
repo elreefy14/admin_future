@@ -17,7 +17,59 @@ class ManageSalary extends StatelessWidget {
     return Builder(
       builder: (context) {
        // ManageSalaryCubit.get(context).getUsers();
-        return Scaffold(
+        return BlocListener<ManageSalaryCubit, ManageSalaryState>(
+          listener: (context, state) {
+            if(state is PayBonusSuccessStateWithoutInternet ){
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                      ' سيتم دفع المكافأة عند الاتصال بالانترنت '
+                    //   'wait for internet connection'
+                    //translate to arabic
+                  ),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            } else if(state is PayBonusSuccessState ){
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('تم دفع المكافأة بنجاح'
+                  ),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            }else if(state is PayBonusErrorState ){
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('حدث خطأ ما'
+                  ),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }else if(state is PaySalarySuccessStateWithoutInternet ){
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                      ' سيتم دفع المرتب عند الاتصال بالانترنت '
+
+                    //   'wait for internet connection'
+                    //translate to arabic
+                  ),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            } else if(state is PaySalarySuccessState ) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('تم دفع المرتب بنجاح'
+                  ),
+                  backgroundColor: Colors.green,
+                ),
+              );
+            }
+
+  },
+  child: Scaffold(
           // appBar: AppBar(
           //   backgroundColor: Colors.white,
           //   shadowColor: Colors.transparent,
@@ -346,7 +398,7 @@ class ManageSalary extends StatelessWidget {
                                                                         await ManageSalaryCubit.get(context).payPartialSalary(
                                                                           userId:
                                                                           uid,salary: ManageSalaryCubit.get(context).salaryController.text,
-                                                                        );
+                                                                        ).then((value) => Navigator.pop(context));
                                                                       },
                                                                       child: Container(
                                                                         width: 130,
@@ -378,7 +430,7 @@ class ManageSalary extends StatelessWidget {
                                                                         await ManageSalaryCubit.get(context).paySalary(
                                                                           userId:
                                                                           uid,
-                                                                        );
+                                                                        ).then((value) => Navigator.pop(context));
                                                                       },
                                                                       child: Container(
                                                                         width: 130,
@@ -439,32 +491,7 @@ class ManageSalary extends StatelessWidget {
                                       ),
                                       BlocConsumer<ManageSalaryCubit, ManageSalaryState>(
   listener: (context, state) {
-    //PayBonusSuccessStateWithoutInternet
-    if(state is PayBonusSuccessStateWithoutInternet){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(''
-              'تم دفع المكافأة بنجاح'
-           //   'wait for internet connection'
-          //translate to arabic
 
-          ),
-          backgroundColor: Colors.green,
-        ),
-      );
-      // Navigator.pop(context);
-    }
-    if(state is PayBonusSuccessState){
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(''
-              'تم دفع المكافأة بنجاح'
-          ),
-          backgroundColor: Colors.green,
-        ),
-      );
-     // Navigator.pop(context);
-    }
   },
   builder: (context, state) {
     return Container(
@@ -812,7 +839,8 @@ class ManageSalary extends StatelessWidget {
 
 
 
-        );
+        ),
+);
       }
     );
   }

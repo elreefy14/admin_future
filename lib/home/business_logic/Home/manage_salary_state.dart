@@ -35,3 +35,5 @@ class PayBonusErrorState extends ManageSalaryState {
 class PayBonusSuccessStateWithoutInternet extends ManageSalaryState {}
 //Stop
 class Stop extends ManageSalaryState {}
+//PaySalarySuccessStateWithoutInternet
+class PaySalarySuccessStateWithoutInternet extends ManageSalaryState {}
