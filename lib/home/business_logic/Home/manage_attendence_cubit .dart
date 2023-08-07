@@ -53,30 +53,32 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
           .collection('admins')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('schedules')
-          .where('start_time', isGreaterThanOrEqualTo: startOfToday.toUtc())
+      //start_time greater than yesterday 12:00 am  and less than tomorrow 12:00 am
+      .where('start_time', isGreaterThanOrEqualTo: startOfToday.toUtc())
           .where('start_time', isLessThan: startOfToday.add(const Duration(days: 1)).toUtc())
           .orderBy('start_time', descending: false)
           .get(
         const GetOptions(
-          source: Source.serverAndCache,
-        ),
+           source: Source.serverAndCache,
+        )
       );
 
       for (final QueryDocumentSnapshot scheduleDoc in schedulesQuerySnapshot.docs) {
-        final Map<String, dynamic> scheduleData = scheduleDoc.data() as Map<String, dynamic>;
+        final Map<String, dynamic> scheduleData =
+        scheduleDoc.data() as Map<String, dynamic>;
 
         final QuerySnapshot usersQuerySnapshot = await scheduleDoc.reference
             .collection('users')
             .get(
           const GetOptions(
-            source: Source.serverAndCache,
-          ),
+            source: Source.serverAndCache,)
+
         );
 
         final List<Map<String, dynamic>> usersList = usersQuerySnapshot.docs
             .map<Map<String, dynamic>>(
-              (QueryDocumentSnapshot documentSnapshot) => documentSnapshot.data() as Map<String, dynamic>,
-        )
+                (QueryDocumentSnapshot documentSnapshot) =>
+            documentSnapshot.data() as Map<String, dynamic>)
             .toList();
 
         final Map<String, dynamic> scheduleWithUserData = {
@@ -86,17 +88,17 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
 
         schedulesList.add(scheduleWithUserData);
       }
-
-      // Print all contents of schedulesList
+      //print all content of schedulesList2
       for (int i = 0; i < schedulesList.length; i++) {
         print(schedulesList[i]);
       }
-
-      // Print length of schedulesList
-      print('schedulesList length is: ${schedulesList.length}');
-
-      emit(GetSchedulesForAdminSuccessState());
-    } catch (e) {
+      //print length of schedulesList2
+      print('schedulesList2 length is:\n\n\n\n' );
+      print(schedulesList.length);
+      emit(GetSchedulesForAdminSuccessState(
+      ));
+    }
+    catch(e){
       emit(GetSchedulesForAdminErrorState(e.toString()));
     }
   }
