@@ -1,3 +1,4 @@
+import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
 import 'package:admin_future/home/presenation/widget/mange_salary.dart';
 import 'package:admin_future/routiong.dart';
@@ -106,6 +107,8 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ManageSalaryCubit()
+        ),
+        BlocProvider(create: (context) => ManageAttendenceCubit()
         ),
       ],child:  ScreenUtilInit(
         designSize: const Size(360, 690),

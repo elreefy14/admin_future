@@ -42,7 +42,9 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
   ManageAttendenceCubit() : super(InitialState()) {
   }
   static ManageAttendenceCubit get(context) => BlocProvider.of(context);
-  final List<Map<String, dynamic>> schedulesList = [];
+  static List<Map<String, dynamic>> schedulesList = [];
+  Map<String, dynamic>? firstSchedule; // Variable to store the first schedule
+
   Future<void> getSchedulesForAdmin() async {
     initializeDateFormatting();
     emit(GetSchedulesForAdminLoadingState());
@@ -53,14 +55,14 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
           .collection('admins')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('schedules')
-      //start_time greater than yesterday 12:00 am  and less than tomorrow 12:00 am
-      .where('start_time', isGreaterThanOrEqualTo: startOfToday.toUtc())
+      // Start_time greater than or equal to yesterday 12:00 am and less than tomorrow 12:00 am
+          .where('start_time', isGreaterThanOrEqualTo: startOfToday.toUtc())
           .where('start_time', isLessThan: startOfToday.add(const Duration(days: 1)).toUtc())
           .orderBy('start_time', descending: false)
           .get(
         const GetOptions(
-           source: Source.serverAndCache,
-        )
+          source: Source.serverAndCache,
+        ),
       );
 
       for (final QueryDocumentSnapshot scheduleDoc in schedulesQuerySnapshot.docs) {
@@ -71,14 +73,15 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
             .collection('users')
             .get(
           const GetOptions(
-            source: Source.serverAndCache,)
-
+            source: Source.serverAndCache,
+          ),
         );
 
         final List<Map<String, dynamic>> usersList = usersQuerySnapshot.docs
             .map<Map<String, dynamic>>(
-                (QueryDocumentSnapshot documentSnapshot) =>
-            documentSnapshot.data() as Map<String, dynamic>)
+              (QueryDocumentSnapshot documentSnapshot) =>
+          documentSnapshot.data() as Map<String, dynamic>,
+        )
             .toList();
 
         final Map<String, dynamic> scheduleWithUserData = {
@@ -87,21 +90,22 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
         };
 
         schedulesList.add(scheduleWithUserData);
+
+        // Store the first schedule in the variable
+        if (firstSchedule == null) {
+          firstSchedule = scheduleWithUserData;
+        }
       }
-      //print all content of schedulesList2
-      for (int i = 0; i < schedulesList.length; i++) {
-        print(schedulesList[i]);
-      }
-      //print length of schedulesList2
-      print('schedulesList2 length is:\n\n\n\n' );
-      print(schedulesList.length);
-      emit(GetSchedulesForAdminSuccessState(
-      ));
-    }
-    catch(e){
+
+      // Print the first schedule
+      print('First schedule:\n\n\n $firstSchedule');
+
+      emit(GetSchedulesForAdminSuccessState());
+    } catch (e) {
       emit(GetSchedulesForAdminErrorState(e.toString()));
     }
   }
+
   void generateRandomData() async {
     print('Generating random data...');
     final CollectionReference adminsCollection =
