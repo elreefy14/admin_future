@@ -53,32 +53,30 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
           .collection('admins')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('schedules')
-      //start_time greater than yesterday 12:00 am  and less than tomorrow 12:00 am
-      .where('start_time', isGreaterThanOrEqualTo: startOfToday.toUtc())
+          .where('start_time', isGreaterThanOrEqualTo: startOfToday.toUtc())
           .where('start_time', isLessThan: startOfToday.add(const Duration(days: 1)).toUtc())
           .orderBy('start_time', descending: false)
           .get(
         const GetOptions(
-           source: Source.serverAndCache,
-        )
+          source: Source.serverAndCache,
+        ),
       );
 
       for (final QueryDocumentSnapshot scheduleDoc in schedulesQuerySnapshot.docs) {
-        final Map<String, dynamic> scheduleData =
-        scheduleDoc.data() as Map<String, dynamic>;
+        final Map<String, dynamic> scheduleData = scheduleDoc.data() as Map<String, dynamic>;
 
         final QuerySnapshot usersQuerySnapshot = await scheduleDoc.reference
             .collection('users')
             .get(
           const GetOptions(
-            source: Source.serverAndCache,)
-
+            source: Source.serverAndCache,
+          ),
         );
 
         final List<Map<String, dynamic>> usersList = usersQuerySnapshot.docs
             .map<Map<String, dynamic>>(
-                (QueryDocumentSnapshot documentSnapshot) =>
-            documentSnapshot.data() as Map<String, dynamic>)
+              (QueryDocumentSnapshot documentSnapshot) => documentSnapshot.data() as Map<String, dynamic>,
+        )
             .toList();
 
         final Map<String, dynamic> scheduleWithUserData = {
@@ -88,17 +86,17 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
 
         schedulesList.add(scheduleWithUserData);
       }
-      //print all content of schedulesList2
+
+      // Print all contents of schedulesList
       for (int i = 0; i < schedulesList.length; i++) {
         print(schedulesList[i]);
       }
-      //print length of schedulesList2
-      print('schedulesList2 length is:\n\n\n\n' );
-      print(schedulesList.length);
-      emit(GetSchedulesForAdminSuccessState(
-      ));
-    }
-    catch(e){
+
+      // Print length of schedulesList
+      print('schedulesList length is: ${schedulesList.length}');
+
+      emit(GetSchedulesForAdminSuccessState());
+    } catch (e) {
       emit(GetSchedulesForAdminErrorState(e.toString()));
     }
   }
@@ -209,12 +207,47 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       }
     }
   }
- bool? updatedFinishedValue ;
+//  bool? updatedFinishedValue ;
+//   void changeAttendance(String scheduleId, String userId, bool? value) async {
+//     final CollectionReference adminsCollection =
+//     FirebaseFirestore.instance.collection('admins');
+//     final DocumentSnapshot scheduleSnapshot =
+//     await adminsCollection.doc('JcElORFrvvpvtSsk4Iou').get();
+//     final DocumentReference userRef = scheduleSnapshot
+//         .reference
+//         .collection('schedules')
+//         .doc(scheduleId)
+//         .collection('users')
+//         .doc(userId);
+//
+//     if (value != null) {
+//       try {
+//         // Fetch the current value of 'finished' from Firestore
+//         final DocumentSnapshot userSnapshot = await userRef.get();
+//         final Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>? ?? {};
+//         final bool currentFinishedValue = userData['finished'] ?? false;
+//
+//         // Toggle the value of 'finished'
+//          updatedFinishedValue = !currentFinishedValue;
+// emit(AttendanceChangedState(updatedFinishedValue!));
+//         // Update the document with the new value
+//         await userRef.update({'finished': updatedFinishedValue});
+//       } catch (e) {
+//         // If there's an error updating the document, it means there's no internet connection
+//         // Use FirestoreCache to store the update locally
+//         // await FirestoreCache.set(userRef, {'finished': updatedFinishedValue});
+//       }
+//     }
+//   }
+  bool? updatedFinishedValue;
+
   void changeAttendance(String scheduleId, String userId, bool? value) async {
     final CollectionReference adminsCollection =
     FirebaseFirestore.instance.collection('admins');
     final DocumentSnapshot scheduleSnapshot =
-    await adminsCollection.doc('JcElORFrvvpvtSsk4Iou').get();
+    await adminsCollection.doc(
+      FirebaseAuth.instance.currentUser!.uid,
+    ).get();
     final DocumentReference userRef = scheduleSnapshot
         .reference
         .collection('schedules')
@@ -226,14 +259,34 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       try {
         // Fetch the current value of 'finished' from Firestore
         final DocumentSnapshot userSnapshot = await userRef.get();
-        final Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>? ?? {};
+        final Map<String, dynamic> userData =
+            userSnapshot.data() as Map<String, dynamic>? ?? {};
         final bool currentFinishedValue = userData['finished'] ?? false;
 
         // Toggle the value of 'finished'
-         updatedFinishedValue = !currentFinishedValue;
-emit(AttendanceChangedState(updatedFinishedValue!));
+        updatedFinishedValue = !currentFinishedValue;
+
+        emit(AttendanceChangedState(updatedFinishedValue!));
+
         // Update the document with the new value
         await userRef.update({'finished': updatedFinishedValue});
+
+        // Update the schedulesList for the specific user
+        // for (int i = 0; i < schedulesList.length; i++) {
+        //   final Map<String, dynamic> schedule = schedulesList[i];
+        //   if (schedule['id'] == scheduleId) {
+        //     final List<Map<String, dynamic>> usersList =
+        //     List<Map<String, dynamic>>.from(schedule['users']);
+        //     for (int j = 0; j < usersList.length; j++) {
+        //       if (usersList[j]['id'] == userId) {
+        //         usersList[j]['finished'] = updatedFinishedValue;
+        //         break;
+        //       }
+        //     }
+        //     schedulesList[i]['users'] = usersList;
+        //     break;
+        //   }
+        // }
       } catch (e) {
         // If there's an error updating the document, it means there's no internet connection
         // Use FirestoreCache to store the update locally
