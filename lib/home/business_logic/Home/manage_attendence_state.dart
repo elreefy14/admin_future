@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '../../data/schedules.dart';
 
 abstract class ManageAttendenceState {}
@@ -18,4 +20,18 @@ class AttendanceChangedState extends ManageAttendenceState {
 //updatedFinishedValue
   final bool updatedFinishedValue;
   AttendanceChangedState(this.updatedFinishedValue);
+}
+//GenerateQRCodeLoadingState
+class GenerateQRCodeLoadingState extends ManageAttendenceState {}
+//GenerateQRCodeSuccessState
+class GenerateQRCodeSuccessState extends ManageAttendenceState {
+  final Widget qrCode;
+  GenerateQRCodeSuccessState(this.qrCode);
+}
+//GetNearestSceduleLoadingState
+class GetNearestSceduleLoadingState extends ManageAttendenceState {}
+//GetNearestSceduleSuccessState
+class GetNearestSceduleSuccessState extends ManageAttendenceState {
+ // final Map<String, dynamic> schedule;
+  //GetNearestSceduleSuccessState(this.schedule);
 }

@@ -109,6 +109,8 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => ManageSalaryCubit()
         ),
         BlocProvider(create: (context) => ManageAttendenceCubit()
+        //    ..getNearestScedule(
+          //  )
         ),
       ],child:  ScreenUtilInit(
         designSize: const Size(360, 690),

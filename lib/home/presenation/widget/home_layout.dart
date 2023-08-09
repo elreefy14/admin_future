@@ -2,11 +2,14 @@ import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
 import '../../../core/flutter_flow/flutter_flow_widgets.dart';
+import '../../business_logic/Home/manage_attendence_state.dart';
 import '../../business_logic/Home/manage_salary_cubit.dart';
 
 class HomeLayout extends StatelessWidget {
@@ -17,8 +20,16 @@ class HomeLayout extends StatelessWidget {
     return Builder(
 
       builder: (context) {
-        ManageAttendenceCubit.get(context).getSchedulesForAdmin();
-        return Scaffold(
+        ManageAttendenceCubit.get(context).getSchedulesForAdmin(
+
+        ).then((value) =>
+        ManageAttendenceCubit.get(context).getNearestScedule());
+        return BlocConsumer<ManageAttendenceCubit, ManageAttendenceState>(
+  listener: (context, state) {
+    // TODO: implement listener
+  },
+  builder: (context, state) {
+    return Scaffold(
         //  key: scaffoldKey,
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -45,10 +56,17 @@ class HomeLayout extends StatelessWidget {
                                   width: 1.5,
                                 ),
                               ),
-                              child: Column(
+                              child: BlocBuilder<ManageAttendenceCubit,
+                                  ManageAttendenceState>(
+  builder: (context, state) {
+    return Column(
                                 mainAxisSize: MainAxisSize.max,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                        //         state is! GenerateQRCodeSuccessState
+                          //            ?
+                                  ManageAttendenceCubit.get(context).nearestSchedule == null
+                                      ?
                                   Container(
                                     width: 200,
                                     height: 197,
@@ -62,9 +80,19 @@ class HomeLayout extends StatelessWidget {
                                         ).image,
                                       ),
                                     ),
-                                  ),
+                                  )
+                                     :
+                                 QrImageView(
+                                   //todo: change the data to the nearest schedule id
+    data: ManageAttendenceCubit.get(context).nearestSchedule!['branch_id'].toString(),
+    version: QrVersions.auto,
+    size: 197.0,
+    ),
+
                                 ],
-                              ),
+                              );
+  },
+),
                             ),
                             Text(
                               'تحميل الرمز',
@@ -106,26 +134,31 @@ class HomeLayout extends StatelessWidget {
                       // ),
                       //25
                       SizedBox(height: 25.h,),
-                      Container(
-                        width: 240,
-                        height: 50,
-                        child: ElevatedButton(
-                        onPressed: (){}, child: const Text(
-                          'انشاء رمز Qr',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontFamily: 'Montserrat-Arabic',
-                            fontWeight: FontWeight.w400,
-                           // height: 1.44,
+                      InkWell(
+                        onTap: () async {
+                          ManageAttendenceCubit.get(context).getNearestScedule();
+                        },
+                        child: Container(
+                          width: 240,
+                          height: 50,
+                          child: ElevatedButton(
+                          onPressed: (){}, child: const Text(
+                            'انشاء رمز Qr',
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontFamily: 'Montserrat-Arabic',
+                              fontWeight: FontWeight.w400,
+                             // height: 1.44,
+                            ),
                           ),
-                        ),
-                          style: ElevatedButton.styleFrom(
-                            primary: Colors.blue,
-                            onPrimary: Colors.white,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8.0),
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.blue,
+                              onPrimary: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8.0),
+                              ),
                             ),
                           ),
                         ),
@@ -350,6 +383,8 @@ class HomeLayout extends StatelessWidget {
             ),
           ),
         );
+  },
+);
       }
     );
   }

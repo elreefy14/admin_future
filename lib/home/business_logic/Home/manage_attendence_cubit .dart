@@ -3,34 +3,29 @@ import 'dart:math';
 //import 'package:firestore_cache/firestore_cache.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 import 'manage_attendence_state.dart';
 // ****this is my firestore Collections and Documents:**
 // - *users*: A collection to store the information of all coaches.
 // - Document ID: unique coach ID
 // - Fields: *`name`, *`level`*, *`hourly_rate`*, *`total_hours`*, *`total_salary`*, *`current_month_hours`*, *`current_month_salary`**
+//  *admins*: A collection to store the information of all admins.
+//  - Document ID: unique admin ID
+//  - Fields: *`name`, *`email`*, *`branch_id`** (the ID of the branch they're responsible for)
 // - Subcollection: *`schedules`*
 // - Document ID: unique schedule ID
 // - Fields: *`branch_id`, *`start_time`*, *`end_time`*, *`date`*, *`finished`**
-// - Subcollection: *`attendance`*
-// - Document ID: unique attendance ID (usually just the coach ID)
-// - Fields: *`attended`, *`qr_code`**
-// - Subcollection: *`salaryHistory`*
-// - Document ID: unique salary history ID (usually just the month and year)
-// - Fields: *`month`, *`year`*, *`total_hours`*, *`total_salary`**
-// - Fields: *`branches`* (array of branch IDs that the coach works at)
-//
+
 // - *branches*: A collection to store the information of all branches.
 // - Document ID: unique branch ID
 // - Fields: *`name`, *`address`**
 // - Subcollection: *`coaches`*
 // - Document ID: unique coach ID who works at this branch
 //
-// - *admins*: A collection to store the information of all admins.
-// - Document ID: unique admin ID
-// - Fields: *`name`, *`email`*, *`branch_id`** (the ID of the branch they're responsible for)
-//
+// -
 // - *schedules*: A collection to store the information of all schedules.
 // - Document ID: unique schedule ID
 // - Fields: *`branch_id`, *`start_time`*, *`end_time`*, *`date`**
@@ -42,7 +37,57 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
   ManageAttendenceCubit() : super(InitialState()) {
   }
   static ManageAttendenceCubit get(context) => BlocProvider.of(context);
+  // function to get string
+//     // get the nearest schedule to the current timw using utc time
+//      //schedulesList is a list of all schedules for the current day which is stored descendingly
+//      //loop on the list and check if the current time is less than the start time of the schedule
+//       //if it is less than the start time then this is the nearest schedule
+//       //if it is not less than the start time then check if it is less than the end time
+  //use utc time
+  //use catch error to catch the error
+  //use emit to emit the state
+  Map<String, dynamic>? nearestSchedule;
   static List<Map<String, dynamic>> schedulesList = [];
+  List<Map<String, dynamic>> schedulesList2 = [];
+
+  Future<void> getNearestScedule() async {
+    try {
+
+      emit(GetSchedulesForAdminLoadingState());
+
+      final DateTime now = DateTime.now();
+      final DateTime startOfToday = DateTime(now.year, now.month, now.day);
+      final DateTime endOfToday = DateTime(now.year, now.month, now.day, 23, 59, 59);
+      final DateTime utcNow = DateTime.utc(now.year, now.month, now.day, now.hour, now.minute, now.second);
+
+      final scheduleStream = Stream<Map<String, dynamic>>.fromIterable(schedulesList);
+
+      await for (final Map<String, dynamic> schedule in scheduleStream) {
+        final DateTime utcStartTime = schedule['start_time'].toDate().toUtc();
+        final DateTime utcEndTime = schedule['end_time'].toDate().toUtc();
+
+        if (utcNow.isBefore(utcStartTime)) {
+          nearestSchedule = schedule;
+          break;
+        } else if (utcNow.isAfter(utcStartTime) && utcNow.isBefore(utcEndTime)) {
+          nearestSchedule = schedule;
+          break;
+        }
+      }
+      print('nearestSchedule:\n\n\n ');
+      print (nearestSchedule!['start_time'].toDate().toUtc());
+
+      emit(GetSchedulesForAdminSuccessState());
+    } catch (e) {
+      print('Error in getNearestSchedule()\n\n\n\n');
+      print(e.toString());
+      emit(GetSchedulesForAdminErrorState(e.toString()));
+    }
+  }
+
+
+
+
   Map<String, dynamic>? firstSchedule; // Variable to store the first schedule
 
   Future<void> getSchedulesForAdmin() async {
@@ -91,20 +136,80 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
 
         schedulesList.add(scheduleWithUserData);
 
-        // Store the first schedule in the variable
-        if (firstSchedule == null) {
-          firstSchedule = scheduleWithUserData;
-        }
       }
-
-      // Print the first schedule
-      print('First schedule:\n\n\n $firstSchedule');
 
       emit(GetSchedulesForAdminSuccessState());
     } catch (e) {
       emit(GetSchedulesForAdminErrorState(e.toString()));
     }
   }
+  // Future<void> getSchedulesForAdmin(SharedPreferences sharedPreferences) async {
+  //   initializeDateFormatting();
+  //   emit(GetSchedulesForAdminLoadingState());
+  //   try {
+  //     final DateTime now = DateTime.now();
+  //     final String todayKey = 'schedules_${now.year}_${now.month}_${now.day}';
+  //
+  //     if (sharedPreferences.containsKey(todayKey)) {
+  //       final String schedulesJson = sharedPreferences.getString(todayKey);
+  //       // Convert schedulesJson to a List<Map<String, dynamic>> and use it as needed
+  //       // You can skip the Firestore query and emit success state here
+  //       emit(GetSchedulesForAdminSuccessState());
+  //       return;
+  //     }
+  //
+  //     final DateTime startOfToday = DateTime(now.year, now.month, now.day);
+  //     final QuerySnapshot schedulesQuerySnapshot = await FirebaseFirestore.instance
+  //         .collection('admins')
+  //         .doc(FirebaseAuth.instance.currentUser!.uid)
+  //         .collection('schedules')
+  //     // Start_time greater than or equal to yesterday 12:00 am and less than tomorrow 12:00 am
+  //         .where('start_time', isGreaterThanOrEqualTo: startOfToday.toUtc())
+  //         .where('start_time', isLessThan: startOfToday.add(const Duration(days: 1)).toUtc())
+  //         .orderBy('start_time', descending: false)
+  //         .get(
+  //       const GetOptions(
+  //         source: Source.serverAndCache,
+  //       ),
+  //     );
+  //
+  //     final List<Map<String, dynamic>> schedulesList = [];
+  //
+  //     for (final QueryDocumentSnapshot scheduleDoc in schedulesQuerySnapshot.docs) {
+  //       final Map<String, dynamic> scheduleData = scheduleDoc.data() as Map<String, dynamic>;
+  //
+  //       final QuerySnapshot usersQuerySnapshot = await scheduleDoc.reference
+  //           .collection('users')
+  //           .get(
+  //         const GetOptions(
+  //           source: Source.serverAndCache,
+  //         ),
+  //       );
+  //
+  //       final List<Map<String, dynamic>> usersList = usersQuerySnapshot.docs
+  //           .map<Map<String, dynamic>>(
+  //             (QueryDocumentSnapshot documentSnapshot) =>
+  //         documentSnapshot.data() as Map<String, dynamic>,
+  //       )
+  //           .toList();
+  //
+  //       final Map<String, dynamic> scheduleWithUserData = {
+  //         ...scheduleData,
+  //         'users': usersList,
+  //       };
+  //
+  //       schedulesList.add(scheduleWithUserData);
+  //     }
+  //
+  //     // After processing the schedulesList, store it in SharedPreferences
+  //     final String schedulesJson = json.encode(schedulesList);
+  //     await sharedPreferences.setString(todayKey, schedulesJson);
+  //
+  //     emit(GetSchedulesForAdminSuccessState());
+  //   } catch (e) {
+  //     emit(GetSchedulesForAdminErrorState(e.toString()));
+  //   }
+  // }
 
   void generateRandomData() async {
     print('Generating random data...');
@@ -213,38 +318,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       }
     }
   }
-//  bool? updatedFinishedValue ;
-//   void changeAttendance(String scheduleId, String userId, bool? value) async {
-//     final CollectionReference adminsCollection =
-//     FirebaseFirestore.instance.collection('admins');
-//     final DocumentSnapshot scheduleSnapshot =
-//     await adminsCollection.doc('JcElORFrvvpvtSsk4Iou').get();
-//     final DocumentReference userRef = scheduleSnapshot
-//         .reference
-//         .collection('schedules')
-//         .doc(scheduleId)
-//         .collection('users')
-//         .doc(userId);
-//
-//     if (value != null) {
-//       try {
-//         // Fetch the current value of 'finished' from Firestore
-//         final DocumentSnapshot userSnapshot = await userRef.get();
-//         final Map<String, dynamic> userData = userSnapshot.data() as Map<String, dynamic>? ?? {};
-//         final bool currentFinishedValue = userData['finished'] ?? false;
-//
-//         // Toggle the value of 'finished'
-//          updatedFinishedValue = !currentFinishedValue;
-// emit(AttendanceChangedState(updatedFinishedValue!));
-//         // Update the document with the new value
-//         await userRef.update({'finished': updatedFinishedValue});
-//       } catch (e) {
-//         // If there's an error updating the document, it means there's no internet connection
-//         // Use FirestoreCache to store the update locally
-//         // await FirestoreCache.set(userRef, {'finished': updatedFinishedValue});
-//       }
-//     }
-//   }
+
   bool? updatedFinishedValue;
 
   void changeAttendance(String scheduleId, String userId, bool? value) async {
