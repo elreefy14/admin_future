@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
+import 'package:admin_future/home/data/userModel.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/login_cubit.dart';
 import 'package:admin_future/registeration/presenation/login_screen.dart';
 import 'package:admin_future/registeration/presenation/welcome_screen.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/constants/routes_manager.dart';
 import 'core/constants/strings.dart';
+import 'home/presenation/widget/edit_users.dart';
 import 'home/presenation/widget/home_layout.dart';
 import 'home/presenation/widget/manage_attendence.dart';
 import 'home/presenation/widget/manage_coaches.dart';
@@ -46,14 +48,22 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => ManageSalary());
     // default:
     //   return _errorRoute();
-    }
+    //EditUsers
+    //     await Navigator.pushNamed(context,
+    //                                  AppRoutes.editProfile,
+    //                                  arguments: ManageSalaryCubit.get(context).users[index]);
+       case AppRoutes.editProfile:
+         //make args as map to get the data from it
+     //  args = settings.arguments as UserModel;
+        return MaterialPageRoute(builder: (_) => EditUsers(user: args
+          ,));
   }
 
-  static Route<dynamic> _errorRoute() {
-    // Exit the app if there is no route defined for the given route settings
-    return MaterialPageRoute(builder: (_) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => exit(0));
-      return Container();
-    });
+  // static Route<dynamic> _errorRoute() {
+  //   // Exit the app if there is no route defined for the given route settings
+  //   return MaterialPageRoute(builder: (_) {
+  //     WidgetsBinding.instance.addPostFrameCallback((_) => exit(0));
+  //     return Container();
+  //   });
   }
 }

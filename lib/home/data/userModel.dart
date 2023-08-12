@@ -30,6 +30,12 @@ class UserModel
   String? uId;
   String? phone;
   String? role;
+  //image
+  String? image;
+  //fname
+  String? fname;
+  //lname
+  String? lname;
   //role
 
 
@@ -46,7 +52,9 @@ class UserModel
     this.uId,
     this.phone,
     this.role,
-
+    this.image,
+    this.fname,
+    this.lname,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -61,6 +69,9 @@ class UserModel
     uId = json['uId'];
     phone = json['phone'];
     role = json['role'];
+    image = json['image'];
+    fname = json['fname'];
+    lname = json['lname'];
 
   }
 
@@ -77,6 +88,10 @@ class UserModel
     data['uId'] = this.uId;
     data['phone'] = this.phone;
     data['role'] = this.role;
+    data['image'] = this.image;
+    data['fname'] = this.fname;
+    data['lname'] = this.lname;
+
     return data;
 
   }
@@ -95,6 +110,10 @@ return {
   'uId': uId,
   'phone': phone,
   'role': role,
+  'image': image,
+  'fname': fname,
+  'lname': lname,
+
 
     };
 
