@@ -37,3 +37,12 @@ class PayBonusSuccessStateWithoutInternet extends ManageSalaryState {}
 class Stop extends ManageSalaryState {}
 //PaySalarySuccessStateWithoutInternet
 class PaySalarySuccessStateWithoutInternet extends ManageSalaryState {}
+//UpdateUserInfoLoadingState
+class UpdateUserInfoLoadingState extends ManageSalaryState {}
+//UpdateUserInfoSuccessState
+class UpdateUserInfoSuccessState extends ManageSalaryState {}
+//UpdateUserInfoErrorState
+class UpdateUserInfoErrorState extends ManageSalaryState {
+  final String error;
+  UpdateUserInfoErrorState(this.error);
+}
