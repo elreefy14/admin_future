@@ -1,6 +1,6 @@
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/material.dart';
-
+import 'package:auto_size_text/auto_size_text.dart';
 
 class FFButtonOptions {
   const FFButtonOptions({
@@ -75,34 +75,23 @@ class _FFButtonWidgetState extends State<FFButtonWidget> {
 
   @override
   Widget build(BuildContext context) {
-    Widget textWidget = Center(
+    Widget textWidget = loading
+        ? Center(
             child: Container(
               width: 23,
               height: 23,
-              child: //text
-              //Text(
-              //     'دفع جزئي',
-              //     textAlign: TextAlign.right,
-              //     style: TextStyle(
-              //         color: Colors.white,
-              //         fontSize: 18,
-              //         fontFamily: 'Montserrat-Arabic',
-              //         fontWeight: FontWeight.w400,
-              //         height: 1.44,
-              //     ),
-              // )
-              Text(
-                widget.text,
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12,
-                  fontFamily: 'Montserrat-Arabic',
-                  fontWeight: FontWeight.w400,
-                  height: 1.44,
+              child: CircularProgressIndicator(
+                valueColor: AlwaysStoppedAnimation<Color>(
+                  widget.options.textStyle!.color ?? Colors.white,
                 ),
               ),
             ),
+          )
+        : AutoSizeText(
+            widget.text,
+            style: widget.options.textStyle?.withoutColor(),
+            maxLines: maxLines,
+            overflow: TextOverflow.ellipsis,
           );
 
     final onPressed = widget.onPressed != null

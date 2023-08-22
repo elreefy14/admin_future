@@ -1,17 +1,21 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/flutter_flow/flutter_flow_util.dart';
 import '../../../registeration/data/userModel.dart';
 import '../../../registeration/presenation/widget/widget.dart';
 import '../../data/Notification.dart';
+import '../../data/schedules.dart';
 
 part 'manage_salary_state.dart';
 
@@ -34,6 +38,139 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     phoneController = TextEditingController(text: userModel.phone);
     salaryPerHourController = TextEditingController(text: userModel.hourlyRate.toString()??'');
   }
+  //get list of next 7 days from today and prind the day like friday in arabic
+  List<String>? days = [];
+  String? today;
+  Future<void>? getDays() {
+    days = [];
+    if (kDebugMode) {
+      print('getDays\n\n\n');
+    }
+    DateTime now = DateTime.now();
+    for (int i = 0; i < 7; i++) {
+      DateTime date = now.add(Duration(days: i));
+      String day = date.weekday.toString();
+      switch (day) {
+        case '1':
+          day = 'الاثنين';
+          break;
+        case '2':
+          day = 'الثلاثاء';
+          break;
+        case '3':
+          day = 'الأربعاء';
+          break;
+        case '4':
+          day = 'الخميس';
+          break;
+        case '5':
+          day = 'الجمعة';
+          break;
+        case '6':
+          day = 'السبت';
+          break;
+        case '7':
+          day = 'الأحد';
+          break;
+      }
+      days?.add(day);
+      //print list of days
+      if (kDebugMode) {
+        print('days: $days');
+      }
+    }
+    today = days![0];
+   // return days;
+  }
+  //get list of schedules from admin collection then schedule subcollection for specific day like friday
+  List<SchedulesModel> schedules = [];
+  Future<void> getSchedules({required String day}) async {
+    print('a7a \n\n\n\n');
+    emit(GetSchedulesLoadingState());
+    schedules = [];
+    await FirebaseFirestore.instance
+        .collection('admins')
+    //todo change this to admin id
+        .doc('3nVYM0ovCwdbqAXfSkGb')
+        .collection('schedules')
+        .doc(day)
+        .collection('schedules')
+        .get(const GetOptions(source: Source.serverAndCache))
+        .then((value) {
+      value.docs.forEach((element) {
+        schedules.add(SchedulesModel.fromJson2(element.data()));
+      });
+      emit(GetSchedulesSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetSchedulesErrorState(error.toString()));
+    });
+  }
+  //generate random data to test getSchedules function
+  Future<void> generateRandomSchedules() async {
+    emit(GenerateRandomSchedulesLoadingState());
+    List<String> days = ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
+    List<String> branches = ['فرع جرين بارك', 'فرع النزهة', 'فرع الدقي'];
+    List<String> startTimes = ['10:00', '12:00', '14:00', '16:00'];
+    List<String> endTimes = ['12:00', '14:00', '16:00', '18:00'];
+    List<List<String>> usersNames = [
+      [
+        'محمد محمود', 'محمود علي', 'أحمد محمود',
+      ],
+      [
+        'محمد محمود', 'محمود علي', 'أحمد محمود',
+      ],
+      [
+        'محمد محمود', 'محمود علي', 'أحمد محمود',
+      ],
+      [
+        'محمد محمود', 'محمود علي', 'أحمد محمود',
+      ],
+    ];
+    List<bool> finished = [false, true];
+    for (int i = 0; i < 7; i++) {
+      for (int j = 0; j < 4; j++) {
+        final randomDay = days[Random().nextInt(days.length)];
+        final randomBranch = branches[Random().nextInt(branches.length)];
+        final randomStartTime = startTimes[Random().nextInt(startTimes.length)];
+        final randomEndTime = endTimes[Random().nextInt(endTimes.length)];
+        final randomFinished = finished[Random().nextInt(finished.length)];
+        final randomUsersNames = usersNames[Random().nextInt(usersNames.length)];
+
+        final DateTime startDate = DateFormat('dd/MM/yyyy hh:mm').parse(
+            '10/10/2021 $randomStartTime'
+        );
+        final DateTime endDate = DateFormat('dd/MM/yyyy hh:mm').parse(
+            '10/10/2021 $randomEndTime'
+        );
+
+        final schedule = SchedulesModel(
+          branchId: randomBranch,
+          startTime: Timestamp.fromDate(startDate),
+          endTime: Timestamp.fromDate(endDate),
+          finished: randomFinished,
+          usersNames: randomUsersNames,
+
+        );
+
+        await FirebaseFirestore.instance
+            .collection('admins')
+        //todo change this to admin id
+            .doc('3nVYM0ovCwdbqAXfSkGb')
+            .collection('schedules')
+            .doc(randomDay)
+            .collection('schedules')
+            .add(schedule.toJson2())
+            .then((value) {
+          print('Schedule added');
+        }).catchError((error) {
+          print(error.toString());
+        });
+      }
+    }
+    emit(GenerateRandomSchedulesSuccessState());
+  }
+
 
 //*users*: A collection to store the information of all users.
 // // - Document ID: unique coach ID

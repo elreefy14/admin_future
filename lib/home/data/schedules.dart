@@ -17,6 +17,7 @@ class SchedulesModel {
   Timestamp? endTime;
 
   bool? finished;
+  List<String>? usersNames;
 
   SchedulesModel({
 
@@ -25,8 +26,19 @@ class SchedulesModel {
     required this.endTime,
 
     required this.finished,
+    this.usersNames,
 
   });
+  Map<String, dynamic> toJson2() {
+    return {
+      'branch_id': branchId,
+      'start_time': startTime,
+      'end_time': endTime,
+      'finished': finished,
+      'users_names': usersNames,
+
+    };
+  }
 
   //to json function
   Map<String, dynamic> toJson() {
@@ -35,6 +47,7 @@ class SchedulesModel {
       'start_time': startTime?.toDate().toIso8601String(),
       'end_time': endTime?.toDate().toIso8601String(),
       'finished': finished,
+
     };
   }
 
@@ -51,7 +64,7 @@ factory SchedulesModel.fromJson2(Map<String, dynamic> json) {
       endTime: json['end_time'],
 
       finished: json['finished'],
-
+       usersNames: json['users_names'] != null ? List<String>.from(json['users_names']) : null,
 
     );
   }

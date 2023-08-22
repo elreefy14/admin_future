@@ -16,12 +16,16 @@ import 'home/presenation/widget/edit_users.dart';
 import 'home/presenation/widget/home_layout.dart';
 import 'home/presenation/widget/manage_attendence.dart';
 import 'home/presenation/widget/manage_coaches.dart';
+import 'home/presenation/widget/manage_schedules_screen.dart';
 import 'home/presenation/widget/mange_salary.dart';
 
 class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     var args = settings.arguments;
     switch (settings.name) {
+      //ManageSchedulesScreen
+       case AppRoutes.manageSchedules:
+         return MaterialPageRoute(builder: (_) => ManageSchedulesScreen());
     //HomeScreen
       case AppRoutes.welcome:
         return MaterialPageRoute(builder: (_) => WelcomeScreen());

@@ -46,3 +46,21 @@ class UpdateUserInfoErrorState extends ManageSalaryState {
   final String error;
   UpdateUserInfoErrorState(this.error);
 }
+//GetSchedulesLoadingState
+class GetSchedulesLoadingState extends ManageSalaryState {}
+//GetSchedulesSuccessState
+class GetSchedulesSuccessState extends ManageSalaryState {}
+//GetSchedulesErrorState
+class GetSchedulesErrorState extends ManageSalaryState {
+  final String error;
+  GetSchedulesErrorState(this.error);
+}
+//GenerateRandomSchedulesLoadingState
+class GenerateRandomSchedulesLoadingState extends ManageSalaryState {}
+//GenerateRandomSchedulesSuccessState
+class GenerateRandomSchedulesSuccessState extends ManageSalaryState {}
+//GenerateRandomSchedulesErrorState
+class GenerateRandomSchedulesErrorState extends ManageSalaryState {
+  final String error;
+  GenerateRandomSchedulesErrorState(this.error);
+}

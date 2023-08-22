@@ -107,6 +107,8 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => ManageSalaryCubit()
+       //    ..generateRandomSchedules()
+          //..getDays()
         ),
         BlocProvider(create: (context) => ManageAttendenceCubit()
         //    ..getNearestScedule(
@@ -134,7 +136,10 @@ class MyApp extends StatelessWidget {
               theme: ThemeData(
                 primarySwatch: Colors.blue,
               ),
-              initialRoute: mainRoute,
+              initialRoute:
+              //manageSchedules
+              //AppRoutes.manageSchedules,
+              mainRoute,
               onGenerateRoute: RouteGenerator.generateRoute,
             ),
 

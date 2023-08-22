@@ -281,46 +281,56 @@ class HomeLayout extends StatelessWidget {
                         mainAxisSize: MainAxisSize.max,
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Container(
-                            width: 155.w,
-                            height: 160.h,
-                            decoration: BoxDecoration(
-                              color: const Color(0xFF9AFFB6),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            alignment: const AlignmentDirectional(0, 0),
-                            child: SingleChildScrollView(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.max,
-                                children: [
-                                  Container(
-                                    width: 60,
-                                    height: 60,
-                                    decoration: const BoxDecoration(
-                                      color: Color(0x00FFFFFF),
-                                    ),
-                                    alignment: const AlignmentDirectional(0, 0),
-                                    child: ClipRRect(
-                                      borderRadius: BorderRadius.circular(8),
-                                      child: Image.asset(
-                                        'assets/images/group-add-people_svgrepo.com.png',
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.fitWidth,
+                          InkWell(
+                            onTap: () async {
+                              //pass today as a parameter
+                             ManageSalaryCubit.get(context).getDays()?.then((value) async =>
+                               await ManageSalaryCubit.get(context).getSchedules(day: ManageSalaryCubit.get(context).days?[0]??'الأربعاء'));
+                             await ManageSalaryCubit.get(context).getSchedules(day: ManageSalaryCubit.get(context).days?[0]??'الأربعاء');
+                             Navigator.pushNamed(context, AppRoutes.manageSchedules);
+                            },
+                            child: Container(
+                              width: 155.w,
+                              height: 160.h,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF9AFFB6),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              alignment: const AlignmentDirectional(0, 0),
+                              child: SingleChildScrollView(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    Container(
+                                      width: 60,
+                                      height: 60,
+                                      decoration: const BoxDecoration(
+                                        color: Color(0x00FFFFFF),
+                                      ),
+                                      alignment: const AlignmentDirectional(0, 0),
+                                      child: ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.asset(
+                                          'assets/images/group-add-people_svgrepo.com.png',
+                                          width: 50,
+                                          height: 50,
+                                          fit: BoxFit.fitWidth,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  Text(
-                                    'ادارة المدربين',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                      fontFamily: 'Readex Pro',
-                                      color: const Color(0xFF00CE3A),
-                                      fontSize: 16,
+                                    Text(
+                                      //manage appoinments
+                                          'ادارة المواعيد',
+                                      style: FlutterFlowTheme.of(context)
+                                          .bodyMedium
+                                          .override(
+                                        fontFamily: 'Readex Pro',
+                                        color: const Color(0xFF00CE3A),
+                                        fontSize: 16,
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),

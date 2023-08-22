@@ -31,6 +31,7 @@ dependencies:
   flutter:
     sdk: flutter
 
+  auto_size_text: ^3.0.0
   intl: ^0.18.0
   cloud_firestore: ^4.8.1
   cloud_firestore_platform_interface: ^5.15.1

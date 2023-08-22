@@ -20,8 +20,8 @@ export 'dart:math' show min, max;
 export 'dart:typed_data' show Uint8List;
 export 'dart:convert' show jsonEncode, jsonDecode;
 export 'package:intl/intl.dart';
-
-
+//export 'package:page_transition/page_transition.dart';
+export 'nav/nav.dart';
 
 T valueOrDefault<T>(T? value, T defaultValue) =>
     (value is String && value.isEmpty) || value == null ? defaultValue : value;
@@ -217,11 +217,11 @@ extension IterableExt<T> on Iterable<T> {
       .toList();
 }
 
-// void setAppLanguage(BuildContext context, String language) =>
-//     MyApp.of(context).setLocale(language);
-//
-// void setDarkModeSetting(BuildContext context, ThemeMode themeMode) =>
-//     MyApp.of(context).setThemeMode(themeMode);
+//void setAppLanguage(BuildContext context, String language) =>
+ //   MyApp.of(context).setLocale(language);
+
+//void setDarkModeSetting(BuildContext context, ThemeMode themeMode) =>
+//    MyApp.of(context).setThemeMode(themeMode);
 
 void showSnackbar(
   BuildContext context,
