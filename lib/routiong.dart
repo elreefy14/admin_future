@@ -28,10 +28,7 @@ class RouteGenerator {
       //signUp
       case AppRoutes.signUp:
         return MaterialPageRoute(builder: (_) =>
-            BlocProvider(
-              create: (context) => SignUpCubit(),
-              child: SignUpScreen(),
-            ));
+     SignUpScreen());
       //ManageSchedulesScreen
        case AppRoutes.manageSchedules:
          return MaterialPageRoute(builder: (_) => ManageSchedulesScreen());
@@ -49,10 +46,7 @@ class RouteGenerator {
     // manage attendence
       case AppRoutes.manageAttendence:
         return MaterialPageRoute(builder: (_) =>
-            BlocProvider(
-              create: (context) => ManageAttendenceCubit()..generateRandomData(),
-              child: ManageAttendence(),
-            ));
+             ManageAttendence());
     //ManageCoaches
       case AppRoutes.manageCoaches:
         return MaterialPageRoute(builder: (_) => ManageCoaches());

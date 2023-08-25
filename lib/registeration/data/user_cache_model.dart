@@ -10,63 +10,65 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //     );
 class AdminModel
 {
-//    AdminModel model = AdminModel(
-//         name: 'Write your name...',
-//         level: 3,
-//         hourlyRate: 0,
-//         totalHours: 0,
-//         totalSalary: 0,
-//         currentMonthHours: 0,
-//         currentMonthSalary: 0,
-//     );
-  String? name;
-  String? email;
-  String? id;
+
+
+  Timestamp? date;
+  String? pId;
   String? phone;
   String? fname;
   String? lname;
   String? token;
-  String? totalSalary;
+  int? Salary;
   List<String>? branches;
+  int? totalMoneySpentOnCoaches;
+  int? totalMoneyearned;
+
 
 
 
 
   AdminModel({
-    this.name,
-    this.email,
-    this.id,
+    this.date,
+    this.pId,
     this.phone,
     this.fname,
     this.lname,
     this.token,
-    this.totalSalary,
+    this.Salary,
     this.branches,
+    this.totalMoneySpentOnCoaches,
+    this.totalMoneyearned,
+
+
   });
 
   AdminModel.fromJson(Map<String, dynamic> json) {
-    name = json['name'];
-    email = json['email'];
-    id = json['id'];
+    date = json['date'];
+    pId = json['pId'];
     phone = json['phone'];
     fname = json['fname'];
     lname = json['lname'];
     token = json['token'];
-    totalSalary = json['totalSalary'];
+    Salary = json['totalSalary'];
     branches = json['branches'].cast<String>();
+    totalMoneySpentOnCoaches = json['totalMoneySpentOnCoaches'];
+    totalMoneyearned = json['totalMoneyearned'];
+
+
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'name': name,
-      'email': email,
-      'id': id,
+       'date': date,
+      'pId': pId,
       'phone': phone,
       'fname': fname,
       'lname': lname,
       'token': token,
-      'totalSalary': totalSalary,
+      'totalSalary': Salary,
       'branches': branches,
+      'totalMoneySpentOnCoaches': totalMoneySpentOnCoaches,
+      'totalMoneyearned': totalMoneyearned,
     };
   }
 }

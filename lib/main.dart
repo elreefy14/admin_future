@@ -69,7 +69,7 @@ Future<void> main() async {
     print('user is not null');
     //uid
     print(FirebaseAuth.instance.currentUser!.uid);
-    mainRoute = AppRoutes.welcome;
+    mainRoute = AppRoutes.home;
   }
   //await DioHelper.init();
   FirebaseMessaging.onMessage.listen((event) {
@@ -107,12 +107,17 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => SignUpCubit()),
+        BlocProvider(create: (context) => SignUpCubit()
+          //..addBranches()
+          ..getBranches()
+        ),
         BlocProvider(create: (context) => ManageSalaryCubit()
+        //    ..generateRandomSchedules()
        //    ..generateRandomSchedules()
           //..getDays()
         ),
         BlocProvider(create: (context) => ManageAttendenceCubit()
+
         //    ..getNearestScedule(
           //  )
         ),

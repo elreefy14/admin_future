@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import '../../../core/flutter_flow/flutter_flow_util.dart';
 import 'manage_attendence_state.dart';
 // ****this is my firestore Collections and Documents:**
 // - *users*: A collection to store the information of all coaches.
@@ -49,8 +50,44 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
   Map<String, dynamic>? nearestSchedule;
   static List<Map<String, dynamic>> schedulesList = [];
   List<Map<String, dynamic>> schedulesList2 = [];
+  Future<void> getNearestSchedule() async {
+    try {
+      emit(GetSchedulesForAdminLoadingState());
 
-  Future<void> getNearestScedule() async {
+     // final DateTime now = DateTime.now();
+      //final String dayOfWeek = DateFormat('EEEE').format(now);
+      //get day of week in arabic
+      //today is tuesday in arabic
+     String today = 'الثلاثاء';
+     //getdayinArabic();
+     print(today);
+     //  print(dayOfWeek);
+      final schedulesCollection = FirebaseFirestore.instance
+          .collection('admins')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('schedules')
+          .doc(today)
+          .collection('schedules');
+
+      final QuerySnapshot snapshot = await schedulesCollection
+          .orderBy('start_time', descending: false)
+          .limit(1)
+          .get();
+
+      if (snapshot.docs.isNotEmpty) {
+         nearestSchedule = snapshot.docs.first.data() as Map<String, dynamic>?;
+        print('nearestSchedule:\n\n\n ');
+    //   print(nearestSchedule['startTime'].toDate().toUtc());
+      }
+
+      emit(GetSchedulesForAdminSuccessState());
+    } catch (e) {
+      print('Error in getNearestSchedule()\n\n\n\n');
+      print(e.toString());
+      emit(GetSchedulesForAdminErrorState(e.toString()));
+    }
+  }
+  Future<void> getNearestScedule2() async {
     try {
 
       emit(GetSchedulesForAdminLoadingState());
@@ -373,6 +410,30 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
         // await FirestoreCache.set(userRef, {'finished': updatedFinishedValue});
       }
     }
+  }
+
+  String getdayinArabic() {
+    final DateTime now = DateTime.now();
+    final String dayOfWeek = DateFormat('EEEE').format(now);
+    switch (dayOfWeek) {
+      case 'Saturday':
+        return 'السبت';
+      case 'Sunday':
+        return 'الأحد';
+      case 'Monday':
+        return 'الاثنين';
+      case 'Tuesday':
+        return 'الثلاثاء';
+      case 'Wednesday':
+        return 'الأربعاء';
+      case 'Thursday':
+        return 'الخميس';
+      case 'Friday':
+        return 'الجمعة';
+      default:
+        return 'السبت';
+    }
+
   }
 
 // - *admins*: A collection to store the information of all admins.

@@ -209,27 +209,7 @@ static LoginCubit get(context) => BlocProvider.of(context);
         password: password
     ).then((userCredential) async {
       var user = userCredential.user!;
-//
-// - *admins*: A collection to store the information of all admins.
-//   - Document ID: unique admin ID
-//   - Fields:
-//   *`totalSalaries`*,*`name`*, *`email`*, *`branch_id`* (list of string of the branches they're responsible for)
-//   - Subcollection: *`schedules`*
-//     - Document ID: unique schedule ID
-//     - Fields: *`branch_id`*, *`start_time`*, *`end_time`*, *`date`*,
-//     - Subcollection: *`users`*
-//       - Document ID: unique user ID
-//       - Fields: *`name`*, *`phone`*, *`hourly_rate`*, *`total_hours`*, *`total_salary`*, *`current_month_hours`*, *`current_month_salary`* ,*`finished`*
-//   - Subcollection: *`salaryHistory`*
-//     - Document ID: unique salary history ID (usually just the month and year)
-//     - Fields: *`month`*, *`year`*, *`total_hours`*, *`total_salary`*
-//   - Fields: *`branches`* (array of branch IDs that the admin is responsible for)
-//
-// - *branches*: A collection to store the information of all branches.
-//   - Document ID: unique branch ID
-//   - Fields: *`name`*, *`address`*
-//   - Subcollection: *`coaches`*
-//     - Document ID: unique coach ID who works at this branch
+
 
       FirebaseMessaging.instance.getToken().then((token) {
         FirebaseFirestore.instance.collection('admins')
@@ -237,44 +217,25 @@ static LoginCubit get(context) => BlocProvider.of(context);
             .update(
           //string is the name of
           //device token is string not array
-            {'deviceToken': FieldValue.arrayUnion([token])}
+            {'token': token}
         ).then((_) {
           FirebaseFirestore.instance
               .collection('admins')
               .doc(user.uid)
               .get()
               .then((doc) {
-            if (doc.exists) {
-              var data = doc.data();
-              if (data!['deviceToken'].length < 1000000) {
-
-                 // userData = UserCacheModel(
-                 //                      image: data['image'],
-                 //                      email: user.email??'${data['phone']}@placeholder.com',
-                 //                      phone: user.phoneNumber??data['phone'],
-                 //                      token: token??data['deviceToken'][0],
-                 //                      uId: user.uid,
-                 //                      fname: data['fname'],
-                 //                      lname: data['lname'],
-                 //                      name: data['name'],
-                 //                      level: data['level'],
-                 //                      hourlyRate: data['hourlyRate']??30,
-                 //                      totalHours: data['totalHours']??0,
-                 //                      totalSalary: data['totalSalary']??0,
-                 //                      currentMonthHours: data['currentMonthHours']??0,
-                 //                      currentMonthSalary: data['currentMonthSalary']??0,
-                 //
-                 //   branches: (data['branches'] as List<dynamic>).map((branch) => branch.toString()).toList(),
-                 //                    );
-                 //                    CacheHelper.saveUser(userData);
-
                 emit(LoginSuccessState(user.uid));
-              } else {
-                emit(LoginErrorState('User is already logged in on 3 devices.'));
-              }
-            } else {
-              emit(LoginErrorState('User data not found.'));
-            }
+            // if (doc.exists) {
+            //   var data = doc.data();
+            //   if (data!['deviceToken'].length < 1000000) {
+            //
+            //     emit(LoginSuccessState(user.uid));
+            //   } else {
+            //     emit(LoginErrorState('User is already logged in on 3 devices.'));
+            //   }
+            // } else {
+            //   emit(LoginErrorState('User data not found.'));
+            // }
           });
         });
       });

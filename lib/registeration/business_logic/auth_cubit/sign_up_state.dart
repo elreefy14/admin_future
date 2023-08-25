@@ -38,3 +38,24 @@ class UpdateSelectedItemsState extends SignUpState {
   final List<String>? selectedItems;
   UpdateSelectedItemsState({this.selectedItems});
 }
+//AddBranchesLoadingState
+class AddBranchesLoadingState extends SignUpState {}
+//AddBranchesSuccessState
+class AddBranchesSuccessState extends SignUpState {}
+//AddBranchesErrorState
+class AddBranchesErrorState extends SignUpState {
+  final String? error;
+  AddBranchesErrorState({this.error});
+}
+//GetBranchesLoadingState
+class GetBranchesLoadingState extends SignUpState {}
+//GetBranchesSuccessState
+class GetBranchesSuccessState extends SignUpState {
+  final List<String>? branches;
+  GetBranchesSuccessState({this.branches});
+}
+//GetBranchesErrorState
+class GetBranchesErrorState extends SignUpState {
+  final String? error;
+  GetBranchesErrorState({this.error});
+}

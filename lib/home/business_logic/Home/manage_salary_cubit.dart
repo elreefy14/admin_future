@@ -91,7 +91,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     await FirebaseFirestore.instance
         .collection('admins')
     //todo change this to admin id
-        .doc('3nVYM0ovCwdbqAXfSkGb')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('schedules')
         .doc(day)
         .collection('schedules')
@@ -156,7 +156,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         await FirebaseFirestore.instance
             .collection('admins')
         //todo change this to admin id
-            .doc('3nVYM0ovCwdbqAXfSkGb')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection('schedules')
             .doc(randomDay)
             .collection('schedules')

@@ -126,6 +126,7 @@ void changePasswordVisibility(){
     ).then((value) {
       print(value.user!.uid);
       createUser(
+        branches: selectedItems,
         uId: value.user!.uid,
         phone: phone,
         fname: fName,
@@ -177,12 +178,23 @@ void changePasswordVisibility(){
     required String? phone,
     required String? fname,
     required String? lname,
+    //branches list
+    required List<String>? branches,
   }) {
     emit(CreateUserLoadingState());
     AdminModel model = AdminModel(
+     branches: branches,
+      lname: lname,
+      fname: fname,
+      date: //time using serverTimestamp
+          Timestamp.now(),
+      token: '',
+      totalMoneyearned: 0,
+      totalMoneySpentOnCoaches: 0,
+      Salary: 0,
       phone: phone,
-        id: uId,
-        name: 'Write your name...',
+        pId: uId,
+       // name: 'Write your name...',
     );
     FirebaseFirestore.instance.collection('admins').doc(uId).set(model.toMap())
         .then((value) {
@@ -230,6 +242,48 @@ void changePasswordVisibility(){
 
     //  onSelectionChanged(updatedSelection);
   }
+  // final List<String> items = ['Flutter',
+//         'Node.js',
+//         'React Native',
+//         'Java',
+//         'Docker',
+//         'MySQL'
+//       ];
+ //add list of branches names to branches collection in firebase
+  Future<void> addBranches() async {
+    emit(AddBranchesLoadingState());
+    List<String> branches = [
+      'المعادي',
+      'المهندسين',
+      'المقطم',
+      'المنصورة',
+      'المنيا',
+      'النزهة',
+      ];
+    branches.forEach((element) {
+      FirebaseFirestore.instance.collection('branches').add({
+        'name': element,
+      }).then((value) {
+        emit(AddBranchesSuccessState());
+      }).catchError((error) {
+        emit(AddBranchesErrorState());
+      });
+    });
+    }
+    List<String>? items ;
+  Future<void> getBranches() async {
+    items = [];
+    emit(GetBranchesLoadingState());
+    FirebaseFirestore.instance.collection('branches').get().then((value) {
+      value.docs.forEach((element) {
+        items?.add(element['name']);
+      });
+      emit(GetBranchesSuccessState());
+    }).catchError((error) {
+      emit(GetBranchesErrorState());
+    });
+  }
+
   
 }
 
