@@ -102,6 +102,47 @@ class WelcomeScreen extends StatelessWidget {
               ),
 
             ),
+            Padding(
+              padding: EdgeInsets.only(
+                top: 10.h,
+                  left: 31.w,
+                  right: 31.w,
+
+              ),
+              child: Container(
+                width: double.infinity,
+                child: ElevatedButton(
+
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.signUp);
+                  },
+                  child:Text(
+                    'تسجيل حساب جديد',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      color: Color(0xFF333333),
+                      fontSize: 18,
+                      fontFamily: 'Montserrat-Arabic',
+                      fontWeight: FontWeight.w400,
+                      height: 1.44,
+                    ),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    //use this colot background: #F4F4F4;
+                   primary: Color(0xFFF4F4F4), // Background color
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    textStyle: TextStyle(
+                      fontSize: 18, // Adjust the font size if needed
+                    ),
+                  ),
+                ),
+              ),
+
+            ),
+
               ],
             ),
           ),

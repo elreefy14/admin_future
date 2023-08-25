@@ -4,6 +4,8 @@ import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20
 import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
 import 'package:admin_future/home/data/userModel.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/login_cubit.dart';
+import 'package:admin_future/registeration/business_logic/auth_cubit/sign_up_cubit.dart';
+import 'package:admin_future/registeration/presenation/SignUpScreen.dart';
 import 'package:admin_future/registeration/presenation/login_screen.dart';
 import 'package:admin_future/registeration/presenation/welcome_screen.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +25,13 @@ class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     var args = settings.arguments;
     switch (settings.name) {
+      //signUp
+      case AppRoutes.signUp:
+        return MaterialPageRoute(builder: (_) =>
+            BlocProvider(
+              create: (context) => SignUpCubit(),
+              child: SignUpScreen(),
+            ));
       //ManageSchedulesScreen
        case AppRoutes.manageSchedules:
          return MaterialPageRoute(builder: (_) => ManageSchedulesScreen());

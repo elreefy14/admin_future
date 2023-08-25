@@ -117,7 +117,7 @@ class ManageAttendence extends StatelessWidget {
                                   .schedulesList![index];
                               var startTime =
                               DateFormat('hh a', 'ar').format(
-                                  schedule['start_time']?.toDate().toUtc()
+                                  schedule['start_time']?.toDate()
                                   ?? DateTime.now());
                               var date = DateFormat('yyyy/MM/dd ', 'ar').format(
                                   schedule['start_time']?.toDate()?? DateTime.now());

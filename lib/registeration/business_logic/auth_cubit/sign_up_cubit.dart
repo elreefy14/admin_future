@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/flutter_flow/form_field_controller.dart';
 import '../../data/userModel.dart';
 import '../../data/user_cache_model.dart';
 import 'sign_up_state.dart';
@@ -28,6 +29,28 @@ class SignUpCubit extends Cubit<SignUpState> {
   SignUpCubit() : super(InitialState());
 
   static SignUpCubit get(context) => BlocProvider.of(context);
+  void updateSelectedItems(List<String> newSelectedItems) {
+    print('updateSelectedItems');
+    print(newSelectedItems[0]);
+    print('updateSelectedItems');
+    print(newSelectedItems);
+   // selectedItems = newSelectedItems[0];
+    //add first item newSelectedItems to selectedItems
+    selectedItems?.add(newSelectedItems[0]);
+    emit(UpdateSelectedItemsState(
+      selectedItems: selectedItems,
+    ));
+    print(selectedItems);
+    print(selectedItems!.length);
+
+  }
+  final formKey = GlobalKey<FormState>();
+  final firstNameController = TextEditingController();
+  final lastNameController = TextEditingController();
+  final phoneController = TextEditingController();
+  final passwordController = TextEditingController();
+  List<String>? checkboxGroupValues;
+  FormFieldController<List<String>>? checkboxGroupValueController;
 bool showPassword = true;
 void changePasswordVisibility(){
   showPassword = !showPassword;
@@ -167,6 +190,45 @@ void changePasswordVisibility(){
     }).catchError((error) {
       emit(CreateUserErrorState());
     });
+  }
+  //selected items
+   List<String>? selectedItems;
+  void add(String itemValue) {
+    selectedItems ??= [];
+    print('add');
+    print(itemValue);
+    print(itemValue.toString());
+    selectedItems?.add(itemValue.toString());
+
+
+
+    emit(UpdateSelectedItemsState(
+      selectedItems: selectedItems,
+    ));
+    print(selectedItems);
+  }
+
+  void remove(String itemValue) {
+    selectedItems ??= [];
+    selectedItems?.remove(itemValue.toString());
+    emit(UpdateSelectedItemsState(
+      selectedItems: selectedItems,
+    ));
+    print(selectedItems);
+  }
+  void itemChange(String itemValue, bool isSelected, BuildContext context) {
+    //final List<String> updatedSelection = List.from(
+    //   SignUpCubit.get(context).selectedItems ?? []);
+
+    if (isSelected) {
+      add(itemValue);
+      // updatedSelection.add(itemValue);
+    } else {
+    remove(itemValue);
+      //  updatedSelection.remove(itemValue);
+    }
+
+    //  onSelectionChanged(updatedSelection);
   }
   
 }

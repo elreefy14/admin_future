@@ -33,3 +33,8 @@ class UpdatePasswordErrorState extends SignUpState {
   final String? error;
   UpdatePasswordErrorState({this.error});
 }
+//UpdateSelectedItemsState
+class UpdateSelectedItemsState extends SignUpState {
+  final List<String>? selectedItems;
+  UpdateSelectedItemsState({this.selectedItems});
+}

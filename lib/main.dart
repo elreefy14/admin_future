@@ -1,6 +1,7 @@
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
 import 'package:admin_future/home/presenation/widget/mange_salary.dart';
+import 'package:admin_future/registeration/business_logic/auth_cubit/sign_up_cubit.dart';
 import 'package:admin_future/routiong.dart';
 import 'package:bloc/bloc.dart';
 import 'package:bot_toast/bot_toast.dart';
@@ -68,7 +69,7 @@ Future<void> main() async {
     print('user is not null');
     //uid
     print(FirebaseAuth.instance.currentUser!.uid);
-    mainRoute = AppRoutes.home;
+    mainRoute = AppRoutes.welcome;
   }
   //await DioHelper.init();
   FirebaseMessaging.onMessage.listen((event) {
@@ -106,6 +107,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => SignUpCubit()),
         BlocProvider(create: (context) => ManageSalaryCubit()
        //    ..generateRandomSchedules()
           //..getDays()
