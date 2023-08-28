@@ -35,3 +35,33 @@ class GetNearestSceduleSuccessState extends ManageAttendenceState {
  // final Map<String, dynamic> schedule;
   //GetNearestSceduleSuccessState(this.schedule);
 }
+//GetNearestScheduleLoadingState
+class GetNearestScheduleLoadingState extends ManageAttendenceState {}
+//GetNearestScheduleSuccessState
+class GetNearestScheduleSuccessState extends ManageAttendenceState {
+  //
+  //emit(GetNearestScheduleSuccessState(
+ // nearestSchedule: nearestSchedule,
+  //));
+  //final SchedulesModel nearestSchedule;
+  //GetNearestScheduleSuccessState(this.nearestSchedule);
+}
+//GetNearestScheduleErrorState
+class GetNearestScheduleErrorState extends ManageAttendenceState {
+  final String error;
+  GetNearestScheduleErrorState(this.error);
+}
+//GetUserDataLoadingState
+class GetUserDataLoadingState extends ManageAttendenceState {}
+//GetUserDataSuccessState
+class GetUserDataSuccessState extends ManageAttendenceState {
+
+}
+
+
+//GetUserDataErrorState
+class GetUserDataErrorState extends ManageAttendenceState {
+  final String error;
+  GetUserDataErrorState(this.error);
+}
+

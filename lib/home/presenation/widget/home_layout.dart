@@ -21,10 +21,10 @@ class HomeLayout extends StatelessWidget {
     return Builder(
 
       builder: (context) {
-        //ManageAttendenceCubit.get(context).getSchedulesForAdmin(
-        //).then((value) =>
-        ManageAttendenceCubit.get(context).getNearestSchedule();
-        //);
+        ManageAttendenceCubit.get(context).getSchedulesForAdmin(
+        ).then((value) =>
+        ManageAttendenceCubit.get(context).getNearestSchedule()
+        );
         return BlocConsumer<ManageAttendenceCubit, ManageAttendenceState>(
             listener: (context, state) {
     // TODO: implement listener

@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../core/flutter_flow/flutter_flow_util.dart';
+import '../../../registeration/data/userModel.dart';
 import 'manage_attendence_state.dart';
 // ****this is my firestore Collections and Documents:**
 // - *users*: A collection to store the information of all coaches.
@@ -47,21 +48,20 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
   //use utc time
   //use catch error to catch the error
   //use emit to emit the state
+
   Map<String, dynamic>? nearestSchedule;
   static List<Map<String, dynamic>> schedulesList = [];
   List<Map<String, dynamic>> schedulesList2 = [];
+ // Subcollection: *`schedules`*
+// - Document ID: unique schedule ID
+// - Fields: *`branch_id`, *`start_time`*, *`end_time`*, *`date`*, *`finished`**
   Future<void> getNearestSchedule() async {
     try {
-      emit(GetSchedulesForAdminLoadingState());
+      emit(GetNearestScheduleLoadingState());
 
-     // final DateTime now = DateTime.now();
-      //final String dayOfWeek = DateFormat('EEEE').format(now);
-      //get day of week in arabic
-      //today is tuesday in arabic
-     String today = 'الثلاثاء';
-     //getdayinArabic();
-     print(today);
-     //  print(dayOfWeek);
+      final DateTime now = DateTime.now();
+      final String today = 'الثلاثاء'; // Replace with your logic to get the current day in Arabic
+
       final schedulesCollection = FirebaseFirestore.instance
           .collection('admins')
           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -71,37 +71,15 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
 
       final QuerySnapshot snapshot = await schedulesCollection
           .orderBy('start_time', descending: false)
-          .limit(1)
           .get();
 
-      if (snapshot.docs.isNotEmpty) {
-         nearestSchedule = snapshot.docs.first.data() as Map<String, dynamic>?;
-        print('nearestSchedule:\n\n\n ');
-    //   print(nearestSchedule['startTime'].toDate().toUtc());
-      }
+      List<Map<String, dynamic>> schedulesList = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
 
-      emit(GetSchedulesForAdminSuccessState());
-    } catch (e) {
-      print('Error in getNearestSchedule()\n\n\n\n');
-      print(e.toString());
-      emit(GetSchedulesForAdminErrorState(e.toString()));
-    }
-  }
-  Future<void> getNearestScedule2() async {
-    try {
-
-      emit(GetSchedulesForAdminLoadingState());
-
-      final DateTime now = DateTime.now();
-      final DateTime startOfToday = DateTime(now.year, now.month, now.day);
-      final DateTime endOfToday = DateTime(now.year, now.month, now.day, 23, 59, 59);
-      final DateTime utcNow = DateTime.utc(now.year, now.month, now.day, now.hour, now.minute, now.second);
-
-      final scheduleStream = Stream<Map<String, dynamic>>.fromIterable(schedulesList);
-
-      await for (final Map<String, dynamic> schedule in scheduleStream) {
+      for (final Map<String, dynamic> schedule in schedulesList) {
         final DateTime utcStartTime = schedule['start_time'].toDate().toUtc();
         final DateTime utcEndTime = schedule['end_time'].toDate().toUtc();
+
+        final DateTime utcNow = DateTime.utc(now.year, now.month, now.day, now.hour, now.minute, now.second);
 
         if (utcNow.isBefore(utcStartTime)) {
           nearestSchedule = schedule;
@@ -111,16 +89,55 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
           break;
         }
       }
-      print('nearestSchedule:\n\n\n ');
-      print (nearestSchedule!['start_time'].toDate().toUtc());
 
-      emit(GetSchedulesForAdminSuccessState());
+      if (nearestSchedule != null) {
+        print('nearestSchedule:\n\n\n ');
+       // print(nearestSchedule['start_time'].toDate().toUtc());
+      }
+
+      emit(GetNearestScheduleSuccessState(
+       // nearestSchedule,
+      ));
     } catch (e) {
       print('Error in getNearestSchedule()\n\n\n\n');
       print(e.toString());
-      emit(GetSchedulesForAdminErrorState(e.toString()));
+      emit(GetNearestScheduleErrorState(e.toString()));
     }
   }
+  // Future<void> getNearestScedule2() async {
+  //   try {
+  //
+  //     emit(GetSchedulesForAdminLoadingState());
+  //
+  //     final DateTime now = DateTime.now();
+  //     final DateTime startOfToday = DateTime(now.year, now.month, now.day);
+  //     final DateTime endOfToday = DateTime(now.year, now.month, now.day, 23, 59, 59);
+  //     final DateTime utcNow = DateTime.utc(now.year, now.month, now.day, now.hour, now.minute, now.second);
+  //
+  //     final scheduleStream = Stream<Map<String, dynamic>>.fromIterable(schedulesList);
+  //
+  //     await for (final Map<String, dynamic> schedule in scheduleStream) {
+  //       final DateTime utcStartTime = schedule['start_time'].toDate().toUtc();
+  //       final DateTime utcEndTime = schedule['end_time'].toDate().toUtc();
+  //
+  //       if (utcNow.isBefore(utcStartTime)) {
+  //         nearestSchedule = schedule;
+  //         break;
+  //       } else if (utcNow.isAfter(utcStartTime) && utcNow.isBefore(utcEndTime)) {
+  //         nearestSchedule = schedule;
+  //         break;
+  //       }
+  //     }
+  //     print('nearestSchedule:\n\n\n ');
+  //     print (nearestSchedule!['start_time'].toDate().toUtc());
+  //
+  //     emit(GetSchedulesForAdminSuccessState());
+  //   } catch (e) {
+  //     print('Error in getNearestSchedule()\n\n\n\n');
+  //     print(e.toString());
+  //     emit(GetSchedulesForAdminErrorState(e.toString()));
+  //   }
+  // }
 
 
 
@@ -133,9 +150,17 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
     try {
       final DateTime now = DateTime.now();
       final DateTime startOfToday = DateTime(now.year, now.month, now.day);
+      //  final schedulesCollection = FirebaseFirestore.instance
+      //           .collection('admins')
+      //           .doc(FirebaseAuth.instance.currentUser!.uid)
+      //           .collection('schedules')
+      //           .doc(today)
+      //           .collection('schedules');
       final QuerySnapshot schedulesQuerySnapshot = await FirebaseFirestore.instance
           .collection('admins')
           .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('schedules')
+           .doc('الثلاثاء')
           .collection('schedules')
       // Start_time greater than or equal to yesterday 12:00 am and less than tomorrow 12:00 am
           .where('start_time', isGreaterThanOrEqualTo: startOfToday.toUtc())
@@ -438,7 +463,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
 
 // - *admins*: A collection to store the information of all admins.
 //   - Document ID: unique admin ID
-//   - Fields:*`phone`*, *`name`*, *`email`*, *`branch_id`* (list of string of the branches they're responsible for)
+//   - Fields:*`phone`*, *`name`*, *`email`*, *`branches`* (list of string of the branches they're responsible for) ,pId
 //   - Subcollection: *`schedules`*
 //     - Document ID: unique schedule ID
 //     - Fields: *`branch_id`*, *`start_time`*, *`end_time`*, *`date`*,
@@ -455,6 +480,87 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
 //   - Fields: *`name`*, *`address`*
 //   - Subcollection: *`coaches`*
 //     - Document ID: unique coach ID who works at this branch
+//get all user where pid equal FirebaseAuth.instance.currentUser!.uid
+List<UserModel>? MyUsers;
+List<String>? MyUsersNames;
+
+List<String>? branches;
+
+  Future<void> getAdminData() async {
+    try {
+      emit(GetUserDataLoadingState());
+      //get list branches from firebase admins collection
+      final CollectionReference branchesCollection =
+      FirebaseFirestore.instance.collection('admins');
+      final CollectionReference usersCollection =
+      FirebaseFirestore.instance.collection('users');
+      final QuerySnapshot usersQuerySnapshot = await usersCollection
+          .where('pid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
+          .get(
+        const GetOptions(
+          source: Source.serverAndCache
+        ),
+      );
+//
+// - *admins*: A collection to store the information of all admins.
+//   - Document ID: unique admin ID
+//   - Fields:*`phone`*, *`name`*, *`email`*, *`branches`* (list of string of the branches they're responsible for) ,pId
+      //get list of branches from firebase admins collection
+      final DocumentSnapshot adminSnapshot = await branchesCollection
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .get();
+      final Map<String, dynamic> adminData =
+      adminSnapshot.data() as Map<String, dynamic>;
+      branches = List<String>.from(adminData['branches']);
+
+
+
+      final List<UserModel> usersList = [];
+
+      for (final QueryDocumentSnapshot userDoc in usersQuerySnapshot.docs) {
+        final Map<String, dynamic> userData =
+        userDoc.data() as Map<String, dynamic>;
+        usersList.add(UserModel.fromJson(userData));
+        //add usersname to list
+        MyUsersNames?.add(userData['name']);
+      }
+      MyUsers = usersList;
+      emit(GetUserDataSuccessState());
+    } catch (e) {
+      emit(GetUserDataErrorState(e.toString()));
+    }
+  }
+
+  Future<void> addSchedule(BuildContext context, {required String startTrainingTime, required String endTrainingTime, required String day, required List<String> coachesList, required String branch}) {
+    //add schedi;r ttp all admins collection
+    await FirebaseFirestore.instance
+        .collection('admins')
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('schedules')
+        .doc(day)
+        .collection('schedules')
+        .add({
+      'start_time': startTrainingTime,
+      'end_time': endTrainingTime,
+      'branch_id': branch,
+    }).then((value) {
+      //add schedule to all coaches collection
+      // coachesList.forEach((coach) async {
+      //   await FirebaseFirestore.instance
+      //       .collection('users')
+      //       .doc(coach)
+      //       .collection('schedules')
+      //       .doc(day)
+      //       .collection('schedules')
+      //       .add({
+      //     'start_time': startTrainingTime,
+      //     'end_time': endTrainingTime,
+      //     'branch_id': branch,
+      //
+      //   });
+      // });
+    });
+  }
 
 
 

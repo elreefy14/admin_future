@@ -14,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'core/constants/routes_manager.dart';
 import 'core/constants/strings.dart';
+import 'home/presenation/widget/add_schedule.dart';
 import 'home/presenation/widget/edit_users.dart';
 import 'home/presenation/widget/home_layout.dart';
 import 'home/presenation/widget/manage_attendence.dart';
@@ -25,6 +26,9 @@ class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     var args = settings.arguments;
     switch (settings.name) {
+      //AddSchedule
+      case AppRoutes.addSchedule:
+    return MaterialPageRoute(builder: (_) => AddSchedule());
       //signUp
       case AppRoutes.signUp:
         return MaterialPageRoute(builder: (_) =>

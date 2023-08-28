@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppRoutes {
+  //AddSchedule
+  static const String addSchedule = "/addSchedule";
   //manageSchedules
   static const String manageSchedules = "/manageSchedules";
   //EditUsers

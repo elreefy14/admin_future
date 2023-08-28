@@ -175,38 +175,75 @@ class SignUpScreen extends StatelessWidget {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 35.0.w),
-                                child:
-                                //flutterFlow button to select branches
-                                FFButtonWidget(
-                                  onPressed: _showMultiSelect,
-                                  text: 'اختر مكان التدريب',
-                          options: FFButtonOptions(
-                      height: 40,
-                      padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                      iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                      color: Color(0xFF198CE3),
-                      textStyle:
-                      FlutterFlowTheme.of(context).titleSmall.override(
-                        fontFamily: 'Readex Pro',
-                        color: Colors.white,
-                      ),
-                      elevation: 3,
-                      borderSide: BorderSide(
-                        color: Colors.transparent,
-                        width: 1,
-                      ),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
+                  //             Padding(
+                  //               padding: EdgeInsets.symmetric(horizontal: 35.0.w),
+                  //               child:
+                  //               //flutterFlow button to select branches
+                  //               FFButtonWidget(
+                  //                 onPressed: _showMultiSelect,
+                  //                 text: 'اختر مكان التدريب',
+                  //         options: FFButtonOptions(
+                  //     height: 40,
+                  //     padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
+                  //     iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                  //     color: Color(0xFF198CE3),
+                  //     textStyle:
+                  //     FlutterFlowTheme.of(context).titleSmall.override(
+                  //       fontFamily: 'Readex Pro',
+                  //       color: Colors.white,
+                  //     ),
+                  //     elevation: 3,
+                  //     borderSide: BorderSide(
+                  //       color: Colors.transparent,
+                  //       width: 1,
+                  //     ),
+                  //     borderRadius: BorderRadius.circular(8),
+                  //   ),
+                  // ),
+                  //               ),
+                              InkWell(
+                                onTap: _showMultiSelect,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(horizontal: 35.0.w),
+                                  child: Container(
+                                    padding: EdgeInsets.all(5),
+                                    decoration: BoxDecoration(
+                                      color: Color(0xFFF4F4F4),
+                                      border: Border.all(
+                                        color: Color(0xFF2196F3),
+                                        width: 0.75,
+                                      ),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        SizedBox(width: 5.w),
+                                        SizedBox(
+
+                                          child: Text(
+                                           'اختر اماكن التدريب المسؤول عنها',
+                                            textAlign: TextAlign.right,
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontSize: 16,
+                                              fontFamily: 'IBM Plex Sans Arabic',
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                        Spacer(),
+                                        Icon(
+                                          Icons.location_on_outlined,
+                                          color: Color(0xFF2196F3),
+                                          size: 24,
+                                        ),
+                                        SizedBox(width: 5.w),
+
+                                      ],
+                                    ),
+                                  ),
                                 ),
-                              //   ElevatedButton(
-                              //     onPressed: _showMultiSelect,
-                              //     child: const Text(
-                              //             'اختر مكان التدريب'),
-                              //   ),
-                              // ),
+                              ),
                                Divider(height: 5.h),
                               if (SignUpCubit
                                   .get(context)

@@ -399,12 +399,14 @@
 //instead of fontSize: 18, use fontSize: 18.sp, and so on for all sizes in the app
 
 import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
+import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
 import '../../../core/flutter_flow/flutter_flow_widgets.dart';
 import '../../business_logic/Home/manage_salary_cubit.dart';
@@ -874,7 +876,9 @@ class ManageSchedulesScreen extends StatelessWidget {
                   ),
                   FFButtonWidget(
                     onPressed: () {
-                      print('Button pressed ...');
+                      ManageAttendenceCubit.get(context).getAdminData();
+                     //AddSchedule
+                      Navigator.pushNamed(context, AppRoutes.addSchedule);
                     },
                     text: 'اضافة موعد ',
                     options: FFButtonOptions(
