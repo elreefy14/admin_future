@@ -6,75 +6,71 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../business_logic/auth_cubit/sign_up_cubit.dart';
 import '../../business_logic/auth_cubit/sign_up_state.dart';
 
-class MultiSelect extends StatelessWidget {
+class MultiSelect extends StatefulWidget {
   final List<String> items;
-  //final List<String> selectedItems;
-  //final Function(List<String>) onSelectionChanged;
+  final Function(List<String>)? onConfirm;
 
   const MultiSelect({
     Key? key,
     required this.items,
-   // required this.selectedItems,
-    // required this.onSelectionChanged,
+    this.onConfirm,
   }) : super(key: key);
 
+  @override
+  _MultiSelectState createState() => _MultiSelectState();
+}
 
+class _MultiSelectState extends State<MultiSelect> {
+  List<String> selectedItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    selectedItems = SignUpCubit.get(context).selectedItems ?? [];
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<SignUpCubit, SignUpState>(
-      builder: (context, state) {
-        return  AlertDialog(
-          title: const Text(
-            //translate(context, 'select_your_branches'),
-              'برجاء اختيار الفروع المسؤول عنها'),
-          content: SingleChildScrollView(
-            child: ListBody(
-              children: items
-                  .map(
-                    (item) =>
-                    CheckboxListTile(
-                      value: SignUpCubit.get(context).selectedItems
-                          ?.contains(item)??false,
-                      title: Text(item),
-                      controlAffinity: ListTileControlAffinity.leading,
-                      onChanged: (isChecked) {
-                        print('isChecked $isChecked');
-                        print('item $item');
-                        SignUpCubit.get(context)
-                            .itemChange(item, isChecked!,context);
-                      }
-
-                    ),
-              )
-                  .toList(),
+    return AlertDialog(
+      title: const Text('برجاء اختيار الفروع المسؤول عنها'),
+      content: SingleChildScrollView(
+        child: ListBody(
+          children: widget.items.map(
+                (item) => CheckboxListTile(
+              value: selectedItems.contains(item),
+              title: Text(item),
+              controlAffinity: ListTileControlAffinity.leading,
+              onChanged: (isChecked) {
+                setState(() {
+                  if (isChecked!) {
+                    selectedItems.add(item);
+                  } else {
+                    selectedItems.remove(item);
+                  }
+                });
+              },
+            ),
+          ).toList(),
+        ),
+      ),
+      actions: [
+        Center(
+          child: Container(
+            width: 100.w,
+            height: 40.h,
+            child: ElevatedButton(
+              onPressed: () {
+                print('selectedItems $selectedItems');
+                if (widget.onConfirm != null) {
+                  widget.onConfirm!(selectedItems);
+                }
+                Navigator.pop(context, selectedItems);
+              },
+              child: const Text('Submit'),
             ),
           ),
-          actions: [
-            // TextButton(
-            //   onPressed: () => Navigator.pop(context),
-            //   child: const Text('Cancel'),
-            // ),
-            Center(
-              child: Container(
-                width: 100.w,
-                height: 40.h,
-                child: ElevatedButton(
-                  onPressed: () {
-                    print('selectedItems ${SignUpCubit.get(context).selectedItems}');
-                    Navigator.pop(context,
-                        SignUpCubit.get(context).selectedItems);
-                  },
-
-                  child: const Text('Submit'),
-                ),
-              ),
-            ),
-          ],
-        );
-      },
+        ),
+      ],
     );
   }
 }
-
-

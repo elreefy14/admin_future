@@ -1,11 +1,16 @@
 import 'package:admin_future/core/flutter_flow/flutter_flow_widgets.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import 'package:multiselect/multiselect.dart';
+import '../../../registeration/data/userModel.dart';
+
+import '../../../registeration/presenation/widget/multi_select.dart';
 import '../../business_logic/Home/manage_attendence_state.dart';
 
 class AddSchedule extends StatefulWidget {
@@ -22,6 +27,7 @@ class _AddScheduleState extends State<AddSchedule> {
   late String dayOfWeek;
 
   late String selectedBranch;
+  late List<UserModel>? selectedUsers;
 
   void updateSelectedBranch(String branch) {
     setState(() {
@@ -33,7 +39,49 @@ class _AddScheduleState extends State<AddSchedule> {
   Widget build(BuildContext context) {
     //save start time and end time to variables and day of week to variable
 
+    void _showMultiSelect({required List<String> list,bool? isDayOfWeek
+    }) async {
+      final List<String>? results = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return MultiSelect(
+            items: list??[],
+                onConfirm:(List<String> selectedNames) async {
+                selectedUsers =await ManageAttendenceCubit.get(context).MyUsers?.where((user) => selectedNames.contains(user.name))
+                   .toList();
+            print('selectedUsers $selectedUsers');
+            //   if (selectedUsers != null) {
+            //     // Add the selected users to Firebase
+            //     for (final UserModel user in selectedUsers) {
+            //       // Add your logic here to add the user to Firebase
+            //       // For example, you can use FirebaseFirestore to add the user to a collection
+            //       FirebaseFirestore.instance
+            //           .collection('admins')
+            //           .doc(FirebaseAuth.instance.currentUser!.uid)
+            //           .collection('schedules')
+            //           .doc(dayOfWeek)
+            //
+            //     }
+            //   }
+             },
+          );
+        },
+      );
 
+      // Handle results if needed
+      if (results != null) {
+        if(isDayOfWeek == true){
+          setState(() {
+            dayOfWeek = results[0];
+          });
+        }else{
+          setState(() {
+            selectedUsers = ManageAttendenceCubit.get(context).MyUsers?.where((user) => results.contains(user.name))
+                .toList();
+          });
+        }
+      }
+    }
 
     return Scaffold(
 
@@ -43,7 +91,7 @@ class _AddScheduleState extends State<AddSchedule> {
           children: [
             //60.h
             SizedBox(height: 70.0.h),
-            Center(
+            const Center(
               child: Text(
                 'اضافة موعد',
                 textAlign: TextAlign.center,
@@ -73,9 +121,9 @@ class _AddScheduleState extends State<AddSchedule> {
                     // ),
                       decoration: BoxDecoration(
                         color: //#F4F4F4
-                        Color(0xFFF4F4F4),
+                        const Color(0xFFF4F4F4),
                         border: Border.all(
-                          color: Color(0xFF2196F3),
+                          color: const Color(0xFF2196F3),
                           width: 0.75,
                         ),
                         borderRadius: BorderRadius.circular(4),
@@ -88,21 +136,29 @@ class _AddScheduleState extends State<AddSchedule> {
 
                       child: Row(
                         children: [
-                          Icon(Icons.keyboard_arrow_down_outlined,
+                          const Icon(Icons.keyboard_arrow_down_outlined,
                             size: 35,
                           ),
                           SizedBox(width: 5.w),
 
-                          SizedBox(
-                            width: 171,
-                            child: Text(
-                              'عبدالرحمن سعيد',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'IBM Plex Sans Arabic',
-                                fontWeight: FontWeight.w400,
+                          InkWell(
+                            onTap: () {
+                              _showMultiSelect(
+                                list: ManageAttendenceCubit.get(context).MyUsersNames??[],
+                              );
+
+                            },
+                            child: const SizedBox(
+                              width: 171,
+                              child: Text(
+                                'عبدالرحمن سعيد',
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontFamily: 'IBM Plex Sans Arabic',
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ),
                           ),
@@ -113,7 +169,7 @@ class _AddScheduleState extends State<AddSchedule> {
                 ),
                 //5
                 SizedBox(width: 5.w),
-                Flexible(
+                const Flexible(
                   flex: 2,
                   child: Text(
                     'اسم المدربين ',
@@ -142,7 +198,9 @@ class _AddScheduleState extends State<AddSchedule> {
 
                   },
                   onConfirm: (date) {
-                    print('confirm $date');
+                    if (kDebugMode) {
+                      print('confirm $date');
+                    }
                     dayOfWeek = date.toString();
 
                   },
@@ -154,43 +212,58 @@ class _AddScheduleState extends State<AddSchedule> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   SizedBox(width: 90.w),
-                  Flexible(
-                    flex: 1,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Color(0xFFF4F4F4),
-                        border: Border.all(
-                          color: Color(0xFF2196F3),
-                          width: 0.75,
-                        ),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.keyboard_arrow_down_outlined,
-                            size: 35,
+              InkWell(
+                onTap: () {
+                  _showMultiSelect(
+                      list : [
+                        'السبت',
+                        'الاحد',
+                        'الاثنين',
+                        'الثلاثاء',
+                        'الاربعاء',
+                        'الخميس',
+                        'الجمعة',
+                      ]
+                  );
+                },
+                    child: Flexible(
+                      flex: 1,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF4F4F4),
+                          border: Border.all(
+                            color: const Color(0xFF2196F3),
+                            width: 0.75,
                           ),
-                          SizedBox(width: 5.w),
-                          SizedBox(
-                            width: 102,
-                            child: Text(
-                              'الثلاثاء',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'IBM Plex Sans Arabic',
-                                fontWeight: FontWeight.w400,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Row(
+                          children: [
+                            const Icon(
+                              Icons.keyboard_arrow_down_outlined,
+                              size: 35,
+                            ),
+                            SizedBox(width: 5.w),
+                             SizedBox(
+                              width: 102,
+                              child: Text(
+                                'الثلاثاء',
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontFamily: 'IBM Plex Sans Arabic',
+                                  fontWeight: FontWeight.w400,
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
                     ),
                   ),
                   SizedBox(width: 5.w),
-                  Text(
+                  const Text(
                     'يوم التدريب',
                     textAlign: TextAlign.right,
                     style: TextStyle(
@@ -227,23 +300,23 @@ class _AddScheduleState extends State<AddSchedule> {
                   Flexible(
                     flex: 1,
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        color: Color(0xFFF4F4F4),
+                        color: const Color(0xFFF4F4F4),
                         border: Border.all(
-                          color: Color(0xFF2196F3),
+                          color: const Color(0xFF2196F3),
                           width: 0.75,
                         ),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.access_time,
                             size: 25,
                           ),
                           SizedBox(width: 5.w),
-                          SizedBox(
+                          const SizedBox(
                             width: 86,
                             child: Text(
                               '11:00ص',
@@ -261,7 +334,7 @@ class _AddScheduleState extends State<AddSchedule> {
                     ),
                   ),
                   SizedBox(width: 5.w),
-                  Text(
+                  const Text(
                     'موعد بدأ التدريب:',
                     textAlign: TextAlign.right,
                     style: TextStyle(
@@ -300,23 +373,23 @@ class _AddScheduleState extends State<AddSchedule> {
                   Flexible(
                     flex: 1,
                     child: Container(
-                      padding: EdgeInsets.all(5),
+                      padding: const EdgeInsets.all(5),
                       decoration: BoxDecoration(
-                        color: Color(0xFFF4F4F4),
+                        color: const Color(0xFFF4F4F4),
                         border: Border.all(
-                          color: Color(0xFF2196F3),
+                          color: const Color(0xFF2196F3),
                           width: 0.75,
                         ),
                         borderRadius: BorderRadius.circular(4),
                       ),
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.access_time,
                             size: 25,
                           ),
                           SizedBox(width: 5.w),
-                          SizedBox(
+                          const SizedBox(
                             width: 86,
                             child: Text(
                               '11:00ص',
@@ -334,7 +407,7 @@ class _AddScheduleState extends State<AddSchedule> {
                     ),
                   ),
                   SizedBox(width: 5.w),
-                  Text(
+                  const Text(
                     'موعد انتهاء التدريب:',
                     textAlign: TextAlign.right,
                     style: TextStyle(
@@ -348,7 +421,7 @@ class _AddScheduleState extends State<AddSchedule> {
               ),
             ),
             SizedBox(height: 20.0.h),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
@@ -388,21 +461,21 @@ class _AddScheduleState extends State<AddSchedule> {
 ManageAttendenceCubit.get(context).addSchedule(context,
     startTrainingTime:startTime,
     endTrainingTime: endTime,
-    day: dayOfWeek,
- coachesList: ['عبدالرحمن سعيد'],
-    branch: selectedBranch
+    day: 'الثلاثاء',
+    branch: selectedBranch,
+    users: selectedUsers
 );
     }, options: FFButtonOptions(
               width: 200.w,
               height: 40.h,
-              color: Color(0xFF2196F3),
-              textStyle: TextStyle(
+              color: const Color(0xFF2196F3),
+              textStyle: const TextStyle(
                 color: Colors.white,
                 fontSize: 16,
                 fontFamily: 'IBM Plex Sans Arabic',
                 fontWeight: FontWeight.w400,
               ),
-              borderSide: BorderSide(
+              borderSide: const BorderSide(
                 color: Color(0xFF2196F3),
                 width: 0,
               ),

@@ -481,10 +481,9 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
 //   - Subcollection: *`coaches`*
 //     - Document ID: unique coach ID who works at this branch
 //get all user where pid equal FirebaseAuth.instance.currentUser!.uid
-List<UserModel>? MyUsers;
-List<String>? MyUsersNames;
-
-List<String>? branches;
+  List<UserModel>? MyUsers;
+  List<String>? MyUsersNames;
+  List<String>? branches;
 
   Future<void> getAdminData() async {
     try {
@@ -498,13 +497,13 @@ List<String>? branches;
           .where('pid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .get(
         const GetOptions(
-          source: Source.serverAndCache
+          source: Source.serverAndCache,
         ),
       );
-//
-// - *admins*: A collection to store the information of all admins.
-//   - Document ID: unique admin ID
-//   - Fields:*`phone`*, *`name`*, *`email`*, *`branches`* (list of string of the branches they're responsible for) ,pId
+
+      // - *admins*: A collection to store the information of all admins.
+      //   - Document ID: unique admin ID
+      //   - Fields:*`phone`*, *`name`*, *`email`*, *`branches`* (list of string of the branches they're responsible for) ,pId
       //get list of branches from firebase admins collection
       final DocumentSnapshot adminSnapshot = await branchesCollection
           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -513,16 +512,18 @@ List<String>? branches;
       adminSnapshot.data() as Map<String, dynamic>;
       branches = List<String>.from(adminData['branches']);
 
-
-
       final List<UserModel> usersList = [];
+      MyUsersNames = []; // Initialize MyUsersNames as an empty list
 
       for (final QueryDocumentSnapshot userDoc in usersQuerySnapshot.docs) {
         final Map<String, dynamic> userData =
         userDoc.data() as Map<String, dynamic>;
         usersList.add(UserModel.fromJson(userData));
-        //add usersname to list
-        MyUsersNames?.add(userData['name']);
+        // add usersname to list
+        MyUsersNames!.add(userData['name']); // Use MyUsersNames! to access the non-null list
+        print(userData['name']);
+        print(MyUsersNames);
+        print(MyUsers?.length);
       }
       MyUsers = usersList;
       emit(GetUserDataSuccessState());
@@ -530,8 +531,9 @@ List<String>? branches;
       emit(GetUserDataErrorState(e.toString()));
     }
   }
-
-  Future<void> addSchedule(BuildContext context, {required String startTrainingTime, required String endTrainingTime, required String day, required List<String> coachesList, required String branch}) {
+  Future<void> addSchedule(BuildContext context, {
+    
+    required String startTrainingTime, required String endTrainingTime, required String day,required String branch, List<UserModel>? users}) async {
     //add schedi;r ttp all admins collection
     await FirebaseFirestore.instance
         .collection('admins')
@@ -545,20 +547,18 @@ List<String>? branches;
       'branch_id': branch,
     }).then((value) {
       //add schedule to all coaches collection
-      // coachesList.forEach((coach) async {
-      //   await FirebaseFirestore.instance
-      //       .collection('users')
-      //       .doc(coach)
-      //       .collection('schedules')
-      //       .doc(day)
-      //       .collection('schedules')
-      //       .add({
-      //     'start_time': startTrainingTime,
-      //     'end_time': endTrainingTime,
-      //     'branch_id': branch,
-      //
-      //   });
-      // });
+      users?.forEach((coach) async {
+        await FirebaseFirestore.instance
+            .collection('admins')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('schedules')
+            .doc(day)
+            .collection('users')
+            .add({
+          'name': coach,
+          'finished': false,
+        });
+      });
     });
   }
 
