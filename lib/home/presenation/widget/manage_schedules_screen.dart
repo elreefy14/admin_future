@@ -148,13 +148,16 @@ class ManageSchedulesScreen extends StatelessWidget {
                         children: [
                           BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
                             builder: (context, state) {
+
+
                               return ListView.builder(
                                 scrollDirection: Axis.vertical,
                                 shrinkWrap: true,
                                 physics: NeverScrollableScrollPhysics(),
-                                itemBuilder: (context, index) =>
-
-                                    Column(
+                                itemBuilder: (context, index)
+{
+  List<String> usersList = ManageSalaryCubit.get(context).schedules?[index].usersList ?? [];
+                                  return  Column(
                                       children: [
                                         ExpansionTile(
                                           leading: Row(
@@ -236,7 +239,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                                               shrinkWrap: true,
                                               itemBuilder: (context, index) {
                                                 return ListTile(
-                                                  title: Text('${ManageSalaryCubit.get(context).schedules?[index].usersList?[index]}'),
+                                                  title: Text('${usersList?[index]}'),
                                                 );
                                               },
                                               itemCount: ManageSalaryCubit
@@ -248,7 +251,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                                           ],
                                         ),
                                       ],
-                                    ) ,
+                                    ) ;},
                                 itemCount: ManageSalaryCubit
                                     .get(context)
                                     .schedules
