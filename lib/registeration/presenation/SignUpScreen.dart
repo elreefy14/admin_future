@@ -1,5 +1,5 @@
 import 'package:admin_future/registeration/presenation/widget/component.dart';
-import 'package:admin_future/registeration/presenation/widget/multi_select.dart';
+import 'package:admin_future/registeration/presenation/widget/sign_up_multScelect.dart';
 import 'package:admin_future/registeration/presenation/widget/widget.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
@@ -175,32 +175,32 @@ class SignUpScreen extends StatelessWidget {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                  //             Padding(
-                  //               padding: EdgeInsets.symmetric(horizontal: 35.0.w),
-                  //               child:
-                  //               //flutterFlow button to select branches
-                  //               FFButtonWidget(
-                  //                 onPressed: _showMultiSelect,
-                  //                 text: 'اختر مكان التدريب',
-                  //         options: FFButtonOptions(
-                  //     height: 40,
-                  //     padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                  //     iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                  //     color: Color(0xFF198CE3),
-                  //     textStyle:
-                  //     FlutterFlowTheme.of(context).titleSmall.override(
-                  //       fontFamily: 'Readex Pro',
-                  //       color: Colors.white,
-                  //     ),
-                  //     elevation: 3,
-                  //     borderSide: BorderSide(
-                  //       color: Colors.transparent,
-                  //       width: 1,
-                  //     ),
-                  //     borderRadius: BorderRadius.circular(8),
-                  //   ),
-                  // ),
-                  //               ),
+                              //             Padding(
+                              //               padding: EdgeInsets.symmetric(horizontal: 35.0.w),
+                              //               child:
+                              //               //flutterFlow button to select branches
+                              //               FFButtonWidget(
+                              //                 onPressed: _showMultiSelect,
+                              //                 text: 'اختر مكان التدريب',
+                              //         options: FFButtonOptions(
+                              //     height: 40,
+                              //     padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
+                              //     iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                              //     color: Color(0xFF198CE3),
+                              //     textStyle:
+                              //     FlutterFlowTheme.of(context).titleSmall.override(
+                              //       fontFamily: 'Readex Pro',
+                              //       color: Colors.white,
+                              //     ),
+                              //     elevation: 3,
+                              //     borderSide: BorderSide(
+                              //       color: Colors.transparent,
+                              //       width: 1,
+                              //     ),
+                              //     borderRadius: BorderRadius.circular(8),
+                              //   ),
+                              // ),
+                              //               ),
                               InkWell(
                                 onTap: _showMultiSelect,
                                 child: Padding(
@@ -221,7 +221,7 @@ class SignUpScreen extends StatelessWidget {
                                         SizedBox(
 
                                           child: Text(
-                                           'اختر اماكن التدريب المسؤول عنها',
+                                            'اختر اماكن التدريب المسؤول عنها',
                                             textAlign: TextAlign.right,
                                             style: TextStyle(
                                               color: Colors.black,
@@ -244,7 +244,7 @@ class SignUpScreen extends StatelessWidget {
                                   ),
                                 ),
                               ),
-                               Divider(height: 5.h),
+                              Divider(height: 5.h),
                               if (SignUpCubit
                                   .get(context)
                                   .selectedItems != null &&
@@ -294,7 +294,7 @@ class SignUpScreen extends StatelessWidget {
                               state: ToastStates.ERROR,
                             );
                           } else if (state is SignUpSuccessState) {
-                           //navigate to home screen
+                            //navigate to home screen
                             Navigator.pushNamed(
                                 context, AppRoutes.login);
                           }

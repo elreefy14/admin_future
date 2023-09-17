@@ -64,3 +64,12 @@ class GenerateRandomSchedulesErrorState extends ManageSalaryState {
   final String error;
   GenerateRandomSchedulesErrorState(this.error);
 }
+//GetSchedulesForDayLoadingState
+class GetSchedulesForDayLoadingState extends ManageSalaryState {}
+//GetSchedulesForDaySuccessState
+class GetSchedulesForDaySuccessState extends ManageSalaryState {}
+//GetSchedulesForDayErrorState
+class GetSchedulesForDayErrorState extends ManageSalaryState {
+  final String error;
+  GetSchedulesForDayErrorState(this.error);
+}

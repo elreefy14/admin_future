@@ -1,5 +1,7 @@
 import 'package:admin_future/core/flutter_flow/flutter_flow_widgets.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
+import 'package:admin_future/home/presenation/widget/widget/select_day.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +12,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:multiselect/multiselect.dart';
 import '../../../registeration/data/userModel.dart';
 
-import '../../../registeration/presenation/widget/multi_select.dart';
+import 'widget/multi_select.dart';
 import '../../business_logic/Home/manage_attendence_state.dart';
 
 class AddSchedule extends StatefulWidget {
@@ -20,14 +22,15 @@ class AddSchedule extends StatefulWidget {
 }
 
 class _AddScheduleState extends State<AddSchedule> {
-  late String startTime;
+  late Timestamp startTime;
 
-  late String endTime;
+  late  Timestamp endTime;
 
   late String dayOfWeek;
 
   late String selectedBranch;
   late List<UserModel>? selectedUsers;
+  late List<String> results;
 
   void updateSelectedBranch(String branch) {
     setState(() {
@@ -39,50 +42,41 @@ class _AddScheduleState extends State<AddSchedule> {
   Widget build(BuildContext context) {
     //save start time and end time to variables and day of week to variable
 
-    void _showMultiSelect({required List<String> list,bool? isDayOfWeek
+    void _showMultiSelect({
+      required List<String> list,
+
     }) async {
-      final List<String>? results = await showDialog(
+      results = (await showDialog<List<String>>(
         context: context,
         builder: (BuildContext context) {
-          return MultiSelect(
-            items: list??[],
-                onConfirm:(List<String> selectedNames) async {
-                selectedUsers =await ManageAttendenceCubit.get(context).MyUsers?.where((user) => selectedNames.contains(user.name))
-                   .toList();
-            print('selectedUsers $selectedUsers');
-            //   if (selectedUsers != null) {
-            //     // Add the selected users to Firebase
-            //     for (final UserModel user in selectedUsers) {
-            //       // Add your logic here to add the user to Firebase
-            //       // For example, you can use FirebaseFirestore to add the user to a collection
-            //       FirebaseFirestore.instance
-            //           .collection('admins')
-            //           .doc(FirebaseAuth.instance.currentUser!.uid)
-            //           .collection('schedules')
-            //           .doc(dayOfWeek)
-            //
-            //     }
-            //   }
-             },
+          return MultiSelectUserNames(
+            items: ManageAttendenceCubit.get(context).MyUsersNames??[],
+
           );
         },
-      );
+      ))!;
 
       // Handle results if needed
       if (results != null) {
-        if(isDayOfWeek == true){
-          setState(() {
-            dayOfWeek = results[0];
-          });
-        }else{
-          setState(() {
-            selectedUsers = ManageAttendenceCubit.get(context).MyUsers?.where((user) => results.contains(user.name))
-                .toList();
-          });
-        }
+      }
+    }   void _showMultiSelect2({
+      required List<String> list,
+
+    }) async {
+      results = (await showDialog<List<String>>(
+        context: context,
+        builder: (BuildContext context) {
+          return MultiSelectDays(
+            items2: list,
+
+          );
+        },
+      ))!;
+
+      // Handle results if needed
+      if (results != null) {
       }
     }
-
     return Scaffold(
 
       body: Padding(
@@ -214,15 +208,36 @@ class _AddScheduleState extends State<AddSchedule> {
                   SizedBox(width: 90.w),
               InkWell(
                 onTap: () {
-                  _showMultiSelect(
+                  _showMultiSelect2(
                       list : [
+                        //  case '1':
+        //   day = 'الاثنين';
+        //   break;
+        // case '2':
+        //   day = 'الثلاثاء';
+        //   break;
+        // case '3':
+        //   day = 'الأربعاء';
+        //   break;
+        // case '4':
+        //   day = 'الخميس';
+        //   break;
+        // case '5':
+        //   day = 'الجمعة';
+        //   break;
+        // case '6':
+        //   day = 'السبت';
+        //   break;
+        // case '7':
+        //   day = 'الأحد';
                         'السبت',
-                        'الاحد',
+                        'الأحد',
                         'الاثنين',
                         'الثلاثاء',
-                        'الاربعاء',
+                        'الأربعاء',
                         'الخميس',
                         'الجمعة',
+              
                       ]
                   );
                 },
@@ -284,7 +299,11 @@ class _AddScheduleState extends State<AddSchedule> {
                 ).then((selectedTime) {
                   if (selectedTime != null) {
 //save selected time to a variable
-                    startTime = selectedTime.format(context);
+                         
+                           // Convert selected time to DateTime object
+                    final now = DateTime.now();
+                    final selectedDateTime = DateTime(now.year, now.month, now.day, selectedTime.hour, selectedTime.minute);
+                    startTime = Timestamp.fromMillisecondsSinceEpoch(selectedDateTime.millisecondsSinceEpoch);
                     // Handle the selected time
                     final formattedTime =
                     selectedTime.format(
@@ -355,8 +374,12 @@ class _AddScheduleState extends State<AddSchedule> {
                   initialTime: TimeOfDay.now(),
                 ).then((selectedTime) {
                   if (selectedTime != null) {
-                    //save selected time to a variable
-                    endTime = selectedTime.format(context);
+                    // Convert selected time to DateTime object
+                    final now = DateTime.now();
+                    final selectedDateTime = DateTime(now.year, now.month, now.day, selectedTime.hour, selectedTime.minute);
+
+                    // Save selected time as timestamp
+                    endTime = Timestamp.fromMillisecondsSinceEpoch(selectedDateTime.millisecondsSinceEpoch);
 
                     // Handle the selected time
                     final formattedTime =
@@ -461,9 +484,9 @@ class _AddScheduleState extends State<AddSchedule> {
 ManageAttendenceCubit.get(context).addSchedule(context,
     startTrainingTime:startTime,
     endTrainingTime: endTime,
-    day: 'الثلاثاء',
+  //  day: 'الثلاثاء',
     branch: selectedBranch,
-    users: selectedUsers
+ //   users: ManageAttendenceCubit.get(context).selectedItems??[]
 );
     }, options: FFButtonOptions(
               width: 200.w,

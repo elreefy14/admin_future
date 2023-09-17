@@ -60,8 +60,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       emit(GetNearestScheduleLoadingState());
 
       final DateTime now = DateTime.now();
-      final String today = 'الثلاثاء'; // Replace with your logic to get the current day in Arabic
-
+      final String today = getdayinArabic();
       final schedulesCollection = FirebaseFirestore.instance
           .collection('admins')
           .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -104,43 +103,6 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       emit(GetNearestScheduleErrorState(e.toString()));
     }
   }
-  // Future<void> getNearestScedule2() async {
-  //   try {
-  //
-  //     emit(GetSchedulesForAdminLoadingState());
-  //
-  //     final DateTime now = DateTime.now();
-  //     final DateTime startOfToday = DateTime(now.year, now.month, now.day);
-  //     final DateTime endOfToday = DateTime(now.year, now.month, now.day, 23, 59, 59);
-  //     final DateTime utcNow = DateTime.utc(now.year, now.month, now.day, now.hour, now.minute, now.second);
-  //
-  //     final scheduleStream = Stream<Map<String, dynamic>>.fromIterable(schedulesList);
-  //
-  //     await for (final Map<String, dynamic> schedule in scheduleStream) {
-  //       final DateTime utcStartTime = schedule['start_time'].toDate().toUtc();
-  //       final DateTime utcEndTime = schedule['end_time'].toDate().toUtc();
-  //
-  //       if (utcNow.isBefore(utcStartTime)) {
-  //         nearestSchedule = schedule;
-  //         break;
-  //       } else if (utcNow.isAfter(utcStartTime) && utcNow.isBefore(utcEndTime)) {
-  //         nearestSchedule = schedule;
-  //         break;
-  //       }
-  //     }
-  //     print('nearestSchedule:\n\n\n ');
-  //     print (nearestSchedule!['start_time'].toDate().toUtc());
-  //
-  //     emit(GetSchedulesForAdminSuccessState());
-  //   } catch (e) {
-  //     print('Error in getNearestSchedule()\n\n\n\n');
-  //     print(e.toString());
-  //     emit(GetSchedulesForAdminErrorState(e.toString()));
-  //   }
-  // }
-
-
-
 
   Map<String, dynamic>? firstSchedule; // Variable to store the first schedule
 
@@ -156,11 +118,12 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       //           .collection('schedules')
       //           .doc(today)
       //           .collection('schedules');
+       final String today = getdayinArabic();
       final QuerySnapshot schedulesQuerySnapshot = await FirebaseFirestore.instance
           .collection('admins')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('schedules')
-           .doc('الثلاثاء')
+           .doc(today)
           .collection('schedules')
       // Start_time greater than or equal to yesterday 12:00 am and less than tomorrow 12:00 am
           .where('start_time', isGreaterThanOrEqualTo: startOfToday.toUtc())
@@ -531,35 +494,152 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       emit(GetUserDataErrorState(e.toString()));
     }
   }
-  Future<void> addSchedule(BuildContext context, {
-    
-    required String startTrainingTime, required String endTrainingTime, required String day,required String branch, List<UserModel>? users}) async {
-    //add schedi;r ttp all admins collection
-    await FirebaseFirestore.instance
-        .collection('admins')
-        .doc(FirebaseAuth.instance.currentUser!.uid)
-        .collection('schedules')
-        .doc(day)
-        .collection('schedules')
-        .add({
-      'start_time': startTrainingTime,
-      'end_time': endTrainingTime,
-      'branch_id': branch,
-    }).then((value) {
-      //add schedule to all coaches collection
-      users?.forEach((coach) async {
-        await FirebaseFirestore.instance
-            .collection('admins')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection('schedules')
-            .doc(day)
-            .collection('users')
-            .add({
-          'name': coach,
-          'finished': false,
+  Future<void> addSchedule(BuildContext context, {required Timestamp
+  startTrainingTime, required 
+  Timestamp
+  endTrainingTime, required String branch}) async {
+    List<String> days = selectedDays ?? [];
+    List<String> coaches = selectedCoaches ?? [];
+
+    for (var day in days) {
+      await FirebaseFirestore.instance
+          .collection('admins')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('schedules')
+          .doc(day)
+          .collection('schedules')
+          .add({
+        'start_time': startTrainingTime,
+        'end_time': endTrainingTime,
+        'date': day,
+        'branch_id': branch,
+        'usersList': [], // add empty usersList field to each schedule
+      }).then((scheduleDoc) async {
+        if (coaches.isNotEmpty) {
+          for (var coach in coaches) {
+            QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+                .collection('users')
+                .where('name', isEqualTo: coach)
+                .get();
+            if (querySnapshot.docs.isNotEmpty) {
+
+              String userId = querySnapshot.docs.first.id;
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(userId)
+                  .collection('schedules')
+                  .doc(scheduleDoc.id)
+                  .set({
+                'start_time': startTrainingTime,
+                'end_time': endTrainingTime,
+                'date': day,
+                'branch_id': branch,
+              });
+              await FirebaseFirestore.instance
+                  .collection('admins')
+                  .doc(FirebaseAuth.instance.currentUser!.uid)
+                  .collection('schedules')
+                  .doc(day)
+                  .collection('schedules')
+                  .doc(scheduleDoc.id)
+                  .collection('users')
+                  .doc(userId)
+                  .set({
+                'name': querySnapshot.docs.first['name'],
+                'uid' : userId,
+                'finished': false,
+              });
+
+              // add user to usersList field in schedule
+              await scheduleDoc.update({
+                'usersList': FieldValue.arrayUnion([userId]),
+              });
+            }
+          }
+        }
+
+        await scheduleDoc.update({
+          'schedule_id': scheduleDoc.id,
         });
       });
-    });
+    }
+  }
+  //selected items
+  List<String>? selectedCoaches;
+  void add(String itemValue) {
+    selectedCoaches ??= [];
+    print('add');
+    print(itemValue);
+    print(itemValue.toString());
+    selectedCoaches?.add(itemValue.toString());
+
+
+
+    emit(UpdateSelectedItemsState(
+    //  selectedItems: selectedItems,
+    ));
+    print(selectedCoaches);
+  }
+
+  void remove(String itemValue) {
+    selectedCoaches ??= [];
+    selectedCoaches?.remove(itemValue.toString());
+    emit(UpdateSelectedItemsState(
+
+    ));
+    print(selectedCoaches);
+  }
+  void itemChange(String itemValue, bool isSelected, BuildContext context) {
+    //final List<String> updatedSelection = List.from(
+    //   SignUpCubit.get(context).selectedItems ?? []);
+
+    if (isSelected) {
+      add(itemValue);
+      // updatedSelection.add(itemValue);
+    } else {
+      remove(itemValue);
+      //  updatedSelection.remove(itemValue);
+    }
+
+    //  onSelectionChanged(updatedSelection);
+  }  //selected items
+  List<String>? selectedDays;
+  void add2(String itemValue) {
+    selectedDays ??= [];
+    print('add');
+    print(itemValue);
+    print(itemValue.toString());
+    selectedDays?.add(itemValue.toString());
+
+
+
+    emit(UpdateSelectedItemsState(
+    //  selectedItems: selectedItems,
+    ));
+    print(selectedDays);
+  }
+
+  void remove2(String itemValue) {
+    selectedDays ??= [];
+    selectedDays?.remove(itemValue.toString());
+    emit(UpdateSelectedItemsState(
+
+    ));
+    print(selectedDays);
+  }
+  void itemChange2(String itemValue, bool isSelected, BuildContext context) {
+    //final List<String> updatedSelection = List.from(
+    //   SignUpCubit.get(context).selectedItems ?? []);
+
+    if (isSelected) {
+      add2(itemValue);
+      // updatedSelection.add(itemValue);
+    } else {
+      remove2(itemValue);
+      //  updatedSelection.remove(itemValue);
+    }
+
+    //  onSelectionChanged(updatedSelection);
   }
 
 

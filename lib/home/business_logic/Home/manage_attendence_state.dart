@@ -64,4 +64,15 @@ class GetUserDataErrorState extends ManageAttendenceState {
   final String error;
   GetUserDataErrorState(this.error);
 }
+//UpdateSelectedItemsState
+class UpdateSelectedItemsState extends ManageAttendenceState {
+
+}
+//UpdateSelectedItemsErrorState
+class UpdateSelectedItemsErrorState extends ManageAttendenceState {
+  final String error;
+  UpdateSelectedItemsErrorState(this.error);
+}
+//UpdateSelectedItemsLoadingState
+class UpdateSelectedItemsLoadingState extends ManageAttendenceState {}
 

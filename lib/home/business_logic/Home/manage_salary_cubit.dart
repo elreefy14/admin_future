@@ -86,6 +86,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   List<SchedulesModel> schedules = [];
   Future<void> getSchedules({required String day}) async {
     print('a7a \n\n\n\n');
+    print('day: $day');
     emit(GetSchedulesLoadingState());
     schedules = [];
     await FirebaseFirestore.instance
@@ -149,7 +150,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
           startTime: Timestamp.fromDate(startDate),
           endTime: Timestamp.fromDate(endDate),
           finished: randomFinished,
-          usersNames: randomUsersNames,
+          usersList: randomUsersNames,
 
         );
 
@@ -678,4 +679,29 @@ print('hourlyRate: $hourlyRate');
 
 
   }
+
+   void getSchedulesForDay(String day) 
+   {
+      emit(GetSchedulesForDayLoadingState());
+      schedules = [];
+      FirebaseFirestore.instance
+          .collection('admins')
+      //todo change this to admin id
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('schedules')
+          .doc(day)
+          .collection('schedules')
+          .get(const GetOptions(source: Source.serverAndCache))
+          .then((value) {
+        value.docs.forEach((element) {
+          schedules.add(SchedulesModel.fromJson2(element.data()));
+        });
+        emit(GetSchedulesForDaySuccessState());
+      }).catchError((error) {
+        print(error.toString());
+        emit(GetSchedulesForDayErrorState(error.toString()));
+      });
+   }
+     
+
 }
