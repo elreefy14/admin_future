@@ -492,7 +492,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       emit(GetUserDataSuccessState());
     } catch (e) {
       emit(GetUserDataErrorState(e.toString()));
-    }
+    } 
   }
   Future<void> addSchedule(BuildContext context, {required Timestamp
   startTrainingTime, required 

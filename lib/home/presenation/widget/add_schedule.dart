@@ -22,9 +22,9 @@ class AddSchedule extends StatefulWidget {
 }
 
 class _AddScheduleState extends State<AddSchedule> {
-  late Timestamp startTime;
+   Timestamp startTime = Timestamp.now();
 
-  late  Timestamp endTime;
+    Timestamp endTime = Timestamp.now();
 
   late String dayOfWeek;
 
@@ -145,7 +145,8 @@ class _AddScheduleState extends State<AddSchedule> {
                             child: const SizedBox(
                               width: 171,
                               child: Text(
-                                'عبدالرحمن سعيد',
+                                //please select the users
+                                'اختر المدربين',
                                 textAlign: TextAlign.right,
                                 style: TextStyle(
                                   color: Colors.black,
@@ -205,8 +206,8 @@ class _AddScheduleState extends State<AddSchedule> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(width: 90.w),
-              InkWell(
+              //    SizedBox(width: 10.w),
+                  InkWell(
                 onTap: () {
                   _showMultiSelect2(
                       list : [
@@ -237,46 +238,46 @@ class _AddScheduleState extends State<AddSchedule> {
                         'الأربعاء',
                         'الخميس',
                         'الجمعة',
-              
+
                       ]
                   );
                 },
-                    child: Flexible(
-                      flex: 1,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF4F4F4),
-                          border: Border.all(
-                            color: const Color(0xFF2196F3),
-                            width: 0.75,
-                          ),
-                          borderRadius: BorderRadius.circular(4),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFF4F4F4),
+                        border: Border.all(
+                          color: const Color(0xFF2196F3),
+                         // width: 0
                         ),
-                        child: Row(
-                          children: [
-                            const Icon(
-                              Icons.keyboard_arrow_down_outlined,
-                              size: 35,
-                            ),
-                            SizedBox(width: 5.w),
-                             SizedBox(
-                              width: 102,
-                              child: Text(
-                                'الثلاثاء',
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontFamily: 'IBM Plex Sans Arabic',
-                                  fontWeight: FontWeight.w400,
-                                ),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Row(
+                        children: [
+                          const Icon(
+                            Icons.keyboard_arrow_down_outlined,
+                            size: 35,
+                          ),
+                          SizedBox(width: 5.w),
+                            SizedBox(
+                            width: 190.w,
+                            child: const Text(
+                              //please select the days of week
+                              ' اختر الأيام',
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontFamily: 'IBM Plex Sans Arabic',
+                                fontWeight: FontWeight.w400,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                         //  SizedBox(width: 5.w),
+                        ],
                       ),
                     ),
                   ),
+                 // Spacer(),
                   SizedBox(width: 5.w),
                   const Text(
                     'يوم التدريب',
@@ -298,16 +299,17 @@ class _AddScheduleState extends State<AddSchedule> {
                   initialTime: TimeOfDay.now(),
                 ).then((selectedTime) {
                   if (selectedTime != null) {
-//save selected time to a variable
-                         
-                           // Convert selected time to DateTime object
+                    // Convert selected time to DateTime object
                     final now = DateTime.now();
                     final selectedDateTime = DateTime(now.year, now.month, now.day, selectedTime.hour, selectedTime.minute);
-                    startTime = Timestamp.fromMillisecondsSinceEpoch(selectedDateTime.millisecondsSinceEpoch);
+
+                    // Save selected time as timestamp
+                    setState(() {
+                      startTime = Timestamp.fromMillisecondsSinceEpoch(selectedDateTime.millisecondsSinceEpoch);
+                    });
+
                     // Handle the selected time
-                    final formattedTime =
-                    selectedTime.format(
-                        context); // Format the selected time as needed
+                    final formattedTime = selectedTime.format(context); // Format the selected time as needed
                     print('Selected time: $formattedTime');
                   }
                 });
@@ -335,10 +337,10 @@ class _AddScheduleState extends State<AddSchedule> {
                             size: 25,
                           ),
                           SizedBox(width: 5.w),
-                          const SizedBox(
+                          SizedBox(
                             width: 86,
                             child: Text(
-                              '11:00ص',
+                              '${startTime?.toDate().hour}:${startTime?.toDate().minute}' ?? '11:00ص',
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: Colors.black,
@@ -354,7 +356,7 @@ class _AddScheduleState extends State<AddSchedule> {
                   ),
                   SizedBox(width: 5.w),
                   const Text(
-                    'موعد بدأ التدريب:',
+                    'موعد انتهاء التدريب:',
                     textAlign: TextAlign.right,
                     style: TextStyle(
                       color: Color(0xFF333333),
@@ -366,6 +368,7 @@ class _AddScheduleState extends State<AddSchedule> {
                 ],
               ),
             ),
+
             SizedBox(height: 20.0.h),
             GestureDetector(
               onTap: () {
@@ -379,12 +382,12 @@ class _AddScheduleState extends State<AddSchedule> {
                     final selectedDateTime = DateTime(now.year, now.month, now.day, selectedTime.hour, selectedTime.minute);
 
                     // Save selected time as timestamp
-                    endTime = Timestamp.fromMillisecondsSinceEpoch(selectedDateTime.millisecondsSinceEpoch);
+                    setState(() {
+                      endTime = Timestamp.fromMillisecondsSinceEpoch(selectedDateTime.millisecondsSinceEpoch);
+                    });
 
                     // Handle the selected time
-                    final formattedTime =
-                    selectedTime.format(
-                        context); // Format the selected time as needed
+                    final formattedTime = selectedTime.format(context); // Format the selected time as needed
                     print('Selected time: $formattedTime');
                   }
                 });
@@ -412,10 +415,10 @@ class _AddScheduleState extends State<AddSchedule> {
                             size: 25,
                           ),
                           SizedBox(width: 5.w),
-                          const SizedBox(
+                          SizedBox(
                             width: 86,
                             child: Text(
-                              '11:00ص',
+                              '${endTime?.toDate().hour}:${endTime?.toDate().minute}' ?? '11:00ص',
                               textAlign: TextAlign.right,
                               style: TextStyle(
                                 color: Colors.black,
@@ -459,7 +462,7 @@ class _AddScheduleState extends State<AddSchedule> {
                 ),
               ],
             ),
-            SizedBox(height: 20.0.h),
+            SizedBox(height: 5.0.h),
             // List<String> items = ['Item 1', 'Item 2', 'Item 3'];
 
             BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
@@ -469,9 +472,10 @@ class _AddScheduleState extends State<AddSchedule> {
                     :
                   Expanded(
                   child: CheckboxListWidget(
+
                     onBranchSelected: updateSelectedBranch,
                       items: ManageAttendenceCubit.get(context).
-                          branches ?? []
+                          branches ?? [],
                   ),
                 );
               },
@@ -482,8 +486,8 @@ class _AddScheduleState extends State<AddSchedule> {
     return FFButtonWidget(
               text: 'اضافة موعد', onPressed: () {
 ManageAttendenceCubit.get(context).addSchedule(context,
-    startTrainingTime:startTime,
-    endTrainingTime: endTime,
+    startTrainingTime:startTime!,
+    endTrainingTime: endTime!,
   //  day: 'الثلاثاء',
     branch: selectedBranch,
  //   users: ManageAttendenceCubit.get(context).selectedItems??[]

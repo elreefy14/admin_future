@@ -157,6 +157,8 @@ class ManageSchedulesScreen extends StatelessWidget {
                                 itemBuilder: (context, index)
 {
   List<String> usersList = ManageSalaryCubit.get(context).schedules?[index].usersList ?? [];
+  String scheduleId = ManageSalaryCubit.get(context).schedules?[index].scheduleId ?? '';
+  String day = ManageSalaryCubit.get(context).schedules?[index].date ?? '';
                                   return  Column(
                                       children: [
                                         ExpansionTile(
@@ -166,6 +168,11 @@ class ManageSchedulesScreen extends StatelessWidget {
                                               FFButtonWidget(
                                                 onPressed: () {
                                                   print('Delete button pressed ...');
+                                                 ManageSalaryCubit.get(context).deleteSchedule(
+scheduleId: scheduleId,
+day: day,
+);
+                                                  
                                                 },
                                                 text: 'حذف',
                                                 options: FFButtonOptions(
@@ -190,7 +197,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                                               SizedBox(width: 10.w),
                                               FFButtonWidget(
                                                 onPressed: () {
-                                                  print('Edit button pressed ...');
+                                                 
                                                 },
                                                 text: 'تعديل',
                                                 options: FFButtonOptions(
@@ -219,16 +226,22 @@ class ManageSchedulesScreen extends StatelessWidget {
                                           title: Row(
                                             children: [
                                               Expanded(
-                                                child: AutoSizeText(
-                                                      '${DateFormat('hh:mm a').format(ManageSalaryCubit.get(context).schedules![index].endTime!.toDate())} '
-                                                          '<---'
-                                                          '${DateFormat('hh:mm a').format(ManageSalaryCubit.get(context).schedules![index].startTime!.toDate())} '
-
-                                                      '-'
-                                                      '${ManageSalaryCubit.get(context).schedules?[index].branchId}',
-                                                  style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                    fontFamily: 'Readex Pro',
-                                                    fontSize: 9,
+                                                child: SizedBox(
+                                                  width: 200,
+                                                  child: AutoSizeText(
+                                                    '${DateFormat('hh:mm a').format(ManageSalaryCubit.get(context).schedules![index].endTime!.toDate())} '
+                                                    '<---'
+                                                    '${DateFormat('hh:mm a').format(ManageSalaryCubit.get(context).schedules![index].startTime!.toDate())} '
+                                                    '-'
+                                                    '${ManageSalaryCubit.get(context).schedules?[index].branchId}',
+                                                    style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                      fontFamily: 'Readex Pro',
+                                                     // fontSize: ,
+                                                    ),
+                                                    minFontSize: 6,
+                                                    maxFontSize: 19,
+                                                    maxLines: 1,
+                                                    overflow: TextOverflow.ellipsis,
                                                   ),
                                                 ),
                                               ),

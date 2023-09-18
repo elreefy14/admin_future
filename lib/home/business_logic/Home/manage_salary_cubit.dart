@@ -26,18 +26,18 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   //messageController
   final messageController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  late TextEditingController firstNameController ;
-  late TextEditingController lastNameController ;
-  late TextEditingController phoneController ;
-  late TextEditingController salaryPerHourController ;
-  void initControllers(
-      userModel
-      ){
+  late TextEditingController firstNameController;
+  late TextEditingController lastNameController;
+  late TextEditingController phoneController;
+  late TextEditingController salaryPerHourController;
+  void initControllers(userModel) {
     firstNameController = TextEditingController(text: userModel.fname);
     lastNameController = TextEditingController(text: userModel.lname);
     phoneController = TextEditingController(text: userModel.phone);
-    salaryPerHourController = TextEditingController(text: userModel.hourlyRate.toString()??'');
+    salaryPerHourController =
+        TextEditingController(text: userModel.hourlyRate.toString() ?? '');
   }
+
   //get list of next 7 days from today and prind the day like friday in arabic
   List<String>? days = [];
   String? today;
@@ -80,8 +80,9 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
       }
     }
     today = days![0];
-   // return days;
+    // return days;
   }
+
   //get list of schedules from admin collection then schedule subcollection for specific day like friday
   List<SchedulesModel> schedules = [];
   Future<void> getSchedules({required String day}) async {
@@ -91,7 +92,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     schedules = [];
     await FirebaseFirestore.instance
         .collection('admins')
-    //todo change this to admin id
+        //todo change this to admin id
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('schedules')
         .doc(day)
@@ -107,6 +108,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
       emit(GetSchedulesErrorState(error.toString()));
     });
   }
+
   //generate random data to test getSchedules function
   Future<void> generateRandomSchedules() async {
     emit(GenerateRandomSchedulesLoadingState());
@@ -116,16 +118,24 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     List<String> endTimes = ['12:00', '14:00', '16:00', '18:00'];
     List<List<String>> usersNames = [
       [
-        'محمد محمود', 'محمود علي', 'أحمد محمود',
+        'محمد محمود',
+        'محمود علي',
+        'أحمد محمود',
       ],
       [
-        'محمد محمود', 'محمود علي', 'أحمد محمود',
+        'محمد محمود',
+        'محمود علي',
+        'أحمد محمود',
       ],
       [
-        'محمد محمود', 'محمود علي', 'أحمد محمود',
+        'محمد محمود',
+        'محمود علي',
+        'أحمد محمود',
       ],
       [
-        'محمد محمود', 'محمود علي', 'أحمد محمود',
+        'محمد محمود',
+        'محمود علي',
+        'أحمد محمود',
       ],
     ];
     List<bool> finished = [false, true];
@@ -136,14 +146,13 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         final randomStartTime = startTimes[Random().nextInt(startTimes.length)];
         final randomEndTime = endTimes[Random().nextInt(endTimes.length)];
         final randomFinished = finished[Random().nextInt(finished.length)];
-        final randomUsersNames = usersNames[Random().nextInt(usersNames.length)];
+        final randomUsersNames =
+            usersNames[Random().nextInt(usersNames.length)];
 
-        final DateTime startDate = DateFormat('dd/MM/yyyy hh:mm').parse(
-            '10/10/2021 $randomStartTime'
-        );
-        final DateTime endDate = DateFormat('dd/MM/yyyy hh:mm').parse(
-            '10/10/2021 $randomEndTime'
-        );
+        final DateTime startDate =
+            DateFormat('dd/MM/yyyy hh:mm').parse('10/10/2021 $randomStartTime');
+        final DateTime endDate =
+            DateFormat('dd/MM/yyyy hh:mm').parse('10/10/2021 $randomEndTime');
 
         final schedule = SchedulesModel(
           branchId: randomBranch,
@@ -151,12 +160,11 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
           endTime: Timestamp.fromDate(endDate),
           finished: randomFinished,
           usersList: randomUsersNames,
-
         );
 
         await FirebaseFirestore.instance
             .collection('admins')
-        //todo change this to admin id
+            //todo change this to admin id
             .doc(FirebaseAuth.instance.currentUser!.uid)
             .collection('schedules')
             .doc(randomDay)
@@ -171,7 +179,6 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     }
     emit(GenerateRandomSchedulesSuccessState());
   }
-
 
 //*users*: A collection to store the information of all users.
 // // - Document ID: unique coach ID
@@ -209,7 +216,6 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   TextEditingController salaryController = TextEditingController();
   //firstNameController
 
-
 // update total salary of all users
   //make total salary = 0
   //for user with this uid userId
@@ -219,7 +225,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
       print('userId: $userId');
       emit(PaySalaryLoadingState());
 
-      bool isConnected = await checkInternetConnectivity(); // Custom function to check internet connectivity
+      bool isConnected =
+          await checkInternetConnectivity(); // Custom function to check internet connectivity
 
       if (!isConnected) {
         DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
@@ -227,7 +234,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
             .doc(userId)
             .get(GetOptions(source: Source.serverAndCache));
 
-        Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+        Map<String, dynamic>? userData =
+            userSnapshot.data() as Map<String, dynamic>?;
 
         if (userData != null) {
           int newTotalSalary = 0;
@@ -257,7 +265,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
           .doc(userId)
           .get(GetOptions(source: Source.server));
 
-      Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+      Map<String, dynamic>? userData =
+          userSnapshot.data() as Map<String, dynamic>?;
 
       if (userData != null) {
         int newTotalSalary = 0;
@@ -279,6 +288,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
       emit(PaySalaryErrorState(error.toString()));
     }
   }
+
   //minus salary from total salary in firestore for this user
   //update total salary
   //don't use globalTotalSalary
@@ -293,14 +303,16 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
           .doc(userId)
           .get(GetOptions(source: Source.serverAndCache));
 
-      Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+      Map<String, dynamic>? userData =
+          userSnapshot.data() as Map<String, dynamic>?;
 
       int? totalSalary = userData?['totalSalary'];
       int? salary14 = int.parse(salary!);
       int? newTotalSalary = totalSalary! - salary14!;
       print('newTotalSalary: $newTotalSalary');
 
-      bool isConnected = await checkInternetConnectivity(); // Custom function to check internet connectivity
+      bool isConnected =
+          await checkInternetConnectivity(); // Custom function to check internet connectivity
 
       if (!isConnected) {
         // Store the updated salary locally until an internet connection is available
@@ -326,7 +338,6 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         users[userIndex].totalSalary = newTotalSalary;
       }
 
-
       emit(PaySalarySuccessState());
     } catch (error) {
       print(error.toString());
@@ -339,7 +350,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     emit(PayBonusLoadingState());
 
     try {
-      bool isConnected = await checkInternetConnectivity(); // Custom function to check internet connectivity
+      bool isConnected =
+          await checkInternetConnectivity(); // Custom function to check internet connectivity
 
       if (!isConnected) {
         DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
@@ -347,7 +359,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
             .doc(userId)
             .get(GetOptions(source: Source.serverAndCache));
 
-        Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+        Map<String, dynamic>? userData =
+            userSnapshot.data() as Map<String, dynamic>?;
 
         if (userData != null) {
           int? totalSalary = userData['totalSalary'];
@@ -375,7 +388,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
           .doc(userId)
           .get(GetOptions(source: Source.server));
 
-      Map<String, dynamic>? userData = userSnapshot.data() as Map<String, dynamic>?;
+      Map<String, dynamic>? userData =
+          userSnapshot.data() as Map<String, dynamic>?;
 
       if (userData != null) {
         int? totalSalary = userData['totalSalary'];
@@ -405,6 +419,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
       emit(PayBonusErrorState(error.toString()));
     }
   }
+
   List<UserModel> users = [];
   Future<void> getUsers() async {
     emit(GetUsersLoadingState());
@@ -418,7 +433,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         users.add(UserModel.fromJson(element.data()));
         totalSalary += element.data()['totalSalary'];
       });
-      globalTotalSalary = totalSalary; // Assign totalSalary value to globalTotalSalary
+      globalTotalSalary =
+          totalSalary; // Assign totalSalary value to globalTotalSalary
       print('Total salary of all users: $globalTotalSalary');
       emit(GetUsersSuccessState());
     }).catchError((error) {
@@ -442,6 +458,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
       prefs.setInt(userId!, newTotalSalary);
     });
   }
+
   //sync data from local to firestore when internet is available
   //check if internet is available
   void syncData() async {
@@ -463,8 +480,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         prefs.clear();
       });
     }
-
   }
+
 //  void editUserData({
 //     String? firstName,
 //     String? lastName,
@@ -553,25 +570,32 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
 //     }
 //   }
 //make update user info like above function
-  Future<void>? updateUserInfo({required String fname, required String lname, required String phone, required String hourlyRate, required uid}) async {
-     final updateData = <String, Object?>{};
-print('hourlyRate: $hourlyRate');
+  Future<void>? updateUserInfo(
+      {required String fname,
+      required String lname,
+      required String phone,
+      required String hourlyRate,
+      required uid}) async {
+    final updateData = <String, Object?>{};
+    print('hourlyRate: $hourlyRate');
     print('fname: $fname');
     print('lname: $lname');
     print('phone: $phone');
-   // print('password: $password');
+    // print('password: $password');
 
-
-     final notificationData = <String, dynamic>{};
-     if (hourlyRate != null
-     && hourlyRate != '' && hourlyRate != 'null'
-     ) {
-       print('hourlyRate: a7a $hourlyRate');
-       updateData['hourlyRate'] = int.parse(hourlyRate);
-       notificationData['message'] = 'تم تحديث معلومات الحساب الشخصية';
-     }
-    if (fname != null && lname != null && fname != '' && lname != '' && fname != 'null' && lname != 'null') {
-      updateData['name'] ='$fname $lname';
+    final notificationData = <String, dynamic>{};
+    if (hourlyRate != null && hourlyRate != '' && hourlyRate != 'null') {
+      print('hourlyRate: a7a $hourlyRate');
+      updateData['hourlyRate'] = int.parse(hourlyRate);
+      notificationData['message'] = 'تم تحديث معلومات الحساب الشخصية';
+    }
+    if (fname != null &&
+        lname != null &&
+        fname != '' &&
+        lname != '' &&
+        fname != 'null' &&
+        lname != 'null') {
+      updateData['name'] = '$fname $lname';
       updateData['fname'] = fname;
       updateData['lname'] = lname;
 
@@ -582,11 +606,10 @@ print('hourlyRate: $hourlyRate');
       notificationData['message'] = 'تم تحديث معلومات الحساب الشخصية';
     }
     if (lname != null && lname != '' && lname != 'null') {
-
       updateData['lname'] = lname;
       notificationData['message'] = 'تم تحديث معلومات الحساب الشخصية';
     }
-    if (phone != null && phone != '' && phone != 'null' ) {
+    if (phone != null && phone != '' && phone != 'null') {
       print('phone: a7a $phone');
       updateData['phone'] = phone.toString();
       notificationData['message'] = 'تم تحديث معلومات الحساب الشخصية';
@@ -594,46 +617,44 @@ print('hourlyRate: $hourlyRate');
     //print updateData
     print('updateData: $updateData');
 
-     notificationData['timestamp'] = DateTime.now();
-      await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .collection('notifications')
-          .add(notificationData);
+    notificationData['timestamp'] = DateTime.now();
     await FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
-        .update(updateData).then((value) async {
-       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-           .collection('users')
-           .doc(uid)
-           .get(GetOptions(source: Source.serverAndCache));
+        .collection('notifications')
+        .add(notificationData);
+    await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .update(updateData)
+        .then((value) async {
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .get(GetOptions(source: Source.serverAndCache));
 
-       Map<String, dynamic>? userData = userSnapshot.data() as Map<
-           String,
-           dynamic>?;
-       UserModel user = UserModel.fromJson(userData!);
-       if (updateData != null) {
-         int userIndex = users.indexWhere((user) => user.uId == uid);
-         if (userIndex != -1) {
-           users[userIndex] = user;
-         }
-      //   emit(PaySalarySuccessStateWithoutInternet());
-         return;
-       }
-     }
-      ).catchError((error) {
-        print(error.toString());
-        //emit(PaySalaryErrorStateWithoutInternet(error.toString()));
-      });
+      Map<String, dynamic>? userData =
+          userSnapshot.data() as Map<String, dynamic>?;
+      UserModel user = UserModel.fromJson(userData!);
+      if (updateData != null) {
+        int userIndex = users.indexWhere((user) => user.uId == uid);
+        if (userIndex != -1) {
+          users[userIndex] = user;
+        }
+        //   emit(PaySalarySuccessStateWithoutInternet());
+        return;
+      }
+    }).catchError((error) {
+      print(error.toString());
+      //emit(PaySalaryErrorStateWithoutInternet(error.toString()));
+    });
+  }
 
-
-
-}
   Future<void> updatePassword(String password, String? uid) async {
     try {
       // Get the user using the uid
-      final userSnapshot = await FirebaseFirestore.instance.collection('users').doc(uid).get();
+      final userSnapshot =
+          await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
       if (!userSnapshot.exists) {
         print('User not found');
@@ -647,13 +668,13 @@ print('hourlyRate: $hourlyRate');
       await FirebaseAuth.instance.currentUser!.updatePassword(password);
 
       print('Successfully changed password');
-
     } catch (error) {
       print('Password change failed: $error');
     }
   }
 
-  Future<void> sendMessage({required BuildContext context, required String message, String? uid}) {
+  Future<void> sendMessage(
+      {required BuildContext context, required String message, String? uid}) {
     //add notification to the subcollection of the user who will receive the message
     NotificationModel notification = NotificationModel(
       message: message,
@@ -668,40 +689,76 @@ print('hourlyRate: $hourlyRate');
       print('Notification added');
       //show toast message
       showToast(
-  state: ToastStates.SUCCESS,
+        state: ToastStates.SUCCESS,
         msg: 'تم إرسال الرسالة',
       );
     }).catchError((error) {
       print('Failed to add notification: $error');
-      showToast(
-         msg: 'فشل إرسال الرسالة', state: ToastStates.ERROR);
+      showToast(msg: 'فشل إرسال الرسالة', state: ToastStates.ERROR);
     });
-
-
   }
 
-   void getSchedulesForDay(String day) 
-   {
-      emit(GetSchedulesForDayLoadingState());
-      schedules = [];
+  void getSchedulesForDay(String day) {
+    emit(GetSchedulesForDayLoadingState());
+    schedules = [];
+    FirebaseFirestore.instance
+        .collection('admins')
+        //todo change this to admin id
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('schedules')
+        .doc(day)
+        .collection('schedules')
+        .get(const GetOptions(source: Source.serverAndCache))
+        .then((value) {
+      value.docs.forEach((element) {
+        schedules.add(SchedulesModel.fromJson2(element.data()));
+      });
+      emit(GetSchedulesForDaySuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetSchedulesForDayErrorState(error.toString()));
+    });
+  }
+
+  Future deleteSchedule({required String scheduleId, required String day}) {
+    emit(DeleteScheduleLoadingState());
+    return FirebaseFirestore.instance
+        .collection('admins')
+        //todo change this to admin id
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('schedules')
+        .doc(day)
+        .collection('schedules')
+        .doc(scheduleId)
+        .delete()
+        .then((value) async {
+      print('Schedule deleted');
+      // Delete the subcollection 'users'
       FirebaseFirestore.instance
           .collection('admins')
-      //todo change this to admin id
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('schedules')
           .doc(day)
           .collection('schedules')
-          .get(const GetOptions(source: Source.serverAndCache))
-          .then((value) {
-        value.docs.forEach((element) {
-          schedules.add(SchedulesModel.fromJson2(element.data()));
+          .doc(scheduleId)
+          .collection('users')
+          .get()
+          .then((querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          doc.reference.delete();
         });
-        emit(GetSchedulesForDaySuccessState());
-      }).catchError((error) {
-        print(error.toString());
-        emit(GetSchedulesForDayErrorState(error.toString()));
       });
-   }
-     
+    getSchedulesForDay(day);
 
+      emit(DeleteScheduleSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(DeleteScheduleErrorState(error.toString()));
+    });
+  }
+
+  //                     ManageSalaryCubit.get(context).deleteSchedule(
+// scheduleId: scheduleId,
+// );
+//make function to delete schedule from firebase
 }

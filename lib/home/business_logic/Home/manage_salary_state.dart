@@ -73,3 +73,12 @@ class GetSchedulesForDayErrorState extends ManageSalaryState {
   final String error;
   GetSchedulesForDayErrorState(this.error);
 }
+//DeleteScheduleLoadingState
+class DeleteScheduleLoadingState extends ManageSalaryState {}
+//DeleteScheduleSuccessState
+class DeleteScheduleSuccessState extends ManageSalaryState {}
+//DeleteScheduleErrorState
+class DeleteScheduleErrorState extends ManageSalaryState {
+  final String error;
+  DeleteScheduleErrorState(this.error);
+}
