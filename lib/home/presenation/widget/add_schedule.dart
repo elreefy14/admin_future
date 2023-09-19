@@ -17,20 +17,35 @@ import '../../business_logic/Home/manage_attendence_state.dart';
 
 class AddSchedule extends StatefulWidget {
 
+  final bool? toggle;
+  final Timestamp? startTime;
+  final Timestamp? endTime;
+  final String ?date;
+  final List<String>? usersList;
+
+  const AddSchedule({
+     this.toggle,
+     this.startTime,
+     this.endTime,
+     this.date,
+     this.usersList,
+  });
   @override
   State<AddSchedule> createState() => _AddScheduleState();
 }
 
 class _AddScheduleState extends State<AddSchedule> {
-   Timestamp startTime = Timestamp.now();
+   //Timestamp startTime = Timestamp.now();
 
-    Timestamp endTime = Timestamp.now();
+   // Timestamp endTime = Timestamp.now();
 
   late String dayOfWeek;
 
   late String selectedBranch;
   late List<UserModel>? selectedUsers;
   late List<String> results;
+
+
 
   void updateSelectedBranch(String branch) {
     setState(() {
@@ -40,6 +55,12 @@ class _AddScheduleState extends State<AddSchedule> {
 
   @override
   Widget build(BuildContext context) {
+    var startTime = widget.startTime;
+    var endTime = widget.endTime;
+    var date = widget.date;
+    var usersList = widget.usersList;
+    bool toggle = widget.toggle??true;
+
     //save start time and end time to variables and day of week to variable
 
     void _showMultiSelect({
@@ -81,439 +102,444 @@ class _AddScheduleState extends State<AddSchedule> {
 
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Column(
-          children: [
-            //60.h
-            SizedBox(height: 70.0.h),
-            const Center(
-              child: Text(
-                'اضافة موعد',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Color(0xFF333333),
-                  fontSize: 32,
-                  fontFamily: 'Montserrat-Arabic',
-                  fontWeight: FontWeight.w400,
-                  height: 0.81,
-                ),
-              ),
-            ),
-            SizedBox(height: 80.0.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Flexible(
-                  flex: 5,
-                  child: Container(
-                    // RoundedRectangleBorder(
-                    // side: BorderSide(
-                    // width: 0.75,
-                    // strokeAlign: BorderSide.strokeAlignOutside,
-                    // color: Color(0xFF2196F3),
-                    // ),
-                    // borderRadius: BorderRadius.circular(4),
-                    // ),
-                      decoration: BoxDecoration(
-                        color: //#F4F4F4
-                        const Color(0xFFF4F4F4),
-                        border: Border.all(
-                          color: const Color(0xFF2196F3),
-                          width: 0.75,
-                        ),
-                        borderRadius: BorderRadius.circular(4),
+        child: CustomScrollView(
+          slivers: [
+        SliverFillRemaining(
+            hasScrollBody: false,
+              child: Column(
+                children: [
+                  //60.h
+                  SizedBox(height: 70.0.h),
+                   Center(
+                    child: Text(
+                      toggle == false ?
+                      'تعديل موعد'
+                          : 'اضافة موعد',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFF333333),
+                        fontSize: 32,
+                        fontFamily: 'Montserrat-Arabic',
+                        fontWeight: FontWeight.w400,
+                        height: 0.81,
                       ),
-                      //   width: 240.w,
+                    ),
+                  ),
+                  SizedBox(height: 80.0.h),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Flexible(
+                        flex: 5,
+                        child: Container(
+                          // RoundedRectangleBorder(
+                          // side: BorderSide(
+                          // width: 0.75,
+                          // strokeAlign: BorderSide.strokeAlignOutside,
+                          // color: Color(0xFF2196F3),
+                          // ),
+                          // borderRadius: BorderRadius.circular(4),
+                          // ),
+                            decoration: BoxDecoration(
+                              color: //#F4F4F4
+                              const Color(0xFFF4F4F4),
+                              border: Border.all(
+                                color: const Color(0xFF2196F3),
+                                width: 0.75,
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            //   width: 240.w,
 
-                      //  height: 40.h,
-                      //   color:
-                      //   Color(0xFFF4F4F4),
+                            //  height: 40.h,
+                            //   color:
+                            //   Color(0xFFF4F4F4),
 
-                      child: Row(
-                        children: [
-                          const Icon(Icons.keyboard_arrow_down_outlined,
-                            size: 35,
-                          ),
-                          SizedBox(width: 5.w),
-
-                          InkWell(
-                            onTap: () {
-                              _showMultiSelect(
-                                list: ManageAttendenceCubit.get(context).MyUsersNames??[],
-                              );
-
-                            },
-                            child: const SizedBox(
-                              width: 171,
-                              child: Text(
-                                //please select the users
-                                'اختر المدربين',
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 16,
-                                  fontFamily: 'IBM Plex Sans Arabic',
-                                  fontWeight: FontWeight.w400,
+                            child: Row(
+                              children: [
+                                const Icon(Icons.keyboard_arrow_down_outlined,
+                                  size: 35,
                                 ),
-                              ),
-                            ),
-                          ),
+                                SizedBox(width: 5.w),
 
-                        ],
-                      )
-                  ),
-                ),
-                //5
-                SizedBox(width: 5.w),
-                const Flexible(
-                  flex: 2,
-                  child: Text(
-                    'اسم المدربين ',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: Color(0xFF333333),
-                      fontSize: 16,
-                      fontFamily: 'IBM Plex Sans Arabic',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20.0.h),
-            GestureDetector(
-              onTap: () {
-                DatePicker.showDatePicker(
+                                InkWell(
+                                  onTap: () {
+                                    _showMultiSelect(
+                                      list: ManageAttendenceCubit.get(context).MyUsersNames??[],
+                                    );
 
-                  context,
-                  showTitleActions: true,
-                  minTime: DateTime(2023, 3, 5),
-                  maxTime: DateTime(2030, 6, 7),
-                  onChanged: (date) {
-                    print('change $date');
+                                  },
+                                  child: const SizedBox(
+                                    width: 171,
+                                    child: Text(
+                                      //please select the users
+                                      'اختر المدربين',
+                                      textAlign: TextAlign.right,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 16,
+                                        fontFamily: 'IBM Plex Sans Arabic',
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ),
 
-                  },
-                  onConfirm: (date) {
-                    if (kDebugMode) {
-                      print('confirm $date');
-                    }
-                    dayOfWeek = date.toString();
-
-                  },
-                  currentTime: DateTime.now(),
-                  locale: LocaleType.en,
-                );
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-              //    SizedBox(width: 10.w),
-                  InkWell(
-                onTap: () {
-                  _showMultiSelect2(
-                      list : [
-                        //  case '1':
-        //   day = 'الاثنين';
-        //   break;
-        // case '2':
-        //   day = 'الثلاثاء';
-        //   break;
-        // case '3':
-        //   day = 'الأربعاء';
-        //   break;
-        // case '4':
-        //   day = 'الخميس';
-        //   break;
-        // case '5':
-        //   day = 'الجمعة';
-        //   break;
-        // case '6':
-        //   day = 'السبت';
-        //   break;
-        // case '7':
-        //   day = 'الأحد';
-                        'السبت',
-                        'الأحد',
-                        'الاثنين',
-                        'الثلاثاء',
-                        'الأربعاء',
-                        'الخميس',
-                        'الجمعة',
-
-                      ]
-                  );
-                },
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF4F4F4),
-                        border: Border.all(
-                          color: const Color(0xFF2196F3),
-                         // width: 0
+                              ],
+                            )
                         ),
-                        borderRadius: BorderRadius.circular(4),
                       ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.keyboard_arrow_down_outlined,
-                            size: 35,
+                      //5
+                      SizedBox(width: 5.w),
+                      const Flexible(
+                        flex: 2,
+                        child: Text(
+                          'اسم المدربين ',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: Color(0xFF333333),
+                            fontSize: 16,
+                            fontFamily: 'IBM Plex Sans Arabic',
+                            fontWeight: FontWeight.w400,
                           ),
-                          SizedBox(width: 5.w),
-                            SizedBox(
-                            width: 190.w,
-                            child: const Text(
-                              //please select the days of week
-                              ' اختر الأيام',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'IBM Plex Sans Arabic',
-                                fontWeight: FontWeight.w400,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 20.0.h),
+                  GestureDetector(
+                    onTap: () {
+                      DatePicker.showDatePicker(
+
+                        context,
+                        showTitleActions: true,
+                        minTime: DateTime(2023, 3, 5),
+                        maxTime: DateTime(2030, 6, 7),
+                        onChanged: (date) {
+                          print('change $date');
+
+                        },
+                        onConfirm: (date) {
+                          if (kDebugMode) {
+                            print('confirm $date');
+                          }
+                          dayOfWeek = date.toString();
+
+                        },
+                        currentTime: DateTime.now(),
+                        locale: LocaleType.en,
+                      );
+                    },
+                    child: Row(
+                      //mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(width: 9.w),
+                        InkWell(
+                      onTap: () {
+                        _showMultiSelect2(
+                            list : [
+                              'السبت',
+                              'الأحد',
+                              'الاثنين',
+                              'الثلاثاء',
+                              'الأربعاء',
+                              'الخميس',
+                              'الجمعة',
+
+                            ]
+                        );
+                      },
+                          child: Flexible(
+                            flex: 3,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF4F4F4),
+                                border: Border.all(
+                                  color: const Color(0xFF2196F3),
+                                 // width: 0
+                                ),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(
+                                    Icons.keyboard_arrow_down_outlined,
+                                    size: 35,
+                                  ),
+                                  SizedBox(width: 115.w),
+                                  Text(
+                                    //please select the days of week
+                                    ' اختر الأيام',
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontFamily: 'IBM Plex Sans Arabic',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                 SizedBox(width: 20.w),
+                                 //  SizedBox(width: 5.w),
+                                ],
                               ),
                             ),
                           ),
-                         //  SizedBox(width: 5.w),
-                        ],
+                        ),
+                       // Spacer(),
+                        SizedBox(width: 5.w),
+                        Flexible(
+                          flex: 1,
+                          child: const Text(
+                            'يوم التدريب',
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              color: Color(0xFF333333),
+                              fontSize: 16,
+                              fontFamily: 'IBM Plex Sans Arabic',
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ), SizedBox(height: 20.0.h),
+                  GestureDetector(
+                    onTap: () {
+                      showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      ).then((selectedTime) {
+                        if (selectedTime != null) {
+                          // Convert selected time to DateTime object
+                          final now = DateTime.now();
+                          final selectedDateTime = DateTime(now.year, now.month, now.day, selectedTime.hour, selectedTime.minute);
+
+                          // Save selected time as timestamp
+                          setState(() {
+                            startTime = Timestamp.fromMillisecondsSinceEpoch(selectedDateTime.millisecondsSinceEpoch);
+                          });
+
+                          // Handle the selected time
+                          final formattedTime = selectedTime.format(context); // Format the selected time as needed
+                          print('Selected time: $formattedTime');
+                        }
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(width: 50.w),
+                        Flexible(
+                          flex: 1,
+                          child: Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF4F4F4),
+                              border: Border.all(
+                                color: const Color(0xFF2196F3),
+                                width: 0.75,
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.access_time,
+                                  size: 25,
+                                ),
+                                SizedBox(width: 5.w),
+                                SizedBox(
+                                  width: 86,
+                                  child: Text(
+                                    '${startTime != null ? (startTime!.toDate().hour > 12 ? startTime!.toDate().hour - 12 : startTime!.toDate().hour) : 11}:${startTime?.toDate().minute.toString().padLeft(2, '0')}${endTime != null ? (endTime!.toDate().hour >= 12 ? 'م' : 'ص') : 'ص'}',
+
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontFamily: 'IBM Plex Sans Arabic',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 5.w),
+                        const Text(
+                          'موعد بدء التدريب:',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: Color(0xFF333333),
+                            fontSize: 16,
+                            fontFamily: 'IBM Plex Sans Arabic',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  SizedBox(height: 20.0.h),
+                  GestureDetector(
+                    onTap: () {
+                      showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay.now(),
+                      ).then((selectedTime) {
+                        if (selectedTime != null) {
+                          // Convert selected time to DateTime object
+                          final now = DateTime.now();
+                          final selectedDateTime = DateTime(now.year, now.month, now.day, selectedTime.hour, selectedTime.minute);
+
+                          // Save selected time as timestamp
+                          setState(() {
+                            endTime = Timestamp.fromMillisecondsSinceEpoch(selectedDateTime.millisecondsSinceEpoch);
+                          });
+
+                          // Handle the selected time
+                          final formattedTime = selectedTime.format(context); // Format the selected time as needed
+                          print('Selected time: $formattedTime');
+                        }
+                      });
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(width: 50.w),
+                        Flexible(
+                          flex: 1,
+                          child: Container(
+                            padding: const EdgeInsets.all(5),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF4F4F4),
+                              border: Border.all(
+                                color: const Color(0xFF2196F3),
+                                width: 0.75,
+                              ),
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                            child: Row(
+                              children: [
+                                const Icon(
+                                  Icons.access_time,
+                                  size: 25,
+                                ),
+                                SizedBox(width: 5.w),
+                                SizedBox(
+                                  width: 86,
+                                  child: Text(
+                                    '${endTime != null ? (endTime!.toDate().hour > 12 ? endTime!.toDate().hour - 12 : endTime!.toDate().hour) : 11}:${endTime?.toDate().minute.toString().padLeft(2, '0')}${endTime != null ? (endTime!.toDate().hour >= 12 ? 'م' : 'ص') : 'ص'}',
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 16,
+                                      fontFamily: 'IBM Plex Sans Arabic',
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        SizedBox(width: 5.w),
+                        const Text(
+                          'موعد انتهاء التدريب:',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: Color(0xFF333333),
+                            fontSize: 16,
+                            fontFamily: 'IBM Plex Sans Arabic',
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: 20.0.h),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'مكان التدريب:',
+                        textAlign: TextAlign.right,
+                        style: TextStyle(
+                          color: Color(0xFF333333),
+                          fontSize: 16,
+                          fontFamily: 'IBM Plex Sans Arabic',
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
-                    ),
+                    ],
                   ),
-                 // Spacer(),
-                  SizedBox(width: 5.w),
-                  const Text(
-                    'يوم التدريب',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: Color(0xFF333333),
-                      fontSize: 16,
-                      fontFamily: 'IBM Plex Sans Arabic',
-                      fontWeight: FontWeight.w400,
-                    ),
+                  SizedBox(height: 5.0.h),
+                  // List<String> items = ['Item 1', 'Item 2', 'Item 3'];
+
+                  BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
+                    builder: (context, state) {
+                      return ManageAttendenceCubit.get(context).branches == null
+                          ? const Center(child: CircularProgressIndicator())
+                          :
+                        Container(
+                          height: 300.h,
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFF4F4F4),
+                            border: Border.all(
+                              color: const Color(0xFF2196F3),
+                              width: 0.75,
+                            ),
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        child: CheckboxListWidget(
+                          onBranchSelected: updateSelectedBranch,
+                            items: ManageAttendenceCubit.get(context).
+                                branches ?? [],
+                        ),
+                      );
+                    },
                   ),
+                  //SizedBox(height: 50.0.h),
+
+
+
                 ],
               ),
-            ), SizedBox(height: 20.0.h),
-            GestureDetector(
-              onTap: () {
-                showTimePicker(
-                  context: context,
-                  initialTime: TimeOfDay.now(),
-                ).then((selectedTime) {
-                  if (selectedTime != null) {
-                    // Convert selected time to DateTime object
-                    final now = DateTime.now();
-                    final selectedDateTime = DateTime(now.year, now.month, now.day, selectedTime.hour, selectedTime.minute);
-
-                    // Save selected time as timestamp
-                    setState(() {
-                      startTime = Timestamp.fromMillisecondsSinceEpoch(selectedDateTime.millisecondsSinceEpoch);
-                    });
-
-                    // Handle the selected time
-                    final formattedTime = selectedTime.format(context); // Format the selected time as needed
-                    print('Selected time: $formattedTime');
-                  }
-                });
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(width: 50.w),
-                  Flexible(
-                    flex: 1,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF4F4F4),
-                        border: Border.all(
-                          color: const Color(0xFF2196F3),
-                          width: 0.75,
-                        ),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.access_time,
-                            size: 25,
-                          ),
-                          SizedBox(width: 5.w),
-                          SizedBox(
-                            width: 86,
-                            child: Text(
-                              '${startTime?.toDate().hour}:${startTime?.toDate().minute}' ?? '11:00ص',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'IBM Plex Sans Arabic',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 5.w),
-                  const Text(
-                    'موعد انتهاء التدريب:',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: Color(0xFF333333),
-                      fontSize: 16,
-                      fontFamily: 'IBM Plex Sans Arabic',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
             ),
-
-            SizedBox(height: 20.0.h),
-            GestureDetector(
-              onTap: () {
-                showTimePicker(
-                  context: context,
-                  initialTime: TimeOfDay.now(),
-                ).then((selectedTime) {
-                  if (selectedTime != null) {
-                    // Convert selected time to DateTime object
-                    final now = DateTime.now();
-                    final selectedDateTime = DateTime(now.year, now.month, now.day, selectedTime.hour, selectedTime.minute);
-
-                    // Save selected time as timestamp
-                    setState(() {
-                      endTime = Timestamp.fromMillisecondsSinceEpoch(selectedDateTime.millisecondsSinceEpoch);
-                    });
-
-                    // Handle the selected time
-                    final formattedTime = selectedTime.format(context); // Format the selected time as needed
-                    print('Selected time: $formattedTime');
-                  }
-                });
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  SizedBox(width: 50.w),
-                  Flexible(
-                    flex: 1,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        color: const Color(0xFFF4F4F4),
-                        border: Border.all(
-                          color: const Color(0xFF2196F3),
-                          width: 0.75,
-                        ),
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Row(
-                        children: [
-                          const Icon(
-                            Icons.access_time,
-                            size: 25,
-                          ),
-                          SizedBox(width: 5.w),
-                          SizedBox(
-                            width: 86,
-                            child: Text(
-                              '${endTime?.toDate().hour}:${endTime?.toDate().minute}' ?? '11:00ص',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontFamily: 'IBM Plex Sans Arabic',
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 5.w),
-                  const Text(
-                    'موعد انتهاء التدريب:',
-                    textAlign: TextAlign.right,
-                    style: TextStyle(
-                      color: Color(0xFF333333),
-                      fontSize: 16,
-                      fontFamily: 'IBM Plex Sans Arabic',
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            SizedBox(height: 20.0.h),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  'مكان التدريب:',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    color: Color(0xFF333333),
-                    fontSize: 16,
-                    fontFamily: 'IBM Plex Sans Arabic',
-                    fontWeight: FontWeight.w400,
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 5.0.h),
-            // List<String> items = ['Item 1', 'Item 2', 'Item 3'];
-
-            BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
-              builder: (context, state) {
-                return ManageAttendenceCubit.get(context).branches == null
-                    ? const Center(child: CircularProgressIndicator())
-                    :
-                  Expanded(
-                  child: CheckboxListWidget(
-
-                    onBranchSelected: updateSelectedBranch,
-                      items: ManageAttendenceCubit.get(context).
-                          branches ?? [],
-                  ),
-                );
-              },
-            ),
-            SizedBox(height: 20.0.h),
-            BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
-  builder: (context, state) {
-    return FFButtonWidget(
-              text: 'اضافة موعد', onPressed: () {
-ManageAttendenceCubit.get(context).addSchedule(context,
-    startTrainingTime:startTime!,
-    endTrainingTime: endTime!,
-  //  day: 'الثلاثاء',
-    branch: selectedBranch,
- //   users: ManageAttendenceCubit.get(context).selectedItems??[]
-);
-    }, options: FFButtonOptions(
-              width: 200.w,
-              height: 40.h,
-              color: const Color(0xFF2196F3),
-              textStyle: const TextStyle(
-                color: Colors.white,
-                fontSize: 16,
-                fontFamily: 'IBM Plex Sans Arabic',
-                fontWeight: FontWeight.w400,
-              ),
-              borderSide: const BorderSide(
-                color: Color(0xFF2196F3),
-                width: 0,
-              ),
-              borderRadius: BorderRadius.circular(12),
-            ),);
-  },
-),
-
-
           ],
         ),
+      ),
+      bottomNavigationBar:BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
+        builder: (context, state) {
+          return FFButtonWidget(
+            text:  toggle == false ?
+             'حفظ التعديلات'
+                : 'اضافة موعد', onPressed: () {
+            ManageAttendenceCubit.get(context).addSchedule(context,
+              startTrainingTime:startTime!,
+              endTrainingTime: endTime!,
+              //  day: 'الثلاثاء',
+              branch: selectedBranch,
+              //   users: ManageAttendenceCubit.get(context).selectedItems??[]
+            );
+          }, options: FFButtonOptions(
+            width: 200.w,
+            height: 50.h,
+            color: const Color(0xFF2196F3),
+            textStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 16,
+              fontFamily: 'IBM Plex Sans Arabic',
+              fontWeight: FontWeight.w400,
+            ),
+           // borderSide: const BorderSide(
+            //  color: Color(0xFF2196F3),
+          //    width: 0,
+          //  ),
+          //  borderRadius: BorderRadius.circular(12),
+          ),);
+        },
       ),
     );
   }

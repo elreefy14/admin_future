@@ -27,8 +27,17 @@ class RouteGenerator {
     var args = settings.arguments;
     switch (settings.name) {
       //AddSchedule
+
       case AppRoutes.addSchedule:
-    return MaterialPageRoute(builder: (_) => AddSchedule());
+        args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(builder: (_) => AddSchedule(
+            toggle: (args as Map<String, dynamic>)?['toggle'],
+          startTime:(args as Map<String, dynamic>)?['startTime'],
+          endTime: (args as Map<String, dynamic>)?['endTime'],
+          date: (args as Map<String, dynamic>)?['date'],
+          usersList: (args as Map<String, dynamic>)?['usersList'],
+        ));
+
       //signUp
       case AppRoutes.signUp:
         return MaterialPageRoute(builder: (_) =>

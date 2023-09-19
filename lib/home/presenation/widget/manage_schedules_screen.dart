@@ -11,6 +11,7 @@
 import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,7 +79,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                         .width,
                     height: 65.h,
                     decoration: BoxDecoration(
-                      color: Color(0x00FFFFFF),
+                      color: Color.fromARGB(0, 195, 162, 162),
                       border: Border.all(
                         color: Colors.blue,
                       ),
@@ -159,6 +160,9 @@ class ManageSchedulesScreen extends StatelessWidget {
   List<String> usersList = ManageSalaryCubit.get(context).schedules?[index].usersList ?? [];
   String scheduleId = ManageSalaryCubit.get(context).schedules?[index].scheduleId ?? '';
   String day = ManageSalaryCubit.get(context).schedules?[index].date ?? '';
+  Timestamp? statrTime = (ManageSalaryCubit.get(context).schedules?[index].startTime ?? '') as Timestamp?;
+  Timestamp? endTime = (ManageSalaryCubit.get(context).schedules?[index].endTime ?? '') as Timestamp?;
+
                                   return  Column(
                                       children: [
                                         ExpansionTile(
@@ -197,6 +201,21 @@ day: day,
                                               SizedBox(width: 10.w),
                                               FFButtonWidget(
                                                 onPressed: () {
+
+                                                  ManageAttendenceCubit.get(context).getAdminData();
+                                                  Navigator.pushNamed(
+                                            context,
+                                            AppRoutes.addSchedule,
+                                            arguments: {
+                                              'toggle': false,
+                                              'startTime': statrTime,
+                                              'endTime': endTime,
+                                              'date': day,
+                                              'usersList': usersList,
+                                            },
+                                          );
+                                        
+
                                                  
                                                 },
                                                 text: 'تعديل',
@@ -285,7 +304,15 @@ day: day,
                     onPressed: () {
                       ManageAttendenceCubit.get(context).getAdminData();
                      //AddSchedule
-                      Navigator.pushNamed(context, AppRoutes.addSchedule);
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.addSchedule,
+                        arguments: {
+                          'toggle': true,
+                          'startTime': Timestamp.now(),
+                          'endTime': Timestamp.now(),
+                        },
+                      );
                     },
                     text: 'اضافة موعد ',
                     options: FFButtonOptions(
