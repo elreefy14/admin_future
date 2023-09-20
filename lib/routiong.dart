@@ -36,6 +36,8 @@ class RouteGenerator {
           endTime: (args as Map<String, dynamic>)?['endTime'],
           date: (args as Map<String, dynamic>)?['date'],
           usersList: (args as Map<String, dynamic>)?['usersList'],
+          //scheduleId
+          scheduleId: (args as Map<String, dynamic>)?['scheduleId'],
         ));
 
       //signUp

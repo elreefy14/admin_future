@@ -494,6 +494,123 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       emit(GetUserDataErrorState(e.toString()));
     } 
   }
+  Future<void> updateSchedule({
+      String? scheduleId,
+      Timestamp? startTrainingTime,
+      Timestamp? endTrainingTime,
+      String? branch,
+    }) async {
+      List<String> days = selectedDays ?? [];
+      List<String> coaches = selectedCoaches ?? [];
+      try {
+        if (days.length > 1) {
+          // Update the schedule for the first day in the list
+          await FirebaseFirestore.instance
+              .collection('admins')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection('schedules')
+              .doc(days[0])
+              .collection('schedules')
+              .doc(scheduleId)
+              .update({
+            'start_time': startTrainingTime,
+            'end_time': endTrainingTime,
+            'date': days[0],
+            'branch_id': branch,
+            'usersList': coaches,
+          });
+          //if usersList is not empty then update the subcollection users
+          if (coaches.isNotEmpty) {
+            for (var coach in coaches) {
+              QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+                  .collection('users')
+                  .where('name', isEqualTo: coach)
+                  .get();
+              if (querySnapshot.docs.isNotEmpty) {
+                String userId = querySnapshot.docs.first.id;
+                await FirebaseFirestore.instance
+                    .collection('admins')
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .collection('schedules')
+                    .doc(days[0])
+                    .collection('schedules')
+                    .doc(scheduleId)
+                    .collection('users')
+                    .doc(userId)
+                    .set({
+                  'name': querySnapshot.docs.first['name'],
+                  'uid' : userId,
+                  'finished': false,
+                });
+              }
+            }
+          }
+          // Create new schedules for the rest of the days in the list
+          for (int i = 1; i < days.length; i++) {
+            await FirebaseFirestore.instance
+                .collection('admins')
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection('schedules')
+                .doc(days[i])
+                .collection('schedules')
+                .add({
+              'start_time': startTrainingTime,
+              'end_time': endTrainingTime,
+              'date': days[i],
+              'branch_id': branch,
+              'usersList': coaches
+            });
+          }
+              
+        } else {
+          // Update the schedule for the only day in the list
+          await FirebaseFirestore.instance
+              .collection('admins')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection('schedules')
+              .doc(days[0])
+              .collection('schedules')
+              .doc(scheduleId)
+              .update({
+            'start_time': startTrainingTime,
+            'end_time': endTrainingTime,
+            'date': days[0],
+            'branch_id': branch,
+            'usersList': coaches,
+          });
+        }
+
+        // Update the user information in the subcollection
+        for (var coach in coaches) {
+          QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+              .collection('users')
+              .where('name', isEqualTo: coach)
+              .get();
+
+          for (var doc in querySnapshot.docs) {
+            String userId = doc.id;
+            await FirebaseFirestore.instance
+                .collection('admins')
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection('schedules')
+                .doc(days[0])
+                .collection('schedules')
+                .doc(scheduleId)
+                .collection('users')
+                .doc(userId)
+                .set({
+              'name': doc['name'],
+              'uid': userId,
+              'finished': false,
+            });
+          }
+        }
+      } catch (e) {
+        print('Error updating schedule: $e');
+      }
+    }
+
+  
   Future<void> addSchedule(BuildContext context, {required Timestamp
   startTrainingTime, required 
   Timestamp
@@ -552,7 +669,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
 
               // add user to usersList field in schedule
               await scheduleDoc.update({
-                'usersList': FieldValue.arrayUnion([userId]),
+                'usersList': FieldValue.arrayUnion([querySnapshot.docs.first['name']]),
               });
             }
           }

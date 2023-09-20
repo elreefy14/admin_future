@@ -37,6 +37,14 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     salaryPerHourController =
         TextEditingController(text: userModel.hourlyRate.toString() ?? '');
   }
+  //changeSelectedDayIndex
+  int selectedDayIndex = 0;
+  void changeSelectedDayIndex(int index) {
+    selectedDayIndex = index;
+    emit(ChangeSelectedDayIndexState(
+      selectedDayIndex,
+    ));
+  }
 
   //get list of next 7 days from today and prind the day like friday in arabic
   List<String>? days = [];

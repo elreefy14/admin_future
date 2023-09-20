@@ -22,11 +22,17 @@ import '../../../core/flutter_flow/flutter_flow_theme.dart';
 import '../../../core/flutter_flow/flutter_flow_widgets.dart';
 import '../../business_logic/Home/manage_salary_cubit.dart';
 
-class ManageSchedulesScreen extends StatelessWidget {
+class ManageSchedulesScreen extends StatefulWidget {
   const ManageSchedulesScreen({Key? key}) : super(key: key);
 
   @override
+  State<ManageSchedulesScreen> createState() => _ManageSchedulesScreenState();
+}
+
+class _ManageSchedulesScreenState extends State<ManageSchedulesScreen> {
+  @override
   Widget build(BuildContext context) {
+
     //use flutter_screenutil to make above ManageSchedulesScreen responsive
     //for example, instead of height: 160 ,use height: 160.h,
 //instead of height: 160 ,use height: 160.h,
@@ -96,12 +102,13 @@ class ManageSchedulesScreen extends StatelessWidget {
                             itemBuilder: (context, index) =>
                                 GestureDetector(
                                   onTap: () {
-                                    ManageSalaryCubit.get(context)
-                                        .
-                                    getSchedulesForDay
-                                    (ManageSalaryCubit
-                                        .get(context)
-                                        .days?[index] ?? '');
+                                    ManageSalaryCubit.get(context).getSchedulesForDay(
+                                      ManageSalaryCubit.get(context).days?[index] ?? '',
+                                    );
+                                    // setState(() {
+                                    //   selectedDayIndex = index;
+                                    // });
+                                    ManageSalaryCubit.get(context).changeSelectedDayIndex(index);
                                   },
                                   child: Align(
                                     alignment: AlignmentDirectional(0, 0),
@@ -109,7 +116,9 @@ class ManageSchedulesScreen extends StatelessWidget {
                                       width: 85.w,
                                       height: 50.h,
                                       decoration: BoxDecoration(
-                                        color: Colors.blue,
+                                        color: ManageSalaryCubit.get(context).selectedDayIndex
+                                            == index ?   Colors.blue://#F4F4F4
+                                        Color(0xFFF3F3F3),
                                         borderRadius: BorderRadius.circular(8),
                                         shape: BoxShape.rectangle,
                                       ),
@@ -118,7 +127,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                                         ManageSalaryCubit.get(context).days?[index] ?? '',
                                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                                           fontFamily: 'Readex Pro',
-                                          color: Color(0xFFF4F4F4),
+                                          color: ManageSalaryCubit.get(context).selectedDayIndex == index ? Color(0xFFF4F4F4) : Colors.black,
                                           fontSize: 14.sp,
                                         ),
                                       ),
@@ -176,7 +185,7 @@ class ManageSchedulesScreen extends StatelessWidget {
 scheduleId: scheduleId,
 day: day,
 );
-                                                  
+
                                                 },
                                                 text: 'حذف',
                                                 options: FFButtonOptions(
@@ -202,6 +211,9 @@ day: day,
                                               FFButtonWidget(
                                                 onPressed: () {
 
+                                                  ManageAttendenceCubit.get(context).selectedCoaches = usersList;
+                                                  ManageAttendenceCubit.get(context).selectedDays = [day];
+
                                                   ManageAttendenceCubit.get(context).getAdminData();
                                                   Navigator.pushNamed(
                                             context,
@@ -212,11 +224,13 @@ day: day,
                                               'endTime': endTime,
                                               'date': day,
                                               'usersList': usersList,
+                                              'scheduleId': scheduleId,
                                             },
                                           );
-                                        
 
-                                                 
+
+
+
                                                 },
                                                 text: 'تعديل',
                                                 options: FFButtonOptions(
@@ -299,7 +313,7 @@ day: day,
                       ),
                     ],
                   ),
-                  
+
                   FFButtonWidget(
                     onPressed: () {
                       ManageAttendenceCubit.get(context).getAdminData();
@@ -345,4 +359,4 @@ day: day,
        ),
      );
    }
- }
+}
