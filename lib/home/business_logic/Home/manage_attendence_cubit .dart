@@ -10,6 +10,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../../../core/flutter_flow/flutter_flow_util.dart';
 import '../../../registeration/data/userModel.dart';
 import 'manage_attendence_state.dart';
+import 'manage_salary_cubit.dart';
 // ****this is my firestore Collections and Documents:**
 // - *users*: A collection to store the information of all coaches.
 // - Document ID: unique coach ID
@@ -500,6 +501,8 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       Timestamp? endTrainingTime,
       String? branch,
     }) async {
+    emit(AddScheduleLoadingState());
+
       List<String> days = selectedDays ?? [];
       List<String> coaches = selectedCoaches ?? [];
       try {
@@ -605,8 +608,15 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
             });
           }
         }
+        // Import the ManageSalaryCubit file
+        // Create an instance of ManageSalaryCubit
+        final manageSalaryCubit = ManageSalaryCubit();
+        print('days[0]: ${days[0]}');
+       await manageSalaryCubit.getSchedules(day: days[0]);
+        emit(AddScheduleSuccessState());
       } catch (e) {
         print('Error updating schedule: $e');
+        emit(AddScheduleErrorState(e.toString()));
       }
     }
 
@@ -618,69 +628,79 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
     List<String> days = selectedDays ?? [];
     List<String> coaches = selectedCoaches ?? [];
 
-    for (var day in days) {
-      await FirebaseFirestore.instance
-          .collection('admins')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection('schedules')
-          .doc(day)
-          .collection('schedules')
-          .add({
-        'start_time': startTrainingTime,
-        'end_time': endTrainingTime,
-        'date': day,
-        'branch_id': branch,
-        'usersList': [], // add empty usersList field to each schedule
-      }).then((scheduleDoc) async {
-        if (coaches.isNotEmpty) {
-          for (var coach in coaches) {
-            QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-                .collection('users')
-                .where('name', isEqualTo: coach)
-                .get();
-            if (querySnapshot.docs.isNotEmpty) {
-
-              String userId = querySnapshot.docs.first.id;
-              await FirebaseFirestore.instance
+    try {
+      //emit(LoadingState());
+      emit(AddScheduleLoadingState());
+      for (var day in days) {
+        await FirebaseFirestore.instance
+            .collection('admins')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('schedules')
+            .doc(day)
+            .collection('schedules')
+            .add({
+          'start_time': startTrainingTime,
+          'end_time': endTrainingTime,
+          'date': day,
+          'branch_id': branch,
+          'usersList': [], // add empty usersList field to each schedule
+        }).then((scheduleDoc) async {
+          if (coaches.isNotEmpty) {
+            for (var coach in coaches) {
+              QuerySnapshot querySnapshot = await FirebaseFirestore.instance
                   .collection('users')
-                  .doc(userId)
-                  .collection('schedules')
-                  .doc(scheduleDoc.id)
-                  .set({
-                'start_time': startTrainingTime,
-                'end_time': endTrainingTime,
-                'date': day,
-                'branch_id': branch,
-              });
-              await FirebaseFirestore.instance
-                  .collection('admins')
-                  .doc(FirebaseAuth.instance.currentUser!.uid)
-                  .collection('schedules')
-                  .doc(day)
-                  .collection('schedules')
-                  .doc(scheduleDoc.id)
-                  .collection('users')
-                  .doc(userId)
-                  .set({
-                'name': querySnapshot.docs.first['name'],
-                'uid' : userId,
-                'finished': false,
-              });
+                  .where('name', isEqualTo: coach)
+                  .get();
+              if (querySnapshot.docs.isNotEmpty) {
 
-              // add user to usersList field in schedule
-              await scheduleDoc.update({
-                'usersList': FieldValue.arrayUnion([querySnapshot.docs.first['name']]),
-              });
+                String userId = querySnapshot.docs.first.id;
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(userId)
+                    .collection('schedules')
+                    .doc(scheduleDoc.id)
+                    .set({
+                  'start_time': startTrainingTime,
+                  'end_time': endTrainingTime,
+                  'date': day,
+                  'branch_id': branch,
+                });
+                await FirebaseFirestore.instance
+                    .collection('admins')
+                    .doc(FirebaseAuth.instance.currentUser!.uid)
+                    .collection('schedules')
+                    .doc(day)
+                    .collection('schedules')
+                    .doc(scheduleDoc.id)
+                    .collection('users')
+                    .doc(userId)
+                    .set({
+                  'name': querySnapshot.docs.first['name'],
+                  'uid' : userId,
+                  'finished': false,
+                });
+
+                // add user to usersList field in schedule
+                await scheduleDoc.update({
+                  'usersList': FieldValue.arrayUnion([querySnapshot.docs.first['name']]),
+                });
+              }
             }
           }
-        }
 
-        await scheduleDoc.update({
-          'schedule_id': scheduleDoc.id,
+          await scheduleDoc.update({
+            'schedule_id': scheduleDoc.id,
+          });
         });
-      });
+      }
+
+      //emit(SuccessState());
+      emit(AddScheduleSuccessState());
+    } catch (e) {
+      emit(AddScheduleErrorState(e.toString()));
+    //  emit(ErrorState(errorMessage: 'Error updating schedule: $e'));
     }
-  }
+  } 
   //selected items
   List<String>? selectedCoaches;
   void add(String itemValue) {
@@ -757,6 +777,24 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
     }
 
     //  onSelectionChanged(updatedSelection);
+  }
+
+  String? selectedBranch;
+  void updateSelectedBranch(String branch) {
+    selectedBranch = branch;
+    emit(UpdateSelectedBranchState());
+  }
+
+  var endTime;
+  void updateEndTime(Timestamp timestamp) {
+    endTime = timestamp;
+    emit(UpdateEndTimeState());
+  }
+  //start time
+  var startTime;
+  void updateStartTime(Timestamp timestamp) {
+    startTime = timestamp;
+    emit(UpdateStartTimeState());
   }
 
 

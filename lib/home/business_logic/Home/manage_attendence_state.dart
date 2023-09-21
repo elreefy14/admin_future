@@ -76,3 +76,22 @@ class UpdateSelectedItemsErrorState extends ManageAttendenceState {
 //UpdateSelectedItemsLoadingState
 class UpdateSelectedItemsLoadingState extends ManageAttendenceState {}
 
+// /UpdateSelectedBranchState
+class UpdateSelectedBranchState extends ManageAttendenceState {
+
+}
+//UpdateEndTimeStat
+class UpdateEndTimeState extends ManageAttendenceState {
+}
+//UpdateStartTimeState
+class UpdateStartTimeState extends ManageAttendenceState {
+}
+//AddScheduleLoadingState
+class AddScheduleLoadingState extends ManageAttendenceState {}
+//AddScheduleSuccessState
+class AddScheduleSuccessState extends ManageAttendenceState {}
+//ErrorState
+class AddScheduleErrorState extends ManageAttendenceState {
+  final String error;
+  AddScheduleErrorState(this.error);
+}

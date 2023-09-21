@@ -109,7 +109,19 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         .then((value) {
       value.docs.forEach((element) {
         schedules.add(SchedulesModel.fromJson2(element.data()));
+        //print list of schedules
       });
+      //print all info for each schedule
+      if (kDebugMode) {
+        schedules.forEach((element) {
+          print('branchId: ${element.branchId}');
+          print('startTime: ${element.startTime}');
+          print('endTime: ${element.endTime}');
+          //print end time like that 12 : 00
+          print('endTime: ${element.endTime?.toDate().hour} : ${element.endTime?.toDate().minute}');
+          print('usersList: ${element.usersList}');
+        });
+      }
       emit(GetSchedulesSuccessState());
     }).catchError((error) {
       print(error.toString());

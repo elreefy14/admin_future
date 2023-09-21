@@ -213,7 +213,10 @@ day: day,
 
                                                   ManageAttendenceCubit.get(context).selectedCoaches = usersList;
                                                   ManageAttendenceCubit.get(context).selectedDays = [day];
-
+                                                  ManageAttendenceCubit.get(context).startTime = statrTime;
+                                                  ManageAttendenceCubit.get(context).endTime = endTime;
+                                                  //selectedBranch
+                                                  ManageAttendenceCubit.get(context).selectedBranch = ManageSalaryCubit.get(context).schedules?[index].branchId ?? '';
                                                   ManageAttendenceCubit.get(context).getAdminData();
                                                   Navigator.pushNamed(
                                             context,
@@ -316,6 +319,10 @@ day: day,
 
                   FFButtonWidget(
                     onPressed: () {
+                      ManageAttendenceCubit.get(context).selectedCoaches = [];
+                      ManageAttendenceCubit.get(context).selectedDays = [];
+                      ManageAttendenceCubit.get(context).startTime = Timestamp.now();
+                      ManageAttendenceCubit.get(context).endTime = Timestamp.now();
                       ManageAttendenceCubit.get(context).getAdminData();
                      //AddSchedule
                       Navigator.pushNamed(
