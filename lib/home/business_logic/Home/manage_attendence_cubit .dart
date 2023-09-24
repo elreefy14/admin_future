@@ -1,10 +1,13 @@
 //import 'package:connectivity/connectivity.dart';
 import 'dart:math';
 //import 'package:firestore_cache/firestore_cache.dart';
+import 'package:admin_future/home/data/schedules.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../core/flutter_flow/flutter_flow_util.dart';
@@ -37,8 +40,7 @@ import 'manage_salary_cubit.dart';
 // - Fields: *`attended`, *`qr_code`**
 
 class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
-  ManageAttendenceCubit() : super(InitialState()) {
-  }
+  ManageAttendenceCubit() : super(InitialState()) {}
   static ManageAttendenceCubit get(context) => BlocProvider.of(context);
   // function to get string
 //     // get the nearest schedule to the current timw using utc time
@@ -53,7 +55,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
   Map<String, dynamic>? nearestSchedule;
   static List<Map<String, dynamic>> schedulesList = [];
   List<Map<String, dynamic>> schedulesList2 = [];
- // Subcollection: *`schedules`*
+  // Subcollection: *`schedules`*
 // - Document ID: unique schedule ID
 // - Fields: *`branch_id`, *`start_time`*, *`end_time`*, *`date`*, *`finished`**
   Future<void> getNearestSchedule() async {
@@ -73,18 +75,22 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
           .orderBy('start_time', descending: false)
           .get();
 
-      List<Map<String, dynamic>> schedulesList = snapshot.docs.map((doc) => doc.data() as Map<String, dynamic>).toList();
+      List<Map<String, dynamic>> schedulesList = snapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
 
       for (final Map<String, dynamic> schedule in schedulesList) {
         final DateTime utcStartTime = schedule['start_time'].toDate().toUtc();
         final DateTime utcEndTime = schedule['end_time'].toDate().toUtc();
 
-        final DateTime utcNow = DateTime.utc(now.year, now.month, now.day, now.hour, now.minute, now.second);
+        final DateTime utcNow = DateTime.utc(
+            now.year, now.month, now.day, now.hour, now.minute, now.second);
 
         if (utcNow.isBefore(utcStartTime)) {
           nearestSchedule = schedule;
           break;
-        } else if (utcNow.isAfter(utcStartTime) && utcNow.isBefore(utcEndTime)) {
+        } else if (utcNow.isAfter(utcStartTime) &&
+            utcNow.isBefore(utcEndTime)) {
           nearestSchedule = schedule;
           break;
         }
@@ -92,12 +98,12 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
 
       if (nearestSchedule != null) {
         print('nearestSchedule:\n\n\n ');
-       // print(nearestSchedule['start_time'].toDate().toUtc());
+        // print(nearestSchedule['start_time'].toDate().toUtc());
       }
 
       emit(GetNearestScheduleSuccessState(
-       // nearestSchedule,
-      ));
+          // nearestSchedule,
+          ));
     } catch (e) {
       print('Error in getNearestSchedule()\n\n\n\n');
       print(e.toString());
@@ -119,40 +125,42 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       //           .collection('schedules')
       //           .doc(today)
       //           .collection('schedules');
-       final String today = getdayinArabic();
-      final QuerySnapshot schedulesQuerySnapshot = await FirebaseFirestore.instance
+      final String today = getdayinArabic();
+      final QuerySnapshot schedulesQuerySnapshot = await FirebaseFirestore
+          .instance
           .collection('admins')
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .collection('schedules')
-           .doc(today)
+          .doc(today)
           .collection('schedules')
-      // Start_time greater than or equal to yesterday 12:00 am and less than tomorrow 12:00 am
+          // Start_time greater than or equal to yesterday 12:00 am and less than tomorrow 12:00 am
           .where('start_time', isGreaterThanOrEqualTo: startOfToday.toUtc())
-          .where('start_time', isLessThan: startOfToday.add(const Duration(days: 1)).toUtc())
+          .where('start_time',
+              isLessThan: startOfToday.add(const Duration(days: 1)).toUtc())
           .orderBy('start_time', descending: false)
           .get(
-        const GetOptions(
-          source: Source.serverAndCache,
-        ),
-      );
+            const GetOptions(
+              source: Source.serverAndCache,
+            ),
+          );
 
-      for (final QueryDocumentSnapshot scheduleDoc in schedulesQuerySnapshot.docs) {
+      for (final QueryDocumentSnapshot scheduleDoc
+          in schedulesQuerySnapshot.docs) {
         final Map<String, dynamic> scheduleData =
-        scheduleDoc.data() as Map<String, dynamic>;
+            scheduleDoc.data() as Map<String, dynamic>;
 
-        final QuerySnapshot usersQuerySnapshot = await scheduleDoc.reference
-            .collection('users')
-            .get(
-          const GetOptions(
-            source: Source.serverAndCache,
-          ),
-        );
+        final QuerySnapshot usersQuerySnapshot =
+            await scheduleDoc.reference.collection('users').get(
+                  const GetOptions(
+                    source: Source.serverAndCache,
+                  ),
+                );
 
         final List<Map<String, dynamic>> usersList = usersQuerySnapshot.docs
             .map<Map<String, dynamic>>(
               (QueryDocumentSnapshot documentSnapshot) =>
-          documentSnapshot.data() as Map<String, dynamic>,
-        )
+                  documentSnapshot.data() as Map<String, dynamic>,
+            )
             .toList();
 
         final Map<String, dynamic> scheduleWithUserData = {
@@ -161,7 +169,6 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
         };
 
         schedulesList.add(scheduleWithUserData);
-
       }
 
       emit(GetSchedulesForAdminSuccessState());
@@ -240,9 +247,9 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
   void generateRandomData() async {
     print('Generating random data...');
     final CollectionReference adminsCollection =
-    FirebaseFirestore.instance.collection('admins');
+        FirebaseFirestore.instance.collection('admins');
     final CollectionReference branchesCollection =
-    FirebaseFirestore.instance.collection('branches');
+        FirebaseFirestore.instance.collection('branches');
 
     final List<String> adminNames = ['Alice', 'Bob', 'Charlie', 'David'];
     final List<String> branchNames = [
@@ -273,12 +280,15 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
 
     // Generate 2 random schedules for this admin
     for (int j = 0; j < 2; j++) {
-      final int branchId = random.nextInt(4) + 1; // Random branch ID between 1-4
+      final int branchId =
+          random.nextInt(4) + 1; // Random branch ID between 1-4
       final DateTime now = DateTime.now();
-      final DateTime startDate =
-      now.add(Duration(days: random.nextInt(7))); // Random start date within the next 7 days
+      final DateTime startDate = now.add(Duration(
+          days: random.nextInt(7))); // Random start date within the next 7 days
       final DateTime endDate = startDate.add(Duration(
-          hours: 4 + random.nextInt(4))); // Random end date within 4-7 hours of start date
+          hours: 4 +
+              random.nextInt(
+                  4))); // Random end date within 4-7 hours of start date
 
       final Map<String, dynamic> scheduleData = {
         'branch_id': branchId,
@@ -289,7 +299,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       };
 
       final DocumentReference scheduleDocRef =
-      await adminDocRef.collection('schedules').add(scheduleData);
+          await adminDocRef.collection('schedules').add(scheduleData);
 
       // Generate 3 random users for this schedule
       for (int k = 0; k < 3; k++) {
@@ -298,9 +308,9 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
         final int hourlyRate =
             10 + random.nextInt(20); // Random hourly rate between 10-30
         final int totalHours =
-        random.nextInt(50); // Random total hours between 0-50
+            random.nextInt(50); // Random total hours between 0-50
         final int currentMonthHours =
-        random.nextInt(20); // Random current month hours between 0-20
+            random.nextInt(20); // Random current month hours between 0-20
         final int currentMonthSalary = currentMonthHours * hourlyRate;
 
         final Map<String, dynamic> userData = {
@@ -322,7 +332,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
     for (int i = 0; i < 4; i++) {
       final String name = branchNames[random.nextInt(branchNames.length)];
       final String address =
-      branchAddresses[random.nextInt(branchAddresses.length)];
+          branchAddresses[random.nextInt(branchAddresses.length)];
 
       final Map<String, dynamic> branchData = {
         'name': name,
@@ -330,7 +340,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       };
 
       final DocumentReference branchDocRef =
-      await branchesCollection.add(branchData);
+          await branchesCollection.add(branchData);
 
       // Generate 3 random coaches for this branch
       for (int j = 0; j < 3; j++) {
@@ -349,13 +359,13 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
 
   void changeAttendance(String scheduleId, String userId, bool? value) async {
     final CollectionReference adminsCollection =
-    FirebaseFirestore.instance.collection('admins');
-    final DocumentSnapshot scheduleSnapshot =
-    await adminsCollection.doc(
-      FirebaseAuth.instance.currentUser!.uid,
-    ).get();
-    final DocumentReference userRef = scheduleSnapshot
-        .reference
+        FirebaseFirestore.instance.collection('admins');
+    final DocumentSnapshot scheduleSnapshot = await adminsCollection
+        .doc(
+          FirebaseAuth.instance.currentUser!.uid,
+        )
+        .get();
+    final DocumentReference userRef = scheduleSnapshot.reference
         .collection('schedules')
         .doc(scheduleId)
         .collection('users')
@@ -422,7 +432,6 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       default:
         return 'السبت';
     }
-
   }
 
 // - *admins*: A collection to store the information of all admins.
@@ -454,16 +463,16 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       emit(GetUserDataLoadingState());
       //get list branches from firebase admins collection
       final CollectionReference branchesCollection =
-      FirebaseFirestore.instance.collection('admins');
+          FirebaseFirestore.instance.collection('admins');
       final CollectionReference usersCollection =
-      FirebaseFirestore.instance.collection('users');
+          FirebaseFirestore.instance.collection('users');
       final QuerySnapshot usersQuerySnapshot = await usersCollection
           .where('pid', isEqualTo: FirebaseAuth.instance.currentUser!.uid)
           .get(
-        const GetOptions(
-          source: Source.serverAndCache,
-        ),
-      );
+            const GetOptions(
+              source: Source.serverAndCache,
+            ),
+          );
 
       // - *admins*: A collection to store the information of all admins.
       //   - Document ID: unique admin ID
@@ -473,7 +482,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
           .doc(FirebaseAuth.instance.currentUser!.uid)
           .get();
       final Map<String, dynamic> adminData =
-      adminSnapshot.data() as Map<String, dynamic>;
+          adminSnapshot.data() as Map<String, dynamic>;
       branches = List<String>.from(adminData['branches']);
 
       final List<UserModel> usersList = [];
@@ -481,10 +490,11 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
 
       for (final QueryDocumentSnapshot userDoc in usersQuerySnapshot.docs) {
         final Map<String, dynamic> userData =
-        userDoc.data() as Map<String, dynamic>;
+            userDoc.data() as Map<String, dynamic>;
         usersList.add(UserModel.fromJson(userData));
         // add usersname to list
-        MyUsersNames!.add(userData['name']); // Use MyUsersNames! to access the non-null list
+        MyUsersNames!.add(
+            userData['name']); // Use MyUsersNames! to access the non-null list
         print(userData['name']);
         print(MyUsersNames);
         print(MyUsers?.length);
@@ -493,145 +503,304 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       emit(GetUserDataSuccessState());
     } catch (e) {
       emit(GetUserDataErrorState(e.toString()));
-    } 
+    }
   }
+
+  Future deleteSchedule({
+    context,
+    required String scheduleId,
+    required String day,
+    required List<String>? usersIds,
+  }) {
+    //emit(DeleteScheduleLoadingState());
+    return FirebaseFirestore.instance
+        .collection('admins')
+    //todo change this to admin id
+        .doc(FirebaseAuth.instance.currentUser!.uid)
+        .collection('schedules')
+        .doc(day)
+        .collection('schedules')
+        .doc(scheduleId)
+        .delete()
+        .then((value) async {
+      print('Schedule deleted');
+
+      // Delete the subcollection 'users'
+      FirebaseFirestore.instance
+          .collection('admins')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('schedules')
+          .doc(day)
+          .collection('schedules')
+          .doc(scheduleId)
+          .collection('users')
+          .get()
+          .then((querySnapshot) {
+        querySnapshot.docs.forEach((doc) {
+          doc.reference.delete();
+        });
+      });
+
+      // Remove the schedule from the list of schedules
+      ManageSalaryCubit.get(context).schedules.removeWhere((schedule) => schedule.scheduleId == scheduleId);
+
+      // Delete the schedule from each user's collection
+      if (usersIds != null) {
+        for (String userId in usersIds) {
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .collection('schedules')
+              .doc(scheduleId)
+              .delete()
+              .then((value) {
+            print('Schedule deleted from user $userId');
+          }).catchError((error) {
+            print('Failed to delete schedule from user $userId: $error');
+          });
+        }
+      }
+
+      //emit(DeleteScheduleSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+     // emit(DeleteScheduleErrorState(error.toString()));
+    });
+  }
+
   Future<void> updateSchedule({
-      String? scheduleId,
-      Timestamp? startTrainingTime,
-      Timestamp? endTrainingTime,
-      String? branch,
-    }) async {
+    String? scheduleId,
+    Timestamp? startTrainingTime,
+    Timestamp? endTrainingTime,
+    String? branch,
+    context,
+    required usersIds,
+    required String date,
+  }) async {
     emit(AddScheduleLoadingState());
 
-      List<String> days = selectedDays ?? [];
-      List<String> coaches = selectedCoaches ?? [];
-      try {
-        if (days.length > 1) {
-          // Update the schedule for the first day in the list
-          await FirebaseFirestore.instance
-              .collection('admins')
-              .doc(FirebaseAuth.instance.currentUser!.uid)
-              .collection('schedules')
-              .doc(days[0])
-              .collection('schedules')
-              .doc(scheduleId)
-              .update({
-            'start_time': startTrainingTime,
-            'end_time': endTrainingTime,
-            'date': days[0],
-            'branch_id': branch,
-            'usersList': coaches,
-          });
-          //if usersList is not empty then update the subcollection users
-          if (coaches.isNotEmpty) {
-            for (var coach in coaches) {
-              QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-                  .collection('users')
-                  .where('name', isEqualTo: coach)
-                  .get();
-              if (querySnapshot.docs.isNotEmpty) {
-                String userId = querySnapshot.docs.first.id;
-                await FirebaseFirestore.instance
-                    .collection('admins')
-                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                    .collection('schedules')
-                    .doc(days[0])
-                    .collection('schedules')
-                    .doc(scheduleId)
-                    .collection('users')
-                    .doc(userId)
-                    .set({
-                  'name': querySnapshot.docs.first['name'],
-                  'uid' : userId,
-                  'finished': false,
-                });
-              }
-            }
-          }
-          // Create new schedules for the rest of the days in the list
-          for (int i = 1; i < days.length; i++) {
-            await FirebaseFirestore.instance
-                .collection('admins')
-                .doc(FirebaseAuth.instance.currentUser!.uid)
-                .collection('schedules')
-                .doc(days[i])
-                .collection('schedules')
-                .add({
-              'start_time': startTrainingTime,
-              'end_time': endTrainingTime,
-              'date': days[i],
-              'branch_id': branch,
-              'usersList': coaches
-            });
-          }
-              
-        } else {
-          // Update the schedule for the only day in the list
-          await FirebaseFirestore.instance
-              .collection('admins')
-              .doc(FirebaseAuth.instance.currentUser!.uid)
-              .collection('schedules')
-              .doc(days[0])
-              .collection('schedules')
-              .doc(scheduleId)
-              .update({
-            'start_time': startTrainingTime,
-            'end_time': endTrainingTime,
-            'date': days[0],
-            'branch_id': branch,
-            'usersList': coaches,
-          });
-        }
-
-        // Update the user information in the subcollection
-        for (var coach in coaches) {
-          QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-              .collection('users')
-              .where('name', isEqualTo: coach)
-              .get();
-
-          for (var doc in querySnapshot.docs) {
-            String userId = doc.id;
-            await FirebaseFirestore.instance
-                .collection('admins')
-                .doc(FirebaseAuth.instance.currentUser!.uid)
-                .collection('schedules')
-                .doc(days[0])
-                .collection('schedules')
-                .doc(scheduleId)
-                .collection('users')
-                .doc(userId)
-                .set({
-              'name': doc['name'],
-              'uid': userId,
-              'finished': false,
-            });
-          }
-        }
-        // Import the ManageSalaryCubit file
-        // Create an instance of ManageSalaryCubit
-        final manageSalaryCubit = ManageSalaryCubit();
-        print('days[0]: ${days[0]}');
-       await manageSalaryCubit.getSchedules(day: days[0]);
-        emit(AddScheduleSuccessState());
-      } catch (e) {
-        print('Error updating schedule: $e');
-        emit(AddScheduleErrorState(e.toString()));
-      }
-    }
-
-  
-  Future<void> addSchedule(BuildContext context, {required Timestamp
-  startTrainingTime, required 
-  Timestamp
-  endTrainingTime, required String branch}) async {
     List<String> days = selectedDays ?? [];
     List<String> coaches = selectedCoaches ?? [];
+    //ManageSalaryCubit manageSalaryCubit = ManageSalaryCubit();
 
     try {
-      //emit(LoadingState());
+      if (days.length > 1) {
+        //emit(AddScheduleLoadingState());
+        //delete schedule for the first day in the list
+     deleteSchedule(
+       context: context,
+            scheduleId: scheduleId!, day: date, usersIds: usersIds);
+        // add the schedule for the first day in the list
+       // emit(AddScheduleLoadingState());
+        addSchedule(
+          false,
+            context,
+            startTrainingTime: startTrainingTime!,
+            endTrainingTime: endTrainingTime!,
+            branch: branch!);
+        //if usersList is not empty then update the subcollection users
+        // if (coaches.isNotEmpty) {
+        //   for (var coach in coaches) {
+        //     QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        //         .collection('users')
+        //         .where('name', isEqualTo: coach)
+        //         .get();
+        //     if (querySnapshot.docs.isNotEmpty) {
+        //       String userId = querySnapshot.docs.first.id;
+        //       await FirebaseFirestore.instance
+        //           .collection('admins')
+        //           .doc(FirebaseAuth.instance.currentUser!.uid)
+        //           .collection('schedules')
+        //           .doc(days[0])
+        //           .collection('schedules')
+        //           .doc(scheduleId)
+        //           .collection('users')
+        //           .doc(userId)
+        //           .set({
+        //         'name': querySnapshot.docs.first['name'],
+        //         'uid': userId,
+        //         'finished': false,
+        //       });
+        //     }
+        //   }
+        // }
+        // Create new schedules for the rest of the days in the list
+        // for (int i = 1; i < days.length; i++) {
+
+        //   await FirebaseFirestore.instance
+        //       .collection('admins')
+        //       .doc(FirebaseAuth.instance.currentUser!.uid)
+        //       .collection('schedules')
+        //       .doc(days[i])
+        //       .collection('schedules')
+        //       .add({
+        //     'start_time': startTrainingTime,
+        //     'end_time': endTrainingTime,
+        //     'date': days[i],
+        //     'branch_id': branch,
+        //     'usersList': coaches
+        //   });
+        // }
+        //chect if date is in selected days then update the schedule
+        // if (days.contains(date)) {
+           SchedulesModel? schedule = SchedulesModel(
+             pId: FirebaseAuth.instance.currentUser!.uid,
+             branchId: branch,
+             startTime: startTrainingTime,
+             endTime: endTrainingTime,
+             finished: false,
+             usersList: coaches,
+             userIds: usersIds,
+             scheduleId: scheduleId,
+             date: date,
+             nearestDay: Timestamp.fromDate(DateTime.now()),
+           );
+           ManageSalaryCubit.get(context).updateSchedules(schedule!);
+        // }
+
+      } else {
+        ManageSalaryCubit.get(context).deleteSchedule(
+            scheduleId: scheduleId!, day: date, usersIds: usersIds);
+        // add the schedule for the first day in the list
+        addSchedule(
+          false,
+            context,
+            startTrainingTime: startTrainingTime!,
+            endTrainingTime: endTrainingTime!,
+            branch: branch!);
+        SchedulesModel? schedule = SchedulesModel(
+          pId: FirebaseAuth.instance.currentUser!.uid,
+          branchId: branch,
+          startTime: startTrainingTime,
+          endTime: endTrainingTime,
+          finished: false,
+          usersList: coaches,
+          userIds: usersIds,
+          scheduleId: scheduleId,
+          date: date,
+          nearestDay: Timestamp.fromDate(DateTime.now()),
+        );
+        ManageSalaryCubit.get(context).updateSchedules(schedule!);
+        // Update the schedule for the only day in the list
+        // await FirebaseFirestore.instance
+        //     .collection('admins')
+        //     .doc(FirebaseAuth.instance.currentUser!.uid)
+        //     .collection('schedules')
+        //     .doc(days[0])
+        //     .collection('schedules')
+        //     .doc(scheduleId)
+        //     .update({
+        //   'start_time': startTrainingTime,
+        //   'end_time': endTrainingTime,
+        //   'date': days[0],
+        //   'branch_id': branch,
+        //   'usersList': coaches,
+        // });
+      }
+
+      // Update the user information in the subcollection
+      // for (var coach in coaches) {
+      //   QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+      //       .collection('users')
+      //       .where('name', isEqualTo: coach)
+      //       .get();
+      //
+      //   for (var doc in querySnapshot.docs) {
+      //     String userId = doc.id;
+      //     await FirebaseFirestore.instance
+      //         .collection('admins')
+      //         .doc(FirebaseAuth.instance.currentUser!.uid)
+      //         .collection('schedules')
+      //         .doc(days[0])
+      //         .collection('schedules')
+      //         .doc(scheduleId)
+      //         .collection('users')
+      //         .doc(userId)
+      //         .set({
+      //       'name': doc['name'],
+      //       'uid': userId,
+      //       'finished': false,
+      //     });
+      //   }
+      // }
+      // Import the ManageSalaryCubit file
+      // Create an instance of ManageSalaryCubit
+     // final manageSalaryCubit = ManageSalaryCubit();
+     // print('days[0]: ${days[0]}');
+      // await manageSalaryCubit.getSchedules(day: days[0]);
+       emit(AddSchedulefinishState());
+      //show toast
+      Fluttertoast.showToast(
+          msg: 'تم تعديل المواعيد بنجاح',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 5,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    } catch (e) {
+      print('Error updating schedule: $e');
+      emit(AddScheduleErrorState(e.toString()));
+      Fluttertoast.showToast(
+          msg: 'حدث خطأ أثناء تعديل المواعيد',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 5,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
+    }
+  }
+
+  // Define a function to get the nearest day of the week
+  DateTime getNearestDayOfWeek(String dayOfWeek) {
+    // Get the current date
+    DateTime now = DateTime.now();
+
+    // Get the integer value of the selected day of the week
+    int selectedDayOfWeek = [
+      'الأحد',
+      'الاثنين',
+      'الثلاثاء',
+      'الأربعاء',
+      'الخميس',
+      'الجمعة',
+      'السبت'
+    ].indexOf(dayOfWeek);
+
+    // Calculate the difference between the selected day of the week and the current day of the week
+    int difference = selectedDayOfWeek - now.weekday;
+
+    // If the difference is negative, add 7 to get the nearest day of the week
+    if (difference < 0) {
+      difference += 7;
+    }
+
+    // Add the difference to the current date to get the nearest day of the week
+    DateTime nearestDay = now.add(Duration(days: difference));
+
+    return nearestDay;
+  }
+
+  // Modify the addSchedule function to use the getNearestDayOfWeek function
+  Future<void> addSchedule(bool isEmit,BuildContext context,
+      {required Timestamp startTrainingTime,
+      required Timestamp endTrainingTime,
+      required String branch}) async {
+    List<String> days = selectedDays ?? [];
+    List<String> coaches = selectedCoaches ?? [];
+    ManageSalaryCubit manageSalaryCubit = ManageSalaryCubit();
+    SchedulesModel? schedule;
+    try {
+      if(isEmit)
       emit(AddScheduleLoadingState());
       for (var day in days) {
+        // Get the nearest day of the week
+        DateTime nearestDay = getNearestDayOfWeek(day);
+
+        // Convert the nearest day to a Timestamp object
+        Timestamp nearestDayTimestamp = Timestamp.fromDate(nearestDay);
+
         await FirebaseFirestore.instance
             .collection('admins')
             .doc(FirebaseAuth.instance.currentUser!.uid)
@@ -642,8 +811,11 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
           'start_time': startTrainingTime,
           'end_time': endTrainingTime,
           'date': day,
+          'nearest_day':
+              nearestDayTimestamp, // Add nearest day timestamp as a field
           'branch_id': branch,
           'usersList': [], // add empty usersList field to each schedule
+          'userIds': [], // add empty userIds field to each schedule
         }).then((scheduleDoc) async {
           if (coaches.isNotEmpty) {
             for (var coach in coaches) {
@@ -652,7 +824,6 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
                   .where('name', isEqualTo: coach)
                   .get();
               if (querySnapshot.docs.isNotEmpty) {
-
                 String userId = querySnapshot.docs.first.id;
                 await FirebaseFirestore.instance
                     .collection('users')
@@ -663,7 +834,10 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
                   'start_time': startTrainingTime,
                   'end_time': endTrainingTime,
                   'date': day,
+                  'nearest_day':
+                      nearestDayTimestamp, // Add nearest day timestamp as a field
                   'branch_id': branch,
+                  'pId': FirebaseAuth.instance.currentUser!.uid,
                 });
                 await FirebaseFirestore.instance
                     .collection('admins')
@@ -676,13 +850,33 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
                     .doc(userId)
                     .set({
                   'name': querySnapshot.docs.first['name'],
-                  'uid' : userId,
+                  'uid': userId,
                   'finished': false,
                 });
 
                 // add user to usersList field in schedule
                 await scheduleDoc.update({
-                  'usersList': FieldValue.arrayUnion([querySnapshot.docs.first['name']]),
+                  'usersList':
+                      FieldValue.arrayUnion([querySnapshot.docs.first['name']]),
+                  'userIds': FieldValue.arrayUnion(
+                      [userId]), // add userId to userIds field
+                });
+
+                // add schedule ID to the user's schedules subcollection
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(userId)
+                    .collection('schedules')
+                    .doc(scheduleDoc.id)
+                    .set({
+                  'start_time': startTrainingTime,
+                  'end_time': endTrainingTime,
+                  'date': day,
+                  'nearest_day':
+                      nearestDayTimestamp, // Add nearest day timestamp as a field
+                  'branch_id': branch,
+                  'pId': FirebaseAuth.instance.currentUser!.uid,
+                  'scheduleId': scheduleDoc.id,
                 });
               }
             }
@@ -691,16 +885,53 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
           await scheduleDoc.update({
             'schedule_id': scheduleDoc.id,
           });
+
+          // make schedules model and add them to the list of schedules
+          schedule = SchedulesModel(
+            startTime: startTrainingTime,
+            endTime: endTrainingTime,
+            date: day,
+            nearestDay:
+                nearestDayTimestamp, // Add nearest day timestamp as a field
+            branchId: branch,
+            usersList: coaches,
+            userIds: [], // add empty userIds field to the schedule model
+            scheduleId: scheduleDoc.id,
+            finished: false,
+            pId: FirebaseAuth.instance.currentUser!.uid,
+          );
         });
       }
+      ManageSalaryCubit.get(context).updateSchedules(schedule!);
+      if(isEmit){
+        emit(AddScheduleSuccessState());
+        //show toast
+        Fluttertoast.showToast(
+            msg: 'تم إضافة المواعيد بنجاح',
+            toastLength: Toast.LENGTH_LONG,
+            gravity: ToastGravity.BOTTOM,
+            timeInSecForIosWeb: 5,
+            backgroundColor: Colors.green,
+            textColor: Colors.white,
+            fontSize: 16.0);
+      }
 
-      //emit(SuccessState());
-      emit(AddScheduleSuccessState());
     } catch (e) {
+      if(isEmit)
       emit(AddScheduleErrorState(e.toString()));
-    //  emit(ErrorState(errorMessage: 'Error updating schedule: $e'));
+      Fluttertoast.showToast(
+          msg: //print e
+          'حدث خطأ أثناء إضافة المواعيد\n${e.toString()}',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 5,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
-  } 
+  }
+  //edit this function so that when user selected day is saturday for example get the date of neareast saturday and add it as field in schedule in firebase
+
   //selected items
   List<String>? selectedCoaches;
   void add(String itemValue) {
@@ -710,22 +941,19 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
     print(itemValue.toString());
     selectedCoaches?.add(itemValue.toString());
 
-
-
     emit(UpdateSelectedItemsState(
-    //  selectedItems: selectedItems,
-    ));
+        //  selectedItems: selectedItems,
+        ));
     print(selectedCoaches);
   }
 
   void remove(String itemValue) {
     selectedCoaches ??= [];
     selectedCoaches?.remove(itemValue.toString());
-    emit(UpdateSelectedItemsState(
-
-    ));
+    emit(UpdateSelectedItemsState());
     print(selectedCoaches);
   }
+
   void itemChange(String itemValue, bool isSelected, BuildContext context) {
     //final List<String> updatedSelection = List.from(
     //   SignUpCubit.get(context).selectedItems ?? []);
@@ -739,7 +967,8 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
     }
 
     //  onSelectionChanged(updatedSelection);
-  }  //selected items
+  } //selected items
+
   List<String>? selectedDays;
   void add2(String itemValue) {
     selectedDays ??= [];
@@ -748,22 +977,19 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
     print(itemValue.toString());
     selectedDays?.add(itemValue.toString());
 
-
-
     emit(UpdateSelectedItemsState(
-    //  selectedItems: selectedItems,
-    ));
+        //  selectedItems: selectedItems,
+        ));
     print(selectedDays);
   }
 
   void remove2(String itemValue) {
     selectedDays ??= [];
     selectedDays?.remove(itemValue.toString());
-    emit(UpdateSelectedItemsState(
-
-    ));
+    emit(UpdateSelectedItemsState());
     print(selectedDays);
   }
+
   void itemChange2(String itemValue, bool isSelected, BuildContext context) {
     //final List<String> updatedSelection = List.from(
     //   SignUpCubit.get(context).selectedItems ?? []);
@@ -790,13 +1016,11 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
     endTime = timestamp;
     emit(UpdateEndTimeState());
   }
+
   //start time
   var startTime;
   void updateStartTime(Timestamp timestamp) {
     startTime = timestamp;
     emit(UpdateStartTimeState());
   }
-
-
-
 }

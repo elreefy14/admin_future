@@ -25,10 +25,14 @@ class AddSchedule extends StatefulWidget {
   //scheduleId
   final String? scheduleId;
   final List<String>? usersList;
+  //usersIds
+  final List<String>? usersIds;
   //selectedBranch
   final String? selectedBranch;
 
   const AddSchedule({
+    //usersIds
+    this.usersIds,
      this.toggle,
      this.startTime,
      this.endTime,
@@ -64,13 +68,16 @@ class _AddScheduleState extends State<AddSchedule> {
   Widget build(BuildContext context) {
     late var startTime ;
     late var endTime ;
-    bool toggle = widget.toggle??true;
-    if (toggle == false) {
+
+    bool isAddScreen = widget.toggle??true;
+    if (isAddScreen == false) {
+      print('selectedBranch: ${ManageAttendenceCubit.get(context).selectedBranch}');
       ManageAttendenceCubit.get(context).updateSelectedBranch(
          ManageAttendenceCubit.get(context).selectedBranch ?? ''
       );
        startTime = widget.startTime;
        endTime = widget.endTime;
+
     }
     else {
       ManageAttendenceCubit.get(context).updateSelectedBranch('');
@@ -79,6 +86,7 @@ class _AddScheduleState extends State<AddSchedule> {
     }
     var date = widget.date;
     var usersList = widget.usersList;
+    var usersIds = widget.usersIds ?? [];
 
     //String? selectedBranch = widget.selectedBranch;
 
@@ -132,7 +140,7 @@ class _AddScheduleState extends State<AddSchedule> {
             SizedBox(height: 70.0.h),
              Center(
               child: Text(
-                toggle == false ?
+                isAddScreen == false ?
                 'تعديل موعد'
                     : 'اضافة موعد',
                 textAlign: TextAlign.center,
@@ -537,71 +545,75 @@ class _AddScheduleState extends State<AddSchedule> {
 
             BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
               builder: (context, state) {
-                if (state is AddScheduleLoadingState) {
+                if (state is AddScheduleLoadingState || state is AddScheduleSuccessState) {
                   return const Center(child: CircularProgressIndicator());
                 }
                 return FFButtonWidget(
-                  text: toggle == false
+                  text: isAddScreen == false
                       ? 'حفظ التعديلات'
                       : 'اضافة موعد',
                   onPressed: () async {
-                    if (toggle == false) {
+                    if (isAddScreen == false) {
                        await ManageAttendenceCubit.get(context).updateSchedule(
+                         date: date!,
+                        usersIds:usersIds,
+                        context: context,
                         startTrainingTime: ManageAttendenceCubit.get(context).startTime!,
                         endTrainingTime: ManageAttendenceCubit.get(context).endTime!,
                         branch: ManageAttendenceCubit.get(context).selectedBranch ?? '',
                         scheduleId: widget.scheduleId!,
                       );
-                      if (state is AddScheduleSuccessState) {
-                        Fluttertoast.showToast(
-                          msg: 'تم حفظ التعديلات بنجاح',
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.green,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
-                      }  else if (state is AddScheduleErrorState) {
-                        Fluttertoast.showToast(
-                          //print('error: ${state.error}');
-                          msg: 'حدث خطأ أثناء حفظ التعديلات ${state.error}',
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
-                      }
+                      // if (state is AddScheduleSuccessState) {
+                      //   Fluttertoast.showToast(
+                      //     msg: 'تم حفظ التعديلات بنجاح',
+                      //     toastLength: Toast.LENGTH_SHORT,
+                      //     gravity: ToastGravity.BOTTOM,
+                      //     timeInSecForIosWeb: 1,
+                      //     backgroundColor: Colors.green,
+                      //     textColor: Colors.white,
+                      //     fontSize: 16.0,
+                      //   );
+                      // }  else if (state is AddScheduleErrorState) {
+                      //   Fluttertoast.showToast(
+                      //     //print('error: ${state.error}');
+                      //     msg: 'حدث خطأ أثناء حفظ التعديلات ${state.error}',
+                      //     toastLength: Toast.LENGTH_SHORT,
+                      //     gravity: ToastGravity.BOTTOM,
+                      //     timeInSecForIosWeb: 1,
+                      //     backgroundColor: Colors.red,
+                      //     textColor: Colors.white,
+                      //     fontSize: 16.0,
+                      //   );
+                      // }
                     } else {
                       await ManageAttendenceCubit.get(context).addSchedule(
+          true,
                         context,
                         startTrainingTime: ManageAttendenceCubit.get(context).startTime!,
                         endTrainingTime: ManageAttendenceCubit.get(context).endTime!,
                         branch: ManageAttendenceCubit.get(context).selectedBranch ?? '',
                       );
-                      if (state is AddScheduleSuccessState) {
-                        Fluttertoast.showToast(
-                          msg: 'تمت إضافة الموعد بنجاح',
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.green,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
-                      } else if (state is AddScheduleErrorState) {
-                        Fluttertoast.showToast(
-                          msg: 'حدث خطأ أثناء إضافة الموعد',
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.red,
-                          textColor: Colors.white,
-                          fontSize: 16.0,
-                        );
-                      }
+                      // if (state is AddScheduleSuccessState) {
+                      //   Fluttertoast.showToast(
+                      //     msg: 'تمت إضافة الموعد بنجاح',
+                      //     toastLength: Toast.LENGTH_SHORT,
+                      //     gravity: ToastGravity.BOTTOM,
+                      //     timeInSecForIosWeb: 1,
+                      //     backgroundColor: Colors.green,
+                      //     textColor: Colors.white,
+                      //     fontSize: 16.0,
+                      //   );
+                      // } else if (state is AddScheduleErrorState) {
+                      //   Fluttertoast.showToast(
+                      //     msg: 'حدث خطأ أثناء إضافة الموعد',
+                      //     toastLength: Toast.LENGTH_SHORT,
+                      //     gravity: ToastGravity.BOTTOM,
+                      //     timeInSecForIosWeb: 1,
+                      //     backgroundColor: Colors.red,
+                      //     textColor: Colors.white,
+                      //     fontSize: 16.0,
+                      //   );
+                      // }
                     }
                   },
                   options: FFButtonOptions(
@@ -645,8 +657,12 @@ class _CheckboxListWidgetState extends State<CheckboxListWidget> {
   @override
   void initState() {
     super.initState();
-    // Initialize the checkedItem to null
-    checkedItem = null;
+    // Initialize the checkedItem to the index of the selected branch
+    if (widget.items.contains(ManageAttendenceCubit.get(context).selectedBranch)) {
+      checkedItem = widget.items.indexOf(ManageAttendenceCubit.get(context).selectedBranch!);
+    } else {
+      checkedItem = null;
+    }
   }
 
   @override

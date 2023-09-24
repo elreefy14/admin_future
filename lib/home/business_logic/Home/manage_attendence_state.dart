@@ -95,3 +95,9 @@ class AddScheduleErrorState extends ManageAttendenceState {
   final String error;
   AddScheduleErrorState(this.error);
 }
+//UpdateSchedulesLoadingState
+class UpdateSchedulesLoadingState extends ManageAttendenceState {}
+//UpdateSchedulesSuccessState
+class UpdateSchedulesSuccessState extends ManageAttendenceState {}
+//AddSchedulefinishState
+class AddSchedulefinishState extends ManageAttendenceState {}

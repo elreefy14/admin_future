@@ -7,7 +7,6 @@
 //instead of SizedBox(width: 20), use SizedBox(width: 20.w),
 //instead of fontSize: 16, use fontSize: 16.sp,
 //instead of fontSize: 18, use fontSize: 18.sp, and so on for all sizes in the app
-
 import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -21,7 +20,6 @@ import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
 import '../../../core/flutter_flow/flutter_flow_widgets.dart';
 import '../../business_logic/Home/manage_salary_cubit.dart';
-
 class ManageSchedulesScreen extends StatefulWidget {
   const ManageSchedulesScreen({Key? key}) : super(key: key);
 
@@ -103,7 +101,7 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen> {
                                 GestureDetector(
                                   onTap: () {
                                     ManageSalaryCubit.get(context).getSchedulesForDay(
-                                      ManageSalaryCubit.get(context).days?[index] ?? '',
+                                      ManageSalaryCubit.get(context).days?[index].name ?? '',
                                     );
                                     // setState(() {
                                     //   selectedDayIndex = index;
@@ -124,7 +122,7 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen> {
                                       ),
                                       alignment: AlignmentDirectional(0, 0),
                                       child: Text(
-                                        ManageSalaryCubit.get(context).days?[index] ?? '',
+                                        ManageSalaryCubit.get(context).days?[index].name ?? '',
                                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                                           fontFamily: 'Readex Pro',
                                           color: ManageSalaryCubit.get(context).selectedDayIndex == index ? Color(0xFFF4F4F4) : Colors.black,
@@ -167,6 +165,8 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen> {
                                 itemBuilder: (context, index)
 {
   List<String> usersList = ManageSalaryCubit.get(context).schedules?[index].usersList ?? [];
+    List<String> usersIds = ManageSalaryCubit.get(context).schedules?[index].userIds ?? [];
+
   String scheduleId = ManageSalaryCubit.get(context).schedules?[index].scheduleId ?? '';
   String day = ManageSalaryCubit.get(context).schedules?[index].date ?? '';
   Timestamp? statrTime = (ManageSalaryCubit.get(context).schedules?[index].startTime ?? '') as Timestamp?;
@@ -182,6 +182,7 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen> {
                                                 onPressed: () {
                                                   print('Delete button pressed ...');
                                                  ManageSalaryCubit.get(context).deleteSchedule(
+usersIds: usersIds,
 scheduleId: scheduleId,
 day: day,
 );
@@ -217,6 +218,8 @@ day: day,
                                                   ManageAttendenceCubit.get(context).endTime = endTime;
                                                   //selectedBranch
                                                   ManageAttendenceCubit.get(context).selectedBranch = ManageSalaryCubit.get(context).schedules?[index].branchId ?? '';
+                                                  //selectedBranch
+                                                  //print('${ManageSalaryCubit.get(context).schedules?[index].branchId}');
                                                   ManageAttendenceCubit.get(context).getAdminData();
                                                   Navigator.pushNamed(
                                             context,
@@ -228,6 +231,7 @@ day: day,
                                               'date': day,
                                               'usersList': usersList,
                                               'scheduleId': scheduleId,
+                                              'usersIds': usersIds,
                                             },
                                           );
 

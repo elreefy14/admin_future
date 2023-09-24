@@ -15,6 +15,7 @@ import '../../../core/flutter_flow/flutter_flow_util.dart';
 import '../../../registeration/data/userModel.dart';
 import '../../../registeration/presenation/widget/widget.dart';
 import '../../data/Notification.dart';
+import '../../data/day_model.dart';
 import '../../data/schedules.dart';
 
 part 'manage_salary_state.dart';
@@ -47,9 +48,12 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   }
 
   //get list of next 7 days from today and prind the day like friday in arabic
-  List<String>? days = [];
+
+
+  List<DayModel> days = [];
   String? today;
-  Future<void>? getDays() {
+
+  Future<void> getDays() async {
     days = [];
     if (kDebugMode) {
       print('getDays\n\n\n');
@@ -80,17 +84,18 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         case '7':
           day = 'الأحد';
           break;
+          //,make random dummy values list of days
+        //['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'];
       }
-      days?.add(day);
+      Timestamp timestamp = Timestamp.fromDate(date);
+      days.add(DayModel(name: day, timestamp: timestamp));
       //print list of days
       if (kDebugMode) {
         print('days: $days');
       }
     }
-    today = days![0];
-    // return days;
+    today = days[0].name;
   }
-
   //get list of schedules from admin collection then schedule subcollection for specific day like friday
   List<SchedulesModel> schedules = [];
   Future<void> getSchedules({required String day}) async {
@@ -130,75 +135,77 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   }
 
   //generate random data to test getSchedules function
-  Future<void> generateRandomSchedules() async {
-    emit(GenerateRandomSchedulesLoadingState());
-    List<String> days = ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
-    List<String> branches = ['فرع جرين بارك', 'فرع النزهة', 'فرع الدقي'];
-    List<String> startTimes = ['10:00', '12:00', '14:00', '16:00'];
-    List<String> endTimes = ['12:00', '14:00', '16:00', '18:00'];
-    List<List<String>> usersNames = [
-      [
-        'محمد محمود',
-        'محمود علي',
-        'أحمد محمود',
-      ],
-      [
-        'محمد محمود',
-        'محمود علي',
-        'أحمد محمود',
-      ],
-      [
-        'محمد محمود',
-        'محمود علي',
-        'أحمد محمود',
-      ],
-      [
-        'محمد محمود',
-        'محمود علي',
-        'أحمد محمود',
-      ],
-    ];
-    List<bool> finished = [false, true];
-    for (int i = 0; i < 7; i++) {
-      for (int j = 0; j < 4; j++) {
-        final randomDay = days[Random().nextInt(days.length)];
-        final randomBranch = branches[Random().nextInt(branches.length)];
-        final randomStartTime = startTimes[Random().nextInt(startTimes.length)];
-        final randomEndTime = endTimes[Random().nextInt(endTimes.length)];
-        final randomFinished = finished[Random().nextInt(finished.length)];
-        final randomUsersNames =
-            usersNames[Random().nextInt(usersNames.length)];
-
-        final DateTime startDate =
-            DateFormat('dd/MM/yyyy hh:mm').parse('10/10/2021 $randomStartTime');
-        final DateTime endDate =
-            DateFormat('dd/MM/yyyy hh:mm').parse('10/10/2021 $randomEndTime');
-
-        final schedule = SchedulesModel(
-          branchId: randomBranch,
-          startTime: Timestamp.fromDate(startDate),
-          endTime: Timestamp.fromDate(endDate),
-          finished: randomFinished,
-          usersList: randomUsersNames,
-        );
-
-        await FirebaseFirestore.instance
-            .collection('admins')
-            //todo change this to admin id
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection('schedules')
-            .doc(randomDay)
-            .collection('schedules')
-            .add(schedule.toJson2())
-            .then((value) {
-          print('Schedule added');
-        }).catchError((error) {
-          print(error.toString());
-        });
-      }
-    }
-    emit(GenerateRandomSchedulesSuccessState());
-  }
+  // Future<void> generateRandomSchedules() async {
+  //   emit(GenerateRandomSchedulesLoadingState());
+  //   List<String> days = ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
+  //   List<String> branches = ['فرع جرين بارك', 'فرع النزهة', 'فرع الدقي'];
+  //   List<String> startTimes = ['10:00', '12:00', '14:00', '16:00'];
+  //   List<String> endTimes = ['12:00', '14:00', '16:00', '18:00'];
+  //   List<List<String>> usersNames = [
+  //     [
+  //       'محمد محمود',
+  //       'محمود علي',
+  //       'أحمد محمود',
+  //     ],
+  //     [
+  //       'محمد محمود',
+  //       'محمود علي',
+  //       'أحمد محمود',
+  //     ],
+  //     [
+  //       'محمد محمود',
+  //       'محمود علي',
+  //       'أحمد محمود',
+  //     ],
+  //     [
+  //       'محمد محمود',
+  //       'محمود علي',
+  //       'أحمد محمود',
+  //     ],
+  //   ];
+  //   List<bool> finished = [false, true];
+  //   for (int i = 0; i < 7; i++) {
+  //     for (int j = 0; j < 4; j++) {
+  //       final randomDay = days[Random().nextInt(days.length)];
+  //       final randomBranch = branches[Random().nextInt(branches.length)];
+  //       final randomStartTime = startTimes[Random().nextInt(startTimes.length)];
+  //       final randomEndTime = endTimes[Random().nextInt(endTimes.length)];
+  //       final randomFinished = finished[Random().nextInt(finished.length)];
+  //       final randomUsersNames =
+  //           usersNames[Random().nextInt(usersNames.length)];
+  //
+  //       final DateTime startDate =
+  //           DateFormat('dd/MM/yyyy hh:mm').parse('10/10/2021 $randomStartTime');
+  //       final DateTime endDate =
+  //           DateFormat('dd/MM/yyyy hh:mm').parse('10/10/2021 $randomEndTime');
+  //
+  //       final schedule = SchedulesModel(
+  //         scheduleId: ,
+  //         pId: 'pId',
+  //         branchId: randomBranch,
+  //         startTime: Timestamp.fromDate(startDate),
+  //         endTime: Timestamp.fromDate(endDate),
+  //         finished: randomFinished,
+  //         usersList: randomUsersNames,
+  //       );
+  //
+  //       await FirebaseFirestore.instance
+  //           .collection('admins')
+  //           //todo change this to admin id
+  //           .doc(FirebaseAuth.instance.currentUser!.uid)
+  //           .collection('schedules')
+  //           .doc(randomDay)
+  //           .collection('schedules')
+  //           .add(schedule.toJson2())
+  //           .then((value) {
+  //         print('Schedule added');
+  //       }).catchError((error) {
+  //         print(error.toString());
+  //       });
+  //     }
+  //   }
+  //   emit(GenerateRandomSchedulesSuccessState());
+  // }
 
 //*users*: A collection to store the information of all users.
 // // - Document ID: unique coach ID
@@ -740,7 +747,11 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     });
   }
 
-  Future deleteSchedule({required String scheduleId, required String day}) {
+  Future deleteSchedule({
+    required String scheduleId,
+    required String day,
+    required List<String>? usersIds,
+  }) {
     emit(DeleteScheduleLoadingState());
     return FirebaseFirestore.instance
         .collection('admins')
@@ -753,6 +764,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         .delete()
         .then((value) async {
       print('Schedule deleted');
+
       // Delete the subcollection 'users'
       FirebaseFirestore.instance
           .collection('admins')
@@ -768,13 +780,41 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
           doc.reference.delete();
         });
       });
-    getSchedulesForDay(day);
+
+      // Remove the schedule from the list of schedules
+      schedules.removeWhere((schedule) => schedule.scheduleId == scheduleId);
+
+      // Delete the schedule from each user's collection
+      if (usersIds != null) {
+        for (String userId in usersIds) {
+          FirebaseFirestore.instance
+              .collection('users')
+              .doc(userId)
+              .collection('schedules')
+              .doc(scheduleId)
+              .delete()
+              .then((value) {
+            print('Schedule deleted from user $userId');
+          }).catchError((error) {
+            print('Failed to delete schedule from user $userId: $error');
+          });
+        }
+      }
 
       emit(DeleteScheduleSuccessState());
     }).catchError((error) {
       print(error.toString());
       emit(DeleteScheduleErrorState(error.toString()));
     });
+  }
+
+
+  void updateSchedules(SchedulesModel schedule) {
+     emit(UpdateSchedulesLoadingState());
+    schedules.add(schedule);
+    //sort based on start time
+    schedules.sort((a, b) => a.startTime!.compareTo(b.startTime!));
+    emit(UpdateSchedulesSuccessState());
   }
 
   //                     ManageSalaryCubit.get(context).deleteSchedule(

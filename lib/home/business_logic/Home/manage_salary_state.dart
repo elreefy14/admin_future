@@ -86,4 +86,8 @@ class DeleteScheduleErrorState extends ManageSalaryState {
 class ChangeSelectedDayIndexState extends ManageSalaryState {
   final int selectedDayIndex;
   ChangeSelectedDayIndexState(this.selectedDayIndex);
-}
+}//UpdateSchedulesLoadingState
+//UpdateSchedulesLoadingState
+class UpdateSchedulesLoadingState extends ManageSalaryState {}
+//UpdateSchedulesSuccessState
+class UpdateSchedulesSuccessState extends ManageSalaryState {}
