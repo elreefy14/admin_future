@@ -11,6 +11,8 @@ import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -288,19 +290,110 @@ day: day,
                                             ].divide(SizedBox(width: 5)),
                                           ),
                                           children: [
-                                            ListView.builder(
-                                              shrinkWrap: true,
-                                              itemBuilder: (context, index) {
-                                                return ListTile(
-                                                  title: Text('${usersList?[index]}'),
-                                                );
-                                              },
-                                              itemCount: ManageSalaryCubit
-                                                  .get(context)
-                                                  .schedules?[index]
-                                                  .usersList
-                                                  ?.length ?? 0,
-                                            ),
+                                            // ListView.builder(
+                                            //   shrinkWrap: true,
+                                            //   itemBuilder: (context, index) {
+                                            //     return ListTile(
+                                            //       title: Text('${usersList?[index]}'),
+                                            //     );
+                                            //   },
+                                            //   itemCount: ManageSalaryCubit
+                                            //       .get(context)
+                                            //       .schedules?[index]
+                                            //       .usersList
+                                            //       ?.length ?? 0,
+                                            // ),
+
+FirestoreListView<Map<String, dynamic>>(
+  pageSize: 5,
+  shrinkWrap: true,
+  loadingBuilder: (context) => Center(child: CircularProgressIndicator()),
+  cacheExtent: 100,
+  query: FirebaseFirestore.instance
+      .collection('admins')
+      .doc(FirebaseAuth.instance.currentUser?.uid)
+       .collection('schedules')
+      .doc(ManageSalaryCubit.get(context).days?[
+        //selectedDayIndex
+        ManageSalaryCubit.get(context).selectedDayIndex
+      ].name ?? '')
+      .collection('schedules')
+      .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+      .collection('users')
+      
+,
+  itemBuilder: (context, snapshot) {
+    Map<String, dynamic> user = snapshot.data();
+    return //Text('Schedule id is ${user['name']}');
+    Column(
+          children: [
+          //  for (int i = 0; i < user.length; i++)
+              CheckboxListTile(
+                title: Text(user['name']),
+                value: user['finished'],
+                onChanged: (value) async {
+                   FirebaseFirestore firestore = FirebaseFirestore.instance;
+                  // DocumentSnapshot scheduleSnapshot = await firestore
+                  //     .collection('admins')
+                  //     .doc(FirebaseAuth.instance.currentUser?.uid)
+                  //     .collection('schedules')
+                  //     .doc(ManageSalaryCubit.get(context).days?[index].name ?? '')
+                  //     .collection('schedules')
+                  //     .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+                  //     .get();
+                  int startTime = ManageSalaryCubit.get(context).schedules?[index].startTime?.toDate().hour ?? 0;
+                  int endTime = ManageSalaryCubit.get(context).schedules?[index].endTime?.toDate().hour ?? 0;
+                  int totalHours = endTime - startTime;
+                  totalHours += Duration(minutes: 2).inHours;
+            
+                  if (value == true) {
+                    firestore
+                        .collection('admins')
+                        .doc(FirebaseAuth.instance.currentUser?.uid)
+                        .collection('schedules')
+                        .doc(ManageSalaryCubit.get(context).days?[
+                          //selectedDayIndex
+                          ManageSalaryCubit.get(context).selectedDayIndex
+                        ].name ?? '')
+                        .collection('schedules')
+                        .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+                        .collection('users')
+                        .doc(user['uid'])
+                        .update({'finished': value,});
+                        firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(totalHours)});
+                 //send notification to users model contain 2 fields message and timestamp 
+                 firestore.collection('users').doc(user['uid']).collection('notifications').add({
+                   'message': 'تم اضافة ${totalHours} ساعات لحسابك',
+                   'timestamp': Timestamp.now(),
+                  });
+                  } else {
+                    firestore
+                        .collection('admins')
+                        .doc(FirebaseAuth.instance.currentUser?.uid)
+                        .collection('schedules')
+                        .doc(ManageSalaryCubit.get(context).days?[
+                          //selectedDayIndex
+                          ManageSalaryCubit.get(context).selectedDayIndex
+                        ].name ?? '')
+                        .collection('schedules')
+                        .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+                        .collection('users')
+                        .doc(user['uid'])
+                        .update({'finished': value,});
+                        firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(-totalHours)});
+                  //send notification to users model contain 2 fields message and timestamp
+                  firestore.collection('users').doc(user['uid']).collection('notifications').add({
+                   'message': 'تم خصم ${totalHours} ساعات من حسابك',
+                   'timestamp': Timestamp.now(),
+                  });
+                  }
+                },
+              ),
+          ],
+        );
+  },
+)
+
                                           ],
                                         ),
                                       ],

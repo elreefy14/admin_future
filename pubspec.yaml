@@ -30,6 +30,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  firebase_ui_firestore: ^1.5.11  
   multiselect: ^0.1.0
   flutter_datetime_picker_plus: ^2.0.1
   auto_size_text: ^3.0.0
