@@ -21,9 +21,12 @@ import '../../data/schedules.dart';
 part 'manage_salary_state.dart';
 
 class ManageSalaryCubit extends Cubit<ManageSalaryState> {
+
   //final UserModel userModel;
   ManageSalaryCubit() : super(ManageSalaryInitial());
   static ManageSalaryCubit get(context) => BlocProvider.of(context);
+  bool isGrey = false;
+
   //messageController
   final messageController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -815,6 +818,13 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     //sort based on start time
     schedules.sort((a, b) => a.startTime!.compareTo(b.startTime!));
     emit(UpdateSchedulesSuccessState());
+  }
+
+  void changeIsGrey(bool bool) {
+    isGrey = bool;
+    emit(ChangeIsGreyState(
+      isGrey,
+    ));
   }
 
   //                     ManageSalaryCubit.get(context).deleteSchedule(

@@ -176,225 +176,259 @@ class _ManageSchedulesScreenState extends State<ManageSchedulesScreen> {
 
                                   return  Column(
                                       children: [
-                                        ExpansionTile(
-                                          leading: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              FFButtonWidget(
-                                                onPressed: () {
-                                                  print('Delete button pressed ...');
-                                                 ManageSalaryCubit.get(context).deleteSchedule(
-usersIds: usersIds,
-scheduleId: scheduleId,
-day: day,
-);
+                                      GestureDetector( // updated
+                                                                                                                          // onLongPress: () {
+                                                                                                                          //   // setState(() {
+                                                                                                                          //   //   isGrey = true;
+                                                                                                                          //   // });
+                                                                                                                          //   //use cubit
+                                                                                                                          //   ManageSalaryCubit.get(context).changeIsGrey(true);
+                                                                                                                          // },
+                                                                                                                          // onTap: () {
+                                                                                                                          //   // setState(() {
+                                                                                                                          //   //   isGrey = false;
+                                                                                                                          //   // });
+                                                                                                                          //   //use cubit
+                                                                                                                          //   ManageSalaryCubit.get(context).changeIsGrey(false);
+                                                                                                                          //
+                                                                                                                          // },
+                                                                                                                          child: Container( // updated
+                                                                                                                    //        decoration: BoxDecoration(
+                                                                                                                            //   color: ManageSalaryCubit.get(context).isGrey == true
+                                                                                                                            //       ? Colors.white : Colors.white, // updated
+                                                                                                                            //   borderRadius: BorderRadius.circular(10),
+                                                                                                                            //   boxShadow: [
+                                                                                                                            //     // BoxShadow(
+                                                                                                                            //     //   color: Colors.grey.withOpacity(0.5),
+                                                                                                                            //     //   spreadRadius: 2,
+                                                                                                                            //     //   blurRadius: 5,
+                                                                                                                            //     //   offset: Offset(0, 3),
+                                                                                                                            //     // ),
+                                                                                                                            //   ],
+                                                                                                                            // ),
+                                          
+                                            child: ExpansionTile(
 
-                                                },
-                                                text: 'حذف',
-                                                options: FFButtonOptions(
-                                                  width: 50.w,
-                                                  height: 40.h,
-                                                  padding: EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
-                                                  iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                                                  color: Colors.red,
-                                                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                                    fontFamily: 'Readex Pro',
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                  ),
-                                                  elevation: 3,
-                                                  borderSide: BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1,
-                                                  ),
-                                                  borderRadius: BorderRadius.circular(8),
-                                                ),
-                                              ),
-                                              SizedBox(width: 10.w),
-                                              FFButtonWidget(
-                                                onPressed: () {
-
-                                                  ManageAttendenceCubit.get(context).selectedCoaches = usersList;
-                                                  ManageAttendenceCubit.get(context).selectedDays = [day];
-                                                  ManageAttendenceCubit.get(context).startTime = statrTime;
-                                                  ManageAttendenceCubit.get(context).endTime = endTime;
-                                                  //selectedBranch
-                                                  ManageAttendenceCubit.get(context).selectedBranch = ManageSalaryCubit.get(context).schedules?[index].branchId ?? '';
-                                                  //selectedBranch
-                                                  //print('${ManageSalaryCubit.get(context).schedules?[index].branchId}');
-                                                  ManageAttendenceCubit.get(context).getAdminData();
-                                                  Navigator.pushNamed(
-                                            context,
-                                            AppRoutes.addSchedule,
-                                            arguments: {
-                                              'toggle': false,
-                                              'startTime': statrTime,
-                                              'endTime': endTime,
-                                              'date': day,
-                                              'usersList': usersList,
-                                              'scheduleId': scheduleId,
-                                              'usersIds': usersIds,
-                                            },
+                                              leading: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  FFButtonWidget(
+                                                    onPressed: () {
+                                                      print('Delete button pressed ...');
+                                                     ManageSalaryCubit.get(context).deleteSchedule(
+                                          usersIds: usersIds,
+                                          scheduleId: scheduleId,
+                                          day: day,
                                           );
 
-
-
-
-                                                },
-                                                text: 'تعديل',
-                                                options: FFButtonOptions(
-                                                  width: 50.w,
-                                                  height: 40.h,
-                                                  padding: EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
-                                                  iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                                                  color: Colors.blue,
-                                                  textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                                    fontFamily: 'Readex Pro',
-                                                    color: Colors.white,
-                                                    fontSize: 12,
-                                                  ),
-                                                  elevation: 3,
-                                                  borderSide: BorderSide(
-                                                    color: Colors.transparent,
-                                                    width: 1,
-                                                  ),
-                                                  borderRadius: BorderRadius.circular(8),
-                                                ),
-                                              ),
-
-
-                                            ],
-                                          ),
-                                          title: Row(
-                                            children: [
-                                              Expanded(
-                                                child: SizedBox(
-                                                  width: 200,
-                                                  child: AutoSizeText(
-                                                    '${DateFormat('hh:mm a').format(ManageSalaryCubit.get(context).schedules![index].endTime!.toDate())} '
-                                                    '<---'
-                                                    '${DateFormat('hh:mm a').format(ManageSalaryCubit.get(context).schedules![index].startTime!.toDate())} '
-                                                    '-'
-                                                    '${ManageSalaryCubit.get(context).schedules?[index].branchId}',
-                                                    style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                      fontFamily: 'Readex Pro',
-                                                     // fontSize: ,
+                                                    },
+                                                    text: 'حذف',
+                                                    options: FFButtonOptions(
+                                                      width: 50.w,
+                                                      height: 40.h,
+                                                      padding: EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
+                                                      iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                                                      color: Colors.red,
+                                                      textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                                        fontFamily: 'Readex Pro',
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                      ),
+                                                      elevation: 3,
+                                                      borderSide: BorderSide(
+                                                        color: Colors.transparent,
+                                                        width: 1,
+                                                      ),
+                                                      borderRadius: BorderRadius.circular(8),
                                                     ),
-                                                    minFontSize: 6,
-                                                    maxFontSize: 19,
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
                                                   ),
-                                                ),
+                                                  SizedBox(width: 10.w),
+                                                  FFButtonWidget(
+                                                    onPressed: () {
+
+                                                      ManageAttendenceCubit.get(context).selectedCoaches = usersList;
+                                                      ManageAttendenceCubit.get(context).selectedDays = [day];
+                                                      ManageAttendenceCubit.get(context).startTime = statrTime;
+                                                      ManageAttendenceCubit.get(context).endTime = endTime;
+                                                      //selectedBranch
+                                                      ManageAttendenceCubit.get(context).selectedBranch = ManageSalaryCubit.get(context).schedules?[index].branchId ?? '';
+                                                      //selectedBranch
+                                                      //print('${ManageSalaryCubit.get(context).schedules?[index].branchId}');
+                                                      ManageAttendenceCubit.get(context).getAdminData();
+                                                      Navigator.pushNamed(
+                                                context,
+                                                AppRoutes.addSchedule,
+                                                arguments: {
+                                                  'toggle': false,
+                                                  'startTime': statrTime,
+                                                  'endTime': endTime,
+                                                  'date': day,
+                                                  'usersList': usersList,
+                                                  'scheduleId': scheduleId,
+                                                  'usersIds': usersIds,
+                                                },
+                                              );
+
+
+
+
+                                                    },
+                                                    text: 'تعديل',
+                                                    options: FFButtonOptions(
+                                                      width: 50.w,
+                                                      height: 40.h,
+                                                      padding: EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
+                                                      iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                                                      color: Colors.blue,
+                                                      textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                                        fontFamily: 'Readex Pro',
+                                                        color: Colors.white,
+                                                        fontSize: 12,
+                                                      ),
+                                                      elevation: 3,
+                                                      borderSide: BorderSide(
+                                                        color: Colors.transparent,
+                                                        width: 1,
+                                                      ),
+                                                      borderRadius: BorderRadius.circular(8),
+                                                    ),
+                                                  ),
+
+
+                                                ],
                                               ),
-                                            ].divide(SizedBox(width: 5)),
+                                              title: Row(
+                                                children: [
+                                                  Expanded(
+                                                    child: SizedBox(
+                                                      width: 200,
+                                                      child: AutoSizeText(
+                                                        '${DateFormat('hh:mm a').format(ManageSalaryCubit.get(context).schedules![index].endTime!.toDate())} '
+                                                        '<---'
+                                                        '${DateFormat('hh:mm a').format(ManageSalaryCubit.get(context).schedules![index].startTime!.toDate())} '
+                                                        '-'
+                                                        '${ManageSalaryCubit.get(context).schedules?[index].branchId}',
+                                                        style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                          fontFamily: 'Readex Pro',
+                                                         // fontSize: ,
+                                                        ),
+                                                        minFontSize: 6,
+                                                        maxFontSize: 19,
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ].divide(SizedBox(width: 5)),
+                                              ),
+                                              children: [
+                                                // ListView.builder(
+                                                //   shrinkWrap: true,
+                                                //   itemBuilder: (context, index) {
+                                                //     return ListTile(
+                                                //       title: Text('${usersList?[index]}'),
+                                                //     );
+                                                //   },
+                                                //   itemCount: ManageSalaryCubit
+                                                //       .get(context)
+                                                //       .schedules?[index]
+                                                //       .usersList
+                                                //       ?.length ?? 0,
+                                                // ),
+
+                                          FirestoreListView<Map<String, dynamic>>(
+                                            pageSize: 5,
+                                            shrinkWrap: true,
+                                            loadingBuilder: (context) => Center(child: CircularProgressIndicator()),
+                                            cacheExtent: 100,
+                                            query: FirebaseFirestore.instance
+                                                .collection('admins')
+                                                .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                 .collection('schedules')
+                                                .doc(ManageSalaryCubit.get(context).days?[
+                                                  //selectedDayIndex
+                                                  ManageSalaryCubit.get(context).selectedDayIndex
+                                                ].name ?? '')
+                                                .collection('schedules')
+                                                .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+                                                .collection('users')
+
+                                          ,
+                                            itemBuilder: (context, snapshot) {
+                                              Map<String, dynamic> user = snapshot.data();
+                                              return //Text('Schedule id is ${user['name']}');
+                                              Column(
+                                                    children: [
+                                                    //  for (int i = 0; i < user.length; i++)
+                                                        CheckboxListTile(
+                                                          title: Text(user['name']),
+                                                          value: user['finished'],
+                                                          onChanged: (value) async {
+                                                             FirebaseFirestore firestore = FirebaseFirestore.instance;
+                                                            // DocumentSnapshot scheduleSnapshot = await firestore
+                                                            //     .collection('admins')
+                                                            //     .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                            //     .collection('schedules')
+                                                            //     .doc(ManageSalaryCubit.get(context).days?[index].name ?? '')
+                                                            //     .collection('schedules')
+                                                            //     .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+                                                            //     .get();
+                                                            int startTime = ManageSalaryCubit.get(context).schedules?[index].startTime?.toDate().hour ?? 0;
+                                                            int endTime = ManageSalaryCubit.get(context).schedules?[index].endTime?.toDate().hour ?? 0;
+                                                            int totalHours = endTime - startTime;
+                                                            totalHours += Duration(minutes: 2).inHours;
+
+                                                            if (value == true) {
+                                                              firestore
+                                                                  .collection('admins')
+                                                                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                                  .collection('schedules')
+                                                                  .doc(ManageSalaryCubit.get(context).days?[
+                                                                    //selectedDayIndex
+                                                                    ManageSalaryCubit.get(context).selectedDayIndex
+                                                                  ].name ?? '')
+                                                                  .collection('schedules')
+                                                                  .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+                                                                  .collection('users')
+                                                                  .doc(user['uid'])
+                                                                  .update({'finished': value,});
+                                                                  firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(totalHours)});
+                                                           //send notification to users model contain 2 fields message and timestamp
+                                                           firestore.collection('users').doc(user['uid']).collection('notifications').add({
+                                                             'message': 'تم اضافة ${totalHours} ساعات لحسابك',
+                                                             'timestamp': Timestamp.now(),
+                                                            });
+                                                            } else {
+                                                              firestore
+                                                                  .collection('admins')
+                                                                  .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                                  .collection('schedules')
+                                                                  .doc(ManageSalaryCubit.get(context).days?[
+                                                                    //selectedDayIndex
+                                                                    ManageSalaryCubit.get(context).selectedDayIndex
+                                                                  ].name ?? '')
+                                                                  .collection('schedules')
+                                                                  .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+                                                                  .collection('users')
+                                                                  .doc(user['uid'])
+                                                                  .update({'finished': value,});
+                                                                  firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(-totalHours)});
+                                                            //send notification to users model contain 2 fields message and timestamp
+                                                            firestore.collection('users').doc(user['uid']).collection('notifications').add({
+                                                             'message': 'تم خصم ${totalHours} ساعات من حسابك',
+                                                             'timestamp': Timestamp.now(),
+                                                            });
+                                                            }
+                                                          },
+                                                        ),
+                                                    ],
+                                                  );
+                                            },
+                                          )
+
+                                              ],
+                                            ),
                                           ),
-                                          children: [
-                                            // ListView.builder(
-                                            //   shrinkWrap: true,
-                                            //   itemBuilder: (context, index) {
-                                            //     return ListTile(
-                                            //       title: Text('${usersList?[index]}'),
-                                            //     );
-                                            //   },
-                                            //   itemCount: ManageSalaryCubit
-                                            //       .get(context)
-                                            //       .schedules?[index]
-                                            //       .usersList
-                                            //       ?.length ?? 0,
-                                            // ),
-
-FirestoreListView<Map<String, dynamic>>(
-  pageSize: 5,
-  shrinkWrap: true,
-  loadingBuilder: (context) => Center(child: CircularProgressIndicator()),
-  cacheExtent: 100,
-  query: FirebaseFirestore.instance
-      .collection('admins')
-      .doc(FirebaseAuth.instance.currentUser?.uid)
-       .collection('schedules')
-      .doc(ManageSalaryCubit.get(context).days?[
-        //selectedDayIndex
-        ManageSalaryCubit.get(context).selectedDayIndex
-      ].name ?? '')
-      .collection('schedules')
-      .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
-      .collection('users')
-      
-,
-  itemBuilder: (context, snapshot) {
-    Map<String, dynamic> user = snapshot.data();
-    return //Text('Schedule id is ${user['name']}');
-    Column(
-          children: [
-          //  for (int i = 0; i < user.length; i++)
-              CheckboxListTile(
-                title: Text(user['name']),
-                value: user['finished'],
-                onChanged: (value) async {
-                   FirebaseFirestore firestore = FirebaseFirestore.instance;
-                  // DocumentSnapshot scheduleSnapshot = await firestore
-                  //     .collection('admins')
-                  //     .doc(FirebaseAuth.instance.currentUser?.uid)
-                  //     .collection('schedules')
-                  //     .doc(ManageSalaryCubit.get(context).days?[index].name ?? '')
-                  //     .collection('schedules')
-                  //     .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
-                  //     .get();
-                  int startTime = ManageSalaryCubit.get(context).schedules?[index].startTime?.toDate().hour ?? 0;
-                  int endTime = ManageSalaryCubit.get(context).schedules?[index].endTime?.toDate().hour ?? 0;
-                  int totalHours = endTime - startTime;
-                  totalHours += Duration(minutes: 2).inHours;
-            
-                  if (value == true) {
-                    firestore
-                        .collection('admins')
-                        .doc(FirebaseAuth.instance.currentUser?.uid)
-                        .collection('schedules')
-                        .doc(ManageSalaryCubit.get(context).days?[
-                          //selectedDayIndex
-                          ManageSalaryCubit.get(context).selectedDayIndex
-                        ].name ?? '')
-                        .collection('schedules')
-                        .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
-                        .collection('users')
-                        .doc(user['uid'])
-                        .update({'finished': value,});
-                        firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(totalHours)});
-                 //send notification to users model contain 2 fields message and timestamp 
-                 firestore.collection('users').doc(user['uid']).collection('notifications').add({
-                   'message': 'تم اضافة ${totalHours} ساعات لحسابك',
-                   'timestamp': Timestamp.now(),
-                  });
-                  } else {
-                    firestore
-                        .collection('admins')
-                        .doc(FirebaseAuth.instance.currentUser?.uid)
-                        .collection('schedules')
-                        .doc(ManageSalaryCubit.get(context).days?[
-                          //selectedDayIndex
-                          ManageSalaryCubit.get(context).selectedDayIndex
-                        ].name ?? '')
-                        .collection('schedules')
-                        .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
-                        .collection('users')
-                        .doc(user['uid'])
-                        .update({'finished': value,});
-                        firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(-totalHours)});
-                  //send notification to users model contain 2 fields message and timestamp
-                  firestore.collection('users').doc(user['uid']).collection('notifications').add({
-                   'message': 'تم خصم ${totalHours} ساعات من حسابك',
-                   'timestamp': Timestamp.now(),
-                  });
-                  }
-                },
-              ),
-          ],
-        );
-  },
-)
-
-                                          ],
                                         ),
                                       ],
                                     ) ;},

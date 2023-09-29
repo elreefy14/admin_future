@@ -91,3 +91,8 @@ class ChangeSelectedDayIndexState extends ManageSalaryState {
 class UpdateSchedulesLoadingState extends ManageSalaryState {}
 //UpdateSchedulesSuccessState
 class UpdateSchedulesSuccessState extends ManageSalaryState {}
+//ChangeIsGreyState
+class ChangeIsGreyState extends ManageSalaryState {
+  final bool isGrey;
+  ChangeIsGreyState(this.isGrey);
+}
