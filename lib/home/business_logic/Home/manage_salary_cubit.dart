@@ -827,6 +827,16 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     ));
   }
 
+  void updateListOfUsers(List users14) {
+    //merge user14 with users
+    users = [];
+    users.addAll(users14 as Iterable<UserModel>);
+    emit(UpdateListOfUsersState(
+      users,
+    ));
+
+  }
+
   //                     ManageSalaryCubit.get(context).deleteSchedule(
 // scheduleId: scheduleId,
 // );

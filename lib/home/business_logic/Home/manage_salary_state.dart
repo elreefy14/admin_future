@@ -95,4 +95,9 @@ class UpdateSchedulesSuccessState extends ManageSalaryState {}
 class ChangeIsGreyState extends ManageSalaryState {
   final bool isGrey;
   ChangeIsGreyState(this.isGrey);
-}
+}//UpdateListOfUsersState
+//UpdateListOfUsersState
+class UpdateListOfUsersState extends ManageSalaryState {
+  final List<UserModel> listOfUsers;
+  UpdateListOfUsersState(this.listOfUsers);
+}//UpdateListOfSchedulesState

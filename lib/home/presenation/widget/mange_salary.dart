@@ -6,7 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
+import '../../../registeration/data/userModel.dart';
 import '../../business_logic/Home/manage_salary_cubit.dart';
 
 class ManageSalary extends StatelessWidget {
@@ -118,7 +120,7 @@ class ManageSalary extends StatelessWidget {
                                     children: [
                                       Container(
                                         width:
-                                        MediaQuery.sizeOf(context).width * 0.25,
+                                        MediaQuery.sizeOf(context).width * 0.2,
                                         height: 35,
                                         decoration: BoxDecoration(
                                           color: FlutterFlowTheme.of(context)
@@ -145,7 +147,7 @@ class ManageSalary extends StatelessWidget {
                                       ),
                                       Container(
                                         width:
-                                        MediaQuery.sizeOf(context).width * 0.25,
+                                        MediaQuery.sizeOf(context).width * 0.2,
                                         height: 35,
                                         decoration: BoxDecoration(
                                           color: FlutterFlowTheme.of(context)
@@ -174,7 +176,7 @@ class ManageSalary extends StatelessWidget {
                                       ),
                                       Container(
                                         width:
-                                        MediaQuery.sizeOf(context).width * 0.25,
+                                        MediaQuery.sizeOf(context).width * 0.2,
                                         height: 35,
                                         decoration: BoxDecoration(
                                           color: FlutterFlowTheme.of(context)
@@ -203,7 +205,7 @@ class ManageSalary extends StatelessWidget {
                                         alignment: AlignmentDirectional(1, 0),
                                         child: Container(
                                           width: MediaQuery.sizeOf(context).width *
-                                              0.25,
+                                              0.2,
                                           height: 35,
                                           decoration: BoxDecoration(
                                             color: FlutterFlowTheme.of(context)
@@ -240,10 +242,53 @@ class ManageSalary extends StatelessWidget {
                                     mainAxisSize: MainAxisSize.max,
                                     mainAxisAlignment: MainAxisAlignment.end,
                                     children: [
+                                      Container(
+                                        width: MediaQuery.sizeOf(context).width * 0.2,
+                                         height: 35,
+                                        decoration: BoxDecoration(
+                                          color: FlutterFlowTheme.of(context)
+                                              .secondaryBackground,
+                                          border: Border.all(
+                                            color: Color(0xFFB4B4B4),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: InkWell(
+                                          onTap: () async {
+                                            final manageSalaryCubit = ManageSalaryCubit.get(context);
+                                            manageSalaryCubit.initControllers(ManageSalaryCubit.get(context).users[index]);
+                                            await Navigator.pushNamed(context,
+                                                AppRoutes.editProfile,
+                                                arguments: ManageSalaryCubit.get(context).users[index]
+                                                as UserModel
+                                            ) ;
+
+
+                                          },
+                                          child: Align(
+                                            alignment: AlignmentDirectional(0, 0),
+                                            child: InkWell(
+                                              child: Text(
+                                                '...المزيد ',
+                                                textAlign: TextAlign.end,
+                                                style: FlutterFlowTheme.of(context)
+                                                    .bodyMedium
+                                                    .override(
+                                                  fontFamily: 'Readex Pro',
+                                                  color: Colors.blue,
+                                                  fontSize: 10.sp,
+                                                  decoration:
+                                                  TextDecoration.underline,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
                                       BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
                                         builder: (context, state) {
                                           return Container(
-                                            width: MediaQuery.sizeOf(context).width * 0.25,
+                                            width: MediaQuery.sizeOf(context).width * 0.2,
                                             height: 35,
                                             decoration: BoxDecoration(
                                               color: FlutterFlowTheme.of(context)
@@ -495,7 +540,7 @@ class ManageSalary extends StatelessWidget {
   },
   builder: (context, state) {
     return Container(
-                                        width: MediaQuery.sizeOf(context).width * 0.25,
+                                        width: MediaQuery.sizeOf(context).width * 0.2,
                                         height: 35,
                                         decoration: BoxDecoration(
                                           color: FlutterFlowTheme.of(context)
@@ -711,9 +756,10 @@ class ManageSalary extends StatelessWidget {
                                       );
   },
 ),
+
                                       Container(
                                         width:
-                                        MediaQuery.sizeOf(context).width * 0.25,
+                                        MediaQuery.sizeOf(context).width * 0.2,
                                         height: 35,
                                         decoration: BoxDecoration(
                                           color: FlutterFlowTheme.of(context)
@@ -742,7 +788,7 @@ class ManageSalary extends StatelessWidget {
                                         alignment: AlignmentDirectional(1, 0),
                                         child: Container(
                                           width: MediaQuery.sizeOf(context).width *
-                                              0.25,
+                                              0.2,
                                           height: 35,
                                           decoration: BoxDecoration(
                                             color: FlutterFlowTheme.of(context)
@@ -786,6 +832,29 @@ class ManageSalary extends StatelessWidget {
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
                                         Container(
+                                          height: 50.h,
+                                          width: 180.w,
+                                          decoration: BoxDecoration(
+                                            color: Colors.blue,
+                                            borderRadius: BorderRadius.circular(8),
+                                          ),
+                                          child: Align(
+                                            alignment: AlignmentDirectional(0, 0),
+                                            child: Text(
+                                              'اضافة مدرب',
+                                              textAlign: TextAlign.center,
+                                              style: FlutterFlowTheme.of(context)
+                                                  .titleSmall
+                                                  .override(
+                                                fontFamily: 'Readex Pro',
+                                                color: Colors.white,
+                                                fontSize: 12.sp,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 5),
+                                        Container(
                                           child: Row(
                                             mainAxisSize: MainAxisSize.min,
                                             mainAxisAlignment: MainAxisAlignment.center,
@@ -805,7 +874,6 @@ class ManageSalary extends StatelessWidget {
                                             ],
                                           ),
                                         ),
-                                        const SizedBox(height: 5),
                                         SizedBox(
                                           width: 48,
                                           child: BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
@@ -824,6 +892,7 @@ class ManageSalary extends StatelessWidget {
   },
 ),
                                         ),
+
                                       ],
                                     ),
                                   ),
