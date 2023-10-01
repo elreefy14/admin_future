@@ -18,7 +18,7 @@ class WelcomeScreen extends StatelessWidget {
                 SizedBox(height: 45.0.h),
                 Image.asset(
                   'assets/images/photo_5814288303556509507_y.jpg', // Replace with your logo asset path
-                  height: 250.0.h,
+                  height: 350.0.h,
                   width: double.infinity,
                   fit: BoxFit.fitHeight
                 ),

@@ -10,8 +10,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 //     );
 class AdminModel
 {
-
-
+//password
+  
+   String? password;
   Timestamp? date;
   String? pId;
   String? phone;
@@ -28,6 +29,8 @@ class AdminModel
 
 
   AdminModel({
+    //password
+    this.password,
     this.date,
     this.pId,
     this.phone,
@@ -43,6 +46,9 @@ class AdminModel
   });
 
   AdminModel.fromJson(Map<String, dynamic> json) {
+    //password
+    password = json['password'];
+
     date = json['date'];
     pId = json['pId'];
     phone = json['phone'];
@@ -59,6 +65,8 @@ class AdminModel
 
   Map<String, dynamic> toMap() {
     return {
+      //password
+      'password': password,
        'date': date,
       'pId': pId,
       'phone': phone,

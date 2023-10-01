@@ -20,11 +20,13 @@ Widget BuildTextFormField2(
     children: [
       Text(
         labelText,
-        style: TextStyle(
-          fontSize: 14.0,
-          color: Color(0xFF333333),
-          fontFamily: 'IBM Plex Sans Arabic',
-        ),
+       style: TextStyle(
+color: Color(0xFF333333),
+fontSize: 14.sp,
+fontFamily: 'IBM Plex Sans Arabic',
+fontWeight: FontWeight.w400,
+height: 0,
+), 
         textAlign: TextAlign.right,
       ),
       SizedBox(height: 8),
@@ -35,14 +37,13 @@ Widget BuildTextFormField2(
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: Colors.grey),
           hintText: hintText,
-          hintStyle: TextStyle(
-            fontFamily: 'IBM Plex Sans Arabic',
-            fontStyle: FontStyle.normal,
-            fontWeight: FontWeight.w400,
-            fontSize: 16.0,
-            height: 24.0 / 16.0,
-            color: Color(0xFF666666),
-          ),
+          hintStyle:  TextStyle(
+color: Color(0xFF333333),
+fontSize: 16.sp,
+fontFamily: 'IBM Plex Sans Arabic',
+fontWeight: FontWeight.w400,
+height: 0,
+), 
           errorStyle: TextStyle(
             fontFamily: 'Inter',
             fontStyle: FontStyle.normal,

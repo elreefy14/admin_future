@@ -46,6 +46,8 @@ class SignUpCubit extends Cubit<SignUpState> {
   }
   final formKey = GlobalKey<FormState>();
   final firstNameController = TextEditingController();
+  //hourlyRateController
+  final hourlyRateController = TextEditingController();
   final lastNameController = TextEditingController();
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
@@ -113,6 +115,155 @@ void changePasswordVisibility(){
     });
   }
 
+  Future<void> addUser({
+    required String lName,
+    required String fName,
+    required String phone,
+    required String password,
+  }) async {
+    emit(SignUpLoadingState());
+    String? adminEmail = FirebaseAuth.instance.currentUser!.email;
+    String? adminUid = FirebaseAuth.instance.currentUser!.uid;
+
+    FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: '$phone@placeholder.com',
+        password: password
+    ).then((value) async {
+      print(value.user!.uid);
+      createUser(
+        isUser: true,
+        // paasword: password,
+        // branches: selectedItems,
+        uId: value.user!.uid,
+        phone: phone,
+        fname: fName,
+        lname: lName,
+      );
+      //get email from firebase and send it to admin to add it to his list
+     await FirebaseFirestore.instance
+          .collection('admins')
+          .doc(adminUid)
+          .get().then((value) async {
+            //sign out from user account
+            await FirebaseAuth.instance.signOut();
+         String? adminPhone = value.data()?['phone'];
+  String? adminPassword = value.data()?['password'];
+  if (kDebugMode) {
+    print(adminEmail);
+    print(adminPassword);
+  }
+   UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+      email: '$adminPhone@placeholder.com',
+      password: adminPassword!,
+    );
+    if (kDebugMode) {
+      print(userCredential.user!.uid);
+    }
+      }
+      );
+      
+      emit(SignUpSuccessState(value.user!.uid));
+    }).catchError((error) {
+      String? errorMessage;
+      switch (error.code) {
+      //case user already exists
+        case "email-already-in-use":
+          if (kDebugMode) {
+            print(errorMessage);
+            errorMessage = 'The account already exists for that email.';
+          }
+          break;
+        case "invalid-email":
+          if (kDebugMode) {
+            print(errorMessage);
+            errorMessage = 'The email address is badly formatted.';
+          }
+          break;
+        case "user-not-found":
+          if (kDebugMode) {
+            print(errorMessage);
+            errorMessage = 'No user found for that email.';
+          }
+          break;
+        case "wrong-password":
+          if (kDebugMode) {
+            print(errorMessage);
+            errorMessage = 'Wrong password provided for that user.';
+          }
+          break;
+        default:
+          if (kDebugMode) {
+            errorMessage = 'The error is $error';
+            print(errorMessage);
+          }
+      }
+      emit(SignUpErrorState(
+        error: errorMessage,
+      ));
+    });
+  }
+
+  void createUser({
+    //password
+    bool isUser = false,
+    String? paasword,
+    required String? uId,
+    required String? phone,
+    required String? fname,
+    required String? lname,
+    //branches list
+    List<String>? branches,
+  }) {
+    emit(CreateUserLoadingState());
+    if (isUser) {
+      UserModel model = UserModel(
+        role: 'coach',
+        hourlyRate: 0,
+        totalHours: 0,
+        totalSalary: 0,
+        currentMonthHours: 0,
+        currentMonthSalary: 0,
+        name: fname! + ' ' + lname!,
+        uId: uId,
+        lname: lname,
+        fname: fname,
+        token: '',
+        phone: phone,
+      );
+      FirebaseFirestore.instance
+          .collection('users')
+          .doc(uId)
+          .set(model.toMap())
+          .then((value) {
+        emit(CreateUserSuccessState(uId!));
+      }).catchError((error) {
+        emit(CreateUserErrorState());
+      });
+    } else {
+      AdminModel model = AdminModel(
+        password: paasword,
+        branches: branches,
+        lname: lname,
+        fname: fname,
+        date: Timestamp.now(),
+        token: '',
+        totalMoneyearned: 0,
+        totalMoneySpentOnCoaches: 0,
+        Salary: 0,
+        phone: phone,
+        pId: uId,
+      );
+      FirebaseFirestore.instance
+          .collection('admins')
+          .doc(uId)
+          .set(model.toMap())
+          .then((value) {
+        emit(CreateUserSuccessState(uId!));
+      }).catchError((error) {
+        emit(CreateUserErrorState());
+      });
+    }
+  }
   Future<void> signUp({
     required String lName,
     required String fName,
@@ -173,36 +324,6 @@ void changePasswordVisibility(){
     });
   }
 
-  void createUser({
-    required String? uId,
-    required String? phone,
-    required String? fname,
-    required String? lname,
-    //branches list
-    required List<String>? branches,
-  }) {
-    emit(CreateUserLoadingState());
-    AdminModel model = AdminModel(
-     branches: branches,
-      lname: lname,
-      fname: fname,
-      date: //time using serverTimestamp
-          Timestamp.now(),
-      token: '',
-      totalMoneyearned: 0,
-      totalMoneySpentOnCoaches: 0,
-      Salary: 0,
-      phone: phone,
-        pId: uId,
-       // name: 'Write your name...',
-    );
-    FirebaseFirestore.instance.collection('admins').doc(uId).set(model.toMap())
-        .then((value) {
-      emit(CreateUserSuccessState(uId!));
-    }).catchError((error) {
-      emit(CreateUserErrorState());
-    });
-  }
   //selected items
    List<String>? selectedItems;
   void add(String itemValue) {

@@ -48,6 +48,8 @@ class SignUpScreen extends StatelessWidget {
           body: ListView(
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
+              //82
+              SizedBox(height: 62.h),
               Padding(
                 padding: EdgeInsets.only(
                   top: 32.0.h,
@@ -55,21 +57,21 @@ class SignUpScreen extends StatelessWidget {
                 ),
                 child: Center(
                   child: Container(
-                    width: 99.w,
-                    height: 26.h,
+                 //   width: 99.w,
+                 //   height: 26.h,
                     alignment: Alignment.center,
                     child: Text(
-                      'تسجيل',
-                      style: TextStyle(
-                        fontFamily: 'Montserrat-Arabic',
-                        fontStyle: FontStyle.normal,
-                        fontWeight: FontWeight.w400,
-                        fontSize: 32,
-                        height: 26 / 32,
-                        color: Color(0xFF333333),
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
+    //'تسجيل حساب جديد,',
+    'تسجيل حساب جديد',
+    textAlign: TextAlign.center,
+    style: TextStyle(
+        color: Color(0xFF333333),
+        fontSize: 32.sp,
+        fontFamily: 'Montserrat-Arabic',
+        fontWeight: FontWeight.w400,
+        height: 0.03.h,
+    ),
+)
                   ),
                 ),
               ),
@@ -81,7 +83,7 @@ class SignUpScreen extends StatelessWidget {
               //     fontWeight: FontWeight.bold,
               //   ),
               // ),
-              SizedBox(height: 15.0.h),
+              SizedBox(height: 50.0.h),
               Form(
                 key: SignUpCubit
                     .get(context)
@@ -156,12 +158,13 @@ class SignUpScreen extends StatelessWidget {
                         child: Text(
                           'مكان التدريب:',
                           textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: Color(0xFF333333),
-                            fontSize: 16,
-                            fontFamily: 'IBM Plex Sans Arabic',
-                            fontWeight: FontWeight.w400,
-                          ),
+                           style: TextStyle(
+color: Color(0xFF333333),
+fontSize: 14.sp,
+fontFamily: 'IBM Plex Sans Arabic',
+fontWeight: FontWeight.w400,
+height: 0,
+), 
                         ),
                       ),
                       //10.0.h

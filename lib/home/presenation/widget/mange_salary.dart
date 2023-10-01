@@ -831,24 +831,32 @@ class ManageSalary extends StatelessWidget {
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       crossAxisAlignment: CrossAxisAlignment.center,
                                       children: [
-                                        Container(
-                                          height: 50.h,
-                                          width: 180.w,
-                                          decoration: BoxDecoration(
-                                            color: Colors.blue,
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: Align(
-                                            alignment: AlignmentDirectional(0, 0),
-                                            child: Text(
-                                              'اضافة مدرب',
-                                              textAlign: TextAlign.center,
-                                              style: FlutterFlowTheme.of(context)
-                                                  .titleSmall
-                                                  .override(
-                                                fontFamily: 'Readex Pro',
-                                                color: Colors.white,
-                                                fontSize: 12.sp,
+InkWell(
+                                          onTap: () async {
+                                            await Navigator.pushNamed(context,
+                                                AppRoutes.addCoach,
+                                               // arguments: ManageSalaryCubit.get(context).users
+                                            ) ;
+                                          },
+                                    child: Container(
+                                            height: 50.h,
+                                            width: 180.w,
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue,
+                                              borderRadius: BorderRadius.circular(8),
+                                            ),
+                                            child: Align(
+                                              alignment: AlignmentDirectional(0, 0),
+                                              child: Text(
+                                                'اضافة مدرب',
+                                                textAlign: TextAlign.center,
+                                                style: FlutterFlowTheme.of(context)
+                                                    .titleSmall
+                                                    .override(
+                                                  fontFamily: 'Readex Pro',
+                                                  color: Colors.white,
+                                                  fontSize: 12.sp,
+                                                ),
                                               ),
                                             ),
                                           ),

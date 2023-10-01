@@ -23,10 +23,10 @@ class SignInScreen extends StatelessWidget {
           child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-              SizedBox(height: 45.0.h),
+              SizedBox(height: 102.0.h),
           Padding(
             padding: EdgeInsets.only(
-              top: 82.0.h,
+             // top: 82.0.h,
             ),
             child: Center(
               child: Container(
@@ -46,7 +46,7 @@ class SignInScreen extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 120.0.h),
+          SizedBox(height: 140.0.h),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 35.0.w),
             child: Form(
@@ -113,7 +113,7 @@ class SignInScreen extends StatelessWidget {
                             padding: EdgeInsets.only(
                                 left: 31.w,
                                 right: 31.w,
-                                top: 80.h
+                                top: 120.h
                             ),
                             child: ElevatedButton(
                               onPressed: () {

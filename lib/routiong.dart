@@ -6,6 +6,7 @@ import 'package:admin_future/home/data/userModel.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/login_cubit.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/sign_up_cubit.dart';
 import 'package:admin_future/registeration/presenation/SignUpScreen.dart';
+import 'package:admin_future/registeration/presenation/add_coach_screen.dart';
 import 'package:admin_future/registeration/presenation/login_screen.dart';
 import 'package:admin_future/registeration/presenation/welcome_screen.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,10 @@ class RouteGenerator {
     var args = settings.arguments;
     switch (settings.name) {
       //AddSchedule
-
+//AddCoachScreen
+case AppRoutes.addCoach:
+  return MaterialPageRoute(builder: (_) => AddCoachScreen());
+    
       case AppRoutes.addSchedule:
         args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(builder: (_) => AddSchedule(

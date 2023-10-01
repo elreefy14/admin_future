@@ -34,10 +34,12 @@ class UserModel
   String? image;
   String? token;
   List<String>? branches;
+  String? role;
 
 
 
   UserModel({
+     this.role,
     this.name,
     this.email,
     this.level,
@@ -56,6 +58,7 @@ this.image,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
+    role = json['role'];
     name = json['name'];
     email = json['email'];
     level = json['level'];
@@ -75,7 +78,9 @@ image = json['image'];
   }
 
   Map<String, dynamic> toJson() {
+
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['role'] = this.role;
     data['name'] = this.name;
     data['email'] = this.email;
     data['level'] = this.level;
@@ -98,7 +103,7 @@ data['image'] = this.image;
 
   Map<String, dynamic> toMap() {
 return {
-
+  'role': role,
   'name': name,
   'email': email,
   'level': level,
