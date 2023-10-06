@@ -1,5 +1,8 @@
 import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
+import 'package:admin_future/home/presenation/widget/widget/custom_app_bar.dart';
+import 'package:admin_future/home/presenation/widget/widget/search_bar.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,6 +21,8 @@ class ManageSalary extends StatelessWidget {
   Widget build(BuildContext context) {
     return Builder(
       builder: (context) {
+            TextEditingController _model = TextEditingController();
+
        // ManageSalaryCubit.get(context).getUsers();
         return BlocListener<ManageSalaryCubit, ManageSalaryState>(
           listener: (context, state) {
@@ -72,11 +77,8 @@ class ManageSalary extends StatelessWidget {
 
   },
   child: Scaffold(
-          // appBar: AppBar(
-          //   backgroundColor: Colors.white,
-          //   shadowColor: Colors.transparent,
-          // ),
-         // key: scaffoldKey,
+          appBar: CustomAppBar(text: 'ادارة المدربين'),
+          // key: scaffoldKey,
           backgroundColor: Colors.white,
           body: SafeArea(
             top: true,
@@ -85,35 +87,79 @@ class ManageSalary extends StatelessWidget {
               child: Column(
                              //   mainAxisSize: MainAxisSize.max,
                                 children: [
-                                  Row(
-                                    mainAxisSize: MainAxisSize.max,
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.asset(
-                                          'assets/images/back.png',
-                                          width: 50,
-                                          height: 50,
-                                          fit: BoxFit.none,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Text(
-                                    'ادارة المرتب',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Color(0xFF333333),
-                                      fontSize: 32,
-                                      fontFamily: 'Montserrat-Arabic',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.81,
-                                    ),
-                                  ),
+                               
                                   //60
                                   SizedBox(
-                                    height: 60.h,
+                                    height: 50.h,
                                   ),
+                                  CustomSearchBar(
+                                    isCoach: true,
+                                  ),
+                                     // Row(
+                                     //  mainAxisAlignment: MainAxisAlignment.end,
+                                     //   children: [
+                                     //     Padding(
+                                     //       padding: const EdgeInsets.all(10.0),
+                                     //       child: Container(
+                                     //
+                                     //     decoration:ShapeDecoration(
+                                     //     color: Color(0xFFFAFAFA),
+                                     //     shape: RoundedRectangleBorder(
+                                     //     side: BorderSide(width: 1, color: Color(0xFFB9B9B9)),
+                                     //     borderRadius: BorderRadius.circular(2),
+                                     //     ),
+                                     //     ),
+                                     //
+                                     //                                     height: 40.h,
+                                     //                                     width: 290.w,
+                                     //                                     padding: EdgeInsets.symmetric(horizontal: 20.w),
+                                     //                                     child: TextField(
+                                     //                                       controller: _model,
+                                     //                                       decoration: InputDecoration(
+                                     //                                         hintText: 'name or phone number',
+                                     //                                         suffixIcon: IconButton(
+                                     //        icon: Icon(Icons.search),
+                                     //        onPressed: () {
+                                     //          String query = _model.text;
+                                     //          //delete spaces in the beginning and end of the query
+                                     //          query = query.trim();
+                                     //          FirebaseFirestore.instance
+                                     //                .collection('users')
+                                     //                .where('name', isGreaterThanOrEqualTo: query)
+                                     //                .where('name', isLessThan: query + 'z')
+                                     //                .where('role', isEqualTo: 'coach')
+                                     //                .get()
+                                     //              .then((snapshot) {
+                                     //            if (snapshot.docs.isNotEmpty) {
+                                     //              List users = snapshot.docs.map((e) => UserModel.fromJson(e.data())).toList();
+                                     //              ManageSalaryCubit.get(context).updateListOfUsers(
+                                     //                  users
+                                     //              );
+                                     //            } else {
+                                     //              // If no results found for name search, search by phone number
+                                     //              FirebaseFirestore.instance
+                                     //                .collection('users')
+                                     //                .where('phone', isGreaterThanOrEqualTo: query)
+                                     //                .where('phone', isLessThan: query + 'z')
+                                     //                .where('role', isEqualTo: 'coach')
+                                     //                .get()
+                                     //                  .then((snapshot) {
+                                     //                List users = snapshot.docs.map((e) => UserModel.fromJson(e.data())).toList();
+                                     //                ManageSalaryCubit.get(context).updateListOfUsers(
+                                     //                    users
+                                     //                );
+                                     //              });
+                                     //            }
+                                     //          });
+                                     //
+                                     //        },
+                                     //                                         ),
+                                     //                                       ),
+                                     //                                     ),
+                                     //                                   ),
+                                     //     ),
+                                     //   ],
+                                     // ),
                                   Row(
                                     mainAxisSize: MainAxisSize.max,
                                     mainAxisAlignment: MainAxisAlignment.end,
@@ -256,10 +302,10 @@ class ManageSalary extends StatelessWidget {
                                         child: InkWell(
                                           onTap: () async {
                                             final manageSalaryCubit = ManageSalaryCubit.get(context);
-                                            manageSalaryCubit.initControllers(ManageSalaryCubit.get(context).users[index]);
+                                            manageSalaryCubit.initControllers(ManageSalaryCubit.get(context).coaches[index]);
                                             await Navigator.pushNamed(context,
                                                 AppRoutes.editProfile,
-                                                arguments: ManageSalaryCubit.get(context).users[index]
+                                                arguments: ManageSalaryCubit.get(context).coaches[index]
                                                 as UserModel
                                             ) ;
 
@@ -300,7 +346,7 @@ class ManageSalary extends StatelessWidget {
                                             ),
                                             child: InkWell(
                                               onTap: () async {
-                                                String? uid =ManageSalaryCubit.get(context).users[index].uId;
+                                                String? uid =ManageSalaryCubit.get(context).coaches[index].uId;
                                                 //show dialog
                                                 await showDialog(
                                                   useSafeArea: true,
@@ -552,7 +598,7 @@ class ManageSalary extends StatelessWidget {
                                         ),
                                         child: InkWell(
                                           onTap: () async {
-                                            String? uid =ManageSalaryCubit.get(context).users[index].uId;
+                                            String? uid =ManageSalaryCubit.get(context).coaches[index].uId;
                                             //show dialog
                                             await showDialog(
                                               useSafeArea: true,
@@ -772,7 +818,7 @@ class ManageSalary extends StatelessWidget {
                                         child: Align(
                                           alignment: AlignmentDirectional(0, 0),
                                           child: Text(
-                                           ManageSalaryCubit.get(context).users[index].totalSalary.toString(),
+                                           ManageSalaryCubit.get(context).coaches[index].totalSalary.toString(),
                                             textAlign: TextAlign.end,
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
@@ -802,7 +848,7 @@ class ManageSalary extends StatelessWidget {
                                             alignment: AlignmentDirectional(0, 0),
                                             child: Text(
                                               ' ${
-                                                  ManageSalaryCubit.get(context).users[index].fname??''} ${(ManageSalaryCubit.get(context).users[index].lname??'')}',
+                                                  ManageSalaryCubit.get(context).coaches[index].fname??''} ${(ManageSalaryCubit.get(context).coaches[index].lname??'')}',
                                               textAlign: TextAlign.end,
                                               style: FlutterFlowTheme.of(context)
                                                   .bodyMedium
@@ -816,7 +862,7 @@ class ManageSalary extends StatelessWidget {
                                       ),
                                     ],
                                   ),
-                                  itemCount:ManageSalaryCubit.get(context).users?.length,
+                                  itemCount:ManageSalaryCubit.get(context).coaches?.length,
 
                                   );
   },
@@ -922,4 +968,5 @@ InkWell(
     );
   }
 }
+
 

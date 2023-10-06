@@ -276,9 +276,9 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
           // Update the user in the users list
           UserModel updatedUser = UserModel.fromJson(userData);
           updatedUser.totalSalary = newTotalSalary;
-          int userIndex = users.indexWhere((user) => user.uId == userId);
+          int userIndex = coaches.indexWhere((user) => user.uId == userId);
           if (userIndex != -1) {
-            users[userIndex] = updatedUser;
+            coaches[userIndex] = updatedUser;
           }
           emit(PaySalarySuccessStateWithoutInternet());
           return;
@@ -304,9 +304,9 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         // Update the user in the users list
         UserModel updatedUser = UserModel.fromJson(userData);
         updatedUser.totalSalary = newTotalSalary;
-        int userIndex = users.indexWhere((user) => user.uId == userId);
+        int userIndex = coaches.indexWhere((user) => user.uId == userId);
         if (userIndex != -1) {
-          users[userIndex] = updatedUser;
+          coaches[userIndex] = updatedUser;
         }
 
         emit(PaySalarySuccessState());
@@ -349,9 +349,9 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         saveSalaryLocally(userId, newTotalSalary);
 
         // Update the user in the users list
-        int userIndex = users.indexWhere((user) => user.uId == userId);
+        int userIndex = coaches.indexWhere((user) => user.uId == userId);
         if (userIndex != -1) {
-          users[userIndex].totalSalary = newTotalSalary;
+          coaches[userIndex].totalSalary = newTotalSalary;
         }
 
         emit(PaySalarySuccessStateWithoutInternet());
@@ -363,9 +363,9 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
           .doc(userId)
           .update({'totalSalary': newTotalSalary});
       // Update the user in the users list
-      int userIndex = users.indexWhere((user) => user.uId == userId);
+      int userIndex = coaches.indexWhere((user) => user.uId == userId);
       if (userIndex != -1) {
-        users[userIndex].totalSalary = newTotalSalary;
+        coaches[userIndex].totalSalary = newTotalSalary;
       }
 
       emit(PaySalarySuccessState());
@@ -404,9 +404,9 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
           // Update the user in the users list
           UserModel updatedUser = UserModel.fromJson(userData);
           updatedUser.totalSalary = newTotalSalary;
-          int userIndex = users.indexWhere((user) => user.uId == userId);
+          int userIndex = coaches.indexWhere((user) => user.uId == userId);
           if (userIndex != -1) {
-            users[userIndex] = updatedUser;
+            coaches[userIndex] = updatedUser;
           }
           emit(PayBonusSuccessStateWithoutInternet());
           return;
@@ -435,9 +435,9 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         // Update the user in the users list
         UserModel updatedUser = UserModel.fromJson(userData);
         updatedUser.totalSalary = newTotalSalary;
-        int userIndex = users.indexWhere((user) => user.uId == userId);
+        int userIndex = coaches.indexWhere((user) => user.uId == userId);
         if (userIndex != -1) {
-          users[userIndex] = updatedUser;
+          coaches[userIndex] = updatedUser;
         }
 
         emit(PayBonusSuccessState());
@@ -449,18 +449,36 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
       emit(PayBonusErrorState(error.toString()));
     }
   }
-
   List<UserModel> users = [];
   Future<void> getUsers() async {
     emit(GetUsersLoadingState());
     users = [];
     await FirebaseFirestore.instance
         .collection('users')
+        .where('role', isEqualTo: 'user') // filter by role
         .get(GetOptions(source: Source.serverAndCache))
         .then((value) {
-      num totalSalary = 0; // Change the type of totalSalary to num
       value.docs.forEach((element) {
         users.add(UserModel.fromJson(element.data()));
+      });
+      emit(GetUsersSuccessState());
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetUsersErrorState(error.toString()));
+    });
+  }
+  List<UserModel> coaches = [];
+  Future<void> getCoaches() async {
+    emit(GetUsersLoadingState());
+    coaches = [];
+    await FirebaseFirestore.instance
+      .collection('users')
+      .where('role', isEqualTo: 'coach') // add this line to filter by role
+      .get(GetOptions(source: Source.serverAndCache))
+      .then((value) {
+      num totalSalary = 0; // Change the type of totalSalary to num
+      value.docs.forEach((element) {
+        coaches.add(UserModel.fromJson(element.data()));
         totalSalary += element.data()['totalSalary'];
       });
       globalTotalSalary =
@@ -667,9 +685,9 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
           userSnapshot.data() as Map<String, dynamic>?;
       UserModel user = UserModel.fromJson(userData!);
       if (updateData != null) {
-        int userIndex = users.indexWhere((user) => user.uId == uid);
+        int userIndex = coaches.indexWhere((user) => user.uId == uid);
         if (userIndex != -1) {
-          users[userIndex] = user;
+          coaches[userIndex] = user;
         }
         //   emit(PaySalarySuccessStateWithoutInternet());
         return;
@@ -827,14 +845,21 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     ));
   }
 
-  void updateListOfUsers(List users14) {
+  void updateListOfCoaches(List users14) {
+    //merge user14 with users
+    coaches = [];
+    coaches.addAll(users14 as Iterable<UserModel>);
+    emit(UpdateListOfUsersState(
+      coaches,
+    ));
+  }
+   void updateListOfUsers(List users14) {
     //merge user14 with users
     users = [];
     users.addAll(users14 as Iterable<UserModel>);
     emit(UpdateListOfUsersState(
       users,
     ));
-
   }
 
   //                     ManageSalaryCubit.get(context).deleteSchedule(
