@@ -35,7 +35,7 @@ class SchedulesModel {
       'finished': finished,
       'usersList': usersList,
       'userIds': userIds, // new field
-      'nearestDay': nearestDay,
+      'nearest_day': nearestDay,
       'schedule_id': scheduleId,
       'date': date,
       'pId': pId,
@@ -52,7 +52,7 @@ class SchedulesModel {
       'userIds': userIds, // new field
       'schedule_id': scheduleId,
       'date': date,
-      'nearestDay': nearestDay,
+      'nearest_day': nearestDay,
     };
   }
 
@@ -65,7 +65,7 @@ class SchedulesModel {
       finished: json['finished'],
       usersList: json['usersList'] != null ? List<String>.from(json['usersList']) : null,
       userIds: json['userIds'] != null ? List<String>.from(json['userIds']) : null, // new field
-      nearestDay: json['nearestDay'],
+      nearestDay: json['nearest_day'],
       scheduleId: json['schedule_id'],
       date: json['date'],
     );
@@ -75,7 +75,7 @@ class SchedulesModel {
     return SchedulesModel(
       pId: json['pId'],
       branchId: json['branch_id'],
-      nearestDay: json['nearestDay'] != null ? Timestamp.fromMillisecondsSinceEpoch((json['nearestDay'] as Timestamp).millisecondsSinceEpoch) : null,
+      nearestDay: json['nearest_day'] != null ? Timestamp.fromMillisecondsSinceEpoch((json['nearestDay'] as Timestamp).millisecondsSinceEpoch) : null,
       startTime: json['start_time'] != null ? Timestamp.fromMillisecondsSinceEpoch(DateTime.parse(json['start_time']).millisecondsSinceEpoch) : null,
       endTime: json['end_time'] != null ? Timestamp.fromMillisecondsSinceEpoch(DateTime.parse(json['end_time']).millisecondsSinceEpoch) : null,
       finished: json['finished'],

@@ -7,6 +7,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -26,7 +27,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   ManageSalaryCubit() : super(ManageSalaryInitial());
   static ManageSalaryCubit get(context) => BlocProvider.of(context);
   bool isGrey = false;
-
+  TabController? tabController;
   //messageController
   final messageController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -34,6 +35,10 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   late TextEditingController lastNameController;
   late TextEditingController phoneController;
   late TextEditingController salaryPerHourController;
+  //init tab controller
+  void initTabController() {
+    tabController = TabController(length: 2, vsync: NavigatorState());
+  }
   void initControllers(userModel) {
     firstNameController = TextEditingController(text: userModel.fname);
     lastNameController = TextEditingController(text: userModel.lname);
@@ -41,6 +46,15 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     salaryPerHourController =
         TextEditingController(text: userModel.hourlyRate.toString() ?? '');
   }
+  bool isCoach = true;
+  //change isCoach
+  void changeIsCoach(bool value) {
+    isCoach = value;
+    emit(ChangeIsCoachState(
+      isCoach!,
+    ));
+  }
+
   //changeSelectedDayIndex
   int selectedDayIndex = 0;
   void changeSelectedDayIndex(int index) {
@@ -51,7 +65,6 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   }
 
   //get list of next 7 days from today and prind the day like friday in arabic
-
 
   List<DayModel> days = [];
   String? today;
@@ -87,7 +100,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         case '7':
           day = 'الأحد';
           break;
-          //,make random dummy values list of days
+        //,make random dummy values list of days
         //['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت', 'الأحد'];
       }
       Timestamp timestamp = Timestamp.fromDate(date);
@@ -99,6 +112,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     }
     today = days[0].name;
   }
+
   //get list of schedules from admin collection then schedule subcollection for specific day like friday
   List<SchedulesModel> schedules = [];
   Future<void> getSchedules({required String day}) async {
@@ -126,7 +140,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
           print('startTime: ${element.startTime}');
           print('endTime: ${element.endTime}');
           //print end time like that 12 : 00
-          print('endTime: ${element.endTime?.toDate().hour} : ${element.endTime?.toDate().minute}');
+          print(
+              'endTime: ${element.endTime?.toDate().hour} : ${element.endTime?.toDate().minute}');
           print('usersList: ${element.usersList}');
         });
       }
@@ -449,6 +464,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
       emit(PayBonusErrorState(error.toString()));
     }
   }
+
   List<UserModel> users = [];
   Future<void> getUsers() async {
     emit(GetUsersLoadingState());
@@ -467,15 +483,16 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
       emit(GetUsersErrorState(error.toString()));
     });
   }
+
   List<UserModel> coaches = [];
   Future<void> getCoaches() async {
     emit(GetUsersLoadingState());
     coaches = [];
     await FirebaseFirestore.instance
-      .collection('users')
-      .where('role', isEqualTo: 'coach') // add this line to filter by role
-      .get(GetOptions(source: Source.serverAndCache))
-      .then((value) {
+        .collection('users')
+        .where('role', isEqualTo: 'coach') // add this line to filter by role
+        .get(GetOptions(source: Source.serverAndCache))
+        .then((value) {
       num totalSalary = 0; // Change the type of totalSalary to num
       value.docs.forEach((element) {
         coaches.add(UserModel.fromJson(element.data()));
@@ -829,9 +846,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     });
   }
 
-
   void updateSchedules(SchedulesModel schedule) {
-     emit(UpdateSchedulesLoadingState());
+    emit(UpdateSchedulesLoadingState());
     schedules.add(schedule);
     //sort based on start time
     schedules.sort((a, b) => a.startTime!.compareTo(b.startTime!));
@@ -853,7 +869,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
       coaches,
     ));
   }
-   void updateListOfUsers(List users14) {
+
+  void updateListOfUsers(List users14) {
     //merge user14 with users
     users = [];
     users.addAll(users14 as Iterable<UserModel>);

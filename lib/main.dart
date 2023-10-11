@@ -1,6 +1,6 @@
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
-import 'package:admin_future/home/presenation/widget/mange_salary.dart';
+import 'package:admin_future/home/presenation/widget/mange_coaches.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/sign_up_cubit.dart';
 import 'package:admin_future/routiong.dart';
 import 'package:bloc/bloc.dart';

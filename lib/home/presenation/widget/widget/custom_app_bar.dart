@@ -11,6 +11,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
+
       backgroundColor: Colors.white,
       shadowColor: Colors.transparent,
       leading: InkWell(
@@ -30,7 +31,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       actions: [
         Padding(
           padding: EdgeInsets.only(
-            top: 29.0.h,
+            top: 39.0.h,
             right: 12.w,
           ),
           child: Text(
@@ -41,7 +42,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               fontSize: 24,
               fontFamily: 'Montserrat-Arabic',
               fontWeight: FontWeight.w400,
-              height: 0.05,
+              height: 0.04,
             ),
           ),
         ),

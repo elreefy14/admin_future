@@ -101,3 +101,8 @@ class UpdateListOfUsersState extends ManageSalaryState {
   final List<UserModel> listOfUsers;
   UpdateListOfUsersState(this.listOfUsers);
 }//UpdateListOfSchedulesState
+//ChangeIsCoachState
+class ChangeIsCoachState extends ManageSalaryState {
+  final bool isCoach;
+  ChangeIsCoachState(this.isCoach);
+}//UpdateListOfSchedulesState

@@ -115,11 +115,14 @@ void changePasswordVisibility(){
     });
   }
 
+        
   Future<void> addUser({
     required String lName,
     required String fName,
     required String phone,
     required String password,
+    required String role,  String? hourlyRate,
+
   }) async {
     emit(SignUpLoadingState());
     String? adminEmail = FirebaseAuth.instance.currentUser!.email;
@@ -131,6 +134,7 @@ void changePasswordVisibility(){
     ).then((value) async {
       print(value.user!.uid);
       createUser(
+        role: role,
         isUser: true,
         // paasword: password,
         // branches: selectedItems,
@@ -138,6 +142,7 @@ void changePasswordVisibility(){
         phone: phone,
         fname: fName,
         lname: lName,
+          hourlyRate :  int.parse(hourlyRate??'30')??30,
       );
       //get email from firebase and send it to admin to add it to his list
      await FirebaseFirestore.instance
@@ -207,18 +212,19 @@ void changePasswordVisibility(){
     //password
     bool isUser = false,
     String? paasword,
+    String? role,
     required String? uId,
     required String? phone,
     required String? fname,
     required String? lname,
     //branches list
-    List<String>? branches,
+    List<String>? branches, int? hourlyRate,
   }) {
     emit(CreateUserLoadingState());
     if (isUser) {
       UserModel model = UserModel(
-        role: 'coach',
-        hourlyRate: 0,
+        role: role,
+        hourlyRate: hourlyRate??30,
         totalHours: 0,
         totalSalary: 0,
         currentMonthHours: 0,
@@ -252,6 +258,7 @@ void changePasswordVisibility(){
         Salary: 0,
         phone: phone,
         pId: uId,
+
       );
       FirebaseFirestore.instance
           .collection('admins')

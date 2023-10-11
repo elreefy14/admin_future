@@ -19,9 +19,9 @@ import 'home/presenation/widget/add_schedule.dart';
 import 'home/presenation/widget/edit_users.dart';
 import 'home/presenation/widget/home_layout.dart';
 import 'home/presenation/widget/manage_attendence.dart';
-import 'home/presenation/widget/manage_coaches.dart';
+import 'home/presenation/widget/manage_users.dart';
 import 'home/presenation/widget/manage_schedules_screen.dart';
-import 'home/presenation/widget/mange_salary.dart';
+import 'home/presenation/widget/mange_coaches.dart';
 
 class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -30,7 +30,10 @@ class RouteGenerator {
       //AddSchedule
 //AddCoachScreen
 case AppRoutes.addCoach:
-  return MaterialPageRoute(builder: (_) => AddCoachScreen());
+  args = settings.arguments as Map<String, dynamic>;
+  return MaterialPageRoute(builder: (_) => AddCoachScreen(
+    isCoach: (args as Map<String, dynamic>)?['isCoach'],
+  ));
     
       case AppRoutes.addSchedule:
         args = settings.arguments as Map<String, dynamic>;

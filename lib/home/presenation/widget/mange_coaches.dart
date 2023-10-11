@@ -881,6 +881,9 @@ InkWell(
                                           onTap: () async {
                                             await Navigator.pushNamed(context,
                                                 AppRoutes.addCoach,
+                                               arguments: {
+                                              'isCoach':true,
+                                               }
                                                // arguments: ManageSalaryCubit.get(context).users
                                             ) ;
                                           },
