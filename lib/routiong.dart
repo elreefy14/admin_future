@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 
+import 'add_grouup_of_schedules/presentation/onboarding_screen.dart';
 import 'core/constants/routes_manager.dart';
 import 'core/constants/strings.dart';
 import 'home/presenation/widget/add_schedule.dart';
@@ -27,6 +28,9 @@ class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     var args = settings.arguments;
     switch (settings.name) {
+      //OnboardingScreen
+      case AppRoutes.onboarding:
+        return MaterialPageRoute(builder: (_) => OnboardingScreen());
       //AddSchedule
 //AddCoachScreen
 case AppRoutes.addCoach:

@@ -17,6 +17,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'core/bloc_observer.dart';
 import 'core/cashe_helper.dart';
+import 'core/constants/my_color.dart';
 import 'core/constants/routes_manager.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -141,12 +142,15 @@ class MyApp extends StatelessWidget {
               navigatorObservers: [BotToastNavigatorObserver()],
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
-                primarySwatch: Colors.blue,
+                
+                primarySwatch: //use this as material color #4F46E5
+                Colors.blue,
+                //MyColors.primaryColor,
               ),
               initialRoute:
               //manageSchedules
-              //AppRoutes.addCoach,
-              mainRoute,
+              AppRoutes.onboarding,
+             // mainRoute,
               onGenerateRoute: RouteGenerator.generateRoute,
             ),
 

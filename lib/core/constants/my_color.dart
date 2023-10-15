@@ -14,6 +14,8 @@ class MyColors {
   //static  const mainColor = Color(0xFFfc6011);
   static  const mainColor = Color(0xFF2E784C);
   //background color
+  static Color stepperColor = //#4F46E5
+  Color(0xff4F46E5);
   static Color backgroundColor = Color(0xffE5F5E0);
  static Color iconColor = Color(0xffFFC107 );
 // static Color bottomNaviconColor = Color(0xff7BBF6A);
