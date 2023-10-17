@@ -787,147 +787,161 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
       {required Timestamp startTrainingTime,
       required Timestamp endTrainingTime,
       required String branch}) async {
-    List<String> days = selectedDays ?? [];
-    List<String> coaches = selectedCoaches ?? [];
-    ManageSalaryCubit manageSalaryCubit = ManageSalaryCubit();
-    SchedulesModel? schedule;
-    try {
-      if(isEmit)
-      emit(AddScheduleLoadingState());
-      for (var day in days) {
-        // Get the nearest day of the week
-        DateTime nearestDay = getNearestDayOfWeek(day);
-
-        // Convert the nearest day to a Timestamp object
-        Timestamp nearestDayTimestamp = Timestamp.fromDate(nearestDay);
-
-        await FirebaseFirestore.instance
-            .collection('admins')
-            .doc(FirebaseAuth.instance.currentUser!.uid)
-            .collection('schedules')
-            .doc(day)
-            .collection('schedules')
-            .add({
-          'start_time': startTrainingTime,
-          'end_time': endTrainingTime,
-          'date': day,
-          'nearest_day':
-              nearestDayTimestamp, // Add nearest day timestamp as a field
-          'branch_id': branch,
-          'usersList': [], // add empty usersList field to each schedule
-          'userIds': [], // add empty userIds field to each schedule
-        }).then((scheduleDoc) async {
-          if (coaches.isNotEmpty) {
-            for (var coach in coaches) {
-              QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-                  .collection('users')
-                  .where('name', isEqualTo: coach)
-                  .get();
-              if (querySnapshot.docs.isNotEmpty) {
-                String userId = querySnapshot.docs.first.id;
-                await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(userId)
-                    .collection('schedules')
-                    .doc(scheduleDoc.id)
-                    .set({
-                  'start_time': startTrainingTime,
-                  'end_time': endTrainingTime,
-                  'date': day,
-                  'nearest_day':
-                      nearestDayTimestamp, // Add nearest day timestamp as a field
-                  'branch_id': branch,
-                  'pId': FirebaseAuth.instance.currentUser!.uid,
-                });
-                await FirebaseFirestore.instance
-                    .collection('admins')
-                    .doc(FirebaseAuth.instance.currentUser!.uid)
-                    .collection('schedules')
-                    .doc(day)
-                    .collection('schedules')
-                    .doc(scheduleDoc.id)
-                    .collection('users')
-                    .doc(userId)
-                    .set({
-                  'name': querySnapshot.docs.first['name'],
-                  'uid': userId,
-                  'finished': false,
-                });
-
-                // add user to usersList field in schedule
-                await scheduleDoc.update({
-                  'usersList':
-                      FieldValue.arrayUnion([querySnapshot.docs.first['name']]),
-                  'userIds': FieldValue.arrayUnion(
-                      [userId]), // add userId to userIds field
-                });
-
-                // add schedule ID to the user's schedules subcollection
-                await FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(userId)
-                    .collection('schedules')
-                    .doc(scheduleDoc.id)
-                    .set({
-                  'start_time': startTrainingTime,
-                  'end_time': endTrainingTime,
-                  'date': day,
-                  'nearest_day':
-                      nearestDayTimestamp, // Add nearest day timestamp as a field
-                  'branch_id': branch,
-                  'pId': FirebaseAuth.instance.currentUser!.uid,
-                  'scheduleId': scheduleDoc.id,
-                });
-              }
-            }
-          }
-
-          await scheduleDoc.update({
-            'schedule_id': scheduleDoc.id,
-          });
-
-          // make schedules model and add them to the list of schedules
-          schedule = SchedulesModel(
-            startTime: startTrainingTime,
-            endTime: endTrainingTime,
-            date: day,
-            nearestDay:
-                nearestDayTimestamp, // Add nearest day timestamp as a field
-            branchId: branch,
-            usersList: coaches,
-            userIds: [], // add empty userIds field to the schedule model
-            scheduleId: scheduleDoc.id,
-            finished: false,
-            pId: FirebaseAuth.instance.currentUser!.uid,
-          );
-        });
+    void addSchedule(
+        bool isEmit  ,
+      BuildContext context, {
+     // List<String>? selectedDays,
+     // List<String>? selectedCoaches,
+      String? startTrainingTime,
+      String? endTrainingTime,
+      String? branch,
+      Map<String, Map<dynamic, dynamic>>? times,
+    }) async {
+      //todo change use thsi map
+      Map<String, Map<dynamic, dynamic>> nonNullableDays = {};
+      for (var day in times!.keys) {
+        if (times[day]!['start'] != null && times[day]!['end'] != null) {
+          DateTime nearestDay = getNearestDayOfWeek(day);
+          Timestamp nearestDayTimestamp = Timestamp.fromDate(nearestDay);
+          nonNullableDays[day] = {
+            'start': times[day]!['start'],
+            'end': times[day]!['end'],
+            'nearest_day': nearestDayTimestamp,
+          };
+        }
       }
-      ManageSalaryCubit.get(context).updateSchedules(schedule!);
-      if(isEmit){
-        emit(AddScheduleSuccessState());
-        //show toast
+
+      List<String> days = selectedDays ?? [];
+      List<String> coaches = selectedCoaches ?? [];
+      ManageSalaryCubit manageSalaryCubit = ManageSalaryCubit();
+      SchedulesModel? schedule;
+      try {
+        if (isEmit) emit(AddScheduleLoadingState());
+        for (var day in days) {
+          if (nonNullableDays.containsKey(day)) {
+            DateTime nearestDay =
+                nonNullableDays[day]!['nearest_day'].toDate();
+            Timestamp nearestDayTimestamp =
+                nonNullableDays[day]!['nearest_day'];
+
+            await FirebaseFirestore.instance
+                .collection('admins')
+                .doc(FirebaseAuth.instance.currentUser!.uid)
+                .collection('schedules')
+                .doc(day)
+                .collection('schedules')
+                .add({
+              'start_time': nonNullableDays[day]!['start'],
+              'end_time': nonNullableDays[day]!['end'],
+              'date': day,
+              'nearest_day': nearestDayTimestamp,
+              'branch_id': branch,
+              'usersList': [],
+              'userIds': [],
+            }).then((scheduleDoc) async {
+              if (coaches.isNotEmpty) {
+                for (var coach in coaches) {
+                  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+                      .collection('users')
+                      .where('name', isEqualTo: coach)
+                      .get();
+                  if (querySnapshot.docs.isNotEmpty) {
+                    String userId = querySnapshot.docs.first.id;
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(userId)
+                        .collection('schedules')
+                        .doc(scheduleDoc.id)
+                        .set({
+                      'start_time': nonNullableDays[day]!['start'],
+                      'end_time': nonNullableDays[day]!['end'],
+                      'date': day,
+                      'nearest_day': nearestDayTimestamp,
+                      'branch_id': branch,
+                      'pId': FirebaseAuth.instance.currentUser!.uid,
+                    });
+                    await FirebaseFirestore.instance
+                        .collection('admins')
+                        .doc(FirebaseAuth.instance.currentUser!.uid)
+                        .collection('schedules')
+                        .doc(day)
+                        .collection('schedules')
+                        .doc(scheduleDoc.id)
+                        .collection('users')
+                        .doc(userId)
+                        .set({
+                      'name': querySnapshot.docs.first['name'],
+                      'uid': userId,
+                      'finished': false,
+                    });
+
+                    await scheduleDoc.update({
+                      'usersList': FieldValue.arrayUnion(
+                          [querySnapshot.docs.first['name']]),
+                      'userIds': FieldValue.arrayUnion([userId]),
+                    });
+
+                    await FirebaseFirestore.instance
+                        .collection('users')
+                        .doc(userId)
+                        .collection('schedules')
+                        .doc(scheduleDoc.id)
+                        .set({
+                      'start_time': nonNullableDays[day]!['start'],
+                      'end_time': nonNullableDays[day]!['end'],
+                      'date': day,
+                      'nearest_day': nearestDayTimestamp,
+                      'branch_id': branch,
+                      'pId': FirebaseAuth.instance.currentUser!.uid,
+                      'scheduleId': scheduleDoc.id,
+                    });
+                  }
+                }
+              }
+
+              await scheduleDoc.update({
+                'schedule_id': scheduleDoc.id,
+              });
+
+              schedule = SchedulesModel(
+                startTime: nonNullableDays[day]!['start'],
+                endTime: nonNullableDays[day]!['end'],
+                date: day,
+                nearestDay: nearestDayTimestamp,
+                branchId: branch,
+                usersList: coaches,
+                userIds: [],
+                scheduleId: scheduleDoc.id,
+                finished: false,
+                pId: FirebaseAuth.instance.currentUser!.uid,
+              );
+            });
+          }
+        }
+        ManageSalaryCubit.get(context).updateSchedules(schedule!);
+        if (isEmit) {
+          emit(AddScheduleSuccessState());
+          Fluttertoast.showToast(
+              msg: 'تم إضافة المواعيد بنجاح',
+              toastLength: Toast.LENGTH_LONG,
+              gravity: ToastGravity.BOTTOM,
+              timeInSecForIosWeb: 5,
+              backgroundColor: Colors.green,
+              textColor: Colors.white,
+              fontSize: 16.0);
+        }
+      } catch (e) {
+        if (isEmit)
+          emit(AddScheduleErrorState(e.toString()));
         Fluttertoast.showToast(
-            msg: 'تم إضافة المواعيد بنجاح',
+            msg: 'حدث خطأ أثناء إضافة المواعيد\n${e.toString()}',
             toastLength: Toast.LENGTH_LONG,
             gravity: ToastGravity.BOTTOM,
             timeInSecForIosWeb: 5,
-            backgroundColor: Colors.green,
+            backgroundColor: Colors.red,
             textColor: Colors.white,
             fontSize: 16.0);
       }
-
-    } catch (e) {
-      if(isEmit)
-      emit(AddScheduleErrorState(e.toString()));
-      Fluttertoast.showToast(
-          msg: //print e
-          'حدث خطأ أثناء إضافة المواعيد\n${e.toString()}',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 5,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
     }
   }
   //edit this function so that when user selected day is saturday for example get the date of neareast saturday and add it as field in schedule in firebase

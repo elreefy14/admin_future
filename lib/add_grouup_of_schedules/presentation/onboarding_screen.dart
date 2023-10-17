@@ -12,6 +12,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:logger/logger.dart';
 
+import '../../core/flutter_flow/flutter_flow_theme.dart';
+
 class OnboardingScreen extends StatefulWidget {
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -22,7 +24,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   List<Widget> _screens = [
     // Add your screens here
-    Screen1(),
+    //Screen1(),
     // Screen2(),
     // Screen2(),
     // Screen2(),
@@ -66,89 +68,109 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 //      color: Colors.white,
                 //    ),
                 //  ),
-                height: 900.h,
+                height: 650.h,
                 width: double.infinity,
                 child: Theme(
                   data: ThemeData(
                     canvasColor: Colors.white,
+                    switchTheme: SwitchThemeData(
+                      thumbColor: MaterialStateProperty.all(
+                        Colors.white,
+                      ),
+                      trackColor: MaterialStateProperty.all(
+                        Colors.grey,
+                      ),
+                    ),
                     colorScheme: Theme.of(context).colorScheme.copyWith(
-                          primary: Colors.purple,
+                        //  primary: Colors.purple,
                           //disabledColor: Colors.purple,
-                          background: Colors.white,
-                          secondary: Colors.purple,
+                        //  background: Colors.white,
+                         // secondary: Colors.purple,
                         ),
+                    //change stepper color only
+                    //primaryColor: Colors.purple,
+                    //change the color of the text in the stepper
                   ),
-                  child: Stepper(
-                    onStepContinue: _next,
-                    onStepCancel: _previous,
-                    onStepTapped: (index) {
-                      setState(() {
-                        _currentIndex = index;
-                      });
-                    },
-                    //handle navigation with swiping
-                    physics: ClampingScrollPhysics(),
-                    stepIconBuilder: (stepIndex, stepState) {
-                      //change the icon of the step
-                      if (stepState == StepState.complete) {
-                        return
-
-                            ///home/elreefy14/admin14/admin_future/assets/images/Group 1.svg
-                            SvgPicture.asset(
-                          'assets/images/check.svg',
+                  child: Container(
+                    //delete borders
+                      decoration: BoxDecoration(
+                        border: Border.all(
                           color: Colors.white,
-                        );
-                      } else if (stepState == StepState.error) {
-                        return Icon(
-                          Icons.error,
-                          color: Colors.red,
-                        );
-                      } else if (stepState == StepState.editing) {
-                        return Container(
-                          
-                          //shape circke to make the icon in circle
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white,
-                          ),
-                          child: SvgPicture.asset(
-                            'assets/images/Group 1.svg',
-                            color: Colors.purple,
-                          ),
-                        );
-                      } else {
-                        return Text(
-                          '',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16.sp,
-                            fontFamily: 'Montserrat-Arabic',
-                            fontWeight: FontWeight.w400,
-                            height: 0,
-                          ),
-                        );
-                      }
-                    },
+                        ),
+                      ),
+                    child: Stepper(
 
-                    type: StepperType.horizontal,
-                    currentStep: _currentIndex,
-                    steps: _screens
-                        .asMap()
-                        .map((index, screen) => MapEntry(
-                            index,
-                            Step(
-                              title: Text(''),
-                              isActive: _currentIndex >= index,
-                              state: _currentIndex == index
-                                  ? StepState.editing
-                                  : StepState.complete,
-                              content: SizedBox(
-                                  height: 900.h,
-                                  width: double.infinity,
-                                  child: screen),
-                            )))
-                        .values
-                        .toList(),
+                      onStepContinue: _next,
+                      onStepCancel: _previous,
+                      onStepTapped: (index) {
+                        setState(() {
+                          _currentIndex = index;
+                        });
+                      },
+                      //handle navigation with swiping
+                      physics: ClampingScrollPhysics(),
+                      stepIconBuilder: (stepIndex, stepState) {
+                        //change the icon of the step
+                        if (stepState == StepState.complete) {
+                          return
+                  
+                              ///home/elreefy14/admin14/admin_future/assets/images/Group 1.svg
+                              SvgPicture.asset(
+                            'assets/images/check.svg',
+                            color: Colors.white,
+                          );
+                        } else if (stepState == StepState.error) {
+                          return Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          );
+                        } else if (stepState == StepState.editing) {
+                          return Container(
+                            
+                            //shape circke to make the icon in circle
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white,
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/images/Group 1.svg',
+                              color: Colors.purple,
+                            ),
+                          );
+                        } else {
+                          return Text(
+                            '',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16.sp,
+                              fontFamily: 'Montserrat-Arabic',
+                              fontWeight: FontWeight.w400,
+                              height: 0,
+                            ),
+                          );
+                        }
+                      },
+                  
+                      type: StepperType.horizontal,
+                      currentStep: _currentIndex,
+                      steps: _screens
+                          .asMap()
+                          .map((index, screen) => MapEntry(
+                              index,
+                              Step(
+                                title: Text(''),
+                                isActive: _currentIndex >= index,
+                                state: _currentIndex == index
+                                    ? StepState.editing
+                                    : StepState.complete,
+                                content: SizedBox(
+                                    height: 900.h,
+                                    width: double.infinity,
+                                    child: screen),
+                              )))
+                          .values
+                          .toList(),
+                    ),
                   ),
                 ),
               ),
@@ -156,17 +178,107 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               //   child: _screens[_currentIndex],
               // ),
               Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   if (_currentIndex > 0)
-                    ElevatedButton(
-                      onPressed: _previous,
-                      child: Text('Previous'),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.0.w,
+                      ),
+                      child: InkWell(
+                        onTap: _previous,
+                        child: Container(
+                          height: 50.h,
+                          width: 150.w,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Align(
+                            alignment: AlignmentDirectional(0, 0),
+                            child: Text(
+    'السابق',
+    textAlign: TextAlign.right,
+    style: TextStyle(
+        color: Colors.white,
+        fontSize: 18,
+        fontFamily: 'Montserrat-Arabic',
+        fontWeight: FontWeight.w400,
+        height: 0.08,
+    ),
+)
+                          ),
+                        ),
+                      ),
                     ),
+                  //if current index is last index 'حفظ',
+
+                  if (_currentIndex == _screens.length - 1)
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.0.w,
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          
+                        },
+                        child: Container(
+                          height: 50.h,
+                          width: 150.w,
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Align(
+                            alignment: AlignmentDirectional(0, 0),
+                            child: Text(
+                                'حفظ',
+    textAlign: TextAlign.right,
+    style: TextStyle(
+        color: Colors.white,
+        fontSize: 18,
+        fontFamily: 'Montserrat-Arabic',
+        fontWeight: FontWeight.w400,
+        height: 0.08,
+    ),
+)
+                          ),
+                        ),
+                      ),
+                    ),
+
+                       
+
+
                   if (_currentIndex < _screens.length - 1)
-                    ElevatedButton(
-                      onPressed: _next,
-                      child: Text('Next'),
+
+                    Padding(
+                      padding:  EdgeInsets.symmetric( horizontal: 8.0),
+                      child: InkWell(
+                        onTap: _next,
+                        child: Container(
+                          height: 50.h,
+                          width: 150.w,
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Align(
+                            alignment: AlignmentDirectional(0, 0),
+                            child: Text(
+                                'التالي',
+    textAlign: TextAlign.right,
+    style: TextStyle(
+        color: Colors.white,
+        fontSize: 18,
+        fontFamily: 'Montserrat-Arabic',
+        fontWeight: FontWeight.w400,
+        height: 0.08,
+    ),
+)
+                          ),
+                        ),
+                      ),
                     ),
                 ],
               ),
@@ -365,7 +477,7 @@ final Map<String, Map<dynamic, dynamic>> _times = {
             children: [
               //10
               SizedBox(
-                height: 15.h,
+                height: 5.h,
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
@@ -378,6 +490,7 @@ final Map<String, Map<dynamic, dynamic>> _times = {
             );
             if (endTime != null) {
               setState(() {
+                //
                 _times[day]?['end'] = endTime;
                 //start time equal hour minus end time
                 _times[day]?['start']
@@ -434,11 +547,43 @@ final Map<String, Map<dynamic, dynamic>> _times = {
             if (startTime != null) {
             
               setState(() {
+                //convert start time to time stamp
+
                 _times[day]?['start'] = startTime;
               //end time equal hour plus start time
              TimeOfDay endTime = startTime.replacing(hour: startTime.hour + 1);
                   _times[day]?['end'] = endTime;
-              //save the start time as timeStamp get 
+              //save the start time as timeStamp get
+              
+               //  DateTime getNearestDayOfWeek(String dayOfWeek) {
+    // Get the current date
+  //   DateTime now = DateTime.now();
+
+  //   // Get the integer value of the selected day of the week
+  //   int selectedDayOfWeek = [
+  //     'الأحد',
+  //     'الاثنين',
+  //     'الثلاثاء',
+  //     'الأربعاء',
+  //     'الخميس',
+  //     'الجمعة',
+  //     'السبت'
+  //   ].indexOf(dayOfWeek);
+
+  //   // Calculate the difference between the selected day of the week and the current day of the week
+  //   int difference = selectedDayOfWeek - now.weekday;
+
+  //   // If the difference is negative, add 7 to get the nearest day of the week
+  //   if (difference < 0) {
+  //     difference += 7;
+  //   }
+
+  //   // Add the difference to the current date to get the nearest day of the week
+  //   DateTime nearestDay = now.add(Duration(days: difference));
+
+  //   return nearestDay;
+  // }
+
                 
               });
             }
@@ -508,6 +653,7 @@ class _Screen3State extends State<Screen3> {
   int? numberOfQuery;
   List<String> _selectedUsersUids = [];
   List<UserModel> _selectedUsers = [];
+
 
   @override
   void initState() {
