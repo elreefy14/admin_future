@@ -991,7 +991,7 @@ Future<void> addGroup(
     if (isEmit) emit(AddScheduleLoadingState());
     for (var day in days) {
       if (nonNullableDays.containsKey(day)) {
-        DateTime nearestDay = nonNullableDays[day]!['nearest_day'].toDate();
+        //DateTime nearestDay = nonNullableDays[day]!['nearest_day'].toDate();
         Timestamp nearestDayTimestamp = nonNullableDays[day]!['nearest_day'];
 
         await FirebaseFirestore.instance
