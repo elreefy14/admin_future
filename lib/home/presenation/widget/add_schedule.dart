@@ -586,13 +586,13 @@ class _AddScheduleState extends State<AddSchedule> {
                       //   );
                       // }
                     } else {
-                      await ManageAttendenceCubit.get(context).addSchedule(
-          true,
-                        context,
-                        startTrainingTime: ManageAttendenceCubit.get(context).startTime!,
-                        endTrainingTime: ManageAttendenceCubit.get(context).endTime!,
-                        branch: ManageAttendenceCubit.get(context).selectedBranch ?? '',
-                      );
+                      //await ManageAttendenceCubit.get(context).addSchedule(
+                     //  true,
+                      //  context,
+                      //  startTrainingTime: ManageAttendenceCubit.get(context).startTime!,
+                      //  endTrainingTime: ManageAttendenceCubit.get(context).endTime!,
+                      //  branch: ManageAttendenceCubit.get(context).selectedBranch ?? '',
+                      //);
                       // if (state is AddScheduleSuccessState) {
                       //   Fluttertoast.showToast(
                       //     msg: 'تمت إضافة الموعد بنجاح',

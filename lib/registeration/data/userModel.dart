@@ -35,11 +35,27 @@ class UserModel
   String? token;
   List<String>? branches;
   String? role;
-
+//  String? name;
+//   String? email;
+//   int? level;
+//   int? hourlyRate;
+//   int? totalHours;
+//   int? totalSalary;
+//   int? currentMonthHours;
+//   int? currentMonthSalary;
+//   String? uId;
+//   String? phone;
+//   String? role;
+//   //image
+//   String? image;
+//   //fname
+//   String? fname;
+//   //lname
+//   String? lname;
 
 
   UserModel({
-     this.role,
+    this.role,
     this.name,
     this.email,
     this.level,
@@ -52,7 +68,7 @@ class UserModel
     this.phone,
     this.fname,
     this.lname,
-this.image,
+    this.image,
     this.token,
     this.branches,
   });
@@ -71,7 +87,7 @@ this.image,
     phone = json['phone'];
     fname = json['fname'];
     lname = json['lname'];
-image = json['image'];
+    image = json['image'];
     token = json['token'];
     branches = json['branches'] != null ? List<String>.from(json['branches']) : null;
 
@@ -93,7 +109,7 @@ image = json['image'];
     data['phone'] = this.phone;
     data['fname'] = this.fname;
     data['lname'] = this.lname;
-data['image'] = this.image;
+    data['image'] = this.image;
     data['token'] = this.token;
     data['branches'] = this.branches;
 
@@ -102,23 +118,23 @@ data['image'] = this.image;
   }
 
   Map<String, dynamic> toMap() {
-return {
-  'role': role,
-  'name': name,
-  'email': email,
-  'level': level,
-  'hourlyRate': hourlyRate,
-  'totalHours': totalHours,
-  'totalSalary': totalSalary,
-  'currentMonthHours': currentMonthHours,
-  'currentMonthSalary': currentMonthSalary,
-  'uId': uId,
-  'phone': phone,
-  'fname': fname,
-  'lname': lname,
-  'image': image,
-  'token': token,
-  'branches': branches,
+    return {
+      'role': role,
+      'name': name,
+      'email': email,
+      'level': level,
+      'hourlyRate': hourlyRate,
+      'totalHours': totalHours,
+      'totalSalary': totalSalary,
+      'currentMonthHours': currentMonthHours,
+      'currentMonthSalary': currentMonthSalary,
+      'uId': uId,
+      'phone': phone,
+      'fname': fname,
+      'lname': lname,
+      'image': image,
+      'token': token,
+      'branches': branches,
 
     };
 

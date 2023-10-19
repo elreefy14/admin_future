@@ -220,8 +220,8 @@ SizedBox(height: 0.h),
                                 physics: NeverScrollableScrollPhysics(),
                                 itemBuilder: (context, index)
 {
-  List<String> usersList = ManageSalaryCubit.get(context).schedules?[index].usersList ?? [];
-    List<String> usersIds = ManageSalaryCubit.get(context).schedules?[index].userIds ?? [];
+  List<String?>? usersList = ManageSalaryCubit.get(context).schedules?[index].usersList ?? [];
+    List<String?>? usersIds = ManageSalaryCubit.get(context).schedules?[index].userIds ?? [];
 
   String scheduleId = ManageSalaryCubit.get(context).schedules?[index].scheduleId ?? '';
   String day = ManageSalaryCubit.get(context).schedules?[index].date ?? '';
@@ -270,7 +270,7 @@ SizedBox(height: 0.h),
                                                     onPressed: () {
                                                       print('Delete button pressed ...');
                                                      ManageSalaryCubit.get(context).deleteSchedule(
-                                          usersIds: usersIds,
+                                          usersIds: usersIds?.cast<String>() ?? [],
                                           scheduleId: scheduleId,
                                           day: day,
                                           );
@@ -300,7 +300,7 @@ SizedBox(height: 0.h),
                                                   FFButtonWidget(
                                                     onPressed: () {
 
-                                                      ManageAttendenceCubit.get(context).selectedCoaches = usersList;
+                                                      ManageAttendenceCubit.get(context).selectedCoaches = usersList?.cast<String>() ?? [];
                                                       ManageAttendenceCubit.get(context).selectedDays = [day];
                                                       ManageAttendenceCubit.get(context).startTime = statrTime;
                                                       ManageAttendenceCubit.get(context).endTime = endTime;

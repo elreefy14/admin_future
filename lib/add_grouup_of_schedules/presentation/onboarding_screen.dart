@@ -1,6 +1,9 @@
 import 'package:admin_future/add_grouup_of_schedules/presentation/search_users_widget.dart';
 import 'package:admin_future/add_grouup_of_schedules/presentation/select_coaches.dart';
-import 'package:admin_future/home/data/userModel.dart';
+import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
+import 'package:admin_future/registeration/data/userModel.dart';
+
+import 'package:admin_future/home/presenation/widget/manage_attendence.dart';
 import 'package:admin_future/home/presenation/widget/widget/custom_app_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
@@ -30,8 +33,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     // Screen2(),
     Screen3(),
     Screen2(),
-    Screen1(),
-    Screen3(),
+    //Screen1(),
+    //Screen3(),
     //  Screen4(),
   ];
 
@@ -83,9 +86,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                     colorScheme: Theme.of(context).colorScheme.copyWith(
                         //  primary: Colors.purple,
-                          //disabledColor: Colors.purple,
+                        //disabledColor: Colors.purple,
                         //  background: Colors.white,
-                         // secondary: Colors.purple,
+                        // secondary: Colors.purple,
                         ),
                     //change stepper color only
                     //primaryColor: Colors.purple,
@@ -93,13 +96,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                   ),
                   child: Container(
                     //delete borders
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.white,
-                        ),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.white,
                       ),
+                    ),
                     child: Stepper(
-
                       onStepContinue: _next,
                       onStepCancel: _previous,
                       onStepTapped: (index) {
@@ -113,7 +115,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         //change the icon of the step
                         if (stepState == StepState.complete) {
                           return
-                  
+
                               ///home/elreefy14/admin14/admin_future/assets/images/Group 1.svg
                               SvgPicture.asset(
                             'assets/images/check.svg',
@@ -126,7 +128,6 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           );
                         } else if (stepState == StepState.editing) {
                           return Container(
-                            
                             //shape circke to make the icon in circle
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
@@ -150,7 +151,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           );
                         }
                       },
-                  
+
                       type: StepperType.horizontal,
                       currentStep: _currentIndex,
                       steps: _screens
@@ -195,19 +196,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Align(
-                            alignment: AlignmentDirectional(0, 0),
-                            child: Text(
-    'السابق',
-    textAlign: TextAlign.right,
-    style: TextStyle(
-        color: Colors.white,
-        fontSize: 18,
-        fontFamily: 'Montserrat-Arabic',
-        fontWeight: FontWeight.w400,
-        height: 0.08,
-    ),
-)
-                          ),
+                              alignment: AlignmentDirectional(0, 0),
+                              child: Text(
+                                'السابق',
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontFamily: 'Montserrat-Arabic',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.08,
+                                ),
+                              )),
                         ),
                       ),
                     ),
@@ -220,7 +220,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       ),
                       child: InkWell(
                         onTap: () {
-                          
+                          print('save');
+                          //select the users from screen 3
+                       //   print(_Screen3State()._selectedUsers.length);
+                          //print all selected users data
+                       //   print('Selected Users: ${_Screen3State()._selectedUsers}');
+
+                          ManageAttendenceCubit.get(context).addGroup(
+                            true,
+                            context,
+                            selectedCoaches: _Screen3State()
+                                .selectedUsers,
+                            startTrainingTime: //random time
+                                Timestamp.now(),
+                            endTrainingTime: //random time
+                                Timestamp.now(),
+                            branch: 'branch',
+                            times: //call the times map from screen 2
+                                _Screen2State().times,
+                          );
                         },
                         child: Container(
                           height: 50.h,
@@ -230,30 +248,25 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Align(
-                            alignment: AlignmentDirectional(0, 0),
-                            child: Text(
+                              alignment: AlignmentDirectional(0, 0),
+                              child: Text(
                                 'حفظ',
-    textAlign: TextAlign.right,
-    style: TextStyle(
-        color: Colors.white,
-        fontSize: 18,
-        fontFamily: 'Montserrat-Arabic',
-        fontWeight: FontWeight.w400,
-        height: 0.08,
-    ),
-)
-                          ),
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontFamily: 'Montserrat-Arabic',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.08,
+                                ),
+                              )),
                         ),
                       ),
                     ),
 
-                       
-
-
                   if (_currentIndex < _screens.length - 1)
-
                     Padding(
-                      padding:  EdgeInsets.symmetric( horizontal: 8.0),
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
                       child: InkWell(
                         onTap: _next,
                         child: Container(
@@ -264,19 +277,18 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Align(
-                            alignment: AlignmentDirectional(0, 0),
-                            child: Text(
+                              alignment: AlignmentDirectional(0, 0),
+                              child: Text(
                                 'التالي',
-    textAlign: TextAlign.right,
-    style: TextStyle(
-        color: Colors.white,
-        fontSize: 18,
-        fontFamily: 'Montserrat-Arabic',
-        fontWeight: FontWeight.w400,
-        height: 0.08,
-    ),
-)
-                          ),
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontFamily: 'Montserrat-Arabic',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.08,
+                                ),
+                              )),
                         ),
                       ),
                     ),
@@ -441,22 +453,22 @@ class Screen2 extends StatefulWidget {
 }
 
 class _Screen2State extends State<Screen2> {
-final Map<String, Map<dynamic, dynamic>> _times = {
-  'السبت': {'start': null, 'end': null},
-  'الأحد': {'start': null, 'end': null},
-  'الاثنين': {'start': null, 'end': null},
-  'الثلاثاء': {'start': null, 'end': null},
-  'الأربعاء': {'start': null, 'end': null},
-  'الخميس': {'start': null, 'end': null},
-  'الجمعة': {'start': null, 'end': null},
-};
+  static final Map<String, Map<dynamic, dynamic>> _times = {
+    'السبت': {'start': null, 'end': null},
+    'الأحد': {'start': null, 'end': null},
+    'الاثنين': {'start': null, 'end': null},
+    'الثلاثاء': {'start': null, 'end': null},
+    'الأربعاء': {'start': null, 'end': null},
+    'الخميس': {'start': null, 'end': null},
+    'الجمعة': {'start': null, 'end': null},
+  };
+  Map<String, Map<dynamic, dynamic>> get times => _times;
 
   @override
   Widget build(BuildContext context) {
     return ListView(
       children: _times.keys.map((day) {
         return ListTile(
-
           title: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
@@ -484,45 +496,50 @@ final Map<String, Map<dynamic, dynamic>> _times = {
                 children: [
                   InkWell(
                     onTap: () async {
-            TimeOfDay? endTime = await showTimePicker(
-              context: context,
-              initialTime: _times[day]?['end'] ?? TimeOfDay.now(),
-            );
-            if (endTime != null) {
-              setState(() {
-                //
-                _times[day]?['end'] = endTime;
-                //start time equal hour minus end time
-                _times[day]?['start']
-                 = endTime.replacing(hour: endTime.hour - 1);
-              });
-            }
-        },
+                      TimeOfDay? endTime = await showTimePicker(
+                        context: context,
+                        initialTime: _times[day]?['end'] ?? TimeOfDay.now(),
+                      );
+                      if (endTime != null) {
+                        setState(() {
+                          //
+                          _times[day]?['end'] = endTime;
+                          //start time equal hour minus end time
+                          _times[day]?['start'] =
+                              endTime.replacing(hour: endTime.hour - 1);
+                        });
+                      }
+                    },
                     child: Container(
-                    width: 125.w,
-                    height: 35.h,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: ShapeDecoration(
-                      color: Color(0xFFF6F6F6),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-                    ),
-                    child: Text(
-                     // _times[day]?['end']?.format(context) ?? 'نهاية التدريب',
-                     //make it in arabic like that 11 ص 
-                      _times[day]?['end']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص') ?? 'نهاية التدريب',
-                     
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xFF666666),
-                        fontSize: 16.sp,
-                        fontFamily: 'IBM Plex Sans Arabic',
-                        fontWeight: FontWeight.w400,
-                        height: 0,
+                      width: 125.w,
+                      height: 35.h,
+                      clipBehavior: Clip.antiAlias,
+                      decoration: ShapeDecoration(
+                        color: Color(0xFFF6F6F6),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4)),
+                      ),
+                      child: Text(
+                        // _times[day]?['end']?.format(context) ?? 'نهاية التدريب',
+                        //make it in arabic like that 11 ص
+                        _times[day]?['end']
+                                ?.format(context)
+                                .toString()
+                                .replaceAll('PM', 'م')
+                                .replaceAll('AM', 'ص') ??
+                            'نهاية التدريب',
+
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color(0xFF666666),
+                          fontSize: 16.sp,
+                          fontFamily: 'IBM Plex Sans Arabic',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
                       ),
                     ),
-                ),
                   ),
-
                   Row(
                     children: [
                       SizedBox(width: 8.0),
@@ -539,68 +556,72 @@ final Map<String, Map<dynamic, dynamic>> _times = {
                       ),
                       SizedBox(width: 8.0),
                       InkWell(
-                                onTap: () async {
-            TimeOfDay? startTime = await showTimePicker(
-              context: context,
-              initialTime: _times[day]?['start'] ?? TimeOfDay.now(),
-            );
-            if (startTime != null) {
-            
-              setState(() {
-                //convert start time to time stamp
+                        onTap: () async {
+                          TimeOfDay? startTime = await showTimePicker(
+                            context: context,
+                            initialTime:
+                                _times[day]?['start'] ?? TimeOfDay.now(),
+                          );
+                          if (startTime != null) {
+                            setState(() {
+                              //convert start time to time stamp
 
-                _times[day]?['start'] = startTime;
-              //end time equal hour plus start time
-             TimeOfDay endTime = startTime.replacing(hour: startTime.hour + 1);
-                  _times[day]?['end'] = endTime;
-              //save the start time as timeStamp get
-              
-               //  DateTime getNearestDayOfWeek(String dayOfWeek) {
-    // Get the current date
-  //   DateTime now = DateTime.now();
+                              _times[day]?['start'] = startTime;
+                              //end time equal hour plus start time
+                              TimeOfDay endTime =
+                                  startTime.replacing(hour: startTime.hour + 1);
+                              _times[day]?['end'] = endTime;
+                              //save the start time as timeStamp get
 
-  //   // Get the integer value of the selected day of the week
-  //   int selectedDayOfWeek = [
-  //     'الأحد',
-  //     'الاثنين',
-  //     'الثلاثاء',
-  //     'الأربعاء',
-  //     'الخميس',
-  //     'الجمعة',
-  //     'السبت'
-  //   ].indexOf(dayOfWeek);
+                              //  DateTime getNearestDayOfWeek(String dayOfWeek) {
+                              // Get the current date
+                              //   DateTime now = DateTime.now();
 
-  //   // Calculate the difference between the selected day of the week and the current day of the week
-  //   int difference = selectedDayOfWeek - now.weekday;
+                              //   // Get the integer value of the selected day of the week
+                              //   int selectedDayOfWeek = [
+                              //     'الأحد',
+                              //     'الاثنين',
+                              //     'الثلاثاء',
+                              //     'الأربعاء',
+                              //     'الخميس',
+                              //     'الجمعة',
+                              //     'السبت'
+                              //   ].indexOf(dayOfWeek);
 
-  //   // If the difference is negative, add 7 to get the nearest day of the week
-  //   if (difference < 0) {
-  //     difference += 7;
-  //   }
+                              //   // Calculate the difference between the selected day of the week and the current day of the week
+                              //   int difference = selectedDayOfWeek - now.weekday;
 
-  //   // Add the difference to the current date to get the nearest day of the week
-  //   DateTime nearestDay = now.add(Duration(days: difference));
+                              //   // If the difference is negative, add 7 to get the nearest day of the week
+                              //   if (difference < 0) {
+                              //     difference += 7;
+                              //   }
 
-  //   return nearestDay;
-  // }
+                              //   // Add the difference to the current date to get the nearest day of the week
+                              //   DateTime nearestDay = now.add(Duration(days: difference));
 
-                
-              });
-            }
-          },
+                              //   return nearestDay;
+                              // }
+                            });
+                          }
+                        },
                         child: Container(
                           width: 125.w,
                           height: 35.h,
                           clipBehavior: Clip.antiAlias,
                           decoration: ShapeDecoration(
                             color: Color(0xFFF6F6F6),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(4)),
                           ),
                           child: Text(
                             // _times[day]?['start']?.format(context) ?? 'بداية التدريب',
                             //make it in arabic like that 11 ص
-                            _times[day]?['start']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص') ??
-                            'بداية التدريب',
+                            _times[day]?['start']
+                                    ?.format(context)
+                                    .toString()
+                                    .replaceAll('PM', 'م')
+                                    .replaceAll('AM', 'ص') ??
+                                'بداية التدريب',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Color(0xFF666666),
@@ -652,8 +673,9 @@ class _Screen3State extends State<Screen3> {
   Query? _query;
   int? numberOfQuery;
   List<String> _selectedUsersUids = [];
-  List<UserModel> _selectedUsers = [];
-
+ static  List<UserModel> _selectedUsers = [];
+ //make getter to get the selected users
+  List<UserModel> get selectedUsers => _selectedUsers;
 
   @override
   void initState() {

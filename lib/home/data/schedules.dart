@@ -1,3 +1,4 @@
+import 'package:admin_future/registeration/data/userModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SchedulesModel {
@@ -9,11 +10,12 @@ class SchedulesModel {
   String? date;
 
   bool? finished;
-  List<String>? usersList;
-  List<String>? userIds; // new field
+  List<String?>? usersList;
+  List<String?>? userIds; // new field
   String? scheduleId;
   String? pId;
-
+//users
+  List<UserModel>? users;
   SchedulesModel({
     required this.pId,
     required this.branchId,
@@ -24,7 +26,8 @@ class SchedulesModel {
     this.userIds, // new field
     this.scheduleId,
     this.date, 
-    required this.nearestDay,
+    required this.nearestDay, 
+    List<UserModel>? users,
   });
 
   Map<String, dynamic> toJson2() {
@@ -39,6 +42,7 @@ class SchedulesModel {
       'schedule_id': scheduleId,
       'date': date,
       'pId': pId,
+      'users': users,
     };
   }
 
@@ -53,6 +57,7 @@ class SchedulesModel {
       'schedule_id': scheduleId,
       'date': date,
       'nearest_day': nearestDay,
+      'users': users,
     };
   }
 
@@ -68,6 +73,7 @@ class SchedulesModel {
       nearestDay: json['nearest_day'],
       scheduleId: json['schedule_id'],
       date: json['date'],
+      users: json['users'] != null ? List<UserModel>.from(json['users'].map((x) => UserModel.fromJson(x))) : null,
     );
   }
 
@@ -82,6 +88,7 @@ class SchedulesModel {
       userIds: json['userIds'] != null ? List<String>.from(json['userIds']) : null, // new field
       scheduleId: json['schedule_id'],
       date: json['date'],
+      users: json['users'] != null ? List<UserModel>.from(json['users'].map((x) => UserModel.fromJson(x))) : null,
     );
   }
 }

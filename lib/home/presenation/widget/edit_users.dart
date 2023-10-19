@@ -1,6 +1,6 @@
 import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
 import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
-import 'package:admin_future/home/data/userModel.dart';
+import 'package:admin_future/registeration/data/userModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

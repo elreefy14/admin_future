@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
-import 'package:admin_future/home/data/userModel.dart';
+import 'package:admin_future/registeration/data/userModel.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/login_cubit.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/sign_up_cubit.dart';
 import 'package:admin_future/registeration/presenation/SignUpScreen.dart';

@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../../home/data/userModel.dart';
+import '../../registeration/data/userModel.dart';
 
 class SearchUsersWidget extends StatefulWidget {
   const SearchUsersWidget({Key? key, required TextEditingController searchController}) : super(key: key);
