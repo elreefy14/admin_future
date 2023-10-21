@@ -5,8 +5,8 @@ import 'package:flutter/material.dart';
 import '../../registeration/data/userModel.dart';
 
 class SearchUsersWidget extends StatefulWidget {
-  const SearchUsersWidget({Key? key, required TextEditingController searchController}) : super(key: key);
-
+  const SearchUsersWidget({Key? key, required TextEditingController searchController,required this.isCoach}) : super(key: key);
+final isCoach ;
   @override
   _SearchUsersWidgetState createState() => _SearchUsersWidgetState();
 }

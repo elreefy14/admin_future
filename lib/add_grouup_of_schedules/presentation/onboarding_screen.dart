@@ -1,21 +1,18 @@
-import 'package:admin_future/add_grouup_of_schedules/presentation/search_users_widget.dart';
 import 'package:admin_future/add_grouup_of_schedules/presentation/select_coaches.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:admin_future/registeration/data/userModel.dart';
 
-import 'package:admin_future/home/presenation/widget/manage_attendence.dart';
 import 'package:admin_future/home/presenation/widget/widget/custom_app_bar.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:logger/logger.dart';
 
-import '../../core/flutter_flow/flutter_flow_theme.dart';
+import '../../home/business_logic/Home/manage_attendence_state.dart';
+import '../../home/presenation/widget/add_schedule.dart';
 
 class OnboardingScreen extends StatefulWidget {
   @override
@@ -26,16 +23,14 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentIndex = 0;
 
   List<Widget> _screens = [
-    // Add your screens here
-    //Screen1(),
-    // Screen2(),
-    // Screen2(),
-    // Screen2(),
-    Screen3(),
+    SelectCoachesScreen(
+      isCoach: true,
+    ),
+    SelectCoachesScreen(
+      isCoach: false,
+    ),
     Screen2(),
-    //Screen1(),
-    //Screen3(),
-    //  Screen4(),
+    SelectBranchScreen(),
   ];
 
   void _next() {
@@ -117,15 +112,51 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           return
 
                               ///home/elreefy14/admin14/admin_future/assets/images/Group 1.svg
-                              SvgPicture.asset(
+                              Container(
+                                 decoration: BoxDecoration(
+                                 shape: BoxShape.circle,
+                                  color: Colors.purple,
+                                   //make thick white border
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2.5,
+
+                                    ),
+                                ),
+
+                                child: SvgPicture.asset(
                             'assets/images/check.svg',
                             color: Colors.white,
-                          );
-                        } else if (stepState == StepState.error) {
-                          return Icon(
-                            Icons.error,
-                            color: Colors.red,
-                          );
+                          ),
+                              );
+                        }
+                        else if (stepState == StepState.indexed) {
+                          //assets/images/emty14.svg
+                          return  Container(
+                          decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+    //color: Colors.white,
+    //make thick white border
+    border: Border.all(
+   // color: Colors.white,
+    width: .1,
+
+    ),
+    ),
+
+    child: Container(
+      width: 40.w,
+      //shape circke to make the icon in circle
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: Colors.white,
+      ),
+      margin: EdgeInsets.all(1),
+       //padding: EdgeInsets.all(5),
+    //shape circke to make the icon in circle
+      //color: Colors.white,
+    )
+    );
                         } else if (stepState == StepState.editing) {
                           return Container(
                             //shape circke to make the icon in circle
@@ -163,7 +194,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 isActive: _currentIndex >= index,
                                 state: _currentIndex == index
                                     ? StepState.editing
-                                    : StepState.complete,
+                                    : _currentIndex > index
+                                    ? StepState.complete
+                                    : StepState.indexed,
                                 content: SizedBox(
                                     height: 900.h,
                                     width: double.infinity,
@@ -222,22 +255,24 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         onTap: () {
                           print('save');
                           //select the users from screen 3
-                       //   print(_Screen3State()._selectedUsers.length);
+                          //   print(_Screen3State()._selectedUsers.length);
                           //print all selected users data
-                       //   print('Selected Users: ${_Screen3State()._selectedUsers}');
+                          //   print('Selected Users: ${_Screen3State()._selectedUsers}');
 
                           ManageAttendenceCubit.get(context).addGroup(
                             true,
                             context,
-                            selectedCoaches: _Screen3State()
-                                .selectedUsers,
+                            selectedCoaches:
+                                _SelectCoachesScreenState().selectedCoaches,
                             startTrainingTime: //random time
                                 Timestamp.now(),
                             endTrainingTime: //random time
                                 Timestamp.now(),
-                            branch: 'branch',
+                            branch:ManageAttendenceCubit.get(context).selectedBranch??'error',
                             times: //call the times map from screen 2
                                 _Screen2State().times,
+                             maxUsers: _SelectBranchScreenState().maxUsers,
+
                           );
                         },
                         child: Container(
@@ -663,19 +698,26 @@ class _Screen2State extends State<Screen2> {
   }
 }
 
-class Screen3 extends StatefulWidget {
+class SelectCoachesScreen extends StatefulWidget {
+  final bool isCoach;
+
+  const SelectCoachesScreen({super.key, required this.isCoach});
   @override
-  _Screen3State createState() => _Screen3State();
+  _SelectCoachesScreenState createState() => _SelectCoachesScreenState();
 }
 
-class _Screen3State extends State<Screen3> {
+class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
   final TextEditingController _searchController = TextEditingController();
   Query? _query;
   int? numberOfQuery;
+  List<String> _selectedCoachesUids = [];
   List<String> _selectedUsersUids = [];
- static  List<UserModel> _selectedUsers = [];
- //make getter to get the selected users
+  static List<UserModel> _selectedCoaches = [];
+  static List<UserModel> _selectedUsers = [];
+  //make getter to get the selected users
+  List<UserModel> get selectedCoaches => _selectedCoaches;
   List<UserModel> get selectedUsers => _selectedUsers;
+  // List<UserModel> get selectedUsers => _selectedUsers;
 
   @override
   void initState() {
@@ -740,7 +782,7 @@ class _Screen3State extends State<Screen3> {
         Align(
           alignment: AlignmentDirectional.topEnd,
           child: Text(
-            ':المدربين',
+            widget.isCoach ? 'المدربين' : 'الطلاب',
             style: TextStyle(
               color: Color(0xFF333333),
               fontSize: 14,
@@ -756,10 +798,16 @@ class _Screen3State extends State<Screen3> {
             showDialog(
               context: context,
               builder: (context) => ShowCoachesInDialog(
-                selectedUsers: _selectedUsers,
+                isCoach: widget.isCoach ?? true,
+                selectedUsers: widget.isCoach ? _selectedCoaches : _selectedUsers,
                 onSelectedUsersChanged: (users) {
                   setState(() {
-                    _selectedUsers = users;
+                    if (widget.isCoach) {
+                      _selectedCoachesUids = users.map((e) => e.uId!).toList();
+                    } else {
+                      _selectedUsersUids = users.map((e) => e.uId!).toList();
+                    }
+                   // _selectedCoaches = users;
                   });
                 },
               ),
@@ -795,7 +843,8 @@ class _Screen3State extends State<Screen3> {
                     Expanded(
                       child: SizedBox(
                         child: Text(
-                          'اختر المدربين',
+                          widget.isCoach ? 'اختر المدربين' : 'اختر الطلاب',
+                          // 'اختر المدربين',
                           textAlign: TextAlign.right,
                           style: TextStyle(
                             color: Color(0xFF666666),
@@ -820,9 +869,14 @@ class _Screen3State extends State<Screen3> {
             height: 10.h,
           ),
           shrinkWrap: true,
-          itemCount: _selectedUsers.length,
+          itemCount:widget.isCoach? _selectedCoaches.length:_selectedUsers.length,
+     //     _selectedCoaches.length,
           itemBuilder: (context, index) {
-            final user = _selectedUsers[index];
+            late UserModel user;
+            if(widget.isCoach ==true)
+             user = _selectedCoaches[index];
+            else
+               user = _selectedUsers[index];
             return Container(
               width: 360,
               height: 25,
@@ -842,10 +896,17 @@ class _Screen3State extends State<Screen3> {
                         //svg image delete which is svg image images/delete-2_svgrepo.com.svg
                         InkWell(
                             onTap: () {
-                              setState(() {
-                                _selectedUsers.remove(user);
-                                _selectedUsersUids.remove(user.uId!);
-                              });
+                              if (widget.isCoach) {
+                                setState(() {
+                                  _selectedCoaches.remove(user);
+                                  _selectedCoachesUids.remove(user.uId!);
+                                });
+                              } else {
+                                setState(() {
+                                  _selectedUsers.remove(user);
+                                  _selectedUsersUids.remove(user.uId!);
+                                });
+                              }
                             },
                             child: SvgPicture.asset(
                                 'assets/images/delete-2_svgrepo.com.svg')),
@@ -884,6 +945,152 @@ class _Screen3State extends State<Screen3> {
           },
         ),
       ],
+    );
+  }
+}
+
+class SelectBranchScreen extends StatefulWidget {
+  @override
+  _SelectBranchScreenState createState() => _SelectBranchScreenState();
+}
+
+class _SelectBranchScreenState extends State<SelectBranchScreen> {
+  final _formKey = GlobalKey<FormState>();
+  static String? _maxUsers;
+  //getter
+  String? get maxUsers => _maxUsers;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+    //  appBar: AppBar(
+    //    title: Text('Select Branch'),
+    //  ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Align(
+              alignment: AlignmentDirectional.topEnd,
+              child: Text(
+                ':اقصى عدد للمتدربين',
+                //make it in arabic align right
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  color: Color(0xFF333333),
+                  fontSize: 14,
+                  fontFamily: 'IBM Plex Sans Arabic',
+                  fontWeight: FontWeight.w400,
+                  height: 0,
+                ),
+              ),
+            ),
+            SizedBox(height: 10),
+          Align(
+            alignment: AlignmentDirectional.topEnd,
+            child: Container(
+  width: 150,
+  height: 48,
+  //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+  clipBehavior: Clip.antiAlias,
+  decoration: ShapeDecoration(
+    color: Color(0xFFF6F6F6),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+  ),
+  child: Row(
+    mainAxisSize: MainAxisSize.min,
+    mainAxisAlignment: MainAxisAlignment.start,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    children: [
+      // Text(
+      //   // اقصى عدد
+      //   ':اقصى عدد',
+      //   style: TextStyle(
+      //     color: Color(0xFF666666),
+      //     fontSize: 16,
+      //     fontFamily: 'IBM Plex Sans Arabic',
+      //     fontWeight: FontWeight.w400,
+      //     height: 0,
+      //   ),
+      // ),
+      Flexible(
+        child: TextFormField(
+            //rtl
+            textAlign: TextAlign.right,
+            keyboardType: TextInputType.number,
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please enter a number';
+              }
+              return null;
+            },
+            onChanged: (value) {
+              _maxUsers = value;
+            },
+            decoration: InputDecoration(
+              hintText: '              :اقصى عدد',
+              border: OutlineInputBorder(),
+            ),
+        ),
+      ),
+    ],
+  ),
+),
+          ),
+            SizedBox(height: 20),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  'مكان التدريب:',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: Color(0xFF333333),
+                    fontSize: 16,
+                    fontFamily: 'IBM Plex Sans Arabic',
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ],
+            ),
+            //SizedBox(height: 5.0.h),
+            // List<String> items = ['Item 1', 'Item 2', 'Item 3'];
+
+            BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
+              builder: (context, state) {
+                return ManageAttendenceCubit.get(context).branches == null
+                    ? const Center(child: CircularProgressIndicator())
+                    :
+                Container(
+                  // height: 200.h,
+                  child: CheckboxListWidget(
+
+                    onBranchSelected: (branch) {
+                      // setState(() {
+                      //   print('selected branch: $branch');
+                      //   selectedBranch = branch;
+                      // });
+                      ManageAttendenceCubit.get(context).updateSelectedBranch(branch);
+                    },
+                    items: ManageAttendenceCubit.get(context).
+                    branches ?? [],
+                  ),
+                );
+              },
+            ),
+            // ElevatedButton(
+            //   onPressed: () {
+            //     if (_formKey.currentState!.validate()) {
+            //       _formKey.currentState!.save();
+            //       // Do something with _maxUsers
+            //       Navigator.pop(context);
+            //     }
+            //   },
+            //   child: Text('Save'),
+            // ),
+          ],
+        ),
+      ),
     );
   }
 }

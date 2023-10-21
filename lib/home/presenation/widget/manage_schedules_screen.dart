@@ -311,7 +311,9 @@ SizedBox(height: 0.h),
                                                       ManageAttendenceCubit.get(context).getAdminData();
                                                       Navigator.pushNamed(
                                                 context,
-                                                AppRoutes.addSchedule,
+                                                        //AppRoutes.onboarding,
+
+                                                        AppRoutes.addSchedule,
                                                 arguments: {
                                                   'toggle': false,
                                                   'startTime': statrTime,
@@ -653,20 +655,21 @@ SizedBox(height: 0.h),
 
                   FFButtonWidget(
                     onPressed: () {
-                      ManageAttendenceCubit.get(context).selectedCoaches = [];
-                      ManageAttendenceCubit.get(context).selectedDays = [];
-                      ManageAttendenceCubit.get(context).startTime = Timestamp.now();
-                      ManageAttendenceCubit.get(context).endTime = Timestamp.now();
+                    //  ManageAttendenceCubit.get(context).selectedCoaches = [];
+                    //  ManageAttendenceCubit.get(context).selectedDays = [];
+                    //  ManageAttendenceCubit.get(context).startTime = Timestamp.now();
+                    //  ManageAttendenceCubit.get(context).endTime = Timestamp.now();
                       ManageAttendenceCubit.get(context).getAdminData();
                      //AddSchedule
                       Navigator.pushNamed(
                         context,
-                        AppRoutes.addSchedule,
-                        arguments: {
-                          'toggle': true,
-                          'startTime': Timestamp.now(),
-                          'endTime': Timestamp.now(),
-                        },
+                        AppRoutes.onboarding,
+                       // AppRoutes.addSchedule,
+                        // arguments: {
+                        //   'toggle': true,
+                        //   'startTime': Timestamp.now(),
+                        //   'endTime': Timestamp.now(),
+                        // },
                       );
                     },
                     text: 'اضافة موعد ',

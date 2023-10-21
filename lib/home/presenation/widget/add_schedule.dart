@@ -674,19 +674,20 @@ class _CheckboxListWidgetState extends State<CheckboxListWidget> {
       itemBuilder: (context, index) {
         return CheckboxListTile(
           //height between each item in the list =5
-          contentPadding: const EdgeInsets.symmetric(vertical: 0),
+        //  contentPadding: const EdgeInsets.symmetric(vertical: 0),
           title: //Text(widget.items[index]),
           Text(
             widget.items[index],
             textAlign: TextAlign.right,
             style: TextStyle(
               color: Colors.black,
-              fontSize: 16,
+              fontSize: 16.h,
               fontFamily: 'IBM Plex Sans Arabic',
               fontWeight: FontWeight.w400,
               height: 0,
             ),
           ),
+
           value: checkedItem == index,
           onChanged: (value) {
             setState(() {

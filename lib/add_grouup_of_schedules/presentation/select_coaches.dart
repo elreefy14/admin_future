@@ -8,11 +8,12 @@ import '../../registeration/data/userModel.dart';
 class ShowCoachesInDialog extends StatefulWidget {
   final List<UserModel> selectedUsers;
   final Function(List<UserModel>) onSelectedUsersChanged;
+  final isCoach ;
 
   const ShowCoachesInDialog({
     Key? key,
     required this.selectedUsers,
-    required this.onSelectedUsersChanged,
+    required this.onSelectedUsersChanged, required this.isCoach,
   }) : super(key: key);
 
   @override
@@ -31,7 +32,11 @@ class _ShowCoachesInDialogState extends State<ShowCoachesInDialog> {
     _selectedUsers = widget.selectedUsers;
     _selectedUsersUids = _selectedUsers.map((user) => user.uId!).toList();
     _searchController = TextEditingController();
-    _query = FirebaseFirestore.instance.collection('users').orderBy('name');
+    if(widget.isCoach) {
+      _query = FirebaseFirestore.instance.collection('users').orderBy('name').where('role', isEqualTo: 'coach');
+    } else {
+      _query = FirebaseFirestore.instance.collection('users').orderBy('name').where('role', isEqualTo: 'user');
+    }
   }
 
   @override
@@ -41,14 +46,22 @@ class _ShowCoachesInDialogState extends State<ShowCoachesInDialog> {
   }
 
   Future<void> _onSearchSubmitted(String value) async {
-    
-    Query newQuery = FirebaseFirestore.instance
-        .collection('users')
-        .where('name', isGreaterThanOrEqualTo: value)
-        .where('name', isLessThan: value + 'z')
-        //order by name
-        .orderBy('name', descending: false)
-        .where('role', isEqualTo: 'coach')
+   late Query newQuery;
+    if(widget.isCoach)
+       newQuery = FirebaseFirestore.instance
+          .collection('users')
+.orderBy('name')
+.startAt([value])
+.endAt([value + '\uf8ff'])
+          .where('role', isEqualTo: 'coach')
+          .limit(100);
+    else
+     newQuery = FirebaseFirestore.instance
+       .collection('users')
+.orderBy('name')
+.startAt([value])
+.endAt([value + '\uf8ff'])
+         .where('role', isEqualTo: 'user')
         .limit(100);
 
     QuerySnapshot querySnapshot =
@@ -58,13 +71,24 @@ class _ShowCoachesInDialogState extends State<ShowCoachesInDialog> {
     print(numberOfQuery);
 
     if (numberOfQuery == 0) {
-      newQuery = FirebaseFirestore.instance
-          .collection('users')
-          .where('phone', isGreaterThanOrEqualTo: value)
-          .where('phone', isLessThan: value + 'z')
-          //order by name
-          .orderBy('phone', descending: false)
-          .limit(100);
+      if(widget.isCoach)
+        newQuery = FirebaseFirestore.instance
+            .collection('users')
+            .where('phone', isGreaterThanOrEqualTo: value)
+            .where('phone', isLessThan: value + 'z')
+            //order by name
+            .orderBy('phone', descending: false)
+            .where('role', isEqualTo: 'coach')
+            .limit(100);
+      else
+        newQuery = FirebaseFirestore.instance
+            .collection('users')
+            .where('phone', isGreaterThanOrEqualTo: value)
+            .where('phone', isLessThan: value + 'z')
+            //order by name
+            .orderBy('phone', descending: false)
+            .where('role', isEqualTo: 'user')
+            .limit(100);
     }
 
     setState(() {

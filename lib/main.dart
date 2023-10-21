@@ -149,8 +149,8 @@ class MyApp extends StatelessWidget {
               ),
               initialRoute:
               //manageSchedules
-              AppRoutes.onboarding,
-             // mainRoute,
+              //AppRoutes.onboarding,
+              mainRoute,
               onGenerateRoute: RouteGenerator.generateRoute,
             ),
 

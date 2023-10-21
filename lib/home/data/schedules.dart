@@ -14,7 +14,8 @@ class SchedulesModel {
   List<String?>? userIds; // new field
   String? scheduleId;
   String? pId;
-//users
+//maxUsers
+  String? maxUsers;
   List<UserModel>? users;
   SchedulesModel({
     required this.pId,
@@ -27,7 +28,7 @@ class SchedulesModel {
     this.scheduleId,
     this.date, 
     required this.nearestDay, 
-    List<UserModel>? users,
+    List<UserModel>? users, this.maxUsers,
   });
 
   Map<String, dynamic> toJson2() {
@@ -43,6 +44,7 @@ class SchedulesModel {
       'date': date,
       'pId': pId,
       'users': users,
+      'maxUsers': maxUsers,
     };
   }
 
@@ -58,6 +60,7 @@ class SchedulesModel {
       'date': date,
       'nearest_day': nearestDay,
       'users': users,
+      'maxUsers': maxUsers,
     };
   }
 
@@ -74,6 +77,7 @@ class SchedulesModel {
       scheduleId: json['schedule_id'],
       date: json['date'],
       users: json['users'] != null ? List<UserModel>.from(json['users'].map((x) => UserModel.fromJson(x))) : null,
+      maxUsers: json['maxUsers'],
     );
   }
 
@@ -89,6 +93,7 @@ class SchedulesModel {
       scheduleId: json['schedule_id'],
       date: json['date'],
       users: json['users'] != null ? List<UserModel>.from(json['users'].map((x) => UserModel.fromJson(x))) : null,
+      maxUsers: json['maxUsers'],
     );
   }
 }

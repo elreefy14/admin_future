@@ -946,7 +946,7 @@ Future<void> addGroup(
   required Timestamp startTrainingTime,
   required Timestamp endTrainingTime,
   required String branch,
-  Map<String, Map<dynamic, dynamic>>? times,
+  Map<String, Map<dynamic, dynamic>>? times, String? maxUsers,
 }) async {
   // void addSchedule(
   //     bool isEmit  ,
@@ -1008,6 +1008,7 @@ Future<void> addGroup(
           'branch_id': branch,
           'usersList': [],
           'userIds': [],
+          'max_users': maxUsers,
         }).then((scheduleDoc) async {
           if (selectedCoaches != null && selectedCoaches.isNotEmpty) {
             for (var coach in selectedCoaches) {
@@ -1023,6 +1024,7 @@ Future<void> addGroup(
                 'nearest_day': nearestDayTimestamp,
                 'branch_id': branch,
                 'pId': FirebaseAuth.instance.currentUser!.uid,
+                'max_users': maxUsers,
               });
               await FirebaseFirestore.instance
                   .collection('admins')
@@ -1057,6 +1059,7 @@ Future<void> addGroup(
                 'branch_id': branch,
                 'pId': FirebaseAuth.instance.currentUser!.uid,
                 'scheduleId': scheduleDoc.id,
+                'max_users': maxUsers,
               });
             }
           }
@@ -1077,6 +1080,7 @@ Future<void> addGroup(
             scheduleId: scheduleDoc.id,
             finished: false,
             pId: FirebaseAuth.instance.currentUser!.uid,
+            maxUsers: maxUsers,
           );
         });
       }
