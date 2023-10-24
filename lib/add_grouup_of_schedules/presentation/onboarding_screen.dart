@@ -13,7 +13,113 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../home/business_logic/Home/manage_attendence_state.dart';
 import '../../home/presenation/widget/add_schedule.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+// BEGIN: ed8c6549bwf9 (already existing code)
+
+class AddGroupCubit extends Cubit<AddGroupState> {
+  AddGroupCubit() : super(AddGroupState(screens: [
+    
+  ]));
+
+  void selectUser(String user) {
+    emit(state.copyWith(selectedUsers: [...state.selectedUsers, user]));
+  }
+
+  void deselectUser(String user) {
+    emit(state.copyWith(selectedUsers: state.selectedUsers.where((u) => u != user).toList()));
+  }
+
+  void selectCoach(String coach) {
+    emit(state.copyWith(selectedCoaches: [...state.selectedCoaches, coach]));
+  }
+
+  void deselectCoach(String coach) {
+    emit(state.copyWith(selectedCoaches: state.selectedCoaches.where((c) => c != coach).toList()));
+  }
+
+  void selectTime(String time) {
+    emit(state.copyWith(selectedTimes: [...state.selectedTimes, time]));
+  }
+
+  void deselectTime(String time) {
+    emit(state.copyWith(selectedTimes: state.selectedTimes.where((t) => t != time).toList()));
+  }
+
+  void selectBranch(String branch) {
+    emit(state.copyWith(selectedBranch: branch));
+  }
+
+  void selectOption(String option) {
+    emit(state.copyWith(selectedOption: option));
+  }
+
+  void updateSelectedBranch(String branch) {
+    emit(state.copyWith(selectedBranch: branch));
+  }
+
+  void updateSelectedCoaches(List<String> coaches) {
+    emit(state.copyWith(selectedCoaches: coaches));
+  }
+
+  void updateSelectedTimes(List<String> times) {
+    emit(state.copyWith(selectedTimes: times));
+  }
+
+  void nextScreen() {
+    int currentIndex = state.currentIndex;
+    if (currentIndex < state.screens.length - 1) {
+      emit(state.copyWith(currentIndex: currentIndex + 1));
+    }
+  }
+
+  void previousScreen() {
+    int currentIndex = state.currentIndex;
+    if (currentIndex > 0) {
+      emit(state.copyWith(currentIndex: currentIndex - 1));
+    }
+  }
+}
+
+class AddGroupState {
+  final List<String> selectedUsers;
+  final List<String> selectedCoaches;
+  final List<String> selectedTimes;
+  final String selectedBranch;
+  final String selectedOption;
+  final int currentIndex;
+  final List<Widget> screens;
+
+  AddGroupState({
+    this.selectedUsers = const [],
+    this.selectedCoaches = const [],
+    this.selectedTimes = const [],
+    this.selectedBranch = '',
+    this.selectedOption = '',
+    this.currentIndex = 0,
+    required this.screens,
+  });
+
+  AddGroupState copyWith({
+    List<String>? selectedUsers,
+    List<String>? selectedCoaches,
+    List<String>? selectedTimes,
+    String? selectedBranch,
+    String? selectedOption,
+    int? currentIndex,
+  }) {
+    return AddGroupState(
+      selectedUsers: selectedUsers ?? this.selectedUsers,
+      selectedCoaches: selectedCoaches ?? this.selectedCoaches,
+      selectedTimes: selectedTimes ?? this.selectedTimes,
+      selectedBranch: selectedBranch ?? this.selectedBranch,
+      selectedOption: selectedOption ?? this.selectedOption,
+      currentIndex: currentIndex ?? this.currentIndex,
+      screens: this.screens,
+    );
+  }
+}
 class OnboardingScreen extends StatefulWidget {
   @override
   _OnboardingScreenState createState() => _OnboardingScreenState();
@@ -31,6 +137,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     ),
     Screen2(),
     SelectBranchScreen(),
+    InfoScreen()
   ];
 
   void _next() {
@@ -113,50 +220,44 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
                               ///home/elreefy14/admin14/admin_future/assets/images/Group 1.svg
                               Container(
-                                 decoration: BoxDecoration(
-                                 shape: BoxShape.circle,
-                                  color: Colors.purple,
-                                   //make thick white border
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 2.5,
-
-                                    ),
-                                ),
-
-                                child: SvgPicture.asset(
-                            'assets/images/check.svg',
-                            color: Colors.white,
-                          ),
-                              );
-                        }
-                        else if (stepState == StepState.indexed) {
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.purple,
+                              //make thick white border
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 2.5,
+                              ),
+                            ),
+                            child: SvgPicture.asset(
+                              'assets/images/check.svg',
+                              color: Colors.white,
+                            ),
+                          );
+                        } else if (stepState == StepState.indexed) {
                           //assets/images/emty14.svg
-                          return  Container(
-                          decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-    //color: Colors.white,
-    //make thick white border
-    border: Border.all(
-   // color: Colors.white,
-    width: .1,
-
-    ),
-    ),
-
-    child: Container(
-      width: 40.w,
-      //shape circke to make the icon in circle
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: Colors.white,
-      ),
-      margin: EdgeInsets.all(1),
-       //padding: EdgeInsets.all(5),
-    //shape circke to make the icon in circle
-      //color: Colors.white,
-    )
-    );
+                          return Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                //color: Colors.white,
+                                //make thick white border
+                                border: Border.all(
+                                  // color: Colors.white,
+                                  width: .1,
+                                ),
+                              ),
+                              child: Container(
+                                width: 40.w,
+                                //shape circke to make the icon in circle
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                ),
+                                margin: EdgeInsets.all(1),
+                                //padding: EdgeInsets.all(5),
+                                //shape circke to make the icon in circle
+                                //color: Colors.white,
+                              ));
                         } else if (stepState == StepState.editing) {
                           return Container(
                             //shape circke to make the icon in circle
@@ -195,8 +296,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 state: _currentIndex == index
                                     ? StepState.editing
                                     : _currentIndex > index
-                                    ? StepState.complete
-                                    : StepState.indexed,
+                                        ? StepState.complete
+                                        : StepState.indexed,
                                 content: SizedBox(
                                     height: 900.h,
                                     width: double.infinity,
@@ -268,11 +369,12 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 Timestamp.now(),
                             endTrainingTime: //random time
                                 Timestamp.now(),
-                            branch:ManageAttendenceCubit.get(context).selectedBranch??'error',
+                            branch: ManageAttendenceCubit.get(context)
+                                    .selectedBranch ??
+                                'error',
                             times: //call the times map from screen 2
                                 _Screen2State().times,
-                             maxUsers: _SelectBranchScreenState().maxUsers,
-
+                            maxUsers: _SelectBranchScreenState().maxUsers,
                           );
                         },
                         child: Container(
@@ -799,7 +901,8 @@ class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
               context: context,
               builder: (context) => ShowCoachesInDialog(
                 isCoach: widget.isCoach ?? true,
-                selectedUsers: widget.isCoach ? _selectedCoaches : _selectedUsers,
+                selectedUsers:
+                    widget.isCoach ? _selectedCoaches : _selectedUsers,
                 onSelectedUsersChanged: (users) {
                   setState(() {
                     if (widget.isCoach) {
@@ -807,7 +910,7 @@ class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
                     } else {
                       _selectedUsersUids = users.map((e) => e.uId!).toList();
                     }
-                   // _selectedCoaches = users;
+                    // _selectedCoaches = users;
                   });
                 },
               ),
@@ -869,14 +972,15 @@ class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
             height: 10.h,
           ),
           shrinkWrap: true,
-          itemCount:widget.isCoach? _selectedCoaches.length:_selectedUsers.length,
-     //     _selectedCoaches.length,
+          itemCount:
+              widget.isCoach ? _selectedCoaches.length : _selectedUsers.length,
+          //     _selectedCoaches.length,
           itemBuilder: (context, index) {
             late UserModel user;
-            if(widget.isCoach ==true)
-             user = _selectedCoaches[index];
+            if (widget.isCoach == true)
+              user = _selectedCoaches[index];
             else
-               user = _selectedUsers[index];
+              user = _selectedUsers[index];
             return Container(
               width: 360,
               height: 25,
@@ -962,9 +1066,9 @@ class _SelectBranchScreenState extends State<SelectBranchScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-    //  appBar: AppBar(
-    //    title: Text('Select Branch'),
-    //  ),
+      //  appBar: AppBar(
+      //    title: Text('Select Branch'),
+      //  ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -986,57 +1090,58 @@ class _SelectBranchScreenState extends State<SelectBranchScreen> {
               ),
             ),
             SizedBox(height: 10),
-          Align(
-            alignment: AlignmentDirectional.topEnd,
-            child: Container(
-  width: 150,
-  height: 48,
-  //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-  clipBehavior: Clip.antiAlias,
-  decoration: ShapeDecoration(
-    color: Color(0xFFF6F6F6),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-  ),
-  child: Row(
-    mainAxisSize: MainAxisSize.min,
-    mainAxisAlignment: MainAxisAlignment.start,
-    crossAxisAlignment: CrossAxisAlignment.center,
-    children: [
-      // Text(
-      //   // اقصى عدد
-      //   ':اقصى عدد',
-      //   style: TextStyle(
-      //     color: Color(0xFF666666),
-      //     fontSize: 16,
-      //     fontFamily: 'IBM Plex Sans Arabic',
-      //     fontWeight: FontWeight.w400,
-      //     height: 0,
-      //   ),
-      // ),
-      Flexible(
-        child: TextFormField(
-            //rtl
-            textAlign: TextAlign.right,
-            keyboardType: TextInputType.number,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please enter a number';
-              }
-              return null;
-            },
-            onChanged: (value) {
-              _maxUsers = value;
-            },
-            decoration: InputDecoration(
-              hintText: '              :اقصى عدد',
-              border: OutlineInputBorder(),
+            Align(
+              alignment: AlignmentDirectional.topEnd,
+              child: Container(
+                width: 150,
+                height: 48,
+                //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                clipBehavior: Clip.antiAlias,
+                decoration: ShapeDecoration(
+                  color: Color(0xFFF6F6F6),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4)),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    // Text(
+                    //   // اقصى عدد
+                    //   ':اقصى عدد',
+                    //   style: TextStyle(
+                    //     color: Color(0xFF666666),
+                    //     fontSize: 16,
+                    //     fontFamily: 'IBM Plex Sans Arabic',
+                    //     fontWeight: FontWeight.w400,
+                    //     height: 0,
+                    //   ),
+                    // ),
+                    Flexible(
+                      child: TextFormField(
+                        //rtl
+                        textAlign: TextAlign.right,
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter a number';
+                          }
+                          return null;
+                        },
+                        onChanged: (value) {
+                          _maxUsers = value;
+                        },
+                        decoration: InputDecoration(
+                          hintText: '              :اقصى عدد',
+                          border: OutlineInputBorder(),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-        ),
-      ),
-    ],
-  ),
-),
-          ),
             SizedBox(height: 20),
             const Row(
               mainAxisAlignment: MainAxisAlignment.end,
@@ -1060,22 +1165,21 @@ class _SelectBranchScreenState extends State<SelectBranchScreen> {
               builder: (context, state) {
                 return ManageAttendenceCubit.get(context).branches == null
                     ? const Center(child: CircularProgressIndicator())
-                    :
-                Container(
-                  // height: 200.h,
-                  child: CheckboxListWidget(
-
-                    onBranchSelected: (branch) {
-                      // setState(() {
-                      //   print('selected branch: $branch');
-                      //   selectedBranch = branch;
-                      // });
-                      ManageAttendenceCubit.get(context).updateSelectedBranch(branch);
-                    },
-                    items: ManageAttendenceCubit.get(context).
-                    branches ?? [],
-                  ),
-                );
+                    : Container(
+                        // height: 200.h,
+                        child: CheckboxListWidget(
+                          onBranchSelected: (branch) {
+                            // setState(() {
+                            //   print('selected branch: $branch');
+                            //   selectedBranch = branch;
+                            // });
+                            ManageAttendenceCubit.get(context)
+                                .updateSelectedBranch(branch);
+                          },
+                          items:
+                              ManageAttendenceCubit.get(context).branches ?? [],
+                        ),
+                      );
               },
             ),
             // ElevatedButton(
@@ -1091,6 +1195,427 @@ class _SelectBranchScreenState extends State<SelectBranchScreen> {
           ],
         ),
       ),
+    );
+  }
+}
+
+//info sceen
+//make screen contat listofusers aand list of coaches and list of times and selectedBranch
+//and maxUsers
+class InfoScreen extends StatefulWidget {
+  @override
+  State<InfoScreen> createState() => _InfoScreenState();
+}
+
+class _InfoScreenState extends State<InfoScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 20.h,
+        ),
+        Align(
+          alignment: AlignmentDirectional.topEnd,
+          child: Text(
+            ':المدربين',
+            style: TextStyle(
+              color: Color(0xFF333333),
+              fontSize: 14,
+              fontFamily: 'IBM Plex Sans Arabic',
+              fontWeight: FontWeight.w400,
+              height: 0,
+            ),
+          ),
+        ),
+        // SizedBox(
+        //   height: 10.h,
+        // ),
+        ListView.separated(
+          physics: BouncingScrollPhysics(),
+          separatorBuilder: (context, index) => //5
+              SizedBox(
+            height: 10.h,
+          ),
+          shrinkWrap: true,
+          itemCount: _SelectCoachesScreenState().selectedCoaches.length,
+          itemBuilder: (context, index) {
+            final user = _SelectCoachesScreenState().selectedCoaches[index];
+            return Container(
+              width: 360,
+              height: 25,
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 25,
+                    height: 25,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(),
+                    child: Stack(
+                      children: [
+                        //svg image delete which is svg image images/delete-2_svgrepo.com.svg
+                        InkWell(
+                            onTap: () {
+                              setState(() {
+                                _SelectCoachesScreenState()
+                                    .selectedCoaches
+                                    .remove(user);
+                              });
+                            },
+                            child: SvgPicture.asset(
+                                'assets/images/delete-2_svgrepo.com.svg')),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: double.infinity,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            '${index + 1}-${user.name}',
+                            //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                            textDirection: TextDirection.rtl,
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontFamily: 'Montserrat-Arabic',
+                              fontWeight: FontWeight.w400,
+                              height: 0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        SizedBox(
+          height: 20.h,
+        ),
+        Align(
+          alignment: AlignmentDirectional.topEnd,
+          child: Text(
+            ':الطلاب',
+            style: TextStyle(
+              color: Color(0xFF333333),
+              fontSize: 14,
+              fontFamily: 'IBM Plex Sans Arabic',
+              fontWeight: FontWeight.w400,
+              height: 0,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        ListView.separated(
+          physics: BouncingScrollPhysics(),
+          separatorBuilder: (context, index) => //5
+              SizedBox(
+            height: 10.h,
+          ),
+          shrinkWrap: true,
+          itemCount: _SelectCoachesScreenState().selectedUsers.length,
+          itemBuilder: (context, index) {
+            final user = _SelectCoachesScreenState().selectedUsers[index];
+            return Container(
+              width: 360,
+              height: 25,
+              padding: const EdgeInsets.symmetric(horizontal: 15),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    width: 25,
+                    height: 25,
+                    clipBehavior: Clip.antiAlias,
+                    decoration: BoxDecoration(),
+                    child: Stack(
+                      children: [
+                        //svg image delete which is svg image images/delete-2_svgrepo.com.svg
+                        InkWell(
+                            onTap: () {
+                              setState(() {
+                                _SelectCoachesScreenState()
+                                    .selectedUsers
+                                    .remove(user);
+                              });
+                            },
+                            child: SvgPicture.asset(
+                                'assets/images/delete-2_svgrepo.com.svg')),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: double.infinity,
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Text(
+                            '${index + 1}-${user.name}',
+                            //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                            textDirection: TextDirection.rtl,
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontFamily: 'Montserrat-Arabic',
+                              fontWeight: FontWeight.w400,
+                              height: 0,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+        //Text(
+        //     'اقصى عدد للمتدربين: ',
+        //     style: TextStyle(
+        //         color: Color(0xFF333333),
+        //         fontSize: 14,
+        //         fontFamily: 'IBM Plex Sans Arabic',
+        //         fontWeight: FontWeight.w400,
+        //         height: 0,
+        //     ),
+        // )
+        SizedBox(
+          height: 20.h,
+        ),
+        // Text(
+        //   'اقصى عدد للمتدربين: ${_SelectBranchScreenState().maxUsers}',
+        //   textAlign: TextAlign.right,
+        //   style: TextStyle(
+        //     color: Color(0xFF333333),
+        //     fontSize: 14,
+        //     fontFamily: 'IBM Plex Sans Arabic',
+        //     fontWeight: FontWeight.w400,
+        //     height: 0,
+        //   ),
+        // ),
+                Align(
+          alignment: AlignmentDirectional.topEnd,
+          child: Text(
+           ':اقصى عدد للمتدربين',
+            style: TextStyle(
+              color: Color(0xFF333333),
+              fontSize: 14,
+              fontFamily: 'IBM Plex Sans Arabic',
+              fontWeight: FontWeight.w400,
+              height: 0,
+            ),
+          ),
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        //
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+            '${_SelectBranchScreenState().maxUsers} اقصى عدد للمتدربين',
+            textAlign: TextAlign.right,
+          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontFamily: 'Montserrat-Arabic',
+                              fontWeight: FontWeight.w400,
+                              height: 0,
+                            ),  
+        ),
+            ],
+          ),
+        ),
+//10
+        SizedBox(
+          height: 20.h,
+        ),  
+        Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                ':مكان التدريب',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  color: Color(0xFF333333),
+                  fontSize: 14,
+                  fontFamily: 'IBM Plex Sans Arabic',
+                  fontWeight: FontWeight.w400,
+                  height: 0,
+                ),
+              ),
+            ],
+          ),
+          //${ManageAttendenceCubit.get(context).selectedBranch}
+          SizedBox(
+            height: 10.h,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  '${ManageAttendenceCubit.get(context).selectedBranch}',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 14,
+                    fontFamily: 'Montserrat-Arabic',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                ),
+              ],
+            ),
+          ),
+      
+        //Text(
+        // 'التوقيات:',
+        // style: TextStyle(
+        //     color: Color(0xFF333333),
+        //     fontSize: 14,
+        //     fontFamily: 'IBM Plex Sans Arabic',
+        //     fontWeight: FontWeight.w400,
+        //     height: 0,
+        // ),
+        //)
+//show times like that
+//Text(
+//     'الاحد ',
+//     textAlign: TextAlign.right,
+//     style: TextStyle(
+//         color: Colors.black,
+//         fontSize: 12,
+//         fontFamily: 'Montserrat-Arabic',
+//         fontWeight: FontWeight.w300,
+//         height: 0,
+//     ),
+// )
+// Text(
+//     '11:00AM - 12:00AM',
+//     textAlign: TextAlign.right,
+//     style: TextStyle(
+//         color: Colors.black,
+//         fontSize: 12,
+//         fontFamily: 'Montserrat-Arabic',
+//         fontWeight: FontWeight.w400,
+//         height: 0,
+//     ),
+// ),
+        SizedBox(
+          height: 20.h,
+        ),
+
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              ':التوقيات',
+              textAlign: TextAlign.right,
+              style: TextStyle(
+                color: Color(0xFF333333),
+                fontSize: 14,
+                fontFamily: 'IBM Plex Sans Arabic',
+                fontWeight: FontWeight.w400,
+                height: 0,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10.h,
+        ),
+        ListView.separated(
+          physics: BouncingScrollPhysics(),
+          separatorBuilder: (context, index) => //5
+              SizedBox(
+            height: 10.h,
+          ),
+          shrinkWrap: true,
+          itemCount: _Screen2State().times.length,
+          itemBuilder: (context, index) {
+            final day = _Screen2State().times.keys.elementAt(index);
+            final time = _Screen2State().times[day];
+            return
+                //if day is null return empty container
+                time?['start'] == null
+                  ? Container()
+                  : Container(
+                      width: 360.w,
+                      height: 50.h,
+                      padding: const EdgeInsets.symmetric(horizontal: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            '$day',
+                            //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                            textDirection: TextDirection.rtl,
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14,
+                              fontFamily: 'Montserrat-Arabic',
+                              fontWeight: FontWeight.w400,
+                              height: 0,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          Expanded(
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Text(
+                                  '${time?['start']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')} - ${time?['end']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')}',
+                                  //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                                  textDirection: TextDirection.rtl,
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14,
+                                    fontFamily: 'Montserrat-Arabic',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+          },
+        ),
+      ],
     );
   }
 }
