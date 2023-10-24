@@ -1,3 +1,4 @@
+import 'package:admin_future/add_grouup_of_schedules/presentation/onboarding_screen.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
 import 'package:admin_future/home/presenation/widget/mange_coaches.dart';
@@ -108,6 +109,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        BlocProvider(create: (context) => AddGroupCubit(),
+        ),
         BlocProvider(create: (context) => SignUpCubit()
           //..addBranches()
           ..getBranches()

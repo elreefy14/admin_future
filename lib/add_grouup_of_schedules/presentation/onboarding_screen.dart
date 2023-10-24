@@ -18,10 +18,45 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 // BEGIN: ed8c6549bwf9 (already existing code)
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:admin_future/add_grouup_of_schedules/presentation/select_coaches.dart';
+
 class AddGroupCubit extends Cubit<AddGroupState> {
   AddGroupCubit() : super(AddGroupState(screens: [
-    
+    SelectCoachesScreen(
+      isCoach: true,
+    ),
+    SelectCoachesScreen(
+      isCoach: false,
+    ),
+    Screen2(),
+    SelectBranchScreen(),
+    InfoScreen()
   ]));
+
+  final TextEditingController _searchController = TextEditingController();
+  Query? _query;
+  Query? _query2;
+  String? onSubmitted;
+  List<UserModel> _selectedUsersUids = [];
+  static final Map<String, Map<dynamic, dynamic>> _times = {
+    'السبت': {'start': null, 'end': null},
+    'الأحد': {'start': null, 'end': null},
+    'الاثنين': {'start': null, 'end': null},
+    'الثلاثاء': {'start': null, 'end': null},
+    'الأربعاء': {'start': null, 'end': null},
+    'الخميس': {'start': null, 'end': null},
+    'الجمعة': {'start': null, 'end': null},
+  };
+  Map<String, Map<dynamic, dynamic>> get times => _times;
+
+  @override
+  void initState() {
+    // super.initState();
+    _query = FirebaseFirestore.instance.collection('users');
+  }
 
   void selectUser(String user) {
     emit(state.copyWith(selectedUsers: [...state.selectedUsers, user]));
@@ -80,6 +115,46 @@ class AddGroupCubit extends Cubit<AddGroupState> {
       emit(state.copyWith(currentIndex: currentIndex - 1));
     }
   }
+
+  void setCurrentIndex(int index) {
+    emit(state.copyWith(currentIndex: index));
+  }
+
+  void searchUsers(String query) {
+    _query2 = _query!.where('name', isGreaterThanOrEqualTo: query).where('name', isLessThanOrEqualTo: query + '\uf8ff');
+    emit(state.copyWith(searchQuery: query));
+  }
+
+  void clearSearch() {
+    _query2 = null;
+    _searchController.clear();
+    emit(state.copyWith(searchQuery: null));
+  }
+
+  Stream<QuerySnapshot> getUsersStream() {
+    if (_query2 != null) {
+      return _query2!.snapshots();
+    } else {
+      return _query!.snapshots();
+    }
+  }
+
+  void selectUserUid(UserModel user) {
+    _selectedUsersUids.add(user);
+    emit(state.copyWith(selectedUsersUids: _selectedUsersUids));
+  }
+
+  void deselectUserUid(UserModel user) {
+    _selectedUsersUids.remove(user);
+    emit(state.copyWith(selectedUsersUids: _selectedUsersUids));
+  }
+
+  void updateTime(String day, TimeOfDay endTime) {
+   
+      _times[day]?['end'] = endTime;
+      _times[day]?['start'] = endTime.replacing(hour: endTime.hour - 1);
+      emit(state.copyWith(times: _times));      
+  }
 }
 
 class AddGroupState {
@@ -90,6 +165,9 @@ class AddGroupState {
   final String selectedOption;
   final int currentIndex;
   final List<Widget> screens;
+  final String? searchQuery;
+  final List<UserModel> selectedUsersUids;
+  final Map<String, Map<dynamic, dynamic>> times;
 
   AddGroupState({
     this.selectedUsers = const [],
@@ -99,6 +177,17 @@ class AddGroupState {
     this.selectedOption = '',
     this.currentIndex = 0,
     required this.screens,
+    this.searchQuery,
+    this.selectedUsersUids = const [],
+    this.times = const {
+      'السبت': {'start': null, 'end': null},
+      'الأحد': {'start': null, 'end': null},
+      'الاثنين': {'start': null, 'end': null},
+      'الثلاثاء': {'start': null, 'end': null},
+      'الأربعاء': {'start': null, 'end': null},
+      'الخميس': {'start': null, 'end': null},
+      'الجمعة': {'start': null, 'end': null},
+    },
   });
 
   AddGroupState copyWith({
@@ -108,6 +197,8 @@ class AddGroupState {
     String? selectedBranch,
     String? selectedOption,
     int? currentIndex,
+    String? searchQuery,
+    List<UserModel>? selectedUsersUids, Map<String, Map>? times,
   }) {
     return AddGroupState(
       selectedUsers: selectedUsers ?? this.selectedUsers,
@@ -117,6 +208,10 @@ class AddGroupState {
       selectedOption: selectedOption ?? this.selectedOption,
       currentIndex: currentIndex ?? this.currentIndex,
       screens: this.screens,
+      searchQuery: searchQuery ?? this.searchQuery,
+      selectedUsersUids: selectedUsersUids ?? this.selectedUsersUids,
+      times: times ?? this.times,
+
     );
   }
 }
@@ -126,316 +221,326 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  int _currentIndex = 0;
+  // int _currentIndex = 0;
 
-  List<Widget> _screens = [
-    SelectCoachesScreen(
-      isCoach: true,
-    ),
-    SelectCoachesScreen(
-      isCoach: false,
-    ),
-    Screen2(),
-    SelectBranchScreen(),
-    InfoScreen()
-  ];
+  // List<Widget> _screens = [
+  //   SelectCoachesScreen(
+  //     isCoach: true,
+  //   ),
+  //   SelectCoachesScreen(
+  //     isCoach: false,
+  //   ),
+  //   Screen2(),
+  //   SelectBranchScreen(),
+  //   InfoScreen()
+  // ];
 
-  void _next() {
-    setState(() {
-      _currentIndex++;
-    });
-  }
+  // void _next() {
+  //   setState(() {
+  //     _currentIndex++;
+  //   });
+  // }
 
-  void _previous() {
-    setState(() {
-      _currentIndex--;
-    });
-  }
+  // void _previous() {
+  //   setState(() {
+  //     _currentIndex--;
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(
+        appBar: CustomAppBar(
 //         text: 'Add group of schedules',
-        //traanslate the text to arabic
-        text: 'اضافة مجموعة',
-      ),
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              SizedBox(
-                //delete borders
-                //  decoration: BoxDecoration(
-                //    border: Border.all(
-                //      color: Colors.white,
-                //    ),
-                //  ),
-                height: 650.h,
-                width: double.infinity,
-                child: Theme(
-                  data: ThemeData(
-                    canvasColor: Colors.white,
-                    switchTheme: SwitchThemeData(
-                      thumbColor: MaterialStateProperty.all(
-                        Colors.white,
-                      ),
-                      trackColor: MaterialStateProperty.all(
-                        Colors.grey,
-                      ),
-                    ),
-                    colorScheme: Theme.of(context).colorScheme.copyWith(
-                        //  primary: Colors.purple,
-                        //disabledColor: Colors.purple,
-                        //  background: Colors.white,
-                        // secondary: Colors.purple,
+          //traanslate the text to arabic
+          text: 'اضافة مجموعة',
+        ),
+        backgroundColor: Colors.white,
+        body: SafeArea(
+          child: SingleChildScrollView(
+            physics: BouncingScrollPhysics(),
+            child: Column(
+              children: [
+                SizedBox(
+                  //delete borders
+                  //  decoration: BoxDecoration(
+                  //    border: Border.all(
+                  //      color: Colors.white,
+                  //    ),
+                  //  ),
+                  height: 650.h,
+                  width: double.infinity,
+                  child: Theme(
+                    data: ThemeData(
+                      canvasColor: Colors.white,
+                      switchTheme: SwitchThemeData(
+                        thumbColor: MaterialStateProperty.all(
+                          Colors.white,
                         ),
-                    //change stepper color only
-                    //primaryColor: Colors.purple,
-                    //change the color of the text in the stepper
-                  ),
-                  child: Container(
-                    //delete borders
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.white,
+                        trackColor: MaterialStateProperty.all(
+                          Colors.grey,
+                        ),
                       ),
+                      colorScheme: Theme.of(context).colorScheme.copyWith(
+                          //  primary: Colors.purple,
+                          //disabledColor: Colors.purple,
+                          //  background: Colors.white,
+                          // secondary: Colors.purple,
+                          ),
+                      //change stepper color only
+                      //primaryColor: Colors.purple,
+                      //change the color of the text in the stepper
                     ),
-                    child: Stepper(
-                      onStepContinue: _next,
-                      onStepCancel: _previous,
-                      onStepTapped: (index) {
-                        setState(() {
-                          _currentIndex = index;
-                        });
-                      },
-                      //handle navigation with swiping
-                      physics: ClampingScrollPhysics(),
-                      stepIconBuilder: (stepIndex, stepState) {
-                        //change the icon of the step
-                        if (stepState == StepState.complete) {
-                          return
+                    child: Container(
+                      //delete borders
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Colors.white,
+                        ),
+                      ),
+                      child: Stepper(
+                        onStepContinue: //use AddGroupCubit
+                            () {
+                          context.read<AddGroupCubit>().nextScreen();
+                        },
+                        onStepCancel: //use AddGroupCubit
+                            () {
+                          context.read<AddGroupCubit>().previousScreen();
+                        },
+                        onStepTapped: (index) {
+                          context.read<AddGroupCubit>().setCurrentIndex(index);
+                        },
+                        //handle navigation with swiping
+                        physics: ClampingScrollPhysics(),
+                        stepIconBuilder: (stepIndex, stepState) {
+                          //change the icon of the step
+                          if (stepState == StepState.complete) {
+                            return
 
-                              ///home/elreefy14/admin14/admin_future/assets/images/Group 1.svg
-                              Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.purple,
-                              //make thick white border
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 2.5,
-                              ),
-                            ),
-                            child: SvgPicture.asset(
-                              'assets/images/check.svg',
-                              color: Colors.white,
-                            ),
-                          );
-                        } else if (stepState == StepState.indexed) {
-                          //assets/images/emty14.svg
-                          return Container(
+                                ///home/elreefy14/admin14/admin_future/assets/images/Group 1.svg
+                                Container(
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                //color: Colors.white,
+                                color: Colors.purple,
                                 //make thick white border
                                 border: Border.all(
-                                  // color: Colors.white,
-                                  width: .1,
+                                  color: Colors.white,
+                                  width: 2.5,
                                 ),
                               ),
-                              child: Container(
-                                width: 40.w,
-                                //shape circke to make the icon in circle
+                              child: SvgPicture.asset(
+                                'assets/images/check.svg',
+                                color: Colors.white,
+                              ),
+                            );
+                          } else if (stepState == StepState.indexed) {
+                            //assets/images/emty14.svg
+                            return Container(
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: Colors.white,
+                                  //color: Colors.white,
+                                  //make thick white border
+                                  border: Border.all(
+                                    // color: Colors.white,
+                                    width: .1,
+                                  ),
                                 ),
-                                margin: EdgeInsets.all(1),
-                                //padding: EdgeInsets.all(5),
-                                //shape circke to make the icon in circle
-                                //color: Colors.white,
-                              ));
-                        } else if (stepState == StepState.editing) {
-                          return Container(
-                            //shape circke to make the icon in circle
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                            ),
-                            child: SvgPicture.asset(
-                              'assets/images/Group 1.svg',
-                              color: Colors.purple,
-                            ),
-                          );
-                        } else {
-                          return Text(
-                            '',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16.sp,
-                              fontFamily: 'Montserrat-Arabic',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                            ),
-                          );
-                        }
-                      },
+                                child: Container(
+                                  width: 40.w,
+                                  //shape circke to make the icon in circle
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.white,
+                                  ),
+                                  margin: EdgeInsets.all(1),
+                                  //padding: EdgeInsets.all(5),
+                                  //shape circke to make the icon in circle
+                                  //color: Colors.white,
+                                ));
+                          } else if (stepState == StepState.editing) {
+                            return Container(
+                              //shape circke to make the icon in circle
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                              ),
+                              child: SvgPicture.asset(
+                                'assets/images/Group 1.svg',
+                                color: Colors.purple,
+                              ),
+                            );
+                          } else {
+                            return Text(
+                              '',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16.sp,
+                                fontFamily: 'Montserrat-Arabic',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            );
+                          }
+                        },
 
-                      type: StepperType.horizontal,
-                      currentStep: _currentIndex,
-                      steps: _screens
-                          .asMap()
-                          .map((index, screen) => MapEntry(
-                              index,
-                              Step(
-                                title: Text(''),
-                                isActive: _currentIndex >= index,
-                                state: _currentIndex == index
-                                    ? StepState.editing
-                                    : _currentIndex > index
-                                        ? StepState.complete
-                                        : StepState.indexed,
-                                content: SizedBox(
-                                    height: 900.h,
-                                    width: double.infinity,
-                                    child: screen),
-                              )))
-                          .values
-                          .toList(),
+                        type: StepperType.horizontal,
+                        currentStep: context.watch<AddGroupCubit>().state.currentIndex,
+                        steps: context.watch<AddGroupCubit>().state.screens
+                                      .asMap()
+                                      .map((index, screen) => MapEntry(
+                                        index,
+                                        Step(
+                                        title: Text(''),
+                                        isActive: context.watch<AddGroupCubit>().state.currentIndex >= index,
+                                        state: context.watch<AddGroupCubit>().state.currentIndex == index
+                                          ? StepState.editing
+                                          : context.watch<AddGroupCubit>().state.currentIndex > index
+                                            ? StepState.complete
+                                            : StepState.indexed,
+                                        content: SizedBox(
+                                          height: 900.h,
+                                          width: double.infinity,
+                                          child: screen),
+                                        )))
+                                      .values
+                                      .toList(),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              // Expanded(
-              //   child: _screens[_currentIndex],
-              // ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (_currentIndex > 0)
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 4.0.w,
-                      ),
-                      child: InkWell(
-                        onTap: _previous,
-                        child: Container(
-                          height: 50.h,
-                          width: 150.w,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
+                // Expanded(
+                //   child: _screens[_currentIndex],
+                // ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    if (context.watch<AddGroupCubit>().state.currentIndex > 0)
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 4.0.w,
+                        ),
+                        child: InkWell(
+                          onTap: context.watch<AddGroupCubit>().previousScreen,
+                          child: Container(
+                            height: 50.h,
+                            width: 150.w,
+                            decoration: BoxDecoration(
+                              color: Colors.grey,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Align(
+                                alignment: AlignmentDirectional(0, 0),
+                                child: Text(
+                                  'السابق',
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontFamily: 'Montserrat-Arabic',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0.08,
+                                  ),
+                                )),
                           ),
-                          child: Align(
-                              alignment: AlignmentDirectional(0, 0),
-                              child: Text(
-                                'السابق',
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontFamily: 'Montserrat-Arabic',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0.08,
-                                ),
-                              )),
                         ),
                       ),
-                    ),
-                  //if current index is last index 'حفظ',
+                    //if current index is last index 'حفظ',
 
-                  if (_currentIndex == _screens.length - 1)
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 4.0.w,
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          print('save');
-                          //select the users from screen 3
-                          //   print(_Screen3State()._selectedUsers.length);
-                          //print all selected users data
-                          //   print('Selected Users: ${_Screen3State()._selectedUsers}');
+                    if (context.watch<AddGroupCubit>().state.currentIndex ==
+                        context.watch<AddGroupCubit>().state.screens.length - 1)
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 4.0.w,
+                        ),
+                        child: InkWell(
+                          onTap: () {
+                            print('save');
+                            //select the users from screen 3
+                            //   print(_Screen3State()._selectedUsers.length);
+                            //print all selected users data
+                            //   print('Selected Users: ${_Screen3State()._selectedUsers}');
 
-                          ManageAttendenceCubit.get(context).addGroup(
-                            true,
-                            context,
-                            selectedCoaches:
-                                _SelectCoachesScreenState().selectedCoaches,
-                            startTrainingTime: //random time
-                                Timestamp.now(),
-                            endTrainingTime: //random time
-                                Timestamp.now(),
-                            branch: ManageAttendenceCubit.get(context)
-                                    .selectedBranch ??
-                                'error',
-                            times: //call the times map from screen 2
-                                _Screen2State().times,
-                            maxUsers: _SelectBranchScreenState().maxUsers,
-                          );
-                        },
-                        child: Container(
-                          height: 50.h,
-                          width: 150.w,
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(8),
+                            ManageAttendenceCubit.get(context).addGroup(
+                              true,
+                              context,
+                              selectedCoaches:
+                                  _SelectCoachesScreenState().selectedCoaches,
+                              startTrainingTime: //random time
+                                  Timestamp.now(),
+                              endTrainingTime: //random time
+                                  Timestamp.now(),
+                              branch: ManageAttendenceCubit.get(context)
+                                      .selectedBranch ??
+                                  'error',
+                              times: //call the times map from screen 2
+                                //  context.watch<AddGroupCubit>().state.times,
+                             //TODO :fix this error
+                              {
+                                'السبت': {'start': TimeOfDay.now(), 'end': TimeOfDay.now()},
+                              },
+                              maxUsers: _SelectBranchScreenState().maxUsers,
+                            );
+                          },
+                          child: Container(
+                            height: 50.h,
+                            width: 150.w,
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Align(
+                                alignment: AlignmentDirectional(0, 0),
+                                child: Text(
+                                  'حفظ',
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontFamily: 'Montserrat-Arabic',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0.08,
+                                  ),
+                                )),
                           ),
-                          child: Align(
-                              alignment: AlignmentDirectional(0, 0),
-                              child: Text(
-                                'حفظ',
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontFamily: 'Montserrat-Arabic',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0.08,
-                                ),
-                              )),
                         ),
                       ),
-                    ),
 
-                  if (_currentIndex < _screens.length - 1)
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: InkWell(
-                        onTap: _next,
-                        child: Container(
-                          height: 50.h,
-                          width: 150.w,
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(8),
+                    if (context.watch<AddGroupCubit>().state.currentIndex <
+                        context.watch<AddGroupCubit>().state.screens.length - 1)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 8.0),
+                        child: InkWell(
+                          onTap: context.watch<AddGroupCubit>().nextScreen,
+                          child: Container(
+                            height: 50.h,
+                            width: 150.w,
+                            decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: Align(
+                                alignment: AlignmentDirectional(0, 0),
+                                child: Text(
+                                  'التالي',
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18,
+                                    fontFamily: 'Montserrat-Arabic',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0.08,
+                                  ),
+                                )),
                           ),
-                          child: Align(
-                              alignment: AlignmentDirectional(0, 0),
-                              child: Text(
-                                'التالي',
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontFamily: 'Montserrat-Arabic',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0.08,
-                                ),
-                              )),
                         ),
                       ),
-                    ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
-    );
+      );
   }
 }
 
@@ -445,22 +550,24 @@ class Screen1 extends StatefulWidget {
 }
 
 class _Screen1State extends State<Screen1> {
-  final TextEditingController _searchController = TextEditingController();
-  Query? _query;
-  Query? _query2;
-  //onSubmitted
-  String? onSubmitted;
+  // final TextEditingController _searchController = TextEditingController();
+  // Query? _query;
+  // Query? _query2;
+  // //onSubmitted
+  // String? onSubmitted;
 
-  List<UserModel> _selectedUsersUids = [];
+  // List<UserModel> _selectedUsersUids = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _query = FirebaseFirestore.instance.collection('users');
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _query = FirebaseFirestore.instance.collection('users');
+  // }
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<AddGroupCubit, AddGroupState>(
+  builder: (context, state) {
     return Center(
       child: ElevatedButton(
         onPressed: () {
@@ -476,19 +583,21 @@ class _Screen1State extends State<Screen1> {
                       //make input from right to left
                       textDirection: TextDirection.rtl,
 
-                      controller: _searchController,
+                      controller: context.read<AddGroupCubit>()._searchController,
                       decoration: InputDecoration(
                         hintText: 'Search by name',
                       ),
                       onSubmitted: (onSubmitted) {
                         setState(() {
                           onSubmitted = onSubmitted.trim();
-                          _query = FirebaseFirestore.instance
+                          context.read<AddGroupCubit>()._query
+                          = FirebaseFirestore.instance
                               .collection('users')
                               .where('name',
                                   isGreaterThanOrEqualTo: onSubmitted)
                               .where('name', isLessThan: onSubmitted + 'z');
-                          _query2 = FirebaseFirestore.instance
+                          context.read<AddGroupCubit>()._query2
+                           = FirebaseFirestore.instance
                               .collection('users')
                               .where('phone',
                                   isGreaterThanOrEqualTo: onSubmitted)
@@ -498,11 +607,13 @@ class _Screen1State extends State<Screen1> {
                       onChanged: (value) {
                         setState(() {
                           value = value.trim();
-                          _query = FirebaseFirestore.instance
+                          context.read<AddGroupCubit>()._query
+                           = FirebaseFirestore.instance
                               .collection('users')
                               .where('name', isGreaterThanOrEqualTo: value)
                               .where('name', isLessThan: value + 'z');
-                          _query2 = FirebaseFirestore.instance
+                         context.read<AddGroupCubit>()._query2
+                          = FirebaseFirestore.instance
                               .collection('users')
                               .where('phone', isGreaterThanOrEqualTo: value)
                               .where('phone', isLessThan: value + 'z');
@@ -513,7 +624,7 @@ class _Screen1State extends State<Screen1> {
                       child: FirestoreListView(
                         cacheExtent: 300,
                         pageSize: 5,
-                        query: _query ?? _query2!,
+                        query: context.read<AddGroupCubit>()._query ?? context.read<AddGroupCubit>()._query2!,
                         itemBuilder: (context, snapshot) {
                           final data = snapshot.data() as Map<String, dynamic>;
                           UserModel user = UserModel(
@@ -528,7 +639,10 @@ class _Screen1State extends State<Screen1> {
                             uId: snapshot.id,
                             phone: data['phone'],
                           );
-                          final selected = _selectedUsersUids.contains(user);
+                          final selected = context
+                              .read<AddGroupCubit>()
+                              ._selectedUsersUids
+                              .contains(user);
                           return CheckboxListTile(
                             title: Text(user.name ?? ''),
                             subtitle: Text(user.phone ?? ''),
@@ -536,12 +650,18 @@ class _Screen1State extends State<Screen1> {
                             onChanged: (value) {
                               setState(() {
                                 if (value == true) {
-                                  _selectedUsersUids.add(user);
+                                  context
+                                      .read<AddGroupCubit>()
+                                      ._selectedUsersUids
+                                      .add(user);
                                   //use logger to print the selected users
                                   // Logger.root.info(
                                   //    'Selected Users: $_selectedUsersUids');
                                 } else {
-                                  _selectedUsersUids.remove(user);
+  context
+                                        .read<AddGroupCubit>()
+                                        ._selectedUsersUids
+                                        .remove(user);
                                   // Logger.root.info(
                                   //      'Selected Users: $_selectedUsersUids');
                                 }
@@ -558,17 +678,17 @@ class _Screen1State extends State<Screen1> {
                     onPressed: () {
                       Navigator.of(context).pop();
                       //clear the search controller
-                      _searchController.clear();
+                      context.read<AddGroupCubit>()._searchController.clear();
                     },
                     child: Text('Cancel'),
                   ),
                   TextButton(
                     onPressed: () {
                       // Add your logic for selecting users here
-                      print('Selected Users: $_selectedUsersUids');
+                      //print('Selected Users: $_selectedUsersUids');
                       Navigator.of(context).pop();
                       //clear the search controller
-                      _searchController.clear();
+                      context.read<AddGroupCubit>()._searchController.clear();
                     },
                     child: Text('Select'),
                   ),
@@ -580,31 +700,30 @@ class _Screen1State extends State<Screen1> {
         child: Text('Select Users'),
       ),
     );
+  },
+);
   }
 }
 
 //assets/images/delete-2_svgrepo.com.svg
-class Screen2 extends StatefulWidget {
-  @override
-  _Screen2State createState() => _Screen2State();
-}
+class Screen2  extends StatelessWidget {
 
-class _Screen2State extends State<Screen2> {
-  static final Map<String, Map<dynamic, dynamic>> _times = {
-    'السبت': {'start': null, 'end': null},
-    'الأحد': {'start': null, 'end': null},
-    'الاثنين': {'start': null, 'end': null},
-    'الثلاثاء': {'start': null, 'end': null},
-    'الأربعاء': {'start': null, 'end': null},
-    'الخميس': {'start': null, 'end': null},
-    'الجمعة': {'start': null, 'end': null},
-  };
-  Map<String, Map<dynamic, dynamic>> get times => _times;
+  // static final Map<String, Map<dynamic, dynamic>> _times = {
+  //   'السبت': {'start': null, 'end': null},
+  //   'الأحد': {'start': null, 'end': null},
+  //   'الاثنين': {'start': null, 'end': null},
+  //   'الثلاثاء': {'start': null, 'end': null},
+  //   'الأربعاء': {'start': null, 'end': null},
+  //   'الخميس': {'start': null, 'end': null},
+  //   'الجمعة': {'start': null, 'end': null},
+  // };
+  // Map<String, Map<dynamic, dynamic>> get times => _times;
 
   @override
   Widget build(BuildContext context) {
+   dynamic _times = context.watch<AddGroupCubit>().times;
     return ListView(
-      children: _times.keys.map((day) {
+      children: context.read<AddGroupCubit>().times.keys.map((day) {
         return ListTile(
           title: Row(
             mainAxisAlignment: MainAxisAlignment.end,
@@ -638,13 +757,14 @@ class _Screen2State extends State<Screen2> {
                         initialTime: _times[day]?['end'] ?? TimeOfDay.now(),
                       );
                       if (endTime != null) {
-                        setState(() {
-                          //
-                          _times[day]?['end'] = endTime;
-                          //start time equal hour minus end time
-                          _times[day]?['start'] =
-                              endTime.replacing(hour: endTime.hour - 1);
-                        });
+                        // setState(() {
+                        //   //
+                        //   _times[day]?['end'] = endTime;
+                        //   //start time equal hour minus end time
+                        //   _times[day]?['start'] =
+                        //       endTime.replacing(hour: endTime.hour - 1);
+                        // });
+                        context.read<AddGroupCubit>().updateTime(day, endTime);
                       }
                     },
                     child: Container(
@@ -700,45 +820,46 @@ class _Screen2State extends State<Screen2> {
                                 _times[day]?['start'] ?? TimeOfDay.now(),
                           );
                           if (startTime != null) {
-                            setState(() {
-                              //convert start time to time stamp
+                            // setState(() {
+                            //   //convert start time to time stamp
 
-                              _times[day]?['start'] = startTime;
-                              //end time equal hour plus start time
-                              TimeOfDay endTime =
-                                  startTime.replacing(hour: startTime.hour + 1);
-                              _times[day]?['end'] = endTime;
-                              //save the start time as timeStamp get
+                            //   _times[day]?['start'] = startTime;
+                            //   //end time equal hour plus start time
+                            //   TimeOfDay endTime =
+                            //       startTime.replacing(hour: startTime.hour + 1);
+                            //   _times[day]?['end'] = endTime;
+                            //   //save the start time as timeStamp get
 
-                              //  DateTime getNearestDayOfWeek(String dayOfWeek) {
-                              // Get the current date
-                              //   DateTime now = DateTime.now();
+                            //   //  DateTime getNearestDayOfWeek(String dayOfWeek) {
+                            //   // Get the current date
+                            //   //   DateTime now = DateTime.now();
 
-                              //   // Get the integer value of the selected day of the week
-                              //   int selectedDayOfWeek = [
-                              //     'الأحد',
-                              //     'الاثنين',
-                              //     'الثلاثاء',
-                              //     'الأربعاء',
-                              //     'الخميس',
-                              //     'الجمعة',
-                              //     'السبت'
-                              //   ].indexOf(dayOfWeek);
+                            //   //   // Get the integer value of the selected day of the week
+                            //   //   int selectedDayOfWeek = [
+                            //   //     'الأحد',
+                            //   //     'الاثنين',
+                            //   //     'الثلاثاء',
+                            //   //     'الأربعاء',
+                            //   //     'الخميس',
+                            //   //     'الجمعة',
+                            //   //     'السبت'
+                            //   //   ].indexOf(dayOfWeek);
 
-                              //   // Calculate the difference between the selected day of the week and the current day of the week
-                              //   int difference = selectedDayOfWeek - now.weekday;
+                            //   //   // Calculate the difference between the selected day of the week and the current day of the week
+                            //   //   int difference = selectedDayOfWeek - now.weekday;
 
-                              //   // If the difference is negative, add 7 to get the nearest day of the week
-                              //   if (difference < 0) {
-                              //     difference += 7;
-                              //   }
+                            //   //   // If the difference is negative, add 7 to get the nearest day of the week
+                            //   //   if (difference < 0) {
+                            //   //     difference += 7;
+                            //   //   }
 
-                              //   // Add the difference to the current date to get the nearest day of the week
-                              //   DateTime nearestDay = now.add(Duration(days: difference));
+                            //   //   // Add the difference to the current date to get the nearest day of the week
+                            //   //   DateTime nearestDay = now.add(Duration(days: difference));
 
-                              //   return nearestDay;
-                              // }
-                            });
+                            //   //   return nearestDay;
+                            //   // }
+                            // });
+                            context.read<AddGroupCubit>().updateTime(day, startTime);
                           }
                         },
                         child: Container(
@@ -1557,10 +1678,10 @@ class _InfoScreenState extends State<InfoScreen> {
             height: 10.h,
           ),
           shrinkWrap: true,
-          itemCount: _Screen2State().times.length,
+          itemCount: context.read<AddGroupCubit>().times.length,
           itemBuilder: (context, index) {
-            final day = _Screen2State().times.keys.elementAt(index);
-            final time = _Screen2State().times[day];
+            final day = context.read<AddGroupCubit>().times.keys.toList()[index];
+            final time = context.read<AddGroupCubit>().times[day];
             return
                 //if day is null return empty container
                 time?['start'] == null
