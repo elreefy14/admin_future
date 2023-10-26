@@ -3,6 +3,7 @@ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:logger/logger.dart';
 
 import '../../registeration/data/userModel.dart';
 import 'onboarding_screen.dart';
@@ -21,8 +22,11 @@ class ShowCoachesInDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return BlocBuilder<AddGroupCubit, AddGroupState>(
       builder: (context, state) {
+        final logger = Logger();
+
         final addGroupCubit = context.read<AddGroupCubit>();
         final query = addGroupCubit.usersQuery;
 
@@ -48,7 +52,7 @@ class ShowCoachesInDialog extends StatelessWidget {
               Expanded(
                 child: FirestoreListView(
                   shrinkWrap: true,
-                  cacheExtent: 300,
+                  cacheExtent: 500,
                   pageSize: 2,
                   query: query ??FirebaseFirestore.instance.collection('users') ,
                   itemBuilder: (context, document) {
@@ -57,36 +61,32 @@ class ShowCoachesInDialog extends StatelessWidget {
                     return ListTile(
                       title: Text(user.name ?? ''),
                       subtitle: Text(user.phone ?? ''),
+
+
+
                       trailing: Checkbox(
-                        value: isCoach?
-                        addGroupCubit.selectedCoaches.map((user) => user.uId).contains(user.uId):
-                        addGroupCubit.selectedUsers.map((user) => user.uId).contains(user.uId),
+                        value: isCoach
+                            ? state.selectedCoaches.map((user) => user.uId).contains(user.uId)
+                            : state.selectedUsers.map((user) => user.uId).contains(user.uId),
                         onChanged: (value) {
-                          print('value is $value');
+                          logger.d('value is $value');
                           if (value!) {
                             if (isCoach) {
                               addGroupCubit.selectCoach(user);
-                             // addGroupCubit.setSelectedCoaches(
-                             //     addGroupCubit.selectedCoaches);
                             } else {
                               addGroupCubit.selectUser(user);
-                            //  addGroupCubit.setSelectedUsers(
-                           //       addGroupCubit.selectedUsers);
                             }
-
                           } else if (!value) {
-
                             if (isCoach) {
-                              print('user id is ${user.uId}');
-                              addGroupCubit.deselectCoach(user);
-                              //addGroupCubit.setSelectedCoaches(
-                              //    addGroupCubit.selectedCoaches);
+                              logger.d('user id is ${user.uId}');
+                              context
+                                  .read<AddGroupCubit>()
+                                  .deselectCoach(user);
                             } else {
-                              addGroupCubit.deselectUser(user);
-                             // addGroupCubit.setSelectedUsers(
-                             //     addGroupCubit.selectedUsers);
+                              context
+                                  .read<AddGroupCubit>()
+                                  .deselectUser(user);
                             }
-
                           }
                         },
                       ),

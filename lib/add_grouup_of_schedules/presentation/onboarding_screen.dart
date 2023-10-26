@@ -135,9 +135,9 @@ class AddGroupCubit extends Cubit<AddGroupState> {
 
   void deselectUser(UserModel user) {
     //remove user from selected users
-    selectedUsers.remove(user);
+   // selectedUsers.removeWhere((u) => u.uId == user.uId);
     emit(state.copyWith(
-        selectedUsers: state.selectedUsers.where((u) => u != user).toList()));
+        selectedUsers: state.selectedUsers.where((u) => u.uId != user.uId).toList()));
   }
 
   void selectCoach(UserModel coach) {
@@ -146,10 +146,17 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   }
 
   void deselectCoach(UserModel coach) {
-    selectedCoaches.remove(coach);
+    print('deselectCoach');
+    print(selectedCoaches.length);
+    //selectedCoaches.remove(coach);
+    //remove where uId != coach.uId
+  //  selectedCoaches.removeWhere((c) => c.uId == coach.uId);
     emit(state.copyWith(
         selectedCoaches:
-            state.selectedCoaches.where((c) => c != coach).toList()));
+          //  state.selectedCoaches.where((c) => c != coach).toList()));
+        state.selectedCoaches.where((c) => c.uId != coach.uId).toList()));
+    print(selectedCoaches.length);
+
   }
 
   void selectTime(String time) {
@@ -1121,65 +1128,13 @@ class Screen2 extends StatelessWidget {
   }
 }
 
-class SelectCoachesScreen extends StatefulWidget {
+class SelectCoachesScreen extends StatelessWidget {
   final bool isCoach;
 
-  const SelectCoachesScreen({super.key, required this.isCoach});
-  @override
-  _SelectCoachesScreenState createState() => _SelectCoachesScreenState();
-}
-
-class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
+   SelectCoachesScreen({super.key, required this.isCoach});
   final TextEditingController _searchController = TextEditingController();
-  //  Query? _query;
-  //  int? numberOfQuery;
-  // // List<String> _selectedCoachesUids = [];
-  // // List<String> _selectedUsersUids = [];
-  //  static List<UserModel> _selectedCoaches = [];
-  //  static List<UserModel> _selectedUsers = [];
-  //  //make getter to get the selected users
-  //  List<UserModel> get selectedCoaches => _selectedCoaches;
-  //  List<UserModel> get selectedUsers => _selectedUsers;
-  // List<UserModel> get selectedUsers => _selectedUsers;
-
-  @override
-  void initState() {
-    super.initState();
-    //_query = FirebaseFirestore.instance.collection('users');
-  }
 
   // Future<void> _onSearchSubmitted(String value) async {
-  //   Query newQuery = FirebaseFirestore.instance
-  //       .collection('users')
-  //       .where('name', isGreaterThanOrEqualTo: value)
-  //       .where('name', isLessThan: value + 'z')
-  //       .where('role', isEqualTo: 'coach')
-  //       //order by name
-  //       .orderBy('name', descending: false)
-  //       .limit(100);
-  //
-  //   QuerySnapshot querySnapshot =
-  //       await newQuery.get(GetOptions(source: Source.serverAndCache));
-  //   numberOfQuery = querySnapshot.docs.length;
-  //   print('number of query is $numberOfQuery');
-  //   print(numberOfQuery);
-  //
-  //   if (numberOfQuery == 0) {
-  //     newQuery = FirebaseFirestore.instance
-  //         .collection('users')
-  //         .where('phone', isGreaterThanOrEqualTo: value)
-  //         .where('phone', isLessThan: value + 'z')
-  //         .where('role', isEqualTo: 'coach')
-  //         //order by name
-  //         .orderBy('phone', descending: false)
-  //         .limit(100);
-  //   }
-  //
-  //   setState(() {
-  //     _query = newQuery;
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
 
@@ -1219,7 +1174,7 @@ class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
             Align(
               alignment: AlignmentDirectional.topEnd,
               child: Text(
-                widget.isCoach ? 'المدربين' : 'الطلاب',
+                isCoach ? 'المدربين' : 'الطلاب',
                 style: TextStyle(
                   color: Color(0xFF333333),
                   fontSize: 14,
@@ -1232,20 +1187,20 @@ class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
             ),
             GestureDetector(
               onTap: () {
-                if(widget.isCoach) {
+                if(isCoach) {
                   print('is coach');
-                  print(widget.isCoach);
+                  print(isCoach);
                   context.read<AddGroupCubit>().updateQuery(FirebaseFirestore.instance.collection('users').orderBy('name').where('role', isEqualTo: 'coach'));
                 } else {
                   print('is coach');
-                  print(widget.isCoach);
+                  print(isCoach);
                   context.read<AddGroupCubit>().updateQuery(FirebaseFirestore.instance.collection('users').orderBy('name').where('role', isEqualTo: 'user'));
                 }
                 showDialog(
                   context: context,
                   builder: (context) => ShowCoachesInDialog(
-                    isCoach: widget.isCoach ?? true,
-                    selectedUsers: widget.isCoach
+                    isCoach: isCoach ?? true,
+                    selectedUsers: isCoach
                         ? context.read<AddGroupCubit>().state.selectedCoaches
                         : context.read<AddGroupCubit>().state.selectedUsers,
                     onSelectedUsersChanged: (users) {
@@ -1257,12 +1212,12 @@ class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
                       //   }
                       //   // _selectedCoaches = users;
                       // });
-                      if (widget.isCoach) {
-
-                        context.read<AddGroupCubit>().setSelectedCoaches(users);
-                      } else {
-                        context.read<AddGroupCubit>().setSelectedUsers(users);
-                      }
+                      // if (widget.isCoach) {
+                      //
+                      //   context.read<AddGroupCubit>().setSelectedCoaches(users);
+                      // } else {
+                      //   context.read<AddGroupCubit>().setSelectedUsers(users);
+                      // }
                     },
                   ),
                 );
@@ -1298,7 +1253,7 @@ class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
                         Expanded(
                           child: SizedBox(
                             child: Text(
-                              widget.isCoach ? 'اختر المدربين' : 'اختر الطلاب',
+                              isCoach ? 'اختر المدربين' : 'اختر الطلاب',
                               // 'اختر المدربين',
                               textAlign: TextAlign.right,
                               style: TextStyle(
@@ -1324,13 +1279,13 @@ class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
                 height: 10.h,
               ),
               shrinkWrap: true,
-              itemCount: widget.isCoach
+              itemCount: isCoach
                   ? state.selectedCoaches.length
                   : state.selectedUsers.length,
               //     _selectedCoaches.length,
               itemBuilder: (context, index) {
                 late UserModel user;
-                if (widget.isCoach == true)
+                if (isCoach == true)
                   user = state.selectedCoaches[index];
                 else
                   user = state.selectedUsers[index];
@@ -1353,7 +1308,7 @@ class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
                             //svg image delete which is svg image images/delete-2_svgrepo.com.svg
                             InkWell(
                                 onTap: () {
-                                  if (widget.isCoach) {
+                                  if (isCoach) {
                                     // setState(() {
                                     //   _selectedCoaches.remove(user);
                                     //   _selectedCoachesUids.remove(user.uId!);
