@@ -29,8 +29,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:admin_future/add_grouup_of_schedules/presentation/select_coaches.dart';
 
 class AddGroupCubit extends Cubit<AddGroupState> {
+  var _searchController;
+
   AddGroupCubit()
-      : super(AddGroupState(screens: [
+      : super(
+      AddGroupState(screens: [
           SelectCoachesScreen(
             isCoach: true,
           ),
@@ -42,18 +45,18 @@ class AddGroupCubit extends Cubit<AddGroupState> {
           InfoScreen()
         ]));
 
-  final TextEditingController _searchController = TextEditingController();
-  Query? _query = FirebaseFirestore.instance.collection('users');
+  final TextEditingController searchController = TextEditingController();
+  Query? usersQuery ;
   Query? _query2;
   String? onSubmitted;
-  List<UserModel> _selectedUsersUids = [];
+  List<String> selectedUsersUids = [];
   //final TextEditingController _searchController = TextEditingController();
   // Query? _query;
   int? numberOfQuery;
-  List<String> _selectedCoachesUids = [];
+  List<String> selectedCoachesUids = [];
   //List<String> _selectedUsersUids = [];
-  static List<UserModel> _selectedCoaches = [];
-  static List<UserModel> _selectedUsers = [];
+   List<UserModel> selectedCoaches = [];
+   List<UserModel> selectedUsers = [];
   static final Map<String, Map<dynamic, dynamic>> _times = {
     'السبت': {'start': null, 'end': null},
     'الأحد': {'start': null, 'end': null},
@@ -66,13 +69,15 @@ class AddGroupCubit extends Cubit<AddGroupState> {
 
   Map<String, Map<dynamic, dynamic>> get times => _times;
 
+  
+
   @override
   void initState() {
     // super.initState();
-    _query = FirebaseFirestore.instance.collection('users');
+    usersQuery = FirebaseFirestore.instance.collection('users');
   }
 
-  Future<void> _onSearchSubmitted(String value, bool isCoach) async {
+  Future<void> onSearchSubmitted(String value, bool isCoach) async {
     late Query newQuery;
     if (isCoach)
       newQuery = FirebaseFirestore.instance
@@ -117,22 +122,31 @@ class AddGroupCubit extends Cubit<AddGroupState> {
             .where('role', isEqualTo: 'user')
             .limit(100);
     }
+    //update query
+    updateQuery(newQuery);
   }
-
+  // List<UserModel> _selectedCoaches = [];
+  // List<UserModel> _selectedUsers = [];
   void selectUser(UserModel user) {
+    //add user to selected users
+    selectedUsers.add(user);
     emit(state.copyWith(selectedUsers: [...state.selectedUsers, user]));
   }
 
   void deselectUser(UserModel user) {
+    //remove user from selected users
+    selectedUsers.remove(user);
     emit(state.copyWith(
         selectedUsers: state.selectedUsers.where((u) => u != user).toList()));
   }
 
   void selectCoach(UserModel coach) {
+    selectedCoaches.add(coach);
     emit(state.copyWith(selectedCoaches: [...state.selectedCoaches, coach]));
   }
 
   void deselectCoach(UserModel coach) {
+    selectedCoaches.remove(coach);
     emit(state.copyWith(
         selectedCoaches:
             state.selectedCoaches.where((c) => c != coach).toList()));
@@ -186,7 +200,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   }
 
   void searchUsers(String query) {
-    _query2 = _query!
+    _query2 = usersQuery!
         .where('name', isGreaterThanOrEqualTo: query)
         .where('name', isLessThanOrEqualTo: query + '\uf8ff');
     emit(state.copyWith(searchQuery: query));
@@ -202,18 +216,18 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     if (_query2 != null) {
       return _query2!.snapshots();
     } else {
-      return _query!.snapshots();
+      return usersQuery!.snapshots();
     }
   }
 
   void selectUserUid(UserModel user) {
-    _selectedUsersUids.add(user);
-    emit(state.copyWith(selectedUsersUids: _selectedUsersUids));
+    selectedUsersUids.add(user.uId??'');
+    emit(state.copyWith(selectedUsersUids: selectedUsersUids));
   }
 
   void deselectUserUid(UserModel user) {
-    _selectedUsersUids.remove(user);
-    emit(state.copyWith(selectedUsersUids: _selectedUsersUids));
+    selectedUsersUids.remove(user);
+    emit(state.copyWith(selectedUsersUids: selectedUsersUids));
   }
 
   void updateTime(String day, TimeOfDay endTime) {
@@ -437,21 +451,36 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     _times[day]?['end'] = startTime.replacing(hour: startTime.hour + 1);
     emit(state.copyWith(times: _times));
   }
-
+  // setState(() {
+  //   if (widget.isCoach) {
+  //     _selectedCoachesUids = users.map((e) => e.uId!).toList();
+  //   } else {
+  //     _selectedUsersUids = users.map((e) => e.uId!).toList();
+  //   }
+  //   // _selectedCoaches = users;
+  // });
+  
   void setSelectedCoaches(List<UserModel> users) {
-    _selectedCoaches = users;
+selectedCoachesUids = users.map((e) => e.uId!).toList();
+    selectedCoaches = users;
     emit(state.copyWith(selectedCoaches: users));
   }
 
   void setSelectedUsers(List<UserModel> users) {
-    _selectedUsers = users;
+    selectedUsersUids = users.map((e) => e.uId!).toList();
+    selectedUsers = users;
     emit(state.copyWith(selectedUsers: users));
+  }
+
+  void updateQuery(Query query) {
+    usersQuery = query;
+    emit(state.copyWith(query: query));
   }
 }
 
 class AddGroupState {
-  final List<UserModel> selectedUsers;
-  final List<UserModel> selectedCoaches;
+   List<UserModel> selectedUsers;
+   List<UserModel> selectedCoaches;
   final List<String> selectedTimes;
   final String selectedBranch;
   final String selectedOption;
@@ -461,8 +490,10 @@ class AddGroupState {
   final List<UserModel> selectedUsersUids;
   final Map<String, Map<dynamic, dynamic>> times;
   final bool loading;
+  final Query? query;
 
   AddGroupState({
+    this.query ,
     this.selectedUsers = const [],
     this.selectedCoaches = const [],
     this.selectedTimes = const [],
@@ -492,11 +523,11 @@ class AddGroupState {
     String? selectedOption,
     int? currentIndex,
     String? searchQuery,
-    List<UserModel>? selectedUsersUids,
+    List<String>? selectedUsersUids,
     Map<String, Map>? times,
-    bool? loading,
+    bool? loading, Query? query,
   }) {
-    return AddGroupState(
+    return AddGroupState(      query: query ?? this.query,
       selectedUsers: selectedUsers ?? this.selectedUsers,
       selectedCoaches: selectedCoaches ?? this.selectedCoaches,
       selectedTimes: selectedTimes ?? this.selectedTimes,
@@ -505,7 +536,7 @@ class AddGroupState {
       currentIndex: currentIndex ?? this.currentIndex,
       screens: this.screens,
       searchQuery: searchQuery ?? this.searchQuery,
-      selectedUsersUids: selectedUsersUids ?? this.selectedUsersUids,
+   //   selectedUsersUids: selectedUsersUids ?? this.selectedUsersUids,
       times: times ?? this.times,
       loading: loading ?? this.loading,
     );
@@ -1151,8 +1182,20 @@ class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return BlocBuilder<AddGroupCubit, AddGroupState>(
       builder: (context, state) {
+        // if(widget.isCoach) {
+        //   print('is coach');
+        //   print(widget.isCoach);
+        //   context.read<AddGroupCubit>().updateQuery(FirebaseFirestore.instance.collection('users').orderBy('name').where('role', isEqualTo: 'coach'));
+        // } else {
+        //   print('is coach');
+        //   print(widget.isCoach);
+        //   context.read<AddGroupCubit>().updateQuery(FirebaseFirestore.instance.collection('users').orderBy('name').where('role', isEqualTo: 'user'));
+        // }
+       // print('hjh' + widget.isCoach.toString());
+       // print(widget.isCoach);
         return Column(
           children: [
             /*
@@ -1189,6 +1232,15 @@ class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
             ),
             GestureDetector(
               onTap: () {
+                if(widget.isCoach) {
+                  print('is coach');
+                  print(widget.isCoach);
+                  context.read<AddGroupCubit>().updateQuery(FirebaseFirestore.instance.collection('users').orderBy('name').where('role', isEqualTo: 'coach'));
+                } else {
+                  print('is coach');
+                  print(widget.isCoach);
+                  context.read<AddGroupCubit>().updateQuery(FirebaseFirestore.instance.collection('users').orderBy('name').where('role', isEqualTo: 'user'));
+                }
                 showDialog(
                   context: context,
                   builder: (context) => ShowCoachesInDialog(
@@ -1206,6 +1258,7 @@ class _SelectCoachesScreenState extends State<SelectCoachesScreen> {
                       //   // _selectedCoaches = users;
                       // });
                       if (widget.isCoach) {
+
                         context.read<AddGroupCubit>().setSelectedCoaches(users);
                       } else {
                         context.read<AddGroupCubit>().setSelectedUsers(users);
