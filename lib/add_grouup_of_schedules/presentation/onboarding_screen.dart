@@ -50,6 +50,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   Query? _query2;
   String? onSubmitted;
   List<String> selectedUsersUids = [];
+  String? maxUsers;
   //final TextEditingController _searchController = TextEditingController();
   // Query? _query;
   int? numberOfQuery;
@@ -69,7 +70,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
 
   Map<String, Map<dynamic, dynamic>> get times => _times;
 
-  
+
 
   @override
   void initState() {
@@ -466,7 +467,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   //   }
   //   // _selectedCoaches = users;
   // });
-  
+
   void setSelectedCoaches(List<UserModel> users) {
 selectedCoachesUids = users.map((e) => e.uId!).toList();
     selectedCoaches = users;
@@ -483,6 +484,11 @@ selectedCoachesUids = users.map((e) => e.uId!).toList();
     usersQuery = query;
     emit(state.copyWith(query: query));
   }
+
+  void updateMaxUsers(int parse) {
+    maxUsers = parse.toString();
+    emit(state.copyWith(maxUsers: parse.toString()));
+  }
 }
 
 class AddGroupState {
@@ -498,8 +504,10 @@ class AddGroupState {
   final Map<String, Map<dynamic, dynamic>> times;
   final bool loading;
   final Query? query;
+  final String? maxUsers;
 
   AddGroupState({
+    this.maxUsers,
     this.query ,
     this.selectedUsers = const [],
     this.selectedCoaches = const [],
@@ -532,7 +540,7 @@ class AddGroupState {
     String? searchQuery,
     List<String>? selectedUsersUids,
     Map<String, Map>? times,
-    bool? loading, Query? query,
+    bool? loading, Query? query, String? maxUsers,
   }) {
     return AddGroupState(      query: query ?? this.query,
       selectedUsers: selectedUsers ?? this.selectedUsers,
@@ -546,6 +554,7 @@ class AddGroupState {
    //   selectedUsersUids: selectedUsersUids ?? this.selectedUsersUids,
       times: times ?? this.times,
       loading: loading ?? this.loading,
+      maxUsers: maxUsers ?? this.maxUsers,
     );
   }
 }
@@ -837,7 +846,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                                 // {
                                 //   'السبت': {'start': TimeOfDay.now(), 'end': TimeOfDay.now()},
                                 //  },
-                                maxUsers: _SelectBranchScreenState().maxUsers,
+                                maxUsers: context.read<AddGroupCubit>().state.maxUsers,
                               );
 //clr   context.read<AddGroupCubit>().state.times,
                           context.read<AddGroupCubit>().state.times.clear();
@@ -1376,9 +1385,9 @@ class SelectBranchScreen extends StatefulWidget {
 
 class _SelectBranchScreenState extends State<SelectBranchScreen> {
   final _formKey = GlobalKey<FormState>();
-  static String? _maxUsers;
+  //static String? _maxUsers;
   //getter
-  String? get maxUsers => _maxUsers;
+ // String? get maxUsers => _maxUsers;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -1446,7 +1455,10 @@ class _SelectBranchScreenState extends State<SelectBranchScreen> {
                           return null;
                         },
                         onChanged: (value) {
-                          _maxUsers = value;
+                          context
+                              .read<AddGroupCubit>()
+                              .updateMaxUsers(int.parse(value));
+
                         },
                         decoration: InputDecoration(
                           hintText: '              :اقصى عدد',
@@ -1518,32 +1530,38 @@ class _SelectBranchScreenState extends State<SelectBranchScreen> {
 //info sceen
 //make screen contat listofusers aand list of coaches and list of times and selectedBranch
 //and maxUsers
-class InfoScreen extends StatefulWidget {
-  @override
-  State<InfoScreen> createState() => _InfoScreenState();
-}
-
-class _InfoScreenState extends State<InfoScreen> {
+class InfoScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<AddGroupCubit, AddGroupState>(
+  builder: (context, state) {
+    //context.read<AddGroupCubit>() . make object from cubit
+    final addGroupCubit = context.read<AddGroupCubit>();
     return Column(
       children: [
-        SizedBox(
-          height: 20.h,
-        ),
-        Align(
-          alignment: AlignmentDirectional.topEnd,
-          child: Text(
-            ':المدربين',
-            style: TextStyle(
-              color: Color(0xFF333333),
-              fontSize: 14,
-              fontFamily: 'IBM Plex Sans Arabic',
-              fontWeight: FontWeight.w400,
-              height: 0,
-            ),
-          ),
-        ),
+        state.selectedCoaches.isNotEmpty
+            ?  Column(
+    children: [
+      SizedBox(
+      height: 20.h,
+    ),
+    Align(
+    alignment: AlignmentDirectional.topEnd,
+    child: Text(
+    ':المدربين',
+    style: TextStyle(
+    color: Color(0xFF333333),
+    fontSize: 14,
+    fontFamily: 'IBM Plex Sans Arabic',
+    fontWeight: FontWeight.w400,
+    height: 0,
+    ),
+    ),
+    ),
+    ],
+    )
+            : SizedBox(),
+
         // SizedBox(
         //   height: 10.h,
         // ),
@@ -1620,25 +1638,32 @@ class _InfoScreenState extends State<InfoScreen> {
             );
           },
         ),
-        SizedBox(
-          height: 20.h,
-        ),
-        Align(
-          alignment: AlignmentDirectional.topEnd,
-          child: Text(
-            ':الطلاب',
-            style: TextStyle(
-              color: Color(0xFF333333),
-              fontSize: 14,
-              fontFamily: 'IBM Plex Sans Arabic',
-              fontWeight: FontWeight.w400,
-              height: 0,
+        state.selectedUsers.isNotEmpty?
+
+        Column(
+          children: [
+            SizedBox(
+              height: 20.h,
             ),
-          ),
-        ),
-        SizedBox(
-          height: 10.h,
-        ),
+            Align(
+              alignment: AlignmentDirectional.topEnd,
+              child: Text(
+                ':الطلاب',
+                style: TextStyle(
+                  color: Color(0xFF333333),
+                  fontSize: 14,
+                  fontFamily: 'IBM Plex Sans Arabic',
+                  fontWeight: FontWeight.w400,
+                  height: 0,
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10.h,
+            ),
+          ],
+        ):SizedBox(),
+
         ListView.separated(
           physics: BouncingScrollPhysics(),
           separatorBuilder: (context, index) => //5
@@ -1735,10 +1760,70 @@ class _InfoScreenState extends State<InfoScreen> {
         //     height: 0,
         //   ),
         // ),
+        state.maxUsers != null
+            ? Column(
+                children: [
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                  Align(
+                    alignment: AlignmentDirectional.topEnd,
+                    child: Text(
+                      ':اقصى عدد للمتدربين',
+                      style: TextStyle(
+                        color: Color(0xFF333333),
+                        fontSize: 14,
+                        fontFamily: 'IBM Plex Sans Arabic',
+                        fontWeight: FontWeight.w400,
+                        height: 0,
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 10.h,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          '${state.maxUsers} اقصى عدد للمتدربين',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontFamily: 'Montserrat-Arabic',
+                            fontWeight: FontWeight.w400,
+                            height: 0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20.h,
+                  ),
+                ],
+              )
+            : SizedBox(),
+
+//
+//
+//                         '${ManageAttendenceCubit.get(context).selectedBranch}',
+
+        BlocBuilder< ManageAttendenceCubit, ManageAttendenceState>(
+  builder: (context, state) {
+    return Column(
+      children: [
+        SizedBox(
+          height: 20.h,
+        ),
         Align(
           alignment: AlignmentDirectional.topEnd,
           child: Text(
-            ':اقصى عدد للمتدربين',
+            //:مكان التدريب'
+            ':مكان التدريب',
             style: TextStyle(
               color: Color(0xFF333333),
               fontSize: 14,
@@ -1751,14 +1836,13 @@ class _InfoScreenState extends State<InfoScreen> {
         SizedBox(
           height: 10.h,
         ),
-        //
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
               Text(
-                '${_SelectBranchScreenState().maxUsers} اقصى عدد للمتدربين',
+                ' ${ManageAttendenceCubit.get(context).selectedBranch} ',
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   color: Colors.black,
@@ -1771,49 +1855,15 @@ class _InfoScreenState extends State<InfoScreen> {
             ],
           ),
         ),
-//10
         SizedBox(
           height: 20.h,
         ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(
-              ':مكان التدريب',
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                color: Color(0xFF333333),
-                fontSize: 14,
-                fontFamily: 'IBM Plex Sans Arabic',
-                fontWeight: FontWeight.w400,
-                height: 0,
-              ),
-            ),
-          ],
-        ),
+      ],
+    );
+  },
+),
         //${ManageAttendenceCubit.get(context).selectedBranch}
-        SizedBox(
-          height: 10.h,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                '${ManageAttendenceCubit.get(context).selectedBranch}',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14,
-                  fontFamily: 'Montserrat-Arabic',
-                  fontWeight: FontWeight.w400,
-                  height: 0,
-                ),
-              ),
-            ],
-          ),
-        ),
+
 
         //Text(
         // 'التوقيات:',
@@ -1851,94 +1901,101 @@ class _InfoScreenState extends State<InfoScreen> {
         SizedBox(
           height: 20.h,
         ),
-
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
+state.times.isEmpty?SizedBox():
+        Column(
           children: [
-            Text(
-              ':التوقيات',
-              textAlign: TextAlign.right,
-              style: TextStyle(
-                color: Color(0xFF333333),
-                fontSize: 14,
-                fontFamily: 'IBM Plex Sans Arabic',
-                fontWeight: FontWeight.w400,
-                height: 0,
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  ':التوقيات',
+                  textAlign: TextAlign.right,
+                  style: TextStyle(
+                    color: Color(0xFF333333),
+                    fontSize: 14,
+                    fontFamily: 'IBM Plex Sans Arabic',
+                    fontWeight: FontWeight.w400,
+                    height: 0,
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 10.h,
+            ),
+            ListView.separated(
+              physics: BouncingScrollPhysics(),
+              separatorBuilder: (context, index) => //5
+              SizedBox(
+                height: 10.h,
               ),
+              shrinkWrap: true,
+              itemCount: context.read<AddGroupCubit>().times.length,
+              itemBuilder: (context, index) {
+                final day =
+                context.read<AddGroupCubit>().times.keys.toList()[index];
+                final time = context.read<AddGroupCubit>().times[day];
+                return
+                  //if day is null return empty container
+                  time?['start'] == null
+                      ? Container()
+                      : Container(
+                    width: 360.w,
+                    height: 50.h,
+                    padding: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '$day',
+                          //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                          textDirection: TextDirection.rtl,
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 14,
+                            fontFamily: 'Montserrat-Arabic',
+                            fontWeight: FontWeight.w400,
+                            height: 0,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Expanded(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                '${time?['start']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')} - ${time?['end']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')}',
+                                //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                                textDirection: TextDirection.rtl,
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14,
+                                  fontFamily: 'Montserrat-Arabic',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+              },
             ),
           ],
         ),
-        SizedBox(
-          height: 10.h,
-        ),
-        ListView.separated(
-          physics: BouncingScrollPhysics(),
-          separatorBuilder: (context, index) => //5
-              SizedBox(
-            height: 10.h,
-          ),
-          shrinkWrap: true,
-          itemCount: context.read<AddGroupCubit>().times.length,
-          itemBuilder: (context, index) {
-            final day =
-                context.read<AddGroupCubit>().times.keys.toList()[index];
-            final time = context.read<AddGroupCubit>().times[day];
-            return
-                //if day is null return empty container
-                time?['start'] == null
-                    ? Container()
-                    : Container(
-                        width: 360.w,
-                        height: 50.h,
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              '$day',
-                              //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                              textDirection: TextDirection.rtl,
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 14,
-                                fontFamily: 'Montserrat-Arabic',
-                                fontWeight: FontWeight.w400,
-                                height: 0,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 10.h,
-                            ),
-                            Expanded(
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Text(
-                                    '${time?['start']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')} - ${time?['end']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')}',
-                                    //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                    textDirection: TextDirection.rtl,
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14,
-                                      fontFamily: 'Montserrat-Arabic',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-          },
-        ),
+
       ],
     );
+  },
+);
   }
 }
 //
