@@ -313,6 +313,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
             'usersList': [],
             'userIds': [],
             'max_users': maxUsers,
+            'schedule_id': scheduleRef.id??'',
           });
 
           // Add coaches to batch
@@ -332,6 +333,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'branch_id': branch,
                 'pId': FirebaseAuth.instance.currentUser!.uid,
                 'max_users': maxUsers,
+                'schedule_id': scheduleRef.id??'',
               });
 
               DocumentReference adminRef = FirebaseFirestore.instance
@@ -369,8 +371,8 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'nearest_day': nearestDayTimestamp,
                 'branch_id': branch,
                 'pId': FirebaseAuth.instance.currentUser!.uid,
-                'scheduleId': scheduleRef.id,
                 'max_users': maxUsers,
+                'schedule_id': scheduleRef.id??'',
               });
             }
           }
@@ -392,6 +394,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'branch_id': branch,
                 'pId': FirebaseAuth.instance.currentUser!.uid,
                 'max_users': maxUsers,
+                'schedule_id': scheduleRef.id??'',
               });
 
               DocumentReference adminRef = FirebaseFirestore.instance
@@ -429,7 +432,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'nearest_day': nearestDayTimestamp,
                 'branch_id': branch,
                 'pId': FirebaseAuth.instance.currentUser!.uid,
-                'scheduleId': scheduleRef.id,
+                'schedule_id': scheduleRef.id??'',
                 'max_users': maxUsers,
               });
             }
@@ -836,323 +839,321 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       ),
       backgroundColor: Colors.white,
       body: SafeArea(
-        child: SingleChildScrollView(
-          physics: BouncingScrollPhysics(),
-          child: Column(
-            children: [
-              SizedBox(
+        child: Column(
+          children: [
+            SizedBox(
+              //delete borders
+              //  decoration: BoxDecoration(
+              //    border: Border.all(
+              //      color: Colors.white,
+              //    ),
+              //  ),
+              height: 650.h,
+              width: double.infinity,
+              child: Container(
                 //delete borders
-                //  decoration: BoxDecoration(
-                //    border: Border.all(
-                //      color: Colors.white,
-                //    ),
-                //  ),
-                height: 650.h,
-                width: double.infinity,
-                child: Theme(
-                  data: ThemeData(
-                    canvasColor: Colors.white,
-                    switchTheme: SwitchThemeData(
-                      thumbColor: MaterialStateProperty.all(
-                        Colors.white,
-                      ),
-                      trackColor: MaterialStateProperty.all(
-                        Colors.grey,
-                      ),
-                    ),
-                    colorScheme: Theme.of(context).colorScheme.copyWith(
-                        //  primary: Colors.purple,
-                        //disabledColor: Colors.purple,
-                        //  background: Colors.white,
-                        // secondary: Colors.purple,
-                        ),
-                    //change stepper color only
-                    //primaryColor: Colors.purple,
-                    //change the color of the text in the stepper
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.white,
                   ),
-                  child: Container(
-                    //delete borders
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.white,
-                      ),
-                    ),
-                    child: Stepper(
-                      onStepContinue: //use AddGroupCubit
-                          () {
-                        context.read<AddGroupCubit>().nextScreen();
-                      },
-                      onStepCancel: //use AddGroupCubit
-                          () {
-                        context.read<AddGroupCubit>().previousScreen();
-                      },
-                      onStepTapped: (index) {
-                        context.read<AddGroupCubit>().setCurrentIndex(index);
-                      },
-                      //handle navigation with swiping
-                      physics: ClampingScrollPhysics(),
-                      stepIconBuilder: (stepIndex, stepState) {
-                        //change the icon of the step
-                        if (stepState == StepState.complete) {
-                          return
+                ),
+                child: Stepper(
+                  controlsBuilder:
+                  //return Container();
+                  (context, details) => Container(
 
-                              ///home/elreefy14/admin14/admin_future/assets/images/Group 1.svg
-                              Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.purple,
-                              //make thick white border
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 2.5,
-                              ),
+                  ),
+                  onStepContinue: //use AddGroupCubit
+                      () {
+                    context.read<AddGroupCubit>().nextScreen();
+                  },
+                  onStepCancel: //use AddGroupCubit
+                      () {
+                    context.read<AddGroupCubit>().previousScreen();
+                  },
+                  onStepTapped: (index) {
+                    context.read<AddGroupCubit>().setCurrentIndex(index);
+                  },
+                  //handle navigation with swiping
+                  physics: ClampingScrollPhysics(),
+                  stepIconBuilder: (stepIndex, stepState) {
+                    //change the icon of the step
+                    if (stepState == StepState.complete) {
+                      return
+
+                          ///home/elreefy14/admin14/admin_future/assets/images/Group 1.svg
+                          Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.purple,
+                          //make thick white border
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2.5,
+                          ),
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/images/check.svg',
+                          color: Colors.white,
+                        ),
+                      );
+                    } else if (stepState == StepState.indexed) {
+                      //assets/images/emty14.svg
+                      return Container(
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            //color: Colors.white,
+                            //make thick white border
+                            border: Border.all(
+                              // color: Colors.white,
+                              width: .1,
                             ),
-                            child: SvgPicture.asset(
-                              'assets/images/check.svg',
-                              color: Colors.white,
-                            ),
-                          );
-                        } else if (stepState == StepState.indexed) {
-                          //assets/images/emty14.svg
-                          return Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                //color: Colors.white,
-                                //make thick white border
-                                border: Border.all(
-                                  // color: Colors.white,
-                                  width: .1,
-                                ),
-                              ),
-                              child: Container(
-                                width: 40.w,
-                                //shape circke to make the icon in circle
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                ),
-                                margin: EdgeInsets.all(1),
-                                //padding: EdgeInsets.all(5),
-                                //shape circke to make the icon in circle
-                                //color: Colors.white,
-                              ));
-                        } else if (stepState == StepState.editing) {
-                          return Container(
+                          ),
+                          child: Container(
+                            width: 40.w,
                             //shape circke to make the icon in circle
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               color: Colors.white,
                             ),
-                            child: SvgPicture.asset(
-                              'assets/images/Group 1.svg',
-                              color: Colors.purple,
-                            ),
-                          );
-                        } else {
-                          //this example, we add an assertion to make sure that the hour value is not null and is within the valid range of 0 to 23. If the assertion fails, an error will be thrown. If the assertion pass
-                          return Text(
-                            '',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16.sp,
-                              fontFamily: 'Montserrat-Arabic',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                            ),
-                          );
-                        }
-                      },
+                            margin: EdgeInsets.all(1),
+                            //padding: EdgeInsets.all(5),
+                            //shape circke to make the icon in circle
+                            //color: Colors.white,
+                          ));
+                    } else if (stepState == StepState.editing) {
+                      return Container(
+                        //shape circke to make the icon in circle
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.white,
+                        ),
+                        child: SvgPicture.asset(
+                          'assets/images/Group 1.svg',
+                          color: Colors.purple,
+                        ),
+                      );
+                    } else {
+                      //this example, we add an assertion to make sure that the hour value is not null and is within the valid range of 0 to 23. If the assertion fails, an error will be thrown. If the assertion pass
+                      return Text(
+                        '',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16.sp,
+                          fontFamily: 'Montserrat-Arabic',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      );
+                    }
+                  },
 
-                      type: StepperType.horizontal,
-                      currentStep:
-                          context.watch<AddGroupCubit>().state.currentIndex,
-                      steps: context
-                          .watch<AddGroupCubit>()
-                          .state
-                          .screens
-                          .asMap()
-                          .map((index, screen) => MapEntry(
-                              index,
-                              Step(
-                                title: Text(''),
-                                isActive: context
+                  type: StepperType.horizontal,
+                  currentStep:
+                      context.watch<AddGroupCubit>().state.currentIndex,
+                  steps: context
+                      .watch<AddGroupCubit>()
+                      .state
+                      .screens
+                      .asMap()
+                      .map((index, screen) => MapEntry(
+                          index,
+                          Step(
+                            title: Text(''),
+                            isActive: context
+                                    .watch<AddGroupCubit>()
+                                    .state
+                                    .currentIndex >=
+                                index,
+                            state: context
                                         .watch<AddGroupCubit>()
                                         .state
-                                        .currentIndex >=
-                                    index,
-                                state: context
+                                        .currentIndex ==
+                                    index
+                                ? StepState.editing
+                                : context
                                             .watch<AddGroupCubit>()
                                             .state
-                                            .currentIndex ==
+                                            .currentIndex >
                                         index
-                                    ? StepState.editing
-                                    : context
-                                                .watch<AddGroupCubit>()
-                                                .state
-                                                .currentIndex >
-                                            index
-                                        ? StepState.complete
-                                        : StepState.indexed,
-                                content: SizedBox(
-                                    height: 900.h,
-                                    width: double.infinity,
-                                    child: screen),
-                              )))
-                          .values
-                          .toList(),
-                    ),
-                  ),
+                                    ? StepState.complete
+                                    : StepState.indexed,
+                            content:
+                         SingleChildScrollView(
+              physics: AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+              height: MediaQuery.of(context).size.height,
+              width: double.infinity,
+              child: screen,
+              ),
+            ),
+                            //Expanded(
+
+                         //     child: SizedBox(
+                          //            height: MediaQuery.of(context).size.height,
+                          //            width: double.infinity,
+                         //         child: screen),
+                          //  ),
+                          )))
+                      .values
+                      .toList(),
                 ),
               ),
-              // Expanded(
-              //   child: _screens[_currentIndex],
-              // ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  if (context.watch<AddGroupCubit>().state.currentIndex > 0)
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 4.0.w,
-                      ),
-                      child: InkWell(
-                        onTap: context.watch<AddGroupCubit>().previousScreen,
-                        child: Container(
-                          height: 50.h,
-                          width: 150.w,
-                          decoration: BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Align(
-                              alignment: AlignmentDirectional(0, 0),
-                              child: Text(
-                                'السابق',
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontFamily: 'Montserrat-Arabic',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0.08,
-                                ),
-                              )),
+            ),
+           // Expanded(
+           //   child: //_screens[_currentIndex],
+           //   context.watch<AddGroupCubit>().state.screens[
+           //       context.watch<AddGroupCubit>().state.currentIndex],
+           //  ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                if (context.watch<AddGroupCubit>().state.currentIndex > 0)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 4.0.w,
+                    ),
+                    child: InkWell(
+                      onTap: context.watch<AddGroupCubit>().previousScreen,
+                      child: Container(
+                        height: 50.h,
+                        width: 150.w,
+                        decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(8),
                         ),
+                        child: Align(
+                            alignment: AlignmentDirectional(0, 0),
+                            child: Text(
+                              'السابق',
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.sp,
+                              fontFamily: 'Montserrat-Arabic',
+                                fontWeight: FontWeight.w400,
+                                height: 0.08.h,
+                              ),
+                            )),
                       ),
                     ),
-                  //if current index is last index 'حفظ',
+                  ),
+                //if current index is last index 'حفظ',
 
-                  if (context.watch<AddGroupCubit>().state.currentIndex ==
-                      context.watch<AddGroupCubit>().state.screens.length - 1)
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 4.0.w,
-                      ),
-                      child: InkWell(
-                        onTap: () {
-                          print('save');
-                          //print all   context.watch<AddGroupCubit>().state.times,
-                          print(
-                              'Selected Times: ${context.read<AddGroupCubit>().state.times}');
-                          //
-                          //select the users from screen 3
-                          //   print(_Screen3State()._selectedUsers.length);
-                          //print all selected users data
-                          //   print('Selected Users: ${_Screen3State()._selectedUsers}');
-                          //Provider.of<AddGroupCubit>(context, listen: false);
-                          context.read<AddGroupCubit>().addGroup(
-                                true,
-                                context,
-                                selectedUsers: context
-                                    .read<AddGroupCubit>()
-                                    .state
-                                    .selectedUsers,
-                                selectedCoaches: context
-                                    .read<AddGroupCubit>()
-                                    .state
-                                    .selectedCoaches,
-                                startTrainingTime: //random time
-                                    Timestamp.now(),
-                                endTrainingTime: //random time
-                                    Timestamp.now(),
-                                branch:
-                                ManageAttendenceCubit.get(context)
-                                .selectedBranch??'',
-                                // 'error',
-                                times: //call the times map from screen 2
-                                    context.read<AddGroupCubit>().state.times,
-                                //TODO :fix this error
-                                // {
-                                //   'السبت': {'start': TimeOfDay.now(), 'end': TimeOfDay.now()},
-                                //  },
-                                maxUsers: context.read<AddGroupCubit>().state.maxUsers,
-                              );
+                if (context.watch<AddGroupCubit>().state.currentIndex ==
+                    context.watch<AddGroupCubit>().state.screens.length - 1)
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 4.0.w,
+                    ),
+                    child: InkWell(
+                      onTap: () {
+                        print('save');
+                        //print all   context.watch<AddGroupCubit>().state.times,
+                        print(
+                            'Selected Times: ${context.read<AddGroupCubit>().state.times}');
+                        //
+                        //select the users from screen 3
+                        //   print(_Screen3State()._selectedUsers.length);
+                        //print all selected users data
+                        //   print('Selected Users: ${_Screen3State()._selectedUsers}');
+                        //Provider.of<AddGroupCubit>(context, listen: false);
+                        context.read<AddGroupCubit>().addGroup(
+                              true,
+                              context,
+                              selectedUsers: context
+                                  .read<AddGroupCubit>()
+                                  .state
+                                  .selectedUsers,
+                              selectedCoaches: context
+                                  .read<AddGroupCubit>()
+                                  .state
+                                  .selectedCoaches,
+                              startTrainingTime: //random time
+                                  Timestamp.now(),
+                              endTrainingTime: //random time
+                                  Timestamp.now(),
+                              branch:
+                              ManageAttendenceCubit.get(context)
+                              .selectedBranch??'',
+                              // 'error',
+                              times: //call the times map from screen 2
+                                  context.read<AddGroupCubit>().state.times,
+                              //TODO :fix this error
+                              // {
+                              //   'السبت': {'start': TimeOfDay.now(), 'end': TimeOfDay.now()},
+                              //  },
+                              maxUsers: context.read<AddGroupCubit>().state.maxUsers,
+                            );
 //clr   context.read<AddGroupCubit>().state.times,
-                          context.read<AddGroupCubit>().state.times.clear();
+                        context.read<AddGroupCubit>().state.times.clear();
+                      },
+                      child: BlocBuilder<AddGroupCubit, AddGroupState>(
+                        builder: (context, state) {
+                          return state.loading
+                              ? CircularProgressIndicator()
+                              : Container(
+                                  height: 50.h,
+                                  width: 150.w,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue,
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: Align(
+                                      alignment: AlignmentDirectional(0, 0),
+                                      child: Text(
+                                        'حفظ',
+                                        textAlign: TextAlign.right,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 18.sp,
+                                          fontFamily: 'Montserrat-Arabic',
+                                          fontWeight: FontWeight.w400,
+                                          height: 0.08.h
+                                        ),
+                                      )),
+                                );
                         },
-                        child: BlocBuilder<AddGroupCubit, AddGroupState>(
-                          builder: (context, state) {
-                            return state.loading
-                                ? CircularProgressIndicator()
-                                : Container(
-                                    height: 50.h,
-                                    width: 150.w,
-                                    decoration: BoxDecoration(
-                                      color: Colors.blue,
-                                      borderRadius: BorderRadius.circular(8),
-                                    ),
-                                    child: Align(
-                                        alignment: AlignmentDirectional(0, 0),
-                                        child: Text(
-                                          'حفظ',
-                                          textAlign: TextAlign.right,
-                                          style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 18,
-                                            fontFamily: 'Montserrat-Arabic',
-                                            fontWeight: FontWeight.w400,
-                                            height: 0.08,
-                                          ),
-                                        )),
-                                  );
-                          },
-                        ),
                       ),
                     ),
+                  ),
 
-                  if (context.watch<AddGroupCubit>().state.currentIndex <
-                      context.watch<AddGroupCubit>().state.screens.length - 1)
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
-                      child: InkWell(
-                        onTap: context.watch<AddGroupCubit>().nextScreen,
-                        child: Container(
-                          height: 50.h,
-                          width: 150.w,
-                          decoration: BoxDecoration(
-                            color: Colors.blue,
-                            borderRadius: BorderRadius.circular(8),
-                          ),
-                          child: Align(
-                              alignment: AlignmentDirectional(0, 0),
-                              child: Text(
-                                'التالي',
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 18,
-                                  fontFamily: 'Montserrat-Arabic',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0.08,
-                                ),
-                              )),
+                if (context.watch<AddGroupCubit>().state.currentIndex <
+                    context.watch<AddGroupCubit>().state.screens.length - 1)
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: InkWell(
+                      onTap: context.watch<AddGroupCubit>().nextScreen,
+                      child: Container(
+                        height: 50.h,
+                        width: 150.w,
+                        decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(8),
                         ),
+                        child: Align(
+                            alignment: AlignmentDirectional(0, 0),
+                            child: Text(
+                              'التالي',
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18.sp,
+                                fontFamily: 'Montserrat-Arabic',
+                                fontWeight: FontWeight.w400,
+                                height: 0.08.h
+                              ),
+                            )),
                       ),
                     ),
-                ],
-              ),
-            ],
-          ),
+                  ),
+              ],
+            ),
+          //  SizedBox(
+          //    height: 30,
+           // )
+
+          ],
         ),
       ),
     );
@@ -1186,7 +1187,7 @@ class Screen2 extends StatelessWidget {
                 textAlign: TextAlign.left,
                 style: TextStyle(
                   color: Colors.black,
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontFamily: 'IBM Plex Sans Arabic',
                   fontWeight: FontWeight.w400,
                   height: 0,
@@ -1198,7 +1199,7 @@ class Screen2 extends StatelessWidget {
             children: [
               //10
               SizedBox(
-                height: 5.h,
+                height: 8.h,
               ),
               Row(
                 mainAxisSize: MainAxisSize.min,
@@ -1264,7 +1265,7 @@ class Screen2 extends StatelessWidget {
                           height: 0,
                         ),
                       ),
-                      SizedBox(width: 8.0),
+                      SizedBox(width: 8.0.w),
                       InkWell(
                         onTap: () async {
                           TimeOfDay? startTime = await showTimePicker(
@@ -1403,16 +1404,16 @@ class SelectCoachesScreen extends StatelessWidget {
           children: [
             /*
         Text(
-    'المدربين:',
-    style: TextStyle(
+          'المدربين:',
+          style: TextStyle(
         color: Color(0xFF333333),
         fontSize: 14,
         fontFamily: 'IBM Plex Sans Arabic',
         fontWeight: FontWeight.w400,
         height: 0,
-    ),
-)
-//50
+          ),
+        )
+        //50
 
         */
             //50
@@ -1425,7 +1426,7 @@ class SelectCoachesScreen extends StatelessWidget {
                 isCoach ? 'المدربين' : 'الطلاب',
                 style: TextStyle(
                   color: Color(0xFF333333),
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontFamily: 'IBM Plex Sans Arabic',
                   fontWeight: FontWeight.w400,
                   height: 0,
@@ -1490,8 +1491,8 @@ class SelectCoachesScreen extends StatelessWidget {
                       //   crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         Container(
-                          width: 20,
-                          height: 11.30,
+                          width: 20.w,
+                          height: 11.30.h,
                           child: Icon(
                             Icons.arrow_drop_down,
                             // size: 20.sp,
@@ -1517,98 +1518,105 @@ class SelectCoachesScreen extends StatelessWidget {
                       ],
                     ),
                   ),
+
                 ],
               ),
             ),
-            ListView.separated(
-              physics: BouncingScrollPhysics(),
-              separatorBuilder: (context, index) => //5
-                  SizedBox(
-                height: 10.h,
-              ),
-              shrinkWrap: true,
-              itemCount: isCoach
-                  ? state.selectedCoaches.length
-                  : state.selectedUsers.length,
-              //     _selectedCoaches.length,
-              itemBuilder: (context, index) {
-                late UserModel user;
-                if (isCoach == true)
-                  user = state.selectedCoaches[index];
-                else
-                  user = state.selectedUsers[index];
-                return Container(
-                  width: 360,
-                  height: 25,
-                  padding: const EdgeInsets.symmetric(horizontal: 15),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Container(
-                        width: 25,
-                        height: 25,
-                        clipBehavior: Clip.antiAlias,
-                        decoration: BoxDecoration(),
-                        child: Stack(
-                          children: [
-                            //svg image delete which is svg image images/delete-2_svgrepo.com.svg
-                            InkWell(
-                                onTap: () {
-                                  if (isCoach) {
-                                    // setState(() {
-                                    //   _selectedCoaches.remove(user);
-                                    //   _selectedCoachesUids.remove(user.uId!);
-                                    // });
-                                    context
-                                        .read<AddGroupCubit>()
-                                        .deselectCoach(user);
-                                  } else {
-                                    // setState(() {
-                                    //   _selectedUsers.remove(user);
-                                    //   _selectedUsersUids.remove(user.uId!);
-                                    // });
-                                    context
-                                        .read<AddGroupCubit>()
-                                        .deselectUser(user);
-                                  }
-                                },
-                                child: SvgPicture.asset(
-                                    'assets/images/delete-2_svgrepo.com.svg')),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Container(
-                          height: double.infinity,
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                //   '${user.name}-${index + 1}',
-                                //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                '${index + 1}-${user.name}',
-                                textDirection: TextDirection.rtl,
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: 'Montserrat-Arabic',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+            SingleChildScrollView(
+            //  physics: BouncingScrollPhysics(),
+              child: SizedBox(
+                height: 500.h,
+                child: ListView.separated(
+                          //    physics:  NeverScrollableScrollPhysics(),
+                  separatorBuilder: (context, index) => //5
+                      SizedBox(
+                    height: 15.h,
                   ),
-                );
-              },
+                  shrinkWrap: true,
+                  itemCount: isCoach
+                      ? state.selectedCoaches.length
+                      : state.selectedUsers.length,
+                  //     _selectedCoaches.length,
+                  itemBuilder: (context, index) {
+                    late UserModel user;
+                    if (isCoach == true)
+                      user = state.selectedCoaches[index];
+                    else
+                      user = state.selectedUsers[index];
+                    return Container(
+                      width: 360.w,
+                      height: 25.h,
+                      padding: EdgeInsets.symmetric(horizontal: 15.w),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Container(
+                            width: 25.w,
+                            height: 25.h,
+                            clipBehavior: Clip.antiAlias,
+                            decoration: BoxDecoration(),
+                            child: Stack(
+                              children: [
+                                //svg image delete which is svg image images/delete-2_svgrepo.com.svg
+                                InkWell(
+                                    onTap: () {
+                                      if (isCoach) {
+                                        // setState(() {
+                                        //   _selectedCoaches.remove(user);
+                                        //   _selectedCoachesUids.remove(user.uId!);
+                                        // });
+                                        context
+                                            .read<AddGroupCubit>()
+                                            .deselectCoach(user);
+                                      } else {
+                                        // setState(() {
+                                        //   _selectedUsers.remove(user);
+                                        //   _selectedUsersUids.remove(user.uId!);
+                                        // });
+                                        context
+                                            .read<AddGroupCubit>()
+                                            .deselectUser(user);
+                                      }
+                                    },
+                                    child: SvgPicture.asset(
+                                        'assets/images/delete-2_svgrepo.com.svg')),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              height: double.infinity,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    //   '${user.name}-${index + 1}',
+                                    //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                                    '${index + 1}-${user.name}',
+                                    textDirection: TextDirection.rtl,
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14.sp,
+                                      fontFamily: 'Montserrat-Arabic',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
             ),
           ],
         );
@@ -1643,10 +1651,11 @@ class _SelectBranchScreenState extends State<SelectBranchScreen> {
               child: Text(
                 ':اقصى عدد للمتدربين',
                 //make it in arabic align right
+
                 textAlign: TextAlign.right,
                 style: TextStyle(
                   color: Color(0xFF333333),
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontFamily: 'IBM Plex Sans Arabic',
                   fontWeight: FontWeight.w400,
                   height: 0,
@@ -1657,8 +1666,8 @@ class _SelectBranchScreenState extends State<SelectBranchScreen> {
             Align(
               alignment: AlignmentDirectional.topEnd,
               child: Container(
-                width: 150,
-                height: 48,
+                width: 150.w,
+                height: 48.h,
                 //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 clipBehavior: Clip.antiAlias,
                 decoration: ShapeDecoration(
@@ -1700,7 +1709,7 @@ class _SelectBranchScreenState extends State<SelectBranchScreen> {
 
                         },
                         decoration: InputDecoration(
-                          hintText: '              :اقصى عدد',
+                          hintText: ':اقصى عدد',
                           border: OutlineInputBorder(),
                         ),
                       ),
@@ -1710,7 +1719,7 @@ class _SelectBranchScreenState extends State<SelectBranchScreen> {
               ),
             ),
             SizedBox(height: 20),
-            const Row(
+             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 Text(
@@ -1718,7 +1727,7 @@ class _SelectBranchScreenState extends State<SelectBranchScreen> {
                   textAlign: TextAlign.right,
                   style: TextStyle(
                     color: Color(0xFF333333),
-                    fontSize: 16,
+                    fontSize: 16.sp,
                     fontFamily: 'IBM Plex Sans Arabic',
                     fontWeight: FontWeight.w400,
                   ),
@@ -1776,110 +1785,288 @@ class InfoScreen extends StatelessWidget {
   builder: (context, state) {
     //context.read<AddGroupCubit>() . make object from cubit
     final addGroupCubit = context.read<AddGroupCubit>();
-    return Column(
-      children: [
-        state.selectedCoaches.isNotEmpty
-            ?  Column(
-    children: [
-      SizedBox(
-      height: 20.h,
-    ),
-    Align(
-    alignment: AlignmentDirectional.topEnd,
-    child: Text(
-    ':المدربين',
-    style: TextStyle(
-    color: Color(0xFF333333),
-    fontSize: 14,
-    fontFamily: 'IBM Plex Sans Arabic',
-    fontWeight: FontWeight.w400,
-    height: 0,
-    ),
-    ),
-    ),
-    ],
-    )
-            : SizedBox(),
-
-        // SizedBox(
-        //   height: 10.h,
-        // ),
-        ListView.separated(
-          physics: BouncingScrollPhysics(),
-          separatorBuilder: (context, index) => //5
-              SizedBox(
-            height: 10.h,
-          ),
-          shrinkWrap: true,
-          itemCount: context.read<AddGroupCubit>().state.selectedCoaches.length,
-          itemBuilder: (context, index) {
-            final user =
-                context.read<AddGroupCubit>().state.selectedCoaches[index];
-            return Container(
-              width: 360,
-              height: 25,
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    width: 25,
-                    height: 25,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(),
-                    child: Stack(
-                      children: [
-                        //svg image delete which is svg image images/delete-2_svgrepo.com.svg
-                        InkWell(
-                            onTap: () {
-                              //   setState(() {
-                              //     _SelectCoachesScreenState()
-                              //         .selectedCoaches
-                              //         .remove(user);
-                              //   });
-                              // },
-                              context.read<AddGroupCubit>().deselectCoach(user);
-                            },
-                            child: SvgPicture.asset(
-                                'assets/images/delete-2_svgrepo.com.svg')),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      height: double.infinity,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            '${index + 1}-${user.name}',
-                            //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                            textDirection: TextDirection.rtl,
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontFamily: 'Montserrat-Arabic',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            );
-          },
+    return SingleChildScrollView(
+      physics: BouncingScrollPhysics(),
+      child: SizedBox(
+        height: 600.h,
+        child: Column(
+          children: [
+            state.selectedCoaches.isNotEmpty
+                ?  Column(
+        children: [
+          SizedBox(
+          height: 20.h,
         ),
-        state.selectedUsers.isNotEmpty?
+        Align(
+        alignment: AlignmentDirectional.topEnd,
+        child: Text(
+        ':المدربين',
+        style: TextStyle(
+        color: Color(0xFF333333),
+        fontSize: 14.sp,
+        fontFamily: 'IBM Plex Sans Arabic',
+        fontWeight: FontWeight.w400,
+        height: 0,
+        ),
+        ),
+        ),
+        ],
+        )
+                : SizedBox(),
 
-        Column(
+            // SizedBox(
+            //   height: 10.h,
+            // ),
+            ListView.separated(
+              physics:  NeverScrollableScrollPhysics(),
+              separatorBuilder: (context, index) => //5
+                  SizedBox(
+                height: 10.h,
+              ),
+              shrinkWrap: true,
+              itemCount: context.read<AddGroupCubit>().state.selectedCoaches.length,
+              itemBuilder: (context, index) {
+                final user =
+                    context.read<AddGroupCubit>().state.selectedCoaches[index];
+                return Container(
+                  width: 360.w,
+                  height: 25.h,
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 25.w,
+                        height: 25.h,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(),
+                        child: Stack(
+                          children: [
+                            //svg image delete which is svg image images/delete-2_svgrepo.com.svg
+                            InkWell(
+                                onTap: () {
+                                  //   setState(() {
+                                  //     _SelectCoachesScreenState()
+                                  //         .selectedCoaches
+                                  //         .remove(user);
+                                  //   });
+                                  // },
+                                  context.read<AddGroupCubit>().deselectCoach(user);
+                                },
+                                child: SvgPicture.asset(
+                                    'assets/images/delete-2_svgrepo.com.svg')),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: double.infinity,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                '${index + 1}-${user.name}',
+                                //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                                textDirection: TextDirection.rtl,
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14.sp,
+                                  fontFamily: 'Montserrat-Arabic',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            state.selectedUsers.isNotEmpty?
+
+            Column(
+              children: [
+                SizedBox(
+                  height: 20.h,
+                ),
+                Align(
+                  alignment: AlignmentDirectional.topEnd,
+                  child: Text(
+                    ':الطلاب',
+                    style: TextStyle(
+                      color: Color(0xFF333333),
+                      fontSize: 14.sp,
+                      fontFamily: 'IBM Plex Sans Arabic',
+                      fontWeight: FontWeight.w400,
+                      height: 0,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+              ],
+            ):SizedBox(),
+
+            ListView.separated(
+              physics: NeverScrollableScrollPhysics(),
+              separatorBuilder: (context, index) => //5
+                  SizedBox(
+                height: 10.h,
+              ),
+              shrinkWrap: true,
+              itemCount: context.read<AddGroupCubit>().state.selectedUsers.length,
+              itemBuilder: (context, index) {
+                final user =
+                    context.read<AddGroupCubit>().state.selectedUsers[index];
+                return Container(
+                  width: 360.w,
+                  height: 25.h,
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Container(
+                        width: 25.w,
+                        height: 25.h,
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(),
+                        child: Stack(
+                          children: [
+                            //svg image delete which is svg image images/delete-2_svgrepo.com.svg
+                            InkWell(
+                                onTap: () {
+                                  // setState(() {
+                                  //   _SelectCoachesScreenState()
+                                  //       .selectedUsers
+                                  //       .remove(user);
+                                  // });
+                                  context.read<AddGroupCubit>().deselectUser(user);
+                                },
+                                child: SvgPicture.asset(
+                                    'assets/images/delete-2_svgrepo.com.svg')),
+                          ],
+                        ),
+                      ),
+                      Expanded(
+                        child: Container(
+                          height: double.infinity,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Text(
+                                '${index + 1}-${user.name}',
+                                //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                                textDirection: TextDirection.rtl,
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14.sp,
+                                  fontFamily: 'Montserrat-Arabic',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+            //Text(
+            //     'اقصى عدد للمتدربين: ',
+            //     style: TextStyle(
+            //         color: Color(0xFF333333),
+            //         fontSize: 14,
+            //         fontFamily: 'IBM Plex Sans Arabic',
+            //         fontWeight: FontWeight.w400,
+            //         height: 0,
+            //     ),
+            // )
+            SizedBox(
+              height: 20.h,
+            ),
+            // Text(
+            //   'اقصى عدد للمتدربين: ${_SelectBranchScreenState().maxUsers}',
+            //   textAlign: TextAlign.right,
+            //   style: TextStyle(
+            //     color: Color(0xFF333333),
+            //     fontSize: 14,
+            //     fontFamily: 'IBM Plex Sans Arabic',
+            //     fontWeight: FontWeight.w400,
+            //     height: 0,
+            //   ),
+            // ),
+            state.maxUsers != null
+                ? Column(
+                    children: [
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                      Align(
+                        alignment: AlignmentDirectional.topEnd,
+                        child: Text(
+                          ':اقصى عدد للمتدربين',
+                          style: TextStyle(
+                            color: Color(0xFF333333),
+                            fontSize: 14.sp,
+                            fontFamily: 'IBM Plex Sans Arabic',
+                            fontWeight: FontWeight.w400,
+                            height: 0,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.h,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Text(
+                              '${state.maxUsers} اقصى عدد للمتدربين',
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14.sp,
+                                fontFamily: 'Montserrat-Arabic',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        height: 20.h,
+                      ),
+                    ],
+                  )
+                : SizedBox(),
+
+    //
+    //
+    //                         '${ManageAttendenceCubit.get(context).selectedBranch}',
+
+            BlocBuilder< ManageAttendenceCubit, ManageAttendenceState>(
+        builder: (context, state) {
+        return Column(
           children: [
             SizedBox(
               height: 20.h,
@@ -1887,10 +2074,11 @@ class InfoScreen extends StatelessWidget {
             Align(
               alignment: AlignmentDirectional.topEnd,
               child: Text(
-                ':الطلاب',
+                //:مكان التدريب'
+                ':مكان التدريب',
                 style: TextStyle(
                   color: Color(0xFF333333),
-                  fontSize: 14,
+                  fontSize: 14.sp,
                   fontFamily: 'IBM Plex Sans Arabic',
                   fontWeight: FontWeight.w400,
                   height: 0,
@@ -1900,338 +2088,165 @@ class InfoScreen extends StatelessWidget {
             SizedBox(
               height: 10.h,
             ),
-          ],
-        ):SizedBox(),
-
-        ListView.separated(
-          physics: BouncingScrollPhysics(),
-          separatorBuilder: (context, index) => //5
-              SizedBox(
-            height: 10.h,
-          ),
-          shrinkWrap: true,
-          itemCount: context.read<AddGroupCubit>().state.selectedUsers.length,
-          itemBuilder: (context, index) {
-            final user =
-                context.read<AddGroupCubit>().state.selectedUsers[index];
-            return Container(
-              width: 360,
-              height: 25,
-              padding: const EdgeInsets.symmetric(horizontal: 15),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Container(
-                    width: 25,
-                    height: 25,
-                    clipBehavior: Clip.antiAlias,
-                    decoration: BoxDecoration(),
-                    child: Stack(
-                      children: [
-                        //svg image delete which is svg image images/delete-2_svgrepo.com.svg
-                        InkWell(
-                            onTap: () {
-                              // setState(() {
-                              //   _SelectCoachesScreenState()
-                              //       .selectedUsers
-                              //       .remove(user);
-                              // });
-                              context.read<AddGroupCubit>().deselectUser(user);
-                            },
-                            child: SvgPicture.asset(
-                                'assets/images/delete-2_svgrepo.com.svg')),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Container(
-                      height: double.infinity,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Text(
-                            '${index + 1}-${user.name}',
-                            //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                            textDirection: TextDirection.rtl,
-                            textAlign: TextAlign.right,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 14,
-                              fontFamily: 'Montserrat-Arabic',
-                              fontWeight: FontWeight.w400,
-                              height: 0,
-                            ),
-                          ),
-                        ],
-                      ),
+                  Text(
+                    ' ${ManageAttendenceCubit.get(context).selectedBranch} ',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14.sp,
+                      fontFamily: 'Montserrat-Arabic',
+                      fontWeight: FontWeight.w400,
+                      height: 0,
                     ),
                   ),
                 ],
               ),
-            );
-          },
-        ),
-        //Text(
-        //     'اقصى عدد للمتدربين: ',
-        //     style: TextStyle(
-        //         color: Color(0xFF333333),
-        //         fontSize: 14,
-        //         fontFamily: 'IBM Plex Sans Arabic',
-        //         fontWeight: FontWeight.w400,
-        //         height: 0,
-        //     ),
-        // )
-        SizedBox(
-          height: 20.h,
-        ),
-        // Text(
-        //   'اقصى عدد للمتدربين: ${_SelectBranchScreenState().maxUsers}',
-        //   textAlign: TextAlign.right,
-        //   style: TextStyle(
-        //     color: Color(0xFF333333),
-        //     fontSize: 14,
-        //     fontFamily: 'IBM Plex Sans Arabic',
-        //     fontWeight: FontWeight.w400,
-        //     height: 0,
-        //   ),
-        // ),
-        state.maxUsers != null
-            ? Column(
-                children: [
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                  Align(
-                    alignment: AlignmentDirectional.topEnd,
-                    child: Text(
-                      ':اقصى عدد للمتدربين',
+            ),
+            SizedBox(
+              height: 20.h,
+            ),
+          ],
+        );
+        },
+    ),
+            //${ManageAttendenceCubit.get(context).selectedBranch}
+
+
+            //Text(
+            // 'التوقيات:',
+            // style: TextStyle(
+            //     color: Color(0xFF333333),
+            //     fontSize: 14,
+            //     fontFamily: 'IBM Plex Sans Arabic',
+            //     fontWeight: FontWeight.w400,
+            //     height: 0,
+            // ),
+            //)
+    //show times like that
+    //Text(
+    //     'الاحد ',
+    //     textAlign: TextAlign.right,
+    //     style: TextStyle(
+    //         color: Colors.black,
+    //         fontSize: 12,
+    //         fontFamily: 'Montserrat-Arabic',
+    //         fontWeight: FontWeight.w300,
+    //         height: 0,
+    //     ),
+    // )
+    // Text(
+    //     '11:00AM - 12:00AM',
+    //     textAlign: TextAlign.right,
+    //     style: TextStyle(
+    //         color: Colors.black,
+    //         fontSize: 12,
+    //         fontFamily: 'Montserrat-Arabic',
+    //         fontWeight: FontWeight.w400,
+    //         height: 0,
+    //     ),
+    // ),
+            SizedBox(
+              height: 20.h,
+            ),
+    state.times.isEmpty?SizedBox():
+            Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    Text(
+                      ':التوقيات',
+                      textAlign: TextAlign.right,
                       style: TextStyle(
                         color: Color(0xFF333333),
-                        fontSize: 14,
+                        fontSize: 14.sp,
                         fontFamily: 'IBM Plex Sans Arabic',
                         fontWeight: FontWeight.w400,
                         height: 0,
                       ),
                     ),
-                  ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                ListView.separated(
+                  physics: BouncingScrollPhysics(),
+                  separatorBuilder: (context, index) => //5
                   SizedBox(
                     height: 10.h,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        Text(
-                          '${state.maxUsers} اقصى عدد للمتدربين',
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Montserrat-Arabic',
-                            fontWeight: FontWeight.w400,
-                            height: 0,
-                          ),
+                  shrinkWrap: true,
+                  itemCount: context.read<AddGroupCubit>().times.length,
+                  itemBuilder: (context, index) {
+                    final day =
+                    context.read<AddGroupCubit>().times.keys.toList()[index];
+                    final time = context.read<AddGroupCubit>().times[day];
+                    return
+                      //if day is null return empty container
+                      time?['start'] == null
+                          ? Container()
+                          : Container(
+                        width: 360.w,
+                        height: 50.h,
+                        padding: const EdgeInsets.symmetric(horizontal: 15),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text(
+                              '$day',
+                              //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                              textDirection: TextDirection.rtl,
+                              textAlign: TextAlign.right,
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 14.sp,
+                                fontFamily: 'Montserrat-Arabic',
+                                fontWeight: FontWeight.w400,
+                                height: 0,
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            Expanded(
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    '${time?['start']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')} - ${time?['end']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')}',
+                                    //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                                    textDirection: TextDirection.rtl,
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 14.sp,
+                                      fontFamily: 'Montserrat-Arabic',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 20.h,
-                  ),
-                ],
-              )
-            : SizedBox(),
-
-//
-//
-//                         '${ManageAttendenceCubit.get(context).selectedBranch}',
-
-        BlocBuilder< ManageAttendenceCubit, ManageAttendenceState>(
-  builder: (context, state) {
-    return Column(
-      children: [
-        SizedBox(
-          height: 20.h,
-        ),
-        Align(
-          alignment: AlignmentDirectional.topEnd,
-          child: Text(
-            //:مكان التدريب'
-            ':مكان التدريب',
-            style: TextStyle(
-              color: Color(0xFF333333),
-              fontSize: 14,
-              fontFamily: 'IBM Plex Sans Arabic',
-              fontWeight: FontWeight.w400,
-              height: 0,
-            ),
-          ),
-        ),
-        SizedBox(
-          height: 10.h,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                ' ${ManageAttendenceCubit.get(context).selectedBranch} ',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14,
-                  fontFamily: 'Montserrat-Arabic',
-                  fontWeight: FontWeight.w400,
-                  height: 0,
-                ),
-              ),
-            ],
-          ),
-        ),
-        SizedBox(
-          height: 20.h,
-        ),
-      ],
-    );
-  },
-),
-        //${ManageAttendenceCubit.get(context).selectedBranch}
-
-
-        //Text(
-        // 'التوقيات:',
-        // style: TextStyle(
-        //     color: Color(0xFF333333),
-        //     fontSize: 14,
-        //     fontFamily: 'IBM Plex Sans Arabic',
-        //     fontWeight: FontWeight.w400,
-        //     height: 0,
-        // ),
-        //)
-//show times like that
-//Text(
-//     'الاحد ',
-//     textAlign: TextAlign.right,
-//     style: TextStyle(
-//         color: Colors.black,
-//         fontSize: 12,
-//         fontFamily: 'Montserrat-Arabic',
-//         fontWeight: FontWeight.w300,
-//         height: 0,
-//     ),
-// )
-// Text(
-//     '11:00AM - 12:00AM',
-//     textAlign: TextAlign.right,
-//     style: TextStyle(
-//         color: Colors.black,
-//         fontSize: 12,
-//         fontFamily: 'Montserrat-Arabic',
-//         fontWeight: FontWeight.w400,
-//         height: 0,
-//     ),
-// ),
-        SizedBox(
-          height: 20.h,
-        ),
-state.times.isEmpty?SizedBox():
-        Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  ':التوقيات',
-                  textAlign: TextAlign.right,
-                  style: TextStyle(
-                    color: Color(0xFF333333),
-                    fontSize: 14,
-                    fontFamily: 'IBM Plex Sans Arabic',
-                    fontWeight: FontWeight.w400,
-                    height: 0,
-                  ),
+                      );
+                  },
                 ),
               ],
             ),
-            SizedBox(
-              height: 10.h,
-            ),
-            ListView.separated(
-              physics: BouncingScrollPhysics(),
-              separatorBuilder: (context, index) => //5
-              SizedBox(
-                height: 10.h,
-              ),
-              shrinkWrap: true,
-              itemCount: context.read<AddGroupCubit>().times.length,
-              itemBuilder: (context, index) {
-                final day =
-                context.read<AddGroupCubit>().times.keys.toList()[index];
-                final time = context.read<AddGroupCubit>().times[day];
-                return
-                  //if day is null return empty container
-                  time?['start'] == null
-                      ? Container()
-                      : Container(
-                    width: 360.w,
-                    height: 50.h,
-                    padding: const EdgeInsets.symmetric(horizontal: 15),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text(
-                          '$day',
-                          //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                          textDirection: TextDirection.rtl,
-                          textAlign: TextAlign.right,
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 14,
-                            fontFamily: 'Montserrat-Arabic',
-                            fontWeight: FontWeight.w400,
-                            height: 0,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10.h,
-                        ),
-                        Expanded(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Text(
-                                '${time?['start']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')} - ${time?['end']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')}',
-                                //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                textDirection: TextDirection.rtl,
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 14,
-                                  fontFamily: 'Montserrat-Arabic',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-              },
-            ),
+
           ],
         ),
-
-      ],
+      ),
     );
   },
 );
