@@ -70,6 +70,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   String? today;
 
   Future<void> getDays() async {
+    emit(GetSchedulesLoadingState());
+
     days = [];
     if (kDebugMode) {
       print('getDays\n\n\n');
@@ -114,7 +116,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   }
 
   //get list of schedules from admin collection then schedule subcollection for specific day like friday
-  List<SchedulesModel> schedules = [];
+  List<ScheduleModel> schedules = [];
   Future<void> getSchedules({required String day}) async {
     print('a7a \n\n\n\n');
     print('day: $day');
@@ -130,7 +132,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         .get(const GetOptions(source: Source.serverAndCache))
         .then((value) {
       value.docs.forEach((element) {
-        schedules.add(SchedulesModel.fromJson2(element.data()));
+        schedules.add(ScheduleModel.fromJson2(element.data()));
         //print list of schedules
       });
       //print all info for each schedule
@@ -776,7 +778,7 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
         .get(const GetOptions(source: Source.serverAndCache))
         .then((value) {
       value.docs.forEach((element) {
-        schedules.add(SchedulesModel.fromJson2(element.data()));
+        schedules.add(ScheduleModel.fromJson2(element.data()));
       });
       emit(GetSchedulesForDaySuccessState());
     }).catchError((error) {
@@ -785,68 +787,72 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     });
   }
 
-  Future deleteSchedule({
-    required String scheduleId,
-    required String day,
-    required List<String>? usersIds,
-  }) {
-    emit(DeleteScheduleLoadingState());
-    return FirebaseFirestore.instance
+  Future<void> deleteSchedule({
+  required String scheduleId,
+  required String day,
+  required List<String>? usersIds,
+   List<String>? coachesIds,
+}) async {
+  emit(DeleteScheduleLoadingState());
+
+  try {
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    // Delete the schedule document
+    DocumentReference scheduleRef = FirebaseFirestore.instance
         .collection('admins')
-        //todo change this to admin id
         .doc(FirebaseAuth.instance.currentUser!.uid)
         .collection('schedules')
         .doc(day)
         .collection('schedules')
-        .doc(scheduleId)
-        .delete()
-        .then((value) async {
-      print('Schedule deleted');
+        .doc(scheduleId);
+    batch.delete(scheduleRef);
 
-      // Delete the subcollection 'users'
-      FirebaseFirestore.instance
-          .collection('admins')
-          .doc(FirebaseAuth.instance.currentUser!.uid)
-          .collection('schedules')
-          .doc(day)
-          .collection('schedules')
-          .doc(scheduleId)
-          .collection('users')
-          .get()
-          .then((querySnapshot) {
-        querySnapshot.docs.forEach((doc) {
-          doc.reference.delete();
-        });
-      });
-
-      // Remove the schedule from the list of schedules
-      schedules.removeWhere((schedule) => schedule.scheduleId == scheduleId);
-
-      // Delete the schedule from each user's collection
-      if (usersIds != null) {
-        for (String userId in usersIds) {
-          FirebaseFirestore.instance
-              .collection('users')
-              .doc(userId)
-              .collection('schedules')
-              .doc(scheduleId)
-              .delete()
-              .then((value) {
-            print('Schedule deleted from user $userId');
-          }).catchError((error) {
-            print('Failed to delete schedule from user $userId: $error');
-          });
-        }
-      }
-
-      emit(DeleteScheduleSuccessState());
-    }).catchError((error) {
-      print(error.toString());
-      emit(DeleteScheduleErrorState(error.toString()));
+    // Delete the users subcollection
+    CollectionReference usersRef = scheduleRef.collection('users');
+    QuerySnapshot usersSnapshot = await usersRef.get();
+    usersSnapshot.docs.forEach((doc) {
+      batch.delete(doc.reference);
     });
-  }
 
-  void updateSchedules(SchedulesModel schedule) {
+    // Commit the batched write
+    await batch.commit();
+
+    // Remove the schedule from the list of schedules
+    schedules.removeWhere((schedule) => schedule.scheduleId == scheduleId);
+
+    // Delete the schedule from each user's collection
+    if (usersIds != null) {
+      for (String userId in usersIds) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .collection('schedules')
+            .doc(scheduleId)
+            .delete();
+        print('Schedule deleted from user $userId');
+      }
+    }
+     // Delete the schedule from each coach's collection
+    if (coachesIds != null) {
+      for (String coachId in coachesIds) {
+        await FirebaseFirestore.instance
+            .collection('users')
+            .doc(coachId)
+            .collection('schedules')
+            .doc(scheduleId)
+            .delete();
+        print('Schedule deleted from coach $coachId');
+      }
+    }
+    emit(DeleteScheduleSuccessState());
+  } catch (error) {
+    print(error.toString());
+    emit(DeleteScheduleErrorState(error.toString()));
+  }
+}
+
+  void updateSchedules(ScheduleModel schedule) {
     emit(UpdateSchedulesLoadingState());
     schedules.add(schedule);
     //sort based on start time

@@ -1,7 +1,7 @@
 import 'package:admin_future/registeration/data/userModel.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class SchedulesModel {
+class ScheduleModel {
 
   String? branchId;
   Timestamp? startTime;
@@ -11,24 +11,33 @@ class SchedulesModel {
 
   bool? finished;
   List<String?>? usersList;
+  List<String?>? coachList;
+  List<String?>? coachIds;
   List<String?>? userIds; // new field
+   // new field
+  
   String? scheduleId;
   String? pId;
 //maxUsers
   String? maxUsers;
   List<UserModel>? users;
-  SchedulesModel({
+  ScheduleModel({
     required this.pId,
     required this.branchId,
     required this.startTime,
     required this.endTime,
     required this.finished,
+    //  List<String?>? coachList;
+  //List<String?>? coachIds;
+    this.coachList,
+    this.coachIds,
     this.usersList,
     this.userIds, // new field
     this.scheduleId,
     this.date, 
     required this.nearestDay, 
     List<UserModel>? users, this.maxUsers,
+
   });
 
   Map<String, dynamic> toJson2() {
@@ -39,6 +48,10 @@ class SchedulesModel {
       'finished': finished,
       'usersList': usersList,
       'userIds': userIds, // new field
+    //  List<String?>? coachList;
+//  List<String?>? coachIds;
+'coachList': coachList,
+'coachIds': coachIds,
       'nearest_day': nearestDay,
       'schedule_id': scheduleId,
       'date': date,
@@ -61,11 +74,13 @@ class SchedulesModel {
       'nearest_day': nearestDay,
       'users': users,
       'maxUsers': maxUsers,
+      'coachList': coachList,
+      'coachIds': coachIds,
     };
   }
 
-  factory SchedulesModel.fromJson2(Map<String, dynamic> json) {
-    return SchedulesModel(
+  factory ScheduleModel.fromJson2(Map<String, dynamic> json) {
+    return ScheduleModel(
       branchId: json['branch_id'],
       startTime: json['start_time'],
       endTime: json['end_time'],
@@ -78,11 +93,13 @@ class SchedulesModel {
       date: json['date'],
       users: json['users'] != null ? List<UserModel>.from(json['users'].map((x) => UserModel.fromJson(x))) : null,
       maxUsers: json['maxUsers'],
+      coachList: json['coachList'] != null ? List<String>.from(json['coachList']) : null,
+      coachIds: json['coachIds'] != null ? List<String>.from(json['coachIds']) : null,
     );
   }
 
-  factory SchedulesModel.fromJson(Map<String, dynamic> json) {
-    return SchedulesModel(
+  factory ScheduleModel.fromJson(Map<String, dynamic> json) {
+    return ScheduleModel(
       pId: json['pId'],
       branchId: json['branch_id'],
       nearestDay: json['nearest_day'] != null ? Timestamp.fromMillisecondsSinceEpoch((json['nearestDay'] as Timestamp).millisecondsSinceEpoch) : null,
@@ -94,6 +111,8 @@ class SchedulesModel {
       date: json['date'],
       users: json['users'] != null ? List<UserModel>.from(json['users'].map((x) => UserModel.fromJson(x))) : null,
       maxUsers: json['maxUsers'],
+      coachList: json['coachList'] != null ? List<String>.from(json['coachList']) : null,
+      coachIds: json['coachIds'] != null ? List<String>.from(json['coachIds']) : null,
     );
   }
 }

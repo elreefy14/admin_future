@@ -303,15 +303,7 @@ class HomeLayout extends StatelessWidget {
                             InkWell(
                               onTap: () async {
                                 //pass today as a parameter
-                                ManageSalaryCubit.get(context).getDays()?.then(
-                                    (value) async =>
-                                        await ManageSalaryCubit.get(context)
-                                            .getSchedules(
-                                                day: ManageSalaryCubit.get(
-                                                            context)
-                                                        .days?[0]
-                                                        .name ??
-                                                    'الأربعاء'));
+                               
                                 //await ManageSalaryCubit.get(context).getSchedules(day: ManageSalaryCubit.get(context).days?[0].name??'الأربعاء');
                                 Navigator.pushNamed(
                                     context, AppRoutes.manageSchedules);

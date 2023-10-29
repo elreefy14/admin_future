@@ -16,18 +16,18 @@ class CacheHelper {
   static Future<void> clearSchedulesFromSharedPreferences() async {
     await sharedPreferences.remove('schedules');
   }
-  static Future<void> storeSchedulesInSharedPreferences(List<SchedulesModel> schedules) async {
+  static Future<void> storeSchedulesInSharedPreferences(List<ScheduleModel> schedules) async {
     List<String> encodedSchedules = schedules.map((schedule) => jsonEncode(schedule.toJson())).toList();
     sharedPreferences.setStringList('schedules', encodedSchedules);
   }
 
 
-  static Future<List<SchedulesModel>> getSchedulesFromSharedPreferences() async {
-    List<SchedulesModel> schedules = [];
+  static Future<List<ScheduleModel>> getSchedulesFromSharedPreferences() async {
+    List<ScheduleModel> schedules = [];
     List<String>? encodedSchedules = sharedPreferences.getStringList('schedules');
     if (encodedSchedules != null) {
       encodedSchedules.forEach((schedule) {
-        schedules.add(SchedulesModel.fromJson(jsonDecode(schedule)));
+        schedules.add(ScheduleModel.fromJson(jsonDecode(schedule)));
       });
     }
     return schedules;

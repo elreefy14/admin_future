@@ -645,7 +645,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
         // }
         //chect if date is in selected days then update the schedule
         // if (days.contains(date)) {
-        SchedulesModel? schedule = SchedulesModel(
+        ScheduleModel? schedule = ScheduleModel(
           pId: FirebaseAuth.instance.currentUser!.uid,
           branchId: branch,
           startTime: startTrainingTime,
@@ -667,7 +667,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
             startTrainingTime: startTrainingTime!,
             endTrainingTime: endTrainingTime!,
             branch: branch!);
-        SchedulesModel? schedule = SchedulesModel(
+        ScheduleModel? schedule = ScheduleModel(
           pId: FirebaseAuth.instance.currentUser!.uid,
           branchId: branch,
           startTime: startTrainingTime,
@@ -788,7 +788,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
     List<String> coaches = selectedCoaches ?? [];
 
     ManageSalaryCubit manageSalaryCubit = ManageSalaryCubit();
-    SchedulesModel? schedule;
+    ScheduleModel? schedule;
     try {
       //emit(LoadingState());
       if(isEmit)
@@ -889,7 +889,7 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
           });
 
           // make schedules model and add them to the list of schedules
-          schedule = SchedulesModel(
+          schedule = ScheduleModel(
             startTime: startTrainingTime,
             endTime: endTrainingTime,
             date: day,
@@ -986,7 +986,7 @@ Future<void> addGroup(
       nonNullableDays.keys.toList();
   //get all non null days start and end time as timestamp . note start and end time is timeofday
 
-  SchedulesModel? schedule;
+  ScheduleModel? schedule;
   try {
     if (isEmit) emit(AddScheduleLoadingState());
     for (var day in days) {
@@ -1068,7 +1068,7 @@ Future<void> addGroup(
             'schedule_id': scheduleDoc.id,
           });
 
-          schedule = SchedulesModel(
+          schedule = ScheduleModel(
             startTime: nonNullableDays[day]!['start'],
             endTime: nonNullableDays[day]!['end'],
             date: day,
