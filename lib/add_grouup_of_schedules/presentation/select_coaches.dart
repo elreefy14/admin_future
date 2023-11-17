@@ -908,7 +908,8 @@ class ShowCoachesInDialog extends StatelessWidget {
               ],
             ),
           ],
-        ):
+        )
+            :
           Dialog(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -926,31 +927,71 @@ class ShowCoachesInDialog extends StatelessWidget {
             width: 290.w,
             padding: EdgeInsets.symmetric(horizontal: 20.w),
             child:TextField(
+              //arasbic
+              textAlign: TextAlign.right,
+              onTap: //_showClearButton = false; /
+                  () {
+                //  addGroupCubit.isSearch = true;
+                //make it using update funvtion
+                addGroupCubit.updateIsSearch(true);
+              },
                                           controller: addGroupCubit.searchController,
                                           textInputAction: TextInputAction.search,
                                           onSubmitted: (_) => addGroupCubit.onSearchSubmitted(addGroupCubit.searchController.text.trim(),isCoach),
                                           decoration: InputDecoration(
-                                            hintText: 'Search by name or phone number',
+                                            hintText: 'Search',
                                             suffixIcon: IconButton(
                                               icon: Icon(Icons.search),
                                               onPressed: () => addGroupCubit.onSearchSubmitted(addGroupCubit.searchController.text.trim(),isCoach),
                                             ),
+                                            prefixIcon:
+                                            isSearch? IconButton(
+                                                icon: Icon(Icons.close),
+                                                onPressed: () {
+                                                  addGroupCubit.searchController.clear();
+                                                  //query ==null
+                                                  //  addGroupCubit.usersQuery =null;
+                                                  //make it using update funvtion
+                                                  addGroupCubit.updateUsersQuery(null);
+                                                  //update isSearch
+                                                  addGroupCubit.updateIsSearch(false);
+                                                }
+                                            ):null,
                                           ),
+
                                         )
           )
                                         :
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child:TextField(
+                  onTap: () {
+                    addGroupCubit.updateIsSearch(true);
+                  },
                                           controller: addGroupCubit.searchController,
                                           textInputAction: TextInputAction.search,
                                           onSubmitted: (_) => addGroupCubit.onSearchSubmitted(addGroupCubit.searchController.text.trim(),isCoach),
                                           decoration: InputDecoration(
-                                            hintText: 'Search by name or phone number',
+
+                                            hintText: 'Search ',
                                             suffixIcon: IconButton(
                                               icon: Icon(Icons.search),
                                               onPressed: () => addGroupCubit.onSearchSubmitted(addGroupCubit.searchController.text.trim(),isCoach),
                                             ),
+                                            prefixIcon:
+                                              isSearch ? IconButton(
+                                                  icon: Icon(Icons.close),
+                                                  onPressed: () {
+                                                    addGroupCubit.searchController.clear();
+                                                    //query ==null
+                                                    //  addGroupCubit.usersQuery =null;
+                                                    //make it using update funvtion
+                                                    addGroupCubit.updateUsersQuery(null);
+                                                    //update isSearch
+                                                    addGroupCubit.updateIsSearch(false);
+                                                  }
+                                              ):null,
+
                                           ),
                                         ),
               ),
