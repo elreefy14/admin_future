@@ -106,3 +106,15 @@ class ChangeIsCoachState extends ManageSalaryState {
   final bool isCoach;
   ChangeIsCoachState(this.isCoach);
 }//UpdateListOfSchedulesState
+//ShowRollbackButtonState
+class ShowRollbackButtonState extends ManageSalaryState {
+  
+}//UpdateListOfSchedulesState
+//UpdateShowRollbackButtonLoadingState
+class UpdateShowRollbackButtonLoadingState extends ManageSalaryState {
+  
+}//UpdateListOfSchedulesState
+//UpdateShowRollbackButtonSuccessState
+class UpdateShowRollbackButtonSuccessState extends ManageSalaryState {
+  
+}//UpdateListOfSchedulesState

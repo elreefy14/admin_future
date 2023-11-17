@@ -668,7 +668,7 @@ class _CheckboxListWidgetState extends State<CheckboxListWidget> {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      physics: const NeverScrollableScrollPhysics(),
+      physics: AlwaysScrollableScrollPhysics(),
       shrinkWrap: true,
       itemCount: widget.items.length,
       itemBuilder: (context, index) {

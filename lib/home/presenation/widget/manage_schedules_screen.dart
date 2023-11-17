@@ -16,6 +16,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../add_grouup_of_schedules/presentation/onboarding_screen.dart';
 import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
 import '../../../core/flutter_flow/flutter_flow_widgets.dart';
@@ -661,8 +662,9 @@ SizedBox(height: 0.h),
                   //  ManageAttendenceCubit.get(context).selectedDays = [];
                   //  ManageAttendenceCubit.get(context).startTime = Timestamp.now();
                   //  ManageAttendenceCubit.get(context).endTime = Timestamp.now();
+                    final addGroupCubit = context.read<AddGroupCubit>();
+                    addGroupCubit.initState(context);
                     ManageAttendenceCubit.get(context).getAdminData();
-                   //AddSchedule
                     Navigator.pushNamed(
                       context,
                       AppRoutes.onboarding,

@@ -338,8 +338,79 @@ class ManageCoaches extends StatelessWidget {
 
                                                                                       InkWell(
                                                                                         onTap: () async {
+
                                                                                          print('uiiiiiiiiid \n\n');
-                                                                                    //     print(ManageSalaryCubit.get(context).users[index].uId);
+
+                                                                                         //edit this to enable roll back salary by showing button to roll back salary
+                                                                                  //edit
+                                                                                    //   Future<void> paySalary({String? userId}) async {
+                                                                                         //     try {
+                                                                                         //       print('userId: $userId');
+                                                                                         //       emit(PaySalaryLoadingState());
+                                                                                         //
+                                                                                         //       bool isConnected =
+                                                                                         //           await checkInternetConnectivity(); // Custom function to check internet connectivity
+                                                                                         //
+                                                                                         //       if (!isConnected) {
+                                                                                         //         DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+                                                                                         //             .collection('users')
+                                                                                         //             .doc(userId)
+                                                                                         //             .get(GetOptions(source: Source.serverAndCache));
+                                                                                         //
+                                                                                         //         Map<String, dynamic>? userData =
+                                                                                         //             userSnapshot.data() as Map<String, dynamic>?;
+                                                                                         //
+                                                                                         //         if (userData != null) {
+                                                                                         //           int newTotalSalary = 0;
+                                                                                         //
+                                                                                         //           // Store the updated salary locally until an internet connection is available
+                                                                                         //           saveSalaryLocally(userId, newTotalSalary);
+                                                                                         //
+                                                                                         //           // Update the user in the users list
+                                                                                         //           UserModel updatedUser = UserModel.fromJson(userData);
+                                                                                         //           updatedUser.totalSalary = newTotalSalary;
+                                                                                         //           int userIndex = coaches.indexWhere((user) => user.uId == userId);
+                                                                                         //           if (userIndex != -1) {
+                                                                                         //             coaches[userIndex] = updatedUser;
+                                                                                         //           }
+                                                                                         //           emit(PaySalarySuccessStateWithoutInternet());
+                                                                                         //           return;
+                                                                                         //         }
+                                                                                         //       }
+                                                                                         //
+                                                                                         //       await FirebaseFirestore.instance
+                                                                                         //           .collection('users')
+                                                                                         //           .doc(userId)
+                                                                                         //           .update({'totalSalary': 0});
+                                                                                         //
+                                                                                         //       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+                                                                                         //           .collection('users')
+                                                                                         //           .doc(userId)
+                                                                                         //           .get(GetOptions(source: Source.server));
+                                                                                         //
+                                                                                         //       Map<String, dynamic>? userData =
+                                                                                         //           userSnapshot.data() as Map<String, dynamic>?;
+                                                                                         //
+                                                                                         //       if (userData != null) {
+                                                                                         //         int newTotalSalary = 0;
+                                                                                         //
+                                                                                         //         // Update the user in the users list
+                                                                                         //         UserModel updatedUser = UserModel.fromJson(userData);
+                                                                                         //         updatedUser.totalSalary = newTotalSalary;
+                                                                                         //         int userIndex = coaches.indexWhere((user) => user.uId == userId);
+                                                                                         //         if (userIndex != -1) {
+                                                                                         //           coaches[userIndex] = updatedUser;
+                                                                                         //         }
+                                                                                         //
+                                                                                         //         emit(PaySalarySuccessState());
+                                                                                         //       } else {
+                                                                                         //         throw 'User data not found';
+                                                                                         //       }
+                                                                                         //     } catch (error) {
+                                                                                         //       print(error.toString());
+                                                                                         //       emit(PaySalaryErrorState(error.toString()));
+                                                                                         //     }
+                                                                                         //   }
                                                                                   await ManageSalaryCubit.get(context).paySalary(
                                                                                          userId:
                                                                                          uid,
@@ -472,7 +543,17 @@ class ManageCoaches extends StatelessWidget {
                               thickness: 2,
                               color: Color(0xFFF4F4F4),
                             ),
-
+                             Visibility(
+          visible: true,
+          //_showRollbackButton,
+         // ManageSalaryCubit.get(context).showRollbackButton,
+          child: ElevatedButton(
+            onPressed: () {
+              // Handle rollback of salary
+            },
+            child: Text('Rollback Changes'),
+          ),
+        ),
                            InkWell(
                               onTap: () async {
                                 await Navigator.pushNamed(context,

@@ -235,6 +235,7 @@ void changePasswordVisibility(){
         fname: fname,
         token: '',
         phone: phone,
+        pid: FirebaseAuth.instance.currentUser!.uid,
       );
       FirebaseFirestore.instance
           .collection('users')
