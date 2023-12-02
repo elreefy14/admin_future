@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+    import 'package:http/http.dart' as http;
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,6 +37,8 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
   late TextEditingController lastNameController;
   late TextEditingController phoneController;
   late TextEditingController salaryPerHourController;
+  //numberOfSessionsController
+  late TextEditingController numberOfSessionsController;
   //init tab controller
   void initTabController() {
     tabController = TabController(length: 2, vsync: NavigatorState());
@@ -46,7 +49,13 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     phoneController = TextEditingController(text: userModel.phone);
     salaryPerHourController =
         TextEditingController(text: userModel.hourlyRate.toString() ?? '');
+    //numberOfSessionsController
+    numberOfSessionsController =
+        TextEditingController(text: userModel.numberOfSessions.toString() ?? '');
+
   }
+  //make function that take phone number and add that phone to whatsapp group
+
   bool isCoach = true;
   //change isCoach
   void changeIsCoach(bool value) {
@@ -484,6 +493,7 @@ Future<void> updateShowRollbackButton(
       if (userIndex != -1) {
         coaches[userIndex].totalSalary = newTotalSalary;
       }
+      salaryController.clear();
 
       emit(PaySalarySuccessState());
     } catch (error) {
@@ -556,7 +566,7 @@ Future<void> updateShowRollbackButton(
         if (userIndex != -1) {
           coaches[userIndex] = updatedUser;
         }
-
+        salaryController.clear();
         emit(PayBonusSuccessState());
       } else {
         throw 'User data not found';
@@ -737,23 +747,53 @@ Future<void> updateShowRollbackButton(
 //     }
 //   }
 //make update user info like above function
+  Future<bool> checkInternetConnection() async {
+  try {
+    final response = await http.get(Uri.parse('https://www.google.com'));
+    return response.statusCode == 200;
+  } catch (e) {
+    return false;
+  }
+}
   Future<void>? updateUserInfo(
       {required String fname,
       required String lname,
       required String phone,
-      required String hourlyRate,
-      required uid}) async {
+        String? hourlyRate,
+
+      required uid, required String? numberOfSessions}) async {
+    emit(UpdateUserInfoLoadingState());
+    // Inside your function
+bool isConnected = await checkInternetConnection();
+if (!isConnected) {
+ 
+  // Show error message to the user
+  //show toast message
+  showToast(
+    state: ToastStates.ERROR,
+    msg: ' فشل تحديث معلومات الحساب الشخصية'
+    'تأكد من اتصالك بالإنترنت'
+  );
+  emit(UpdateUserInfoErrorState('تأكد من اتصالك بالإنترنت'));
+} 
     final updateData = <String, Object?>{};
     print('hourlyRate: $hourlyRate');
     print('fname: $fname');
     print('lname: $lname');
     print('phone: $phone');
-    // print('password: $password');
-
+  
+    
     final notificationData = <String, dynamic>{};
     if (hourlyRate != null && hourlyRate != '' && hourlyRate != 'null') {
       print('hourlyRate: a7a $hourlyRate');
       updateData['hourlyRate'] = int.parse(hourlyRate);
+      notificationData['message'] = 'تم تحديث معلومات الحساب الشخصية';
+    }
+    if (numberOfSessions != null &&
+        numberOfSessions != '' &&
+        numberOfSessions != 'null') {
+      print('numberOfSessions: a7a $numberOfSessions');
+      updateData['numberOfSessions'] = int.parse(numberOfSessions);
       notificationData['message'] = 'تم تحديث معلومات الحساب الشخصية';
     }
     if (fname != null &&
@@ -800,18 +840,30 @@ Future<void> updateShowRollbackButton(
           .doc(uid)
           .get(GetOptions(source: Source.serverAndCache));
 
-      Map<String, dynamic>? userData =
-          userSnapshot.data() as Map<String, dynamic>?;
-      UserModel user = UserModel.fromJson(userData!);
-      if (updateData != null) {
-        int userIndex = coaches.indexWhere((user) => user.uId == uid);
-        if (userIndex != -1) {
-          coaches[userIndex] = user;
-        }
-        //   emit(PaySalarySuccessStateWithoutInternet());
-        return;
-      }
+      //Map<String, dynamic>? userData =
+      //    userSnapshot.data() as Map<String, dynamic>?;
+    //  UserModel user = UserModel.fromJson(userData!);
+      // if (updateData != null) {
+      //   int userIndex = coaches.indexWhere((user) => user.uId == uid);
+      //   if (userIndex != -1) {
+      //     coaches[userIndex] = user;
+      //   }
+      //   //   emit(PaySalarySuccessStateWithoutInternet());
+      //   return;
+      // }
+      emit(UpdateUserInfoSuccessState());
+      //show toast message
+      showToast(
+        state: ToastStates.SUCCESS,
+        msg: 'تم تحديث معلومات الحساب الشخصية',
+      );
     }).catchError((error) {
+      emit(UpdateUserInfoErrorState(error.toString()));
+  //show toast message
+  showToast(
+    state: ToastStates.ERROR,
+    msg: 'فشل تحديث معلومات الحساب الشخصية',
+  );
       print(error.toString());
       //emit(PaySalaryErrorStateWithoutInternet(error.toString()));
     });
@@ -983,6 +1035,77 @@ Future<void> updateShowRollbackButton(
     emit(UpdateListOfUsersState(
       users,
     ));
+  }
+
+  deleteUser({required uid}) {
+    emit(DeleteUserLoadingState());
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .delete()
+        .then((value) {
+      print('User deleted');
+      //show toast message
+      showToast(
+        state: ToastStates.SUCCESS,
+        msg: 'تم حذف المستخدم',
+      );
+      emit(DeleteUserSuccessState());
+    }).catchError((error) {
+      print('Failed to delete user: $error');
+      showToast(msg: 'فشل حذف المستخدم', state: ToastStates.ERROR);
+      emit(DeleteUserErrorState(error.toString()));
+    });
+  }
+
+  reduceSessions(   context,{String? userId, required String sessions}
+
+      ) {
+    emit(ReduceSessionsLoadingState());
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .update({'numberOfSessions': FieldValue.increment(-int.parse(sessions))})
+        .then((value) {
+      print('Sessions reduced');
+      //show toast message
+      showToast(
+        state: ToastStates.SUCCESS,
+        msg: 'تم تخفيض عدد الجلسات',
+      );
+      salaryController.clear();
+      emit(ReduceSessionsSuccessState());
+      Navigator.pop(context);
+    }).catchError((error) {
+      print('Failed to reduce sessions: $error');
+      showToast(msg: 'فشل تخفيض عدد الجلسات', state: ToastStates.ERROR);
+      emit(ReduceSessionsErrorState(error.toString()));
+    });
+  }
+
+  addSessions( context,{String? userId, required String sessions}
+      ) {
+    emit(AddSessionsLoadingState());
+    FirebaseFirestore.instance
+        .collection('users')
+        .doc(userId)
+        .update({'numberOfSessions': FieldValue.increment(int.parse(sessions))})
+        .then((value) {
+      print('Sessions added');
+      //show toast message
+      showToast(
+        state: ToastStates.SUCCESS,
+        msg: 'تم زيادة عدد الجلسات',
+      );
+
+      salaryController.clear();
+      emit(AddSessionsSuccessState());
+      Navigator.pop(context);
+    }).catchError((error) {
+      print('Failed to add sessions: $error');
+      showToast(msg: 'فشل زيادة عدد الجلسات', state: ToastStates.ERROR);
+      emit(AddSessionsErrorState(error.toString()));
+    });
   }
 
   //                     ManageSalaryCubit.get(context).deleteSchedule(

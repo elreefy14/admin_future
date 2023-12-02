@@ -10,6 +10,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:qr_flutter/qr_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/flutter_flow/flutter_flow_util.dart';
 import '../../../registeration/data/userModel.dart';
 import 'manage_attendence_state.dart';
@@ -58,6 +59,27 @@ class ManageAttendenceCubit extends Cubit<ManageAttendenceState> {
   // Subcollection: *`schedules`*
 // - Document ID: unique schedule ID
 // - Fields: *`branch_id`, *`start_time`*, *`end_time`*, *`date`*, *`finished`**
+
+  void addToWhatsAppGroup(String groupLink, String phoneNumber) async {
+    final url = 'https://wa.me/$phoneNumber?text=Please%20add%20me%20to%20the%20group%20$groupLink';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+void sendWhatsAppMessage(String phoneNumber) async {
+  final message = Uri.encodeComponent('hello');
+  final url = 'https://wa.me/$phoneNumber?text=$message';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
+
   Future<void> getNearestSchedule() async {
     try {
       emit(GetNearestScheduleLoadingState());

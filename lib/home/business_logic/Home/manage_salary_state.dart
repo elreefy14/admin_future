@@ -117,4 +117,43 @@ class UpdateShowRollbackButtonLoadingState extends ManageSalaryState {
 //UpdateShowRollbackButtonSuccessState
 class UpdateShowRollbackButtonSuccessState extends ManageSalaryState {
   
+}//UpdateListOfSchedul// esState
+//DeleteUserLoadingState
+class DeleteUserLoadingState extends ManageSalaryState {
+
+}//UpdateListOfSchedulesState
+//DeleteUserSuccessState
+class DeleteUserSuccessState extends ManageSalaryState {
+
+}//UpdateListOfSchedulesState
+//DeleteUserErrorState
+class DeleteUserErrorState extends ManageSalaryState {
+  final String error;
+  DeleteUserErrorState(this.error);
+}//UpdateListOfSchedulesState
+//ReduceSessionsLoadingState
+class ReduceSessionsLoadingState extends ManageSalaryState {
+
+}//UpdateListOfSchedulesState
+//ReduceSessionsSuccessState
+class ReduceSessionsSuccessState extends ManageSalaryState {
+
+}//UpdateListOfSchedulesState
+//ReduceSessionsErrorState
+class ReduceSessionsErrorState extends ManageSalaryState {
+  final String error;
+  ReduceSessionsErrorState(this.error);
+}//UpdateListOfSchedulesState
+//AddSessionsLoadingState
+class AddSessionsLoadingState extends ManageSalaryState {
+
+}//UpdateListOfSchedulesState
+//AddSessionsSuccessState
+class AddSessionsSuccessState extends ManageSalaryState {
+
+}//UpdateListOfSchedulesState
+//AddSessionsErrorState
+class AddSessionsErrorState extends ManageSalaryState {
+  final String error;
+  AddSessionsErrorState(this.error);
 }//UpdateListOfSchedulesState

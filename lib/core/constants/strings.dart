@@ -12,6 +12,8 @@ String token= '';
 List<Map<String, dynamic>> notifications = [];
 
      class AppStrings {
+
+  static const String coach = "coach";
   static const String noRoutes = "No Routes Error";
   static const String appTitle = "attack on math";
   static const error = "خطأ";

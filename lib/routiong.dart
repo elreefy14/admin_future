@@ -90,8 +90,9 @@ case AppRoutes.addCoach:
        case AppRoutes.editProfile:
          //make args as map to get the data from it
      //  args = settings.arguments as UserModel;
-        return MaterialPageRoute(builder: (_) => EditUsers(user: args
-          ,));
+        return MaterialPageRoute(builder: (_) => EditUsers(user: args,
+          isCoach: (args as UserModel).role == AppStrings.coach,
+   ));
   }
 
   // static Route<dynamic> _errorRoute() {

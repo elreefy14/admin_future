@@ -209,7 +209,7 @@ SizedBox(height: 0.h),
                                           .collection('schedules')
                                          // .get(const GetOptions(source: Source.serverAndCache)),
                                   ,
-                                  pageSize: 4,
+                                  pageSize: 8,
                                   cacheExtent: 100,
                                   scrollDirection: Axis.vertical,
                                   shrinkWrap: true,
@@ -387,7 +387,7 @@ SizedBox(height: 0.h),
                                                if(ManageSalaryCubit.get(context).isCoach ==true)
 
                                           FirestoreListView<Map<String, dynamic>>(
-                                              pageSize: 3,
+                                              pageSize: 8,
                                               shrinkWrap: true,
                                               loadingBuilder: (context) => Center(child: CircularProgressIndicator()),
                                               cacheExtent: 100,
@@ -507,7 +507,7 @@ SizedBox(height: 0.h),
                                             )else
 
                                                  FirestoreListView<Map<String, dynamic>>(
-                                                   pageSize: 3,
+                                                   pageSize: 8,
                                                    shrinkWrap: true,
                                                    loadingBuilder: (context) => Center(child: CircularProgressIndicator()),
                                                    cacheExtent: 100,

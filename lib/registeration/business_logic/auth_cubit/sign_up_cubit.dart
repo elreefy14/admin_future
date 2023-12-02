@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/flutter_flow/form_field_controller.dart';
 import '../../data/userModel.dart';
 import '../../data/user_cache_model.dart';
+import '../../presenation/widget/widget.dart';
 import 'sign_up_state.dart';
 //**Collections and Documents:**
 // 1. **users**: A collection to store the information of all coaches.   - Document ID: unique coach ID   - Fields: `name`, `level`, `hourly_rate`, `total_hours`, `total_salary`, `current_month_hours`, `current_month_salary`
@@ -142,6 +143,7 @@ void changePasswordVisibility(){
         phone: phone,
         fname: fName,
         lname: lName,
+
           hourlyRate :  int.parse(hourlyRate??'30')??30,
       );
       //get email from firebase and send it to admin to add it to his list
@@ -149,6 +151,10 @@ void changePasswordVisibility(){
           .collection('admins')
           .doc(adminUid)
           .get().then((value) async {
+       showToast(
+         msg: 'تم التسجيل بنجاح',
+         state: ToastStates.SUCCESS,
+       );
             //sign out from user account
             await FirebaseAuth.instance.signOut();
          String? adminPhone = value.data()?['phone'];
@@ -166,8 +172,16 @@ void changePasswordVisibility(){
     }
       }
       );
-      
+
+      //clear text fields
+      firstNameController.clear();
+      lastNameController.clear();
+      phoneController.clear();
+      passwordController.clear();
+      hourlyRateController.clear();
+      //sign out from admin account
       emit(SignUpSuccessState(value.user!.uid));
+
     }).catchError((error) {
       String? errorMessage;
       switch (error.code) {
@@ -205,6 +219,11 @@ void changePasswordVisibility(){
       emit(SignUpErrorState(
         error: errorMessage,
       ));
+      //show toast error contain error message
+      showToast(
+        msg: errorMessage??'',
+        state: ToastStates.ERROR,
+      );
     });
   }
 
@@ -236,6 +255,7 @@ void changePasswordVisibility(){
         token: '',
         phone: phone,
         pid: FirebaseAuth.instance.currentUser!.uid,
+        numberOfSessions: 0,
       );
       FirebaseFirestore.instance
           .collection('users')

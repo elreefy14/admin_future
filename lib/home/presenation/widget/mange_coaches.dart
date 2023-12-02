@@ -79,7 +79,7 @@ class ManageSalary extends StatelessWidget {
 
   },
   child: Scaffold(
-    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
     floatingActionButton:  BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
       builder: (context, state) {
         return

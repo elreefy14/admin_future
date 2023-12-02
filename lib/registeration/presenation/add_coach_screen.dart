@@ -29,11 +29,11 @@ class AddCoachScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     //clr text fields
-    SignUpCubit.get(context).firstNameController.clear();
-    SignUpCubit.get(context).lastNameController.clear();
-    SignUpCubit.get(context).phoneController.clear();
-    SignUpCubit.get(context).passwordController.clear();
-    SignUpCubit.get(context).hourlyRateController.clear();
+    // SignUpCubit.get(context).firstNameController.clear();
+    // SignUpCubit.get(context).lastNameController.clear();
+    // SignUpCubit.get(context).phoneController.clear();
+    // SignUpCubit.get(context).passwordController.clear();
+    // SignUpCubit.get(context).hourlyRateController.clear();
 
 
     return BlocBuilder<SignUpCubit, SignUpState>(
@@ -47,7 +47,7 @@ class AddCoachScreen extends StatelessWidget {
             // mainAxisAlignment: MainAxisAlignment.center,
             children: [
               //82
-              SizedBox(height: 32.h),
+              SizedBox(height: 12.h),
               Padding(
                 padding: EdgeInsets.only(
                   top: 32.0.h,
@@ -148,7 +148,9 @@ class AddCoachScreen extends StatelessWidget {
                               return 'يجب ادخال كلمة مرور اكثر من ٦ أحرف او ارقام';
                             }
                             return null;
-                          }, Icons.lock,),
+                          }, Icons.lock,
+                        context: context,
+                        ),
                       ),
                       if(isCoach ==true)
                       SizedBox(height: 20.0),
@@ -295,25 +297,25 @@ class AddCoachScreen extends StatelessWidget {
                           //       );
                           // }
                           //show toast in case of error and success
-                          if (state is SignUpErrorState) {
-                            showToast(
-                              msg: state.error ?? 'حدث خطأ ما',
-                              state: ToastStates.ERROR,
-                            );
-                          } else if (state is SignUpSuccessState) {
-                            //show toast in case of success
-                            showToast(
-                              msg: 'تم التسجيل بنجاح',
-                              state: ToastStates.SUCCESS,
-                            );
-                            //navigate to home screen
-                          //  Navigator.pushReplacementNamed(
-                          //      context, AppRoutes.manageCoaches);
-                          }
+                          // if (state is SignUpErrorState) {
+                          //   showToast(
+                          //     msg: state.error ?? 'حدث خطأ ما',
+                          //     state: ToastStates.ERROR,
+                          //   );
+                          // } else if (state is SignUpSuccessState) {
+                          //   //show toast in case of success
+                          //   showToast(
+                          //     msg: 'تم التسجيل بنجاح',
+                          //     state: ToastStates.SUCCESS,
+                          //   );
+                          //   //navigate to home screen
+                          // //  Navigator.pushReplacementNamed(
+                          // //      context, AppRoutes.manageCoaches);
+                          // }
                         },
                         builder: (context, state) {
                           return ConditionalBuilder(
-                            condition: state is! SignUpLoadingState,
+                            condition: state is SignUpSuccessState || state is SignUpErrorState || state is! SignUpLoadingState,
                             builder: (context) {
                               return Padding(
                                 padding: EdgeInsets.only(

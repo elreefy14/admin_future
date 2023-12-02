@@ -1,5 +1,6 @@
 import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
 import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
+import 'package:admin_future/home/presenation/widget/widget/custom_app_bar.dart';
 import 'package:admin_future/registeration/data/userModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +14,9 @@ import '../../../core/flutter_flow/flutter_flow_widgets.dart';
 class EditUsers extends StatelessWidget {
   //const ({super.key});
   final user;
+  final isCoach;
 
-  const EditUsers({super.key, required this.user});
+  const EditUsers({super.key, required this.user, this.isCoach});
   @override
   Widget build(BuildContext context) {
 
@@ -25,6 +27,7 @@ class EditUsers extends StatelessWidget {
         // final manageSalaryCubit = ManageSalaryCubit.get(context);
         // manageSalaryCubit.initControllers(user);
         return Scaffold(
+          appBar: CustomAppBar(text: ''),
           // key: scaffoldKey,
           backgroundColor: Colors.white,
           body: SafeArea(
@@ -36,6 +39,8 @@ class EditUsers extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
+                    //custom app bar
+
                     Row(
                       mainAxisSize: MainAxisSize.max,
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -693,7 +698,11 @@ class EditUsers extends StatelessWidget {
                                         crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
                                           Text(
-                                            'المرتب/الساعة',
+                                            isCoach ? 'المرتب/الشهر' :
+                                          //'number of sessions',
+                                          //translate(context, 'number of sessions'),
+                                          'عدد الحصص',
+
                                             style: FlutterFlowTheme.of(context)
                                                 .bodyMedium
                                                 .override(
@@ -706,7 +715,8 @@ class EditUsers extends StatelessWidget {
                                             mainAxisAlignment:
                                             MainAxisAlignment.center,
                                             children: [
-                                              Container(
+                                            //isCoach?
+                                            Container(
                                                 width:
                                                 MediaQuery.sizeOf(context).width *
                                                     0.4,
@@ -720,9 +730,11 @@ class EditUsers extends StatelessWidget {
                                                         .width *
                                                         0.8,
                                                     child: TextFormField(
-                                                      controller: ManageSalaryCubit
+                                                      controller: isCoach?
+                                                        ManageSalaryCubit
                                                           .get(context)
-                                                          .salaryPerHourController,
+                                                          .salaryPerHourController:
+                                                          ManageSalaryCubit.get(context).numberOfSessionsController,
                                                       autofocus: true,
                                                       obscureText: false,
                                                       decoration: InputDecoration(
@@ -847,12 +859,18 @@ class EditUsers extends StatelessWidget {
                                               hourlyRate: ManageSalaryCubit.get(context)
                                                   .salaryPerHourController
                                                   .text.toString(),
+                                              numberOfSessions: ManageSalaryCubit.get(context)
+                                                  .numberOfSessionsController
+                                                  .text.toString(),
                                             //  password: ManageSalaryCubit.get(context)
                                              //     .passwordController
                                              //     .text.toString(),
                                             );
                                           },
-                                          child: Container(
+                                          child: state is UpdateUserInfoLoadingState
+                                              ? CircularProgressIndicator()
+                                              :
+                                          Container(
                                             height: 50,
                                             width: 150,
                                             decoration: BoxDecoration(
@@ -880,15 +898,23 @@ class EditUsers extends StatelessWidget {
 
                                   ],
                                 ),
-                                Text(
-                                  'حذف الحساب',
-                                  style: FlutterFlowTheme.of(context)
-                                      .bodyMedium
-                                      .override(
-                                    fontFamily: 'Readex Pro',
-                                    color: Color(0xFFD92D20),
-                                    fontSize: 12,
-                                    decoration: TextDecoration.underline,
+                                InkWell(
+                                  onTap: () async {
+                                    await ManageSalaryCubit.get(context)
+                                        .deleteUser(
+                                      uid: user.uId,
+                                    );
+                                  },
+                                  child: Text(
+                                    'حذف الحساب',
+                                    style: FlutterFlowTheme.of(context)
+                                        .bodyMedium
+                                        .override(
+                                      fontFamily: 'Readex Pro',
+                                      color: Color(0xFFD92D20),
+                                      fontSize: 12,
+                                      decoration: TextDecoration.underline,
+                                    ),
                                   ),
                                 ),
                               ].divide(SizedBox(height: 5)),

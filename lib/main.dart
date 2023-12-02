@@ -121,6 +121,7 @@ class MyApp extends StatelessWidget {
           //..getDays()
         ),
         BlocProvider(create: (context) => ManageAttendenceCubit()
+        //    ..addToWhatsAppGroup('https://chat.whatsapp.com/FV27zAcLJocKycZDScif1S', '+2001020684123 ')
 
         //    ..getNearestScedule(
           //  )
