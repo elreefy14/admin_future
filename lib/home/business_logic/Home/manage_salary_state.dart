@@ -157,3 +157,7 @@ class AddSessionsErrorState extends ManageSalaryState {
   final String error;
   AddSessionsErrorState(this.error);
 }//UpdateListOfSchedulesState
+//RollbackSalarySuccessStateWithoutInternet
+class RollbackSalarySuccessStateWithoutInternet extends ManageSalaryState {
+
+}//UpdateListOfSchedulesState

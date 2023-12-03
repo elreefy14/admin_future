@@ -316,6 +316,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                               onTap: () async {
                                 //      String? uid =ManageSalaryCubit.get(context).coaches[index].uId;
                                 String? uid =user.uId;
+                                int? userSalary = user.totalSalary;
                                 //show dialog
                                 await showDialog(
                                   useSafeArea: true,
@@ -455,9 +456,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                       onTap: () async {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
-                                                        await ManageSalaryCubit.get(context).payPartialSalary(
+                                                      //  userSalary = ManageSalaryCubit.get(context).users[index].totalSalary;
+                                                        await ManageSalaryCubit.get(context).payPartialSalary
+                                                          (
+                                                          currentTotalSalary: userSalary??0,
                                                           userId:
-                                                          uid,salary: ManageSalaryCubit.get(context).salaryController.text,
+                                                          uid,salaryPaid: ManageSalaryCubit.get(context).salaryController.text,
                                                         ).then((value) => Navigator.pop(context));
                                                       },
                                                       child: Container(
@@ -1187,6 +1191,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                               onTap: () async {
                                 //      String? uid =ManageSalaryCubit.get(context).coaches[index].uId;
                                 String? uid =user.uId;
+                                int? userSessions = user.numberOfSessions;
+                                int? userSalary = user.totalSalary;
                                 //show dialog
                                 await showDialog(
                                   useSafeArea: true,
@@ -1327,8 +1333,9 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
                                                         await ManageSalaryCubit.get(context).payPartialSalary(
+                                                          currentTotalSalary: userSalary??0,
                                                           userId:
-                                                          uid,salary: ManageSalaryCubit.get(context).salaryController.text,
+                                                          uid,salaryPaid: ManageSalaryCubit.get(context).salaryController.text,
                                                         ).then((value) => Navigator.pop(context));
                                                       },
                                                       child: Container(
@@ -1778,6 +1785,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                               onTap: () async {
                                 //      String? uid =ManageSalaryCubit.get(context).coaches[index].uId;
                                 String? uid =user.uId;
+                                int? userSessions = user.numberOfSessions;
+                                int? userSalary = user.totalSalary;
                                 //show dialog
                                 await showDialog(
                                   useSafeArea: true,
@@ -1927,8 +1936,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         if(isCoachInfoList??false){
                                                           await ManageSalaryCubit.get(context).payPartialSalary(
                                                             userId:
-                                                            uid,salary: ManageSalaryCubit.get(context).salaryController.text,
-                                                          ).then((value) => Navigator.pop(context));
+                                                            uid,salaryPaid: ManageSalaryCubit.get(context).salaryController.text, currentTotalSalary: userSalary??0,                                                          ).then((value) => Navigator.pop(context));
                                                         }else{
                                                           await ManageSalaryCubit.get(context).reduceSessions(
                                                             context,
@@ -2053,6 +2061,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                               onTap: () async {
                                 //String? uid =ManageSalaryCubit.get(context).coaches[index].uId;
                                 String? uid =user.uId;
+                                int? userSessions = user.numberOfSessions;
+                                int? userSalary = user.totalSalary;
                                 //show dialog
                                 await showDialog(
                                   useSafeArea: true,
@@ -2201,7 +2211,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         if(isCoachInfoList??false){
                                                           await ManageSalaryCubit.get(context).payPartialSalary(
                                                             userId:
-                                                            uid,salary: ManageSalaryCubit.get(context).salaryController.text,
+                                                            uid,salaryPaid: ManageSalaryCubit.get(context).salaryController.text, currentTotalSalary: userSalary ??0,
                                                           ).then((value) => Navigator.pop(context));
                                                         }else{
                                                           await ManageSalaryCubit.get(context).addSessions(
@@ -2840,7 +2850,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           //     print(ManageSalaryCubit.get(context).users[index].uId);
                                                           await ManageSalaryCubit.get(context).payPartialSalary(
                                                             userId:
-                                                            uid,salary: ManageSalaryCubit.get(context).salaryController.text,
+                                                            uid,salaryPaid: ManageSalaryCubit.get(context).salaryController.text, currentTotalSalary: user.totalSalary ??0,
                                                           ).then((value) => Navigator.pop(context));
                                                         },
                                                         child: Container(
