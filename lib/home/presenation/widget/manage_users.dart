@@ -21,301 +21,244 @@ class ManageCoaches extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Builder(
-        builder: (context) {
-          TextEditingController _model = TextEditingController();
+    return
+           Scaffold(
+            floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
+            floatingActionButton:  BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+              builder: (context, state) {
+                return
 
-          // ManageSalaryCubit.get(context).getUsers();
-          return BlocListener<ManageSalaryCubit, ManageSalaryState>(
-            listener: (context, state) {
-              if(state is PayBonusSuccessStateWithoutInternet ){
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                        ' سيتم دفع المكافأة عند الاتصال بالانترنت '
-                      //   'wait for internet connection'
-                      //translate to arabic
-                    ),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              } else if(state is PayBonusSuccessState ){
-                //  ScaffoldMessenger.of(context).showSnackBar(
-                //    SnackBar(
-                //       content: Text('تم دفع المكافأة بنجاح'
-                //       ),
-                //       backgroundColor: Colors.green,
-                //     ),
-                //    );
-              }else if(state is PayBonusErrorState ){
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text('حدث خطأ ما'
-                    ),
-                    backgroundColor: Colors.red,
-                  ),
-                );
-              }else if(state is PaySalarySuccessStateWithoutInternet ){
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                        ' سيتم دفع المرتب عند الاتصال بالانترنت '
-
-                      //   'wait for internet connection'
-                      //translate to arabic
-                    ),
-                    backgroundColor: Colors.green,
-                  ),
-                );
-              } else if(state is PaySalarySuccessState ) {
-                //  ScaffoldMessenger.of(context).showSnackBar(
-                //    SnackBar(
-                //      content: Text('تم دفع المرتب بنجاح'
-                //      ),
-                //       backgroundColor: Colors.green,
-                //     ),
-                //   );
-              }
-
-            },
-            child: Scaffold(
-              floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
-              floatingActionButton:  BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
-                builder: (context, state) {
-                  return
-
-                    ManageSalaryCubit.get(context).showRollbackButton
-                    //     true
-                        ?
-                    InkWell(
-                      onTap: () async {
-                        await ManageSalaryCubit.get(context).rollbackSalary();
-                        ManageSalaryCubit.get(context).updateShowRollbackButton();
-                      },
-                      child: // circle button for rollback show for 5 seconds
-                      Container(
-                        width: 50.w,
-                        height: 50.h,
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(50),
-                        ),
-                        child: Align(
-                          alignment: AlignmentDirectional(0, 0),
-                          child: Icon(
-                            Icons.history_sharp,
-                            color: Colors.white,
-                            size: 24,
-                          ),
+                  ManageSalaryCubit.get(context).showRollbackButton
+                  //     true
+                      ?
+                  InkWell(
+                    onTap: () async {
+                      await ManageSalaryCubit.get(context).rollbackSession();
+                      ManageSalaryCubit.get(context).updateShowRollbackButtonSession();
+                    },
+                    child: // circle button for rollback show for 5 seconds
+                    Container(
+                      width: 50.w,
+                      height: 50.h,
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(50),
+                      ),
+                      child: Align(
+                        alignment: AlignmentDirectional(0, 0),
+                        child: Icon(
+                          Icons.history_sharp,
+                          color: Colors.white,
+                          size: 24,
                         ),
                       ),
-                    ):Container();
-                },
-              ),
+                    ),
+                  ):Container();
+              },
+            ),
 
-              appBar: CustomAppBar(text:
-              //'ادارة المدربين'
-             'ادارة المتدربين',
-              ),
-              // key: scaffoldKey,
-              backgroundColor: Colors.white,
-              body: SafeArea(
-                top: true,
-                child: SingleChildScrollView(
-                  physics: BouncingScrollPhysics(),
-                  child: Column(
-                    //   mainAxisSize: MainAxisSize.max,
-                    children: [
+            appBar: CustomAppBar(text:
+            //'ادارة المدربين'
+           'ادارة المتدربين',
+            ),
+            // key: scaffoldKey,
+            backgroundColor: Colors.white,
+            body: SafeArea(
+              top: true,
+              child: SingleChildScrollView(
+                physics: BouncingScrollPhysics(),
+                child: Column(
+                  //   mainAxisSize: MainAxisSize.max,
+                  children: [
 
-                      //60
-                      SizedBox(
-                        height: 50.h,
+                    //60
+                    SizedBox(
+                      height: 50.h,
+                    ),
+                    Container(
+                      width: double.infinity,
+                      height: 550.h,
+                      child: ShowCoachesInDialog(
+                        isUserInfoList: true,
+                       // isCoachInfoList: true,
+                        selectedUsers: [],
+                        isCoach:  false,
+                        //   selectedUsers: isCoach
+                        //       ? context.read<AddGroupCubit>().state.selectedCoaches
+                        //       : context.read<AddGroupCubit>().state.selectedUsers,
+                        onSelectedUsersChanged: (users) {
+                          // setState(() {
+                          //   if (widget.isCoach) {
+                          //     _selectedCoachesUids = users.map((e) => e.uId!).toList();
+                          //   } else {
+                          //     _selectedUsersUids = users.map((e) => e.uId!).toList();
+                          //   }
+                          //   // _selectedCoaches = users;
+                          // });
+                          // if (widget.isCoach) {
+                          //
+                          //   context.read<AddGroupCubit>().setSelectedCoaches(users);
+                          // } else {
+                          //   context.read<AddGroupCubit>().setSelectedUsers(users);
+                          // }
+                        },
                       ),
-                      Container(
-                        width: double.infinity,
-                        height: 550.h,
-                        child: ShowCoachesInDialog(
-                          isUserInfoList: true,
-                         // isCoachInfoList: true,
-                          selectedUsers: [],
-                          isCoach:  false,
-                          //   selectedUsers: isCoach
-                          //       ? context.read<AddGroupCubit>().state.selectedCoaches
-                          //       : context.read<AddGroupCubit>().state.selectedUsers,
-                          onSelectedUsersChanged: (users) {
-                            // setState(() {
-                            //   if (widget.isCoach) {
-                            //     _selectedCoachesUids = users.map((e) => e.uId!).toList();
-                            //   } else {
-                            //     _selectedUsersUids = users.map((e) => e.uId!).toList();
-                            //   }
-                            //   // _selectedCoaches = users;
-                            // });
-                            // if (widget.isCoach) {
-                            //
-                            //   context.read<AddGroupCubit>().setSelectedCoaches(users);
-                            // } else {
-                            //   context.read<AddGroupCubit>().setSelectedUsers(users);
-                            // }
-                          },
-                        ),
-                      ),
+                    ),
 
-                      SizedBox(height: 20.h,),
-                      // is //showRollbackButton
-                      //10
-                      SizedBox(height: 10.h,),
-                      Container(
-                        //  width: 169,
-                        // height: 49,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            //    InkWell(
-                            // //                               onTap: () async {
-                            // //                                 await Navigator.pushNamed(context,
-                            // //                                     AppRoutes.addCoach,
-                            // //                                     arguments: {'isCoach': false}
-                            // //
-                            // //                                 );
-                            // //                               },
-                            // //                              child: Container(
-                            // //                                height: 50.h,
-                            // //                                 width: 180.w,
-                            // //                                 decoration: BoxDecoration(
-                            // //                                   color: Colors.blue,
-                            // //                                   borderRadius: BorderRadius.circular(8),
-                            // //                                 ),
-                            // //                                 child: Align(
-                            // //                                   alignment: AlignmentDirectional(0, 0),
-                            // //                                   child: Container(
-                            // //                                     width: 180.w,
-                            // //                                     height: 50.h,
-                            // //                                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
-                            // //                                     decoration: ShapeDecoration(
-                            // //                                       color: Color(0xFF2196F3),
-                            // //                                       shape: RoundedRectangleBorder(
-                            // //                                         borderRadius: BorderRadius.circular(12),
-                            // //                                       ),
-                            // //                                       ),
-                            // //                                       child: Row(
-                            // //                                         mainAxisSize: MainAxisSize.max,
-                            // //                                         mainAxisAlignment: MainAxisAlignment.center,
-                            // //                                         crossAxisAlignment: CrossAxisAlignment.center,
-                            // //                                         children: [
-                            // //                                           Text(
-                            // //                                             'اضافة مدرب',
-                            // //                                             textAlign: TextAlign.right,
-                            // //                                             style: TextStyle(
-                            // //                                               color: Colors.white,
-                            // //                                               fontSize: 18.sp,
-                            // //                                               fontFamily: 'Montserrat-Arabic',
-                            // //                                               fontWeight: FontWeight.w400,
-                            // //                                               height: 0.08.h,
-                            // //                                             ),
-                            // //                                           ),
-                            // //                                         ],
-                            // //                                       ),
-                            // //                                       )
-                            // //                                       ),
-                            // //                              ),
-                            // //                            ),
-                            InkWell(
-                              onTap: () async {
-                                await Navigator.pushNamed(context,
-                                    AppRoutes.addCoach,
-                                    arguments: {
-                                      'isCoach':false,
-                                    }
-                                  // arguments: ManageSalaryCubit.get(context).users
-                                ) ;
-                              },
-                              child: Container(
-                                height: 50.h,
-                                width: 180.w,
-                                decoration: BoxDecoration(
-                                  color: Colors.blue,
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Align(
-                                  alignment: AlignmentDirectional(0, 0),
-                                  child: Text(
-                                    //'اضافة مدرب',
-                                    //add trainee
-                                    'اضافة متدرب',
-                                    textAlign: TextAlign.center,
-                                    style: FlutterFlowTheme.of(context)
-                                        .titleSmall
-                                        .override(
-                                      fontFamily: 'Readex Pro',
-                                      color: Colors.white,
-                                      fontSize: 12.sp,
-                                    ),
+                    SizedBox(height: 20.h,),
+                    // is //showRollbackButton
+                    //10
+                    SizedBox(height: 10.h,),
+                    Container(
+                      //  width: 169,
+                      // height: 49,
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          //    InkWell(
+                          // //                               onTap: () async {
+                          // //                                 await Navigator.pushNamed(context,
+                          // //                                     AppRoutes.addCoach,
+                          // //                                     arguments: {'isCoach': false}
+                          // //
+                          // //                                 );
+                          // //                               },
+                          // //                              child: Container(
+                          // //                                height: 50.h,
+                          // //                                 width: 180.w,
+                          // //                                 decoration: BoxDecoration(
+                          // //                                   color: Colors.blue,
+                          // //                                   borderRadius: BorderRadius.circular(8),
+                          // //                                 ),
+                          // //                                 child: Align(
+                          // //                                   alignment: AlignmentDirectional(0, 0),
+                          // //                                   child: Container(
+                          // //                                     width: 180.w,
+                          // //                                     height: 50.h,
+                          // //                                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                          // //                                     decoration: ShapeDecoration(
+                          // //                                       color: Color(0xFF2196F3),
+                          // //                                       shape: RoundedRectangleBorder(
+                          // //                                         borderRadius: BorderRadius.circular(12),
+                          // //                                       ),
+                          // //                                       ),
+                          // //                                       child: Row(
+                          // //                                         mainAxisSize: MainAxisSize.max,
+                          // //                                         mainAxisAlignment: MainAxisAlignment.center,
+                          // //                                         crossAxisAlignment: CrossAxisAlignment.center,
+                          // //                                         children: [
+                          // //                                           Text(
+                          // //                                             'اضافة مدرب',
+                          // //                                             textAlign: TextAlign.right,
+                          // //                                             style: TextStyle(
+                          // //                                               color: Colors.white,
+                          // //                                               fontSize: 18.sp,
+                          // //                                               fontFamily: 'Montserrat-Arabic',
+                          // //                                               fontWeight: FontWeight.w400,
+                          // //                                               height: 0.08.h,
+                          // //                                             ),
+                          // //                                           ),
+                          // //                                         ],
+                          // //                                       ),
+                          // //                                       )
+                          // //                                       ),
+                          // //                              ),
+                          // //                            ),
+                          InkWell(
+                            onTap: () async {
+                              await Navigator.pushNamed(context,
+                                  AppRoutes.addCoach,
+                                  arguments: {
+                                    'isCoach':false,
+                                  }
+                                // arguments: ManageSalaryCubit.get(context).users
+                              ) ;
+                            },
+                            child: Container(
+                              height: 50.h,
+                              width: 180.w,
+                              decoration: BoxDecoration(
+                                color: Colors.blue,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Align(
+                                alignment: AlignmentDirectional(0, 0),
+                                child: Text(
+                                  //'اضافة مدرب',
+                                  //add trainee
+                                  'اضافة متدرب',
+                                  textAlign: TextAlign.center,
+                                  style: FlutterFlowTheme.of(context)
+                                      .titleSmall
+                                      .override(
+                                    fontFamily: 'Readex Pro',
+                                    color: Colors.white,
+                                    fontSize: 12.sp,
                                   ),
                                 ),
                               ),
                             ),
-                            const SizedBox(height: 5),
-                            // Container(
-                            //   child: Row(
-                            //     mainAxisSize: MainAxisSize.min,
-                            //     mainAxisAlignment: MainAxisAlignment.center,
-                            //     crossAxisAlignment: CrossAxisAlignment.center,
-                            //     children: [
-                            //       Text(
-                            //         'مجموع مرتب كل المدربين',
-                            //         textAlign: TextAlign.center,
-                            //         style: TextStyle(
-                            //           color: Color(0xFF333333),
-                            //           fontSize: 16,
-                            //           fontFamily: 'Montserrat-Arabic',
-                            //           fontWeight: FontWeight.w400,
-                            //           height: 1.62,
-                            //         ),
-                            //       ),
-                            //     ],
-                            //   ),
-                            // ),
-                            // SizedBox(
-                            //   width: 48,
-                            //   child: BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
-                            //     builder: (context, state) {
-                            //       return Text(
-                            //         ManageSalaryCubit.get(context).globalTotalSalary.toString(),
-                            //         textAlign: TextAlign.center,
-                            //         style: TextStyle(
-                            //           color: Color(0xFF2196F3),
-                            //           fontSize: 14,
-                            //           fontFamily: 'Montserrat-Arabic',
-                            //           fontWeight: FontWeight.w400,
-                            //           height: 1.30,
-                            //         ),
-                            //       );
-                            //     },
-                            //   ),
-                            // ),
+                          ),
+                          const SizedBox(height: 5),
+                          // Container(
+                          //   child: Row(
+                          //     mainAxisSize: MainAxisSize.min,
+                          //     mainAxisAlignment: MainAxisAlignment.center,
+                          //     crossAxisAlignment: CrossAxisAlignment.center,
+                          //     children: [
+                          //       Text(
+                          //         'مجموع مرتب كل المدربين',
+                          //         textAlign: TextAlign.center,
+                          //         style: TextStyle(
+                          //           color: Color(0xFF333333),
+                          //           fontSize: 16,
+                          //           fontFamily: 'Montserrat-Arabic',
+                          //           fontWeight: FontWeight.w400,
+                          //           height: 1.62,
+                          //         ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
+                          // SizedBox(
+                          //   width: 48,
+                          //   child: BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+                          //     builder: (context, state) {
+                          //       return Text(
+                          //         ManageSalaryCubit.get(context).globalTotalSalary.toString(),
+                          //         textAlign: TextAlign.center,
+                          //         style: TextStyle(
+                          //           color: Color(0xFF2196F3),
+                          //           fontSize: 14,
+                          //           fontFamily: 'Montserrat-Arabic',
+                          //           fontWeight: FontWeight.w400,
+                          //           height: 1.30,
+                          //         ),
+                          //       );
+                          //     },
+                          //   ),
+                          // ),
 
-                          ],
-                        ),
+                        ],
                       ),
-                      //20
-                      SizedBox(height: 50.h,),
+                    ),
+                    //20
+                    SizedBox(height: 50.h,),
 
-                    ].divide(SizedBox(height: 0)),
-                  ),
+                  ].divide(SizedBox(height: 0)),
                 ),
-
-
               ),
 
 
-
             ),
+
+
+
           );
-        }
-    );
+
+
   }
 }
 

@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../../core/flutter_flow/form_field_controller.dart';
 import '../../data/userModel.dart';
@@ -126,6 +130,47 @@ void changePasswordVisibility(){
 
   }) async {
     emit(SignUpLoadingState());
+    bool isConnect = await checkInternetConnectivity();
+    //if there is no internet connection
+    if (!isConnect) {
+   //if role is coach show error
+      if (role == 'coach') {
+        emit(SignUpErrorState(
+          error: 'لا يمكنك التسجيل كمدرب بدون انترنت',
+        ));
+        showToast(
+          msg: 'لا يمكنك التسجيل كمدرب بدون انترنت',
+          state: ToastStates.ERROR,
+        );
+        return;
+      }
+      //if role is admin
+      //create user with random id
+    String uId = Uuid().v4(); 
+      createUser(
+        role: role,
+        isUser: true,
+        // paasword: password,
+        // branches: selectedItems,
+        uId: //random id using uuid package
+        uId,
+        phone: phone,
+        fname: fName,
+        lname: lName,
+        hourlyRate :  int.parse(hourlyRate??'30')??30,
+      ); showToast(
+        msg: 'تم التسجيل بنجاح',
+        state: ToastStates.SUCCESS,
+      );
+      firstNameController.clear();
+      lastNameController.clear();
+      phoneController.clear();
+      passwordController.clear();
+      hourlyRateController.clear();
+      //sign out from admin account
+      emit(SignUpSuccessState(uId));
+      return;
+    }
     String? adminEmail = FirebaseAuth.instance.currentUser!.email;
     String? adminUid = FirebaseAuth.instance.currentUser!.uid;
 
@@ -256,14 +301,24 @@ void changePasswordVisibility(){
         phone: phone,
         pid: FirebaseAuth.instance.currentUser!.uid,
         numberOfSessions: 0,
+        date: Timestamp.now(),
+       branches: branches??[],
+      );
+      saveUserToContactList(
+        name: fname + ' ' + lname,
+        phone: phone,
       );
       FirebaseFirestore.instance
           .collection('users')
           .doc(uId)
           .set(model.toMap())
           .then((value) {
+            //save user to conatct list in the device 
+
+        
         emit(CreateUserSuccessState(uId!));
       }).catchError((error) {
+        print(error.toString());
         emit(CreateUserErrorState());
       });
     } else {
@@ -431,6 +486,26 @@ void changePasswordVisibility(){
     }).catchError((error) {
       emit(GetBranchesErrorState());
     });
+  }
+
+  checkInternetConnectivity() async {
+    try {
+      final result = await InternetAddress.lookup('google.com');
+      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  void saveUserToContactList({required String name, String? phone}) {
+    //use package contact_service to save user to contact list in the device  
+   print('saveUserToContactList\n\n\n\n\'');
+    Contact newContact = new Contact(
+      givenName: name,
+      phones: [Item(label: "mobile", value: phone)],
+    );
+    ContactsService.addContact(newContact);
+
   }
 
   

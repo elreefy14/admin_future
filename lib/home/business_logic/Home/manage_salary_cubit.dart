@@ -756,10 +756,16 @@ if (!isConnected) {
 //then pop 
 //use firebase persistance to get data from cache
 
-
-  addSessions(context, {String? userId, required String sessions}) async {
+  bool showRollbackButton = false;
+  int? currentTotalSalary ;
+  int? currentNumberOfSessions ;
+  String? latestUserId;
+  addSessions(context, {String? userId, required String sessions,
+   required int NumberOfSessions
+  }) async {
     emit(AddSessionsLoadingState());
-
+   currentNumberOfSessions = NumberOfSessions;
+   latestUserId = userId;
     bool isConnected = await checkInternetConnectivity();
 
     if (isConnected) {
@@ -774,10 +780,17 @@ if (!isConnected) {
         salaryController.clear();
         emit(AddSessionsSuccessState());
    //     Navigator.pop(context);
-        showToast(
-          state: ToastStates.SUCCESS,
-          msg: 'تم زيادة عدد الجلسات',
-        );
+     //   showToast(
+     //     state: ToastStates.SUCCESS,
+     //     msg: 'تم زيادة عدد الجلسات',
+     //   );
+        //show rollback button for 5 seconds
+        showRollbackButton = true;
+        //5 seconds
+        Future.delayed(Duration(seconds: 5), () {
+          showRollbackButton = false;
+          emit(AddSessionsSuccessState());
+        });
 
       }).catchError((error) {
         print('Failed to add sessions: $error');
@@ -785,10 +798,8 @@ if (!isConnected) {
         emit(AddSessionsErrorState(error.toString()));
       });
     } else {
-      //i use firebase persistance so update data and show toast message
-      //to tell user that data will be updated when internet is available
-      //and emit state
-      //then pop
+
+
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)
@@ -800,14 +811,36 @@ if (!isConnected) {
           .collection('users')
           .doc(userId)
           .update({'numberOfSessions': FieldValue.increment(int.parse(sessions))});
-
+  //add users to user collection wih random
+      //    required String lName,
+      //     required String fName,
+      //     required String phone,
+      //     required String password,
+      //     required String role,  String? hourlyRate,
+   //todo :5od dh w kleh offline f sign up
+      // print('a7aaaaaaaaaaaaaaaaaaaaaaa;\n\n\n\n\n\n\n\n\n\n\n\n\n\n');
+      // FirebaseFirestore.instance
+      //     .collection('users')
+      //     .doc('a7ajhbjh')
+      //     .set({'numberOfSessions': FieldValue.increment(int.parse(sessions))
+      //     ,'fname':'no wifi','lname':'no wifi','phone':'ko','password':'123456','role':'user'
+      //   ,'hourlyRate':0
+      //     });
+     // showToast(
+     //   state: ToastStates.SUCCESS,
+      //  msg: 'تم زيادة عدد الجلسات '
+     //       'سيتم تحديث البيانات عند توفر الإنترنت',
+     // );
         print('Sessions added');
-        //show toast message
-        showToast(
-          state: ToastStates.SUCCESS,
-          msg: 'تم زيادة عدد الجلسات '
-              'سيتم تحديث البيانات عند توفر الإنترنت',
-        );
+      showRollbackButton = true;
+      //5 seconds
+      Future.delayed(Duration(seconds: 5), () {
+        showRollbackButton = false;
+      //  emit(AddSessionsSuccessState());
+      });
+
+      //show toast message
+
         salaryController.clear();
         emit(AddSessionsSuccessState());
       //  Navigator.pop(context);
@@ -815,11 +848,15 @@ if (!isConnected) {
     }
   }
 
-  reduceSessions(   context,{String? userId, required String sessions}
+  reduceSessions(   context,{String? userId, required String sessions,
+    required int NumberOfSessions
+  }
 
       ) async {
-
     emit(ReduceSessionsLoadingState());
+      currentNumberOfSessions = NumberOfSessions;
+      latestUserId = userId;
+
     bool isConnected = await checkInternetConnectivity();
     if (isConnected) {
       FirebaseFirestore.instance
@@ -829,10 +866,17 @@ if (!isConnected) {
           .then((value) {
         print('Sessions reduced');
         //show toast message
-        showToast(
-          state: ToastStates.SUCCESS,
-          msg: 'تم تخفيض عدد الجلسات',
-        );
+       // showToast(
+       //   state: ToastStates.SUCCESS,
+      //    msg: 'تم تخفيض عدد الجلسات',
+      //  );
+        //show rollback button for 5 seconds
+        showRollbackButton = true;
+        //5 seconds
+        Future.delayed(Duration(seconds: 5), () {
+          showRollbackButton = false;
+         // emit(ReduceSessionsSuccessState());
+        });
         salaryController.clear();
         emit(ReduceSessionsSuccessState());
      //   Navigator.pop(context);
@@ -860,12 +904,19 @@ if (!isConnected) {
 
         print('Sessions reduced');
         //show toast message
-        showToast(
-          state: ToastStates.SUCCESS,
-          msg: 'تم تخفيض عدد الجلسات '
-              'سيتم تحديث البيانات عند توفر الإنترنت',
-        );
+      //  showToast(
+      //    state: ToastStates.SUCCESS,
+      //    msg: 'تم تخفيض عدد الجلسات '
+      //        'سيتم تحديث البيانات عند توفر الإنترنت',
+       // );
         salaryController.clear();
+        //
+        showRollbackButton = true;
+        //5 seconds
+        Future.delayed(Duration(seconds: 5), () {
+          showRollbackButton = false;
+          //emit(ReduceSessionsSuccessState());
+        });
         emit(ReduceSessionsSuccessState());
        // Navigator.pop(context);
 
@@ -882,9 +933,7 @@ if (!isConnected) {
   //make total salary = 0
   //for user with this uid userId
   //use catch error
-  bool showRollbackButton = false;
-  int? currentTotalSalary ;
-  String? latestUserId;
+
   Future<void> paySalary({String? userId}) async {
     try {
       latestUserId = userId;
@@ -1356,6 +1405,69 @@ if (!isConnected) {
       print(error.toString());
       emit(PayBonusErrorState(error.toString()));
     }
+  }
+
+  Future<void>rollbackSession() async {
+    try {
+      bool isConnected = await checkInternetConnectivity();
+      if (!isConnected) {
+        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(latestUserId)
+            .get(GetOptions(source: Source.serverAndCache));
+        Map<String, dynamic>? userData =
+        userSnapshot.data() as Map<String, dynamic>?;
+
+        UserModel user = UserModel.fromJson(userData!);
+        user.numberOfSessions = currentNumberOfSessions;
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(latestUserId)
+            .update({'numberOfSessions': user.numberOfSessions});
+
+        showToast(
+          state: ToastStates.SUCCESS,
+          msg: 'تم التراجع عن العملية '
+              'سيتم تحديث البيانات عند توفر الإنترنت',
+        );
+        emit(RollbackSalarySuccessStateWithoutInternet());
+        return;
+      }
+      print('latestUserId: $latestUserId');
+      print('currentTotalSalary: $currentTotalSalary');
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(latestUserId)
+          .update({'numberOfSessions': currentNumberOfSessions});
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(latestUserId)
+          .get(GetOptions(source: Source.server));
+
+      Map<String, dynamic>? userData =
+      userSnapshot.data() as Map<String, dynamic>?;
+
+      UserModel updatedUser = UserModel.fromJson(userData!);
+      updatedUser.numberOfSessions = currentNumberOfSessions;
+ //     int userIndex = coaches.indexWhere((user) => user.uId == latestUserId);
+//      if (userIndex != -1) {
+//        coaches[userIndex] = updatedUser;
+//      }
+
+      showToast(
+        state: ToastStates.SUCCESS,
+        msg: 'تم التراجع عن العملية',
+      );
+    } catch (error) {
+      print(error.toString());
+    }
+  }
+  Future<void> updateShowRollbackButtonSession(
+      ) async {
+    emit(UpdateShowRollbackButtonLoadingState());
+    showRollbackButton = false;
+    emit(UpdateShowRollbackButtonSuccessState());
   }
 
 

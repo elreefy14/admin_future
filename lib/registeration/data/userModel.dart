@@ -35,6 +35,7 @@ class UserModel
   String? token;
   List<String>? branches;
   String? role;
+  Timestamp? date;
   //pid
   String? pid;
   //numberOfSessions
@@ -76,6 +77,7 @@ class UserModel
     this.token,
     this.branches,
     this.pid, this.numberOfSessions,
+    this.date,
   });
 
   UserModel.fromJson(Map<String, dynamic> json) {
@@ -97,6 +99,7 @@ class UserModel
     pid = json['pid'];
     branches = json['branches'] != null ? List<String>.from(json['branches']) : null;
     numberOfSessions = json['numberOfSessions'];
+    date = json['date'];
 
   }
 
@@ -121,6 +124,7 @@ class UserModel
     data['branches'] = this.branches;
     data['pid'] = this.pid;
     data['numberOfSessions'] = this.numberOfSessions;
+    data['date'] = this.date;
 
     return data;
 
@@ -146,6 +150,7 @@ class UserModel
       'branches': branches,
       'pid': pid,
       'numberOfSessions': numberOfSessions,
+      'date': date,
     };
 
   }

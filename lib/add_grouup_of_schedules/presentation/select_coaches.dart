@@ -1941,7 +1941,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           await ManageSalaryCubit.get(context).reduceSessions(
                                                             context,
                                                             userId:
-                                                            uid,sessions: ManageSalaryCubit.get(context).salaryController.text,
+                                                            uid,sessions: ManageSalaryCubit.get(context).salaryController.text, NumberOfSessions: userSessions??0,
                                                           ).then((value) => Navigator.pop(context));
                                                         }
 
@@ -2216,6 +2216,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         }else{
                                                           await ManageSalaryCubit.get(context).addSessions(
                                                             context,
+                                                            NumberOfSessions: userSessions??0,
+
                                                             userId:
                                                             uid,sessions: ManageSalaryCubit.get(context).salaryController.text,
                                                           ).then((value) => Navigator.pop(context));
