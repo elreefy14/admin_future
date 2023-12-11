@@ -715,7 +715,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
                                                         await ManageSalaryCubit.get(context).payBonus(
-                                                            uid,salary: ManageSalaryCubit.get(context).salaryController.text,context
+                                                          userId: uid,TotalSalary: user.totalSalary??0,
+                                                          salaryPaid: ManageSalaryCubit.get(context).salaryController.text,
                                                         ).then((value) => Navigator.pop(context));
                                                       },
                                                       child: Container(
@@ -1589,7 +1590,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
                                                         await ManageSalaryCubit.get(context).payBonus(
-                                                            uid,salary: ManageSalaryCubit.get(context).salaryController.text,context
+                                                          userId: uid,TotalSalary: user.totalSalary??0,
+                                                          salaryPaid: ManageSalaryCubit.get(context).salaryController.text,
                                                         ).then((value) => Navigator.pop(context));
                                                       },
                                                       child: Container(
@@ -3106,7 +3108,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           print('uiiiiiiiiid \n\n');
                                                           //     print(ManageSalaryCubit.get(context).users[index].uId);
                                                           await ManageSalaryCubit.get(context).payBonus(
-                                                              uid,salary: ManageSalaryCubit.get(context).salaryController.text,context
+                                                            userId:
+                                                            uid,salaryPaid: ManageSalaryCubit.get(context).salaryController.text, TotalSalary: user.totalSalary ??0,
                                                           ).then((value) => Navigator.pop(context));
                                                         },
                                                         child: Container(

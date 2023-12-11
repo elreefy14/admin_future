@@ -1035,11 +1035,11 @@ if (!isConnected) {
             emit(ShowRollbackButtonState());
           });
 
-          showToast(
-            state: ToastStates.SUCCESS,
-            msg: //pay salary success
-            'تم صرف المرتب بنجاح',
-          );
+          // showToast(
+          //   state: ToastStates.SUCCESS,
+          //   msg: //pay salary success
+          //   'تم صرف المرتب بنجاح',
+          // );
           emit(PaySalarySuccessState());
         } else {
           //emit(PaySalarySuccessStateWithoutUpdate());
@@ -1211,11 +1211,11 @@ if (!isConnected) {
 
         print('Total salary of all users: $globalTotalSalary');
         salaryController.clear();
-        showToast(
-          state: ToastStates.SUCCESS,
-          msg: 'تم صرف المرتب بنجاح '
-              'سيتم تحديث البيانات عند توفر الإنترنت',
-        );
+      //  showToast(
+      //    state: ToastStates.SUCCESS,
+      //    msg: 'تم صرف المرتب بنجاح '
+      //        'سيتم تحديث البيانات عند توفر الإنترنت',
+      //  );
         // Enable rollback button
         showRollbackButton = true;
         Timer(Duration(seconds: 5), () {
@@ -1254,10 +1254,103 @@ if (!isConnected) {
       }
       salaryController.clear();
       //show toast message
-      showToast(
-        state: ToastStates.SUCCESS,
-        msg: 'تم صرف المرتب بنجاح',
-      );
+      // showToast(
+      //   state: ToastStates.SUCCESS,
+      //   msg: 'تم صرف المرتب بنجاح',
+      // );
+
+      // Enable rollback button
+      showRollbackButton = true;
+      Timer(Duration(seconds: 5), () {
+        showRollbackButton = false;
+        emit(ShowRollbackButtonState());
+      });
+
+      emit(PaySalarySuccessState());
+    } catch (error) {
+      print(error.toString());
+      emit(PaySalaryErrorState(error.toString()));
+    }
+  }
+  Future<void> payBonus({String? userId, String? salaryPaid,
+  required int TotalSalary
+  }) async {
+    try {
+      latestUserId = userId;
+      print('userId: $userId');
+
+      currentTotalSalary = TotalSalary;
+      print('currentTotalSalary: $currentTotalSalary');
+
+      print('userId: $userId');
+      emit(PaySalaryLoadingState());
+      bool isConnected = await checkInternetConnectivity();
+      if (!isConnected) {
+        print('latestUserId: $latestUserId');
+        print('currentTotalSalary: $currentTotalSalary');
+        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .get(GetOptions(source: Source.serverAndCache));
+        Map<String, dynamic>? userData =
+        userSnapshot.data() as Map<String, dynamic>?;
+
+        UserModel user = UserModel.fromJson(userData!);
+        user.totalSalary = user.totalSalary! + int.parse(salaryPaid!);
+        FirebaseFirestore.instance
+            .collection('users')
+            .doc(userId)
+            .update({'totalSalary': user.totalSalary});
+
+        print('Total salary of all users: $globalTotalSalary');
+        salaryController.clear();
+      //  showToast(
+      //    state: ToastStates.SUCCESS,
+      //    msg: 'تم صرف المرتب بنجاح '
+      //        'سيتم تحديث البيانات عند توفر الإنترنت',
+      //  );
+        // Enable rollback button
+        showRollbackButton = true;
+        Timer(Duration(seconds: 5), () {
+          showRollbackButton = false;
+          emit(ShowRollbackButtonState());
+        });
+
+        emit(PaySalarySuccessStateWithoutInternet());
+        return;
+      }
+
+      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .get(GetOptions(source: Source.serverAndCache));
+
+      Map<String, dynamic>? userData =
+      userSnapshot.data() as Map<String, dynamic>?;
+
+      int? totalSalary = userData?['totalSalary'];
+      int? salary14 = int.parse(salaryPaid!);
+      int? newTotalSalary = totalSalary! + salary14!;
+      print('newTotalSalary: $newTotalSalary');
+
+      // Store the current total salary for rollback
+      currentTotalSalary = totalSalary;
+
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(userId)
+          .update({'totalSalary': newTotalSalary});
+      // Update the user in the users list
+     // int userIndex = coaches.indexWhere((user) => user.uId == userId);
+    //  if (userIndex != -1) {
+    //    coaches[userIndex].totalSalary = newTotalSalary;
+    //  }
+      salaryController.clear();
+      //show toast message
+     // showToast(
+    //    state: ToastStates.SUCCESS,
+   //     msg: 'تم صرف المرتب بنجاح',
+  //    );
 
       // Enable rollback button
       showRollbackButton = true;
@@ -1331,81 +1424,83 @@ if (!isConnected) {
       print(error.toString());
     }
   }
-
-  Future<void> payBonus(String? userId, context, {String? salary}) async {
-    print('userId: $userId');
-    emit(PayBonusLoadingState());
-
-    try {
-      bool isConnected =
-      await checkInternetConnectivity(); // Custom function to check internet connectivity
-
-      if (!isConnected) {
-        DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .get(GetOptions(source: Source.serverAndCache));
-
-        Map<String, dynamic>? userData =
-        userSnapshot.data() as Map<String, dynamic>?;
-
-        if (userData != null) {
-          int? totalSalary = userData['totalSalary'];
-          int? salary14 = int.parse(salary!);
-          int? newTotalSalary = totalSalary! + salary14!;
-          print('newTotalSalary: $newTotalSalary');
-
-          // Store the updated salary locally until an internet connection is available
-          saveSalaryLocally(userId, newTotalSalary);
-
-          // Update the user in the users list
-          UserModel updatedUser = UserModel.fromJson(userData);
-          updatedUser.totalSalary = newTotalSalary;
-          int userIndex = coaches.indexWhere((user) => user.uId == userId);
-          if (userIndex != -1) {
-            coaches[userIndex] = updatedUser;
-          }
-          emit(PayBonusSuccessStateWithoutInternet());
-          return;
-        }
-      }
-
-      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get(GetOptions(source: Source.server));
-
-      Map<String, dynamic>? userData =
-      userSnapshot.data() as Map<String, dynamic>?;
-
-      if (userData != null) {
-        int? totalSalary = userData['totalSalary'];
-        int? salary14 = int.parse(salary!);
-        int? newTotalSalary = totalSalary! + salary14!;
-        print('newTotalSalary: $newTotalSalary');
-
-        await FirebaseFirestore.instance
-            .collection('users')
-            .doc(userId)
-            .update({'totalSalary': newTotalSalary});
-
-        // Update the user in the users list
-        UserModel updatedUser = UserModel.fromJson(userData);
-        updatedUser.totalSalary = newTotalSalary;
-        int userIndex = coaches.indexWhere((user) => user.uId == userId);
-        if (userIndex != -1) {
-          coaches[userIndex] = updatedUser;
-        }
-        salaryController.clear();
-        emit(PayBonusSuccessState());
-      } else {
-        throw 'User data not found';
-      }
-    } catch (error) {
-      print(error.toString());
-      emit(PayBonusErrorState(error.toString()));
-    }
-  }
+  //
+  // Future<void> payBonus(String? userId, context, {String? salary, required int TotalSalary}) async {
+  //   latestUserId = userId;
+  //   currentTotalSalary = TotalSalary;
+  //
+  //   emit(PayBonusLoadingState());
+  //
+  //   try {
+  //     bool isConnected =
+  //     await checkInternetConnectivity(); // Custom function to check internet connectivity
+  //
+  //     if (!isConnected) {
+  //       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+  //           .collection('users')
+  //           .doc(userId)
+  //           .get(GetOptions(source: Source.serverAndCache));
+  //
+  //       Map<String, dynamic>? userData =
+  //       userSnapshot.data() as Map<String, dynamic>?;
+  //
+  //       if (userData != null) {
+  //         int? totalSalary = userData['totalSalary'];
+  //         int? salary14 = int.parse(salary!);
+  //         int? newTotalSalary = totalSalary! + salary14!;
+  //         print('newTotalSalary: $newTotalSalary');
+  //
+  //         // Store the updated salary locally until an internet connection is available
+  //        // saveSalaryLocally(userId, newTotalSalary);
+  //
+  //         // Update the user in the users list
+  //       //  UserModel updatedUser = UserModel.fromJson(userData);
+  //       //  updatedUser.totalSalary = newTotalSalary;
+  //       //  int userIndex = coaches.indexWhere((user) => user.uId == userId);
+  //       //  if (userIndex != -1) {
+  //       //    coaches[userIndex] = updatedUser;
+  //       //  }
+  //         emit(PayBonusSuccessStateWithoutInternet());
+  //         return;
+  //       }
+  //     }
+  //
+  //     DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(userId)
+  //         .get(GetOptions(source: Source.server));
+  //
+  //     Map<String, dynamic>? userData =
+  //     userSnapshot.data() as Map<String, dynamic>?;
+  //
+  //     if (userData != null) {
+  //       int? totalSalary = userData['totalSalary'];
+  //       int? salary14 = int.parse(salary!);
+  //       int? newTotalSalary = totalSalary! + salary14!;
+  //       print('newTotalSalary: $newTotalSalary');
+  //
+  //       await FirebaseFirestore.instance
+  //           .collection('users')
+  //           .doc(userId)
+  //           .update({'totalSalary': newTotalSalary});
+  //
+  //       // Update the user in the users list
+  //       UserModel updatedUser = UserModel.fromJson(userData);
+  //       updatedUser.totalSalary = newTotalSalary;
+  //       int userIndex = coaches.indexWhere((user) => user.uId == userId);
+  //       if (userIndex != -1) {
+  //         coaches[userIndex] = updatedUser;
+  //       }
+  //       salaryController.clear();
+  //       emit(PayBonusSuccessState());
+  //     } else {
+  //       throw 'User data not found';
+  //     }
+  //   } catch (error) {
+  //     print(error.toString());
+  //     emit(PayBonusErrorState(error.toString()));
+  //   }
+  // }
 
   Future<void>rollbackSession() async {
     try {
@@ -1469,9 +1564,6 @@ if (!isConnected) {
     showRollbackButton = false;
     emit(UpdateShowRollbackButtonSuccessState());
   }
-
-
-
 //                     ManageSalaryCubit.get(context).deleteSchedule(
 // scheduleId: scheduleId,
 // );

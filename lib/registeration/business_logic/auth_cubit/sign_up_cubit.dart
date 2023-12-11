@@ -6,6 +6,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../core/flutter_flow/form_field_controller.dart';
@@ -132,7 +133,7 @@ void changePasswordVisibility(){
     emit(SignUpLoadingState());
     bool isConnect = await checkInternetConnectivity();
     //if there is no internet connection
-    if (!isConnect) {
+    if (!isConnect || isConnect ) {
    //if role is coach show error
       if (role == 'coach') {
         emit(SignUpErrorState(
@@ -304,9 +305,10 @@ void changePasswordVisibility(){
         date: Timestamp.now(),
        branches: branches??[],
       );
+
       saveUserToContactList(
         name: fname + ' ' + lname,
-        phone: phone,
+         phoneNumber: phone!,
       );
       FirebaseFirestore.instance
           .collection('users')
@@ -497,15 +499,65 @@ void changePasswordVisibility(){
     }
   }
 
-  void saveUserToContactList({required String name, String? phone}) {
-    //use package contact_service to save user to contact list in the device  
-   print('saveUserToContactList\n\n\n\n\'');
-    Contact newContact = new Contact(
-      givenName: name,
-      phones: [Item(label: "mobile", value: phone)],
-    );
-    ContactsService.addContact(newContact);
+  // void saveUserToContactList({required String name, String? phone}) {
+  //   //use package contact_service to save user to contact list in the device
+  //  print('saveUserToContactList\n\n\n\n\'');
+  //   Contact newContact = new Contact(
+  //     givenName: name,
+  //     phones: [Item(label: "mobile", value: phone)],
+  //   );
+  //   ContactsService.addContact(newContact);
+  //
+  // }
 
+
+  Future<void> saveUserToContactList({required String name, required String phoneNumber}) async {
+    // Check if the permission has already been granted
+    PermissionStatus status = await Permission.contacts.status;
+
+    if (status.isGranted) {
+      // Permission has already been granted, proceed with saving the contact
+      final newContact = Contact();
+
+      // Set the display name of the contact
+      newContact.givenName = name;
+
+      // Create a new phone number for the contact
+      final phoneNumberObj = Item(label: 'mobile', value: phoneNumber);
+
+      // Add the phone number to the contact
+      newContact.phones = [phoneNumberObj];
+
+      // Save the contact to the device's contact list
+      await ContactsService.addContact(newContact);
+
+      print('User saved to contact list');
+    } else {
+      // Permission has not been granted, request the permission from the user
+      status = await Permission.contacts.request();
+
+      if (status.isGranted) {
+        // Permission has been granted, proceed with saving the contact
+        final newContact = Contact();
+
+        // Set the display name of the contact
+        newContact.givenName = name;
+
+        // Create a new phone number for the contact
+        final phoneNumberObj = Item(label: 'mobile', value: phoneNumber);
+
+        // Add the phone number to the contact
+        newContact.phones = [phoneNumberObj];
+
+        // Save the contact to the device's contact list
+        await ContactsService.addContact(newContact);
+
+        print('User saved to contact list');
+      } else {
+        // Permission has been denied, handle the error or show a message to the user
+        print('Permission denied');
+      }
+    }
   }
 
   
