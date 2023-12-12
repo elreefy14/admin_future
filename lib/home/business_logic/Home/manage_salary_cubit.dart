@@ -1564,6 +1564,20 @@ if (!isConnected) {
     showRollbackButton = false;
     emit(UpdateShowRollbackButtonSuccessState());
   }
+//int selectedDayIndex = 0;
+//   void changeSelectedDayIndex(int index) {
+//     selectedDayIndex = index;
+//     emit(ChangeSelectedDayIndexState(
+//       selectedDayIndex,
+//     ));
+//   }
+  String? selectedBranchIndex ;
+  void changeSelectedBranchIndex(String index) {
+    selectedBranchIndex = index;
+    emit(ChangeSelectedBranchIndexState(
+   //   selectedBranchIndex,
+    ));
+  }
 //                     ManageSalaryCubit.get(context).deleteSchedule(
 // scheduleId: scheduleId,
 // );

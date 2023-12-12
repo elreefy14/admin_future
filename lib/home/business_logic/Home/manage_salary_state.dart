@@ -161,3 +161,8 @@ class AddSessionsErrorState extends ManageSalaryState {
 class RollbackSalarySuccessStateWithoutInternet extends ManageSalaryState {
 
 }//UpdateListOfSchedulesState
+//ChangeSelectedBranchIndexState
+class ChangeSelectedBranchIndexState extends ManageSalaryState {
+  //final int selectedBranchIndex;
+ // ChangeSelectedBranchIndexState(this.selectedBranchIndex);
+}//UpdateListOfSchedulesState

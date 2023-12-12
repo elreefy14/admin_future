@@ -50,4 +50,7 @@ static const String favorite = "/favorite";
 //profile screen
 static const String profile = "/profile";
 
+//manageGroups;
+static const String manageGroups = "/manageGroups";
+
 }

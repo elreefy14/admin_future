@@ -20,6 +20,7 @@ import 'home/presenation/widget/add_schedule.dart';
 import 'home/presenation/widget/edit_users.dart';
 import 'home/presenation/widget/home_layout.dart';
 import 'home/presenation/widget/manage_attendence.dart';
+import 'home/presenation/widget/manage_groups_screen.dart';
 import 'home/presenation/widget/manage_users.dart';
 import 'home/presenation/widget/manage_schedules_screen.dart';
 import 'home/presenation/widget/mange_coaches.dart';
@@ -78,6 +79,10 @@ case AppRoutes.addCoach:
     //ManageCoaches
       case AppRoutes.manageCoaches:
         return MaterialPageRoute(builder: (_) => ManageCoaches());
+        //ManageGroupsScreen
+      case AppRoutes.manageGroups:
+        return MaterialPageRoute(builder: (_) => ManageGroupsScreen());
+
     // manage Salary
       case AppRoutes.manageSalary:
         return MaterialPageRoute(builder: (_) => ManageSalary());

@@ -152,9 +152,8 @@ class MyApp extends StatelessWidget {
                 //MyColors.primaryColor,
               ),
               initialRoute:
-              //manageSchedules
-              //AppRoutes.onboarding,
-              mainRoute,
+             // mainRoute,
+              AppRoutes.manageGroups,
               onGenerateRoute: RouteGenerator.generateRoute,
             ),
 
