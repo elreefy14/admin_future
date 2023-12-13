@@ -20,6 +20,7 @@ import '../../../registeration/presenation/widget/widget.dart';
 import '../../data/Notification.dart';
 import '../../data/day_model.dart';
 import '../../data/schedules.dart';
+import '../../presenation/widget/manage_groups_screen.dart';
 
 part 'manage_salary_state.dart';
 
@@ -1571,13 +1572,75 @@ if (!isConnected) {
 //       selectedDayIndex,
 //     ));
 //   }
-  String? selectedBranchIndex ;
-  void changeSelectedBranchIndex(String index) {
+  int? selectedBranchIndex = 0;
+  void changeSelectedBranchIndex(int index) {
     selectedBranchIndex = index;
     emit(ChangeSelectedBranchIndexState(
    //   selectedBranchIndex,
     ));
   }
+
+   //getBranches() {}
+  List<BranchModel> branches = [];
+  void getBranches() {
+    //bool isConnected = checkInternetConnectivity();
+    emit(GetBranchesLoadingState());
+    FirebaseFirestore.instance
+        .collection('branches')
+        .get(const GetOptions(source: Source.serverAndCache))
+        .then((value) {
+      value.docs.forEach((element) {
+        branches.add(BranchModel.fromJson(element.data()));
+      });
+      emit(GetBranchesSuccessState(
+        branches,
+      ));
+    }).catchError((error) {
+      print(error.toString());
+      emit(GetBranchesErrorState(error.toString()));
+    });
+  }
+
+   deleteGroup({required String groupId, required String branchId}) {
+    bool isConnected = checkInternetConnectivity();
+    emit(DeleteGroupLoadingState());
+    if (!isConnected) {
+      FirebaseFirestore.instance
+          .collection('branches')
+          .doc(branchId)
+          .collection('groups')
+          .doc(groupId)
+          .delete();
+      showToast(
+        state: ToastStates.ERROR,
+        msg: 'تم حذف المجموعة '
+            'سيتم تحديث البيانات عند توفر الإنترنت',
+      );
+      emit(DeleteGroupErrorState('لا يوجد اتصال بالإنترنت'));
+      return;
+    }
+    FirebaseFirestore.instance
+        .collection('branches')
+        .doc(branchId)
+        .collection('groups')
+        .doc(groupId)
+        .delete()
+        .then((value) {
+      print('Group deleted');
+
+      //show toast message
+      showToast(
+        state: ToastStates.SUCCESS,
+        msg: 'تم حذف المجموعة',
+      );
+      emit(DeleteGroupSuccessState());
+    }).catchError((error) {
+      print('Failed to delete group: $error');
+      showToast(msg: 'فشل حذف المجموعة', state: ToastStates.ERROR);
+      emit(DeleteGroupErrorState(error.toString()));
+    });
+  }
+
 //                     ManageSalaryCubit.get(context).deleteSchedule(
 // scheduleId: scheduleId,
 // );

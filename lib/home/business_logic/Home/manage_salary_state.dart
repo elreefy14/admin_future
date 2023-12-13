@@ -165,4 +165,32 @@ class RollbackSalarySuccessStateWithoutInternet extends ManageSalaryState {
 class ChangeSelectedBranchIndexState extends ManageSalaryState {
   //final int selectedBranchIndex;
  // ChangeSelectedBranchIndexState(this.selectedBranchIndex);
+}//Upda
+// teListOfSchedulesState
+//GetBranchesLoadingState
+class GetBranchesLoadingState extends ManageSalaryState {
+
+}//UpdateListOfSchedulesState
+//GetBranchesSuccessState
+class GetBranchesSuccessState extends ManageSalaryState {
+  final List<BranchModel> branches;
+  GetBranchesSuccessState(this.branches);
+}//UpdateListOfSchedulesState
+//GetBranchesErrorState
+class GetBranchesErrorState extends ManageSalaryState {
+  final String error;
+  GetBranchesErrorState(this.error);
+}//UpdateListOfSchedulesState
+//DeleteGroupLoadingState
+class DeleteGroupLoadingState extends ManageSalaryState {
+
+}//UpdateListOfSchedulesState
+//DeleteGroupSuccessState
+class DeleteGroupSuccessState extends ManageSalaryState {
+
+}//UpdateListOfSchedulesState
+//DeleteGroupErrorState
+class DeleteGroupErrorState extends ManageSalaryState {
+  final String error;
+  DeleteGroupErrorState(this.error);
 }//UpdateListOfSchedulesState
