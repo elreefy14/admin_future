@@ -293,24 +293,21 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     _times[day]?['start'] = endTime.replacing(hour: endTime.hour - 1);
     emit(state.copyWith(times: _times));
   }
-
-//handle selected users like selected coaches
+  //edit thais to add list of maps for branch collection contains schedule.date as key and schedule.id as value
   late Map<String, Map<dynamic, dynamic>> nonNullableDays = {};
   Future<void> addGroup(
-    bool isEmit,
-    BuildContext context, {
-    required List<UserModel> selectedUsers,
-    required List<UserModel> selectedCoaches,
-    required Timestamp startTrainingTime,
-    required Timestamp endTrainingTime,
-    required String branch,
-    Map<String, Map<dynamic, dynamic>>? times,
-    String? maxUsers,
-  }) async {
+      bool isEmit,
+      BuildContext context, {
+        required List<UserModel> selectedUsers,
+        required List<UserModel> selectedCoaches,
+        required Timestamp startTrainingTime,
+        required Timestamp endTrainingTime,
+        required String branch,
+        Map<String, Map<dynamic, dynamic>>? times,
+        String? maxUsers,
+      }) async {
     emit(state.copyWith(loading: true));
-    // late Map<String, Map<dynamic, dynamic>> nonNullableDays = {};
 
-    // Convert times to nonNullableDays
     for (var day in times!.keys) {
       if (times[day]!['start'] != null && times[day]!['end'] != null) {
         DateTime nearestDay = getNearestDayOfWeek(day);
@@ -333,10 +330,8 @@ class AddGroupCubit extends Cubit<AddGroupState> {
       }
     }
 
-    // Get all non-null days
     List<String> days = nonNullableDays.keys.toList();
-    //if days is empty or selectedUsers is empty or selectedCoaches is empty 
-    // or maxUsers is empty or branch is empty return error message
+
     if (days.isEmpty ||
         selectedUsers.isEmpty ||
         selectedCoaches.isEmpty ||
@@ -345,22 +340,43 @@ class AddGroupCubit extends Cubit<AddGroupState> {
       emit(state.copyWith(loading: false));
 
       Fluttertoast.showToast(
-          msg: 'يجب إدخال جميع البيانات المطلوبة',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 5,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+        msg: 'يجب إدخال جميع البيانات المطلوبة',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 5,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
 
       return;
     }
 
-    // Create a batched write
     WriteBatch batch = FirebaseFirestore.instance.batch();
+    DocumentReference branchRef = FirebaseFirestore.instance
+        .collection('branches')
+        .doc(branch)
+        .collection('groups')
+        .doc();
+    String groupId = branchRef.id;
+    batch.set(branchRef, {
+      'name': branch,
+      'max_users': maxUsers,
+      'number_of_users': selectedUsers.length,
+      'number_of_coaches': selectedCoaches.length,
+      
+      //add list of coaches and users to the branch
+      'usersList': selectedUsers.map((e) => e.name).toList(),
+      'userIds': selectedUsers.map((e) => e.uId).toList(),
+      'coachList': selectedCoaches.map((e) => e.name).toList(),
+      'coachIds': selectedCoaches.map((e) => e.uId).toList(),
+
+      'pid': FirebaseAuth.instance.currentUser!.uid,
+      'group_id': branchRef.id,
+      'days': nonNullableDays,
+    });
 
     try {
-      // Add schedules to batch
       for (var day in days) {
         if (nonNullableDays.containsKey(day)) {
           Timestamp nearestDayTimestamp = nonNullableDays[day]!['nearest_day'];
@@ -372,7 +388,6 @@ class AddGroupCubit extends Cubit<AddGroupState> {
               .doc(day)
               .collection('schedules')
               .doc();
-
           batch.set(scheduleRef, {
             'start_time': nonNullableDays[day]!['start'],
             'end_time': nonNullableDays[day]!['end'],
@@ -385,7 +400,6 @@ class AddGroupCubit extends Cubit<AddGroupState> {
             'schedule_id': scheduleRef.id ?? '',
           });
 
-          // Add coaches to batch
           if (selectedCoaches != null && selectedCoaches.isNotEmpty) {
             for (var coach in selectedCoaches) {
               DocumentReference coachRef = FirebaseFirestore.instance
@@ -426,6 +440,18 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'coachList': FieldValue.arrayUnion([coach.name]),
                 'coachIds': FieldValue.arrayUnion([coach.uId]),
               });
+          //        batch.update(
+          //   FirebaseFirestore.instance
+          //       .collection('branches')
+          //       .doc(branch)
+          //       .collection('groups')
+          //       .doc(groupId),
+          //   {
+          //     //'schedule_ids': FieldValue.arrayUnion([scheduleRef.id]),
+          //     'coachList': FieldValue.arrayUnion([coach.name]),
+          //     'coachIds': FieldValue.arrayUnion([coach.uId]),
+          //   },
+          // );
 
               DocumentReference coachScheduleRef = FirebaseFirestore.instance
                   .collection('users')
@@ -446,7 +472,6 @@ class AddGroupCubit extends Cubit<AddGroupState> {
             }
           }
 
-          // Add users to batch
           if (selectedUsers != null && selectedUsers.isNotEmpty) {
             for (var user in selectedUsers) {
               DocumentReference userRef = FirebaseFirestore.instance
@@ -504,75 +529,83 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'schedule_id': scheduleRef.id ?? '',
                 'max_users': maxUsers,
               });
+          //      batch.update(
+          //   FirebaseFirestore.instance
+          //       .collection('branches')
+          //       .doc(branch)
+          //       .collection('groups')
+          //       .doc(groupId),
+          //   {
+          //     'usersList': FieldValue.arrayUnion([user.name]),
+          //     'userIds': FieldValue.arrayUnion([user.uId]),
+          //   },
+          // );
             }
           }
+
+          // Add the schedule ID to the branch collection
+          batch.update(
+            FirebaseFirestore.instance
+                .collection('branches')
+                .doc(branch)
+                .collection('groups')
+                .doc(groupId),
+            {
+              'schedule_ids': FieldValue.arrayUnion([scheduleRef.id]),
+              'schedule_days': FieldValue.arrayUnion([day]),
+             // 'users': selectedUsers,
+             // 'coaches': selectedCoaches,
+             //add list of coaches and users to the branch 
+
+  
+
+            },
+          );
         }
       }
-      //todo :fix branch is null
-      DocumentReference branchRef = FirebaseFirestore.instance
-          .collection('branches')
-          .doc(branch)
-          .collection('groups')
-          .doc();
 
-      batch.set(branchRef, {
-        'name': branch,
-        'max_users': maxUsers,
-        'number_of_users': selectedUsers.length,
-        'number_of_coaches': selectedCoaches.length,
-        'pid': FirebaseAuth.instance.currentUser!.uid,
-        'group_id': branchRef.id,
-        //non nullable days as map
-        'days': nonNullableDays,
-      });
 
-      // Commit the batched write
       await batch.commit();
 
       emit(state.copyWith(loading: false));
 
       Fluttertoast.showToast(
-          msg: 'تم إضافة المواعيد بنجاح',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 5,
-          backgroundColor: Colors.green,
-          textColor: Colors.white,
-          fontSize: 16.0);
+        msg: 'تم إضافة المواعيد بنجاح',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 5,
+        backgroundColor: Colors.green,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
     } catch (e) {
       emit(state.copyWith(loading: false));
+      print(e.toString());
 
       Fluttertoast.showToast(
-          msg: 'حدث خطأ أثناء إضافة المواعيد\n${e.toString()}',
-          toastLength: Toast.LENGTH_LONG,
-          gravity: ToastGravity.BOTTOM,
-          timeInSecForIosWeb: 5,
-          backgroundColor: Colors.red,
-          textColor: Colors.white,
-          fontSize: 16.0);
+        msg: 'حدث خطأ أثناء إضافة المواعيد\n${e.toString()}',
+        toastLength: Toast.LENGTH_LONG,
+        gravity: ToastGravity.BOTTOM,
+        timeInSecForIosWeb: 5,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        fontSize: 16.0,
+      );
     }
   }
-  //
+  //todo sh3ala bs na2s el schedulesids
   // Future<void> addGroup(
-  //   bool isEmit,
-  //   BuildContext context, {
-  //   required List<UserModel> selectedCoaches,
-  //   required Timestamp startTrainingTime,
-  //   required Timestamp endTrainingTime,
-  //   required String branch,
-  //   Map<String, Map<dynamic, dynamic>>? times,
-  //   String? maxUsers,
-  // }) async {
-  //   // void addSchedule(
-  //   //     bool isEmit  ,
-  //   //   BuildContext context, {
-  //   //  // List<String>? selectedDays,
-  //   //   String? startTrainingTime,
-  //   //   String? endTrainingTime,
-  //   //   String? branch,
-  //   //   Map<String, Map<dynamic, dynamic>>? times,
-  //   // }) async {
-  //   //todo change use thsi map
+  //     bool isEmit,
+  //     BuildContext context, {
+  //       required List<UserModel> selectedUsers,
+  //       required List<UserModel> selectedCoaches,
+  //       required Timestamp startTrainingTime,
+  //       required Timestamp endTrainingTime,
+  //       required String branch,
+  //       Map<String, Map<dynamic, dynamic>>? times,
+  //       String? maxUsers,
+  //     }) async {
+  //   emit(state.copyWith(loading: true));
   //
   //   for (var day in times!.keys) {
   //     if (times[day]!['start'] != null && times[day]!['end'] != null) {
@@ -595,29 +628,44 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   //       };
   //     }
   //   }
-  //   print('nonNullableDays: ${nonNullableDays.toString()}}');
   //
-  //   List<String> days = //get all non null days
-  //       nonNullableDays.keys.toList();
-  //   //get all non null days start and end time as timestamp . note start and end time is timeofday
+  //   List<String> days = nonNullableDays.keys.toList();
   //
-  //   SchedulesModel? schedule;
+  //   if (days.isEmpty ||
+  //       selectedUsers.isEmpty ||
+  //       selectedCoaches.isEmpty ||
+  //       maxUsers == null ||
+  //       branch == '') {
+  //     emit(state.copyWith(loading: false));
+  //
+  //     Fluttertoast.showToast(
+  //         msg: 'يجب إدخال جميع البيانات المطلوبة',
+  //         toastLength: Toast.LENGTH_LONG,
+  //         gravity: ToastGravity.BOTTOM,
+  //         timeInSecForIosWeb: 5,
+  //         backgroundColor: Colors.red,
+  //         textColor: Colors.white,
+  //         fontSize: 16.0);
+  //
+  //     return;
+  //   }
+  //
+  //   WriteBatch batch = FirebaseFirestore.instance.batch();
+  //
   //   try {
-  //     //  if (isEmit)
-  //     // emit(AddScheduleLoadingState());
-  //     emit(state.copyWith(loading: true));
   //     for (var day in days) {
   //       if (nonNullableDays.containsKey(day)) {
-  //         //DateTime nearestDay = nonNullableDays[day]!['nearest_day'].toDate();
   //         Timestamp nearestDayTimestamp = nonNullableDays[day]!['nearest_day'];
   //
-  //         await FirebaseFirestore.instance
+  //         DocumentReference scheduleRef = FirebaseFirestore.instance
   //             .collection('admins')
   //             .doc(FirebaseAuth.instance.currentUser!.uid)
   //             .collection('schedules')
   //             .doc(day)
   //             .collection('schedules')
-  //             .add({
+  //             .doc();
+  //
+  //         batch.set(scheduleRef, {
   //           'start_time': nonNullableDays[day]!['start'],
   //           'end_time': nonNullableDays[day]!['end'],
   //           'date': day,
@@ -626,88 +674,150 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   //           'usersList': [],
   //           'userIds': [],
   //           'max_users': maxUsers,
-  //         }).then((scheduleDoc) async {
-  //           if (selectedCoaches != null && selectedCoaches.isNotEmpty) {
-  //             for (var coach in selectedCoaches) {
-  //               await FirebaseFirestore.instance
-  //                   .collection('users')
-  //                   .doc(coach.uId)
-  //                   .collection('schedules')
-  //                   .doc(scheduleDoc.id)
-  //                   .set({
-  //                 'start_time': nonNullableDays[day]!['start'],
-  //                 'end_time': nonNullableDays[day]!['end'],
-  //                 'date': day,
-  //                 'nearest_day': nearestDayTimestamp,
-  //                 'branch_id': branch,
-  //                 'pId': FirebaseAuth.instance.currentUser!.uid,
-  //                 'max_users': maxUsers,
-  //               });
-  //               await FirebaseFirestore.instance
-  //                   .collection('admins')
-  //                   .doc(FirebaseAuth.instance.currentUser!.uid)
-  //                   .collection('schedules')
-  //                   .doc(day)
-  //                   .collection('schedules')
-  //                   .doc(scheduleDoc.id)
-  //                   .collection('users')
-  //                   .doc(coach.uId)
-  //                   .set({
-  //                 'name': coach.name,
-  //                 'uid': coach.uId,
-  //                 'finished': false,
-  //               });
-  //
-  //               await scheduleDoc.update({
-  //                 'usersList': FieldValue.arrayUnion([coach.name]),
-  //                 'userIds': FieldValue.arrayUnion([coach.uId]),
-  //               });
-  //
-  //               await FirebaseFirestore.instance
-  //                   .collection('users')
-  //                   .doc(coach.uId)
-  //                   .collection('schedules')
-  //                   .doc(scheduleDoc.id)
-  //                   .set({
-  //                 'start_time': nonNullableDays[day]!['start'],
-  //                 'end_time': nonNullableDays[day]!['end'],
-  //                 'date': day,
-  //                 'nearest_day': nearestDayTimestamp,
-  //                 'branch_id': branch,
-  //                 'pId': FirebaseAuth.instance.currentUser!.uid,
-  //                 'scheduleId': scheduleDoc.id,
-  //                 'max_users': maxUsers,
-  //               });
-  //             }
-  //           }
-  //
-  //           await scheduleDoc.update({
-  //             'schedule_id': scheduleDoc.id,
-  //           });
-  //
-  //           schedule = SchedulesModel(
-  //             startTime: nonNullableDays[day]!['start'],
-  //             endTime: nonNullableDays[day]!['end'],
-  //             date: day,
-  //             nearestDay: nearestDayTimestamp,
-  //             branchId: branch,
-  //             users: selectedCoaches,
-  //             usersList:
-  //                 selectedCoaches?.map((coach) => coach.name).toList() ?? [],
-  //             userIds:
-  //                 selectedCoaches?.map((coach) => coach.uId).toList() ?? [],
-  //             scheduleId: scheduleDoc.id,
-  //             finished: false,
-  //             pId: FirebaseAuth.instance.currentUser!.uid,
-  //             maxUsers: maxUsers,
-  //           );
+  //           'schedule_id': scheduleRef.id ?? '',
   //         });
+  //
+  //         if (selectedCoaches != null && selectedCoaches.isNotEmpty) {
+  //           for (var coach in selectedCoaches) {
+  //             DocumentReference coachRef = FirebaseFirestore.instance
+  //                 .collection('users')
+  //                 .doc(coach.uId)
+  //                 .collection('schedules')
+  //                 .doc(scheduleRef.id);
+  //
+  //             batch.set(coachRef, {
+  //               'start_time': nonNullableDays[day]!['start'],
+  //               'end_time': nonNullableDays[day]!['end'],
+  //               'date': day,
+  //               'nearest_day': nearestDayTimestamp,
+  //               'branch_id': branch,
+  //               'pId': FirebaseAuth.instance.currentUser!.uid,
+  //               'max_users': maxUsers,
+  //               'schedule_id': scheduleRef.id ?? '',
+  //             });
+  //
+  //             DocumentReference adminRef = FirebaseFirestore.instance
+  //                 .collection('admins')
+  //                 .doc(FirebaseAuth.instance.currentUser!.uid)
+  //                 .collection('schedules')
+  //                 .doc(day)
+  //                 .collection('schedules')
+  //                 .doc(scheduleRef.id)
+  //                 .collection('users')
+  //                 .doc(coach.uId);
+  //
+  //             batch.set(adminRef, {
+  //               'name': coach.name,
+  //               'uid': coach.uId,
+  //               'finished': false,
+  //               'role': 'coach',
+  //             });
+  //
+  //             batch.update(scheduleRef, {
+  //               'coachList': FieldValue.arrayUnion([coach.name]),
+  //               'coachIds': FieldValue.arrayUnion([coach.uId]),
+  //             });
+  //
+  //             DocumentReference coachScheduleRef = FirebaseFirestore.instance
+  //                 .collection('users')
+  //                 .doc(coach.uId)
+  //                 .collection('schedules')
+  //                 .doc(scheduleRef.id);
+  //
+  //             batch.set(coachScheduleRef, {
+  //               'start_time': nonNullableDays[day]!['start'],
+  //               'end_time': nonNullableDays[day]!['end'],
+  //               'date': day,
+  //               'nearest_day': nearestDayTimestamp,
+  //               'branch_id': branch,
+  //               'pId': FirebaseAuth.instance.currentUser!.uid,
+  //               'max_users': maxUsers,
+  //               'schedule_id': scheduleRef.id ?? '',
+  //             });
+  //           }
+  //         }
+  //
+  //         if (selectedUsers != null && selectedUsers.isNotEmpty) {
+  //           for (var user in selectedUsers) {
+  //             DocumentReference userRef = FirebaseFirestore.instance
+  //                 .collection('users')
+  //                 .doc(user.uId)
+  //                 .collection('schedules')
+  //                 .doc(scheduleRef.id);
+  //
+  //             batch.set(userRef, {
+  //               'start_time': nonNullableDays[day]!['start'],
+  //               'end_time': nonNullableDays[day]!['end'],
+  //               'date': day,
+  //               'nearest_day': nearestDayTimestamp,
+  //               'branch_id': branch,
+  //               'pId': FirebaseAuth.instance.currentUser!.uid,
+  //               'max_users': maxUsers,
+  //               'schedule_id': scheduleRef.id ?? '',
+  //             });
+  //
+  //             DocumentReference adminRef = FirebaseFirestore.instance
+  //                 .collection('admins')
+  //                 .doc(FirebaseAuth.instance.currentUser!.uid)
+  //                 .collection('schedules')
+  //                 .doc(day)
+  //                 .collection('schedules')
+  //                 .doc(scheduleRef.id)
+  //                 .collection('users')
+  //                 .doc(user.uId);
+  //
+  //             batch.set(adminRef, {
+  //               'name': user.name,
+  //               'uid': user.uId,
+  //               'finished': false,
+  //               'role': 'user',
+  //             });
+  //
+  //             batch.update(scheduleRef, {
+  //               'usersList': FieldValue.arrayUnion([user.name]),
+  //               'userIds': FieldValue.arrayUnion([user.uId]),
+  //             });
+  //
+  //             DocumentReference userScheduleRef = FirebaseFirestore.instance
+  //                 .collection('users')
+  //                 .doc(user.uId)
+  //                 .collection('schedules')
+  //                 .doc(scheduleRef.id);
+  //
+  //             batch.set(userScheduleRef, {
+  //               'start_time': nonNullableDays[day]!['start'],
+  //               'end_time': nonNullableDays[day]!['end'],
+  //               'date': day,
+  //               'nearest_day': nearestDayTimestamp,
+  //               'branch_id': branch,
+  //               'pId': FirebaseAuth.instance.currentUser!.uid,
+  //               'schedule_id': scheduleRef.id ?? '',
+  //               'max_users': maxUsers,
+  //             });
+  //           }
+  //         }
   //       }
   //     }
-  //     ManageSalaryCubit.get(context).updateSchedules(schedule!);
-  //     // if (isEmit) {
-  //     // emit(AddScheduleSuccessState());
+  //
+  //     DocumentReference branchRef = FirebaseFirestore.instance
+  //         .collection('branches')
+  //         .doc(branch)
+  //         .collection('groups')
+  //         .doc();
+  //     batch.set(branchRef, {
+  //       'name': branch,
+  //       'max_users': maxUsers,
+  //       'number_of_users': selectedUsers.length,
+  //       'number_of_coaches': selectedCoaches.length,
+  //       'pid': FirebaseAuth.instance.currentUser!.uid,
+  //       'group_id': branchRef.id,
+  //       'days': nonNullableDays,
+  //     });
+  //
+  //     await batch.commit();
+  //
   //     emit(state.copyWith(loading: false));
+  //
   //     Fluttertoast.showToast(
   //         msg: 'تم إضافة المواعيد بنجاح',
   //         toastLength: Toast.LENGTH_LONG,
@@ -716,10 +826,9 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   //         backgroundColor: Colors.green,
   //         textColor: Colors.white,
   //         fontSize: 16.0);
-  //     // }
   //   } catch (e) {
-  //     // if (isEmit) emit(AddScheduleErrorState(e.toString()));
   //     emit(state.copyWith(loading: false));
+  //
   //     Fluttertoast.showToast(
   //         msg: 'حدث خطأ أثناء إضافة المواعيد\n${e.toString()}',
   //         toastLength: Toast.LENGTH_LONG,
@@ -728,9 +837,266 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   //         backgroundColor: Colors.red,
   //         textColor: Colors.white,
   //         fontSize: 16.0);
-  //     // }
   //   }
   // }
+//todo sh3ala bs na2s el schedulesids
+//   late Map<String, Map<dynamic, dynamic>> nonNullableDays = {};
+//   Future<void> addGroup(
+//     bool isEmit,
+//     BuildContext context, {
+//     required List<UserModel> selectedUsers,
+//     required List<UserModel> selectedCoaches,
+//     required Timestamp startTrainingTime,
+//     required Timestamp endTrainingTime,
+//     required String branch,
+//     Map<String, Map<dynamic, dynamic>>? times,
+//     String? maxUsers,
+//   }) async {
+//     emit(state.copyWith(loading: true));
+//     // late Map<String, Map<dynamic, dynamic>> nonNullableDays = {};
+//
+//     // Convert times to nonNullableDays
+//     for (var day in times!.keys) {
+//       if (times[day]!['start'] != null && times[day]!['end'] != null) {
+//         DateTime nearestDay = getNearestDayOfWeek(day);
+//         Timestamp nearestDayTimestamp = Timestamp.fromDate(nearestDay);
+//         nonNullableDays[day] = {
+//           'start': Timestamp.fromDate(DateTime(
+//               nearestDay.year,
+//               nearestDay.month,
+//               nearestDay.day,
+//               times[day]!['start'].hour,
+//               times[day]!['start'].minute)),
+//           'end': Timestamp.fromDate(DateTime(
+//               nearestDay.year,
+//               nearestDay.month,
+//               nearestDay.day,
+//               times[day]!['end'].hour,
+//               times[day]!['end'].minute)),
+//           'nearest_day': nearestDayTimestamp,
+//         };
+//       }
+//     }
+//
+//     // Get all non-null days
+//     List<String> days = nonNullableDays.keys.toList();
+//     //if days is empty or selectedUsers is empty or selectedCoaches is empty
+//     // or maxUsers is empty or branch is empty return error message
+//     if (days.isEmpty ||
+//         selectedUsers.isEmpty ||
+//         selectedCoaches.isEmpty ||
+//         maxUsers == null ||
+//         branch == '') {
+//       emit(state.copyWith(loading: false));
+//
+//       Fluttertoast.showToast(
+//           msg: 'يجب إدخال جميع البيانات المطلوبة',
+//           toastLength: Toast.LENGTH_LONG,
+//           gravity: ToastGravity.BOTTOM,
+//           timeInSecForIosWeb: 5,
+//           backgroundColor: Colors.red,
+//           textColor: Colors.white,
+//           fontSize: 16.0);
+//
+//       return;
+//     }
+//
+//     // Create a batched write
+//     WriteBatch batch = FirebaseFirestore.instance.batch();
+//
+//     try {
+//       // Add schedules to batch
+//       for (var day in days) {
+//         if (nonNullableDays.containsKey(day)) {
+//           Timestamp nearestDayTimestamp = nonNullableDays[day]!['nearest_day'];
+//
+//           DocumentReference scheduleRef = FirebaseFirestore.instance
+//               .collection('admins')
+//               .doc(FirebaseAuth.instance.currentUser!.uid)
+//               .collection('schedules')
+//               .doc(day)
+//               .collection('schedules')
+//               .doc();
+//
+//           batch.set(scheduleRef, {
+//             'start_time': nonNullableDays[day]!['start'],
+//             'end_time': nonNullableDays[day]!['end'],
+//             'date': day,
+//             'nearest_day': nearestDayTimestamp,
+//             'branch_id': branch,
+//             'usersList': [],
+//             'userIds': [],
+//             'max_users': maxUsers,
+//             'schedule_id': scheduleRef.id ?? '',
+//           });
+//
+//           // Add coaches to batch
+//           if (selectedCoaches != null && selectedCoaches.isNotEmpty) {
+//             for (var coach in selectedCoaches) {
+//               DocumentReference coachRef = FirebaseFirestore.instance
+//                   .collection('users')
+//                   .doc(coach.uId)
+//                   .collection('schedules')
+//                   .doc(scheduleRef.id);
+//
+//               batch.set(coachRef, {
+//                 'start_time': nonNullableDays[day]!['start'],
+//                 'end_time': nonNullableDays[day]!['end'],
+//                 'date': day,
+//                 'nearest_day': nearestDayTimestamp,
+//                 'branch_id': branch,
+//                 'pId': FirebaseAuth.instance.currentUser!.uid,
+//                 'max_users': maxUsers,
+//                 'schedule_id': scheduleRef.id ?? '',
+//               });
+//
+//               DocumentReference adminRef = FirebaseFirestore.instance
+//                   .collection('admins')
+//                   .doc(FirebaseAuth.instance.currentUser!.uid)
+//                   .collection('schedules')
+//                   .doc(day)
+//                   .collection('schedules')
+//                   .doc(scheduleRef.id)
+//                   .collection('users')
+//                   .doc(coach.uId);
+//
+//               batch.set(adminRef, {
+//                 'name': coach.name,
+//                 'uid': coach.uId,
+//                 'finished': false,
+//                 'role': 'coach',
+//               });
+//
+//               batch.update(scheduleRef, {
+//                 'coachList': FieldValue.arrayUnion([coach.name]),
+//                 'coachIds': FieldValue.arrayUnion([coach.uId]),
+//               });
+//
+//               DocumentReference coachScheduleRef = FirebaseFirestore.instance
+//                   .collection('users')
+//                   .doc(coach.uId)
+//                   .collection('schedules')
+//                   .doc(scheduleRef.id);
+//
+//               batch.set(coachScheduleRef, {
+//                 'start_time': nonNullableDays[day]!['start'],
+//                 'end_time': nonNullableDays[day]!['end'],
+//                 'date': day,
+//                 'nearest_day': nearestDayTimestamp,
+//                 'branch_id': branch,
+//                 'pId': FirebaseAuth.instance.currentUser!.uid,
+//                 'max_users': maxUsers,
+//                 'schedule_id': scheduleRef.id ?? '',
+//               });
+//             }
+//           }
+//
+//           // Add users to batch
+//           if (selectedUsers != null && selectedUsers.isNotEmpty) {
+//             for (var user in selectedUsers) {
+//               DocumentReference userRef = FirebaseFirestore.instance
+//                   .collection('users')
+//                   .doc(user.uId)
+//                   .collection('schedules')
+//                   .doc(scheduleRef.id);
+//
+//               batch.set(userRef, {
+//                 'start_time': nonNullableDays[day]!['start'],
+//                 'end_time': nonNullableDays[day]!['end'],
+//                 'date': day,
+//                 'nearest_day': nearestDayTimestamp,
+//                 'branch_id': branch,
+//                 'pId': FirebaseAuth.instance.currentUser!.uid,
+//                 'max_users': maxUsers,
+//                 'schedule_id': scheduleRef.id ?? '',
+//               });
+//
+//               DocumentReference adminRef = FirebaseFirestore.instance
+//                   .collection('admins')
+//                   .doc(FirebaseAuth.instance.currentUser!.uid)
+//                   .collection('schedules')
+//                   .doc(day)
+//                   .collection('schedules')
+//                   .doc(scheduleRef.id)
+//                   .collection('users')
+//                   .doc(user.uId);
+//
+//               batch.set(adminRef, {
+//                 'name': user.name,
+//                 'uid': user.uId,
+//                 'finished': false,
+//                 'role': 'user',
+//               });
+//
+//               batch.update(scheduleRef, {
+//                 'usersList': FieldValue.arrayUnion([user.name]),
+//                 'userIds': FieldValue.arrayUnion([user.uId]),
+//               });
+//
+//               DocumentReference userScheduleRef = FirebaseFirestore.instance
+//                   .collection('users')
+//                   .doc(user.uId)
+//                   .collection('schedules')
+//                   .doc(scheduleRef.id);
+//
+//               batch.set(userScheduleRef, {
+//                 'start_time': nonNullableDays[day]!['start'],
+//                 'end_time': nonNullableDays[day]!['end'],
+//                 'date': day,
+//                 'nearest_day': nearestDayTimestamp,
+//                 'branch_id': branch,
+//                 'pId': FirebaseAuth.instance.currentUser!.uid,
+//                 'schedule_id': scheduleRef.id ?? '',
+//                 'max_users': maxUsers,
+//               });
+//             }
+//           }
+//         }
+//       }
+//       //todo :fix branch is null
+//       DocumentReference branchRef = FirebaseFirestore.instance
+//           .collection('branches')
+//           .doc(branch)
+//           .collection('groups')
+//           .doc();
+//       batch.set(branchRef, {
+//         'name': branch,
+//         'max_users': maxUsers,
+//         'number_of_users': selectedUsers.length,
+//         'number_of_coaches': selectedCoaches.length,
+//         'pid': FirebaseAuth.instance.currentUser!.uid,
+//         'group_id': branchRef.id,
+//         //non nullable days as map
+//         'days': nonNullableDays,
+//        // 'schedules':
+//       });
+//
+//       // Commit the batched write
+//       await batch.commit();
+//
+//       emit(state.copyWith(loading: false));
+//
+//       Fluttertoast.showToast(
+//           msg: 'تم إضافة المواعيد بنجاح',
+//           toastLength: Toast.LENGTH_LONG,
+//           gravity: ToastGravity.BOTTOM,
+//           timeInSecForIosWeb: 5,
+//           backgroundColor: Colors.green,
+//           textColor: Colors.white,
+//           fontSize: 16.0);
+//     } catch (e) {
+//       emit(state.copyWith(loading: false));
+//
+//       Fluttertoast.showToast(
+//           msg: 'حدث خطأ أثناء إضافة المواعيد\n${e.toString()}',
+//           toastLength: Toast.LENGTH_LONG,
+//           gravity: ToastGravity.BOTTOM,
+//           timeInSecForIosWeb: 5,
+//           backgroundColor: Colors.red,
+//           textColor: Colors.white,
+//           fontSize: 16.0);
+//     }
+//   }
 
   DateTime getNearestDayOfWeek(String dayOfWeek) {
     // Get the current date

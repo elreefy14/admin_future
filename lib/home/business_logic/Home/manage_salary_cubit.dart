@@ -1582,8 +1582,10 @@ if (!isConnected) {
 
    //getBranches() {}
   List<BranchModel> branches = [];
-  void getBranches() {
-    //bool isConnected = checkInternetConnectivity();
+  Future<void> getBranches() async {
+    //print all branches now in loop
+    print('branches.length\n\n\n\n\n\n');
+    print(branches.length);
     emit(GetBranchesLoadingState());
     FirebaseFirestore.instance
         .collection('branches')
@@ -1592,6 +1594,8 @@ if (!isConnected) {
       value.docs.forEach((element) {
         branches.add(BranchModel.fromJson(element.data()));
       });
+      print('after branches.length\n\n\n\n\n\n');
+      print(branches.length);
       emit(GetBranchesSuccessState(
         branches,
       ));
@@ -1601,44 +1605,84 @@ if (!isConnected) {
     });
   }
 
-   deleteGroup({required String groupId, required String branchId}) {
-    bool isConnected = checkInternetConnectivity();
+
+  void deleteGroup({
+    required String groupId,
+    required String branchId,
+    required List<String> schedulesIds,
+    required List<String> schedulesDays,
+  }) async {
+   // bool isConnected = checkInternetConnectivity();
     emit(DeleteGroupLoadingState());
-    if (!isConnected) {
-      FirebaseFirestore.instance
-          .collection('branches')
-          .doc(branchId)
-          .collection('groups')
-          .doc(groupId)
-          .delete();
-      showToast(
-        state: ToastStates.ERROR,
-        msg: 'تم حذف المجموعة '
-            'سيتم تحديث البيانات عند توفر الإنترنت',
-      );
-      emit(DeleteGroupErrorState('لا يوجد اتصال بالإنترنت'));
-      return;
+
+     //if (!isConnected) {
+    //   FirebaseFirestore.instance
+    //       .collection('branches')
+    //       .doc(branchId)
+    //       .collection('groups')
+    //       .doc(groupId)
+    //       .delete();
+    //
+    //   showToast(
+    //     state: ToastStates.ERROR,
+    //     msg: 'Group deleted. Data will be updated when internet connection is available.',
+    //   );
+    //
+    //   emit(DeleteGroupErrorState('No internet connection'));
+    //   return;
+    // }
+
+    WriteBatch batch = FirebaseFirestore.instance.batch();
+
+    // Delete each schedule document in the batch
+    for (int i = 0; i < schedulesIds.length; i++) {
+      DocumentReference scheduleRef = FirebaseFirestore.instance
+          .collection('admins')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('schedules')
+          .doc(schedulesDays[i])
+          .collection('schedules')
+          .doc(schedulesIds[i]);
+
+
+      // Delete the subcollection of users inside the schedule
+      CollectionReference usersRef = scheduleRef.collection('users');
+      QuerySnapshot usersSnapshot = await usersRef.get();
+      List<DocumentSnapshot> usersDocs = usersSnapshot.docs;
+      for (DocumentSnapshot userDoc in usersDocs) {
+        batch.delete(userDoc.reference);
+      }
+
+      batch.delete(scheduleRef);
     }
-    FirebaseFirestore.instance
+
+    // Delete the group document in the batch
+    DocumentReference groupRef = FirebaseFirestore.instance
         .collection('branches')
         .doc(branchId)
         .collection('groups')
-        .doc(groupId)
-        .delete()
-        .then((value) {
+        .doc(groupId);
+
+    batch.delete(groupRef);
+
+    try {
+      // Commit the batch operation
+      await batch.commit();
+
       print('Group deleted');
 
-      //show toast message
+      // Show toast message
       showToast(
         state: ToastStates.SUCCESS,
-        msg: 'تم حذف المجموعة',
+        msg: 'Group deleted',
       );
+
       emit(DeleteGroupSuccessState());
-    }).catchError((error) {
+    } catch (error) {
       print('Failed to delete group: $error');
-      showToast(msg: 'فشل حذف المجموعة', state: ToastStates.ERROR);
+      showToast(msg: 'Failed to delete group', state: ToastStates.ERROR);
       emit(DeleteGroupErrorState(error.toString()));
-    });
+    }
   }
 
 //                     ManageSalaryCubit.get(context).deleteSchedule(
