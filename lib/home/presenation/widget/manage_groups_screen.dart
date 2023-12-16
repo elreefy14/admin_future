@@ -189,9 +189,26 @@ class ManageGroupsScreen extends StatelessWidget {
                                                         //selectedBranch
                                                         //print('${ManageSalaryCubit.get(context).schedules?[index].branchId}');
                                                         ManageAttendenceCubit.get(context).getAdminData();
-                                                        // Navigator.pushNamed(
-                                                        //   context,
-                                                        //AppRoutes.onboarding,
+                                                       // AppRoutes.manageGroups;
+                                                        //
+                                                        Navigator.pushNamed(
+                                                          context,
+                                                          AppRoutes.onboarding,
+                                                          arguments: {
+                                                            'isAdd': false,
+                                                            'branchId': group.name,
+                                                            'maxUsers': group.maxUsers,
+                                                            'days': group.days,
+                                                            'usersList': group.usersList,
+                                                            'coachList': group.coachList,
+                                                            'coachIds': group.coachIds,
+                                                            'userIds': group.userIds,
+                                                            'scheduleId': group.schedulesIds,
+                                                            'schedule_days': group.schedulesDays,
+                                                            'groupId': group.groupId,
+                                                          },
+                                                        );
+
 
                                                         // AppRoutes.addSchedule,
                                                         // arguments: {
@@ -204,10 +221,6 @@ class ManageGroupsScreen extends StatelessWidget {
                                                         //   'usersIds': usersIds,
                                                         // },
                                                         //);
-
-
-
-
                                                       },
                                                       text: 'تعديل',
                                                       options: FFButtonOptions(
@@ -275,12 +288,19 @@ class ManageGroupsScreen extends StatelessWidget {
                         Navigator.pushNamed(
                           context,
                           AppRoutes.onboarding,
-                          // AppRoutes.addSchedule,
-                          // arguments: {
-                          //   'toggle': true,
-                          //   'startTime': Timestamp.now(),
-                          //   'endTime': Timestamp.now(),
-                          // },
+                          arguments: {
+                            'isAdd': true,
+                            'branchId': ManageSalaryCubit.get(context).branches[ManageSalaryCubit.get(context).selectedBranchIndex??1].name,
+                            'maxUsers': '',
+                            'days': {},
+                            'usersList': [],
+                            'coachList': [],
+                            'coachIds': [],
+                            'userIds': [],
+                            'scheduleId': [],
+                            'schedule_days': [],
+                            'groupId': '',
+                          },
                         );
                       },
                       text: 'اضافة موعد ',
@@ -422,6 +442,17 @@ class GroupModel {
   final List<String> schedulesIds;
 //schedule_days
   final List<String> schedulesDays;
+  // 'usersList': FieldValue.arrayUnion([user.name]),
+  //                 'userIds': FieldValue.arrayUnion([user.uId]),
+  //         'schedule_ids': FieldValue.arrayUnion([scheduleRef.id]),
+  //               'schedule_days': FieldValue.arrayUnion([day]),
+//  'coachList': FieldValue.arrayUnion([coach.name]),
+//  'coachIds': FieldValue.arrayUnion([coach.uId]),
+  final List<String> coachIds;
+  final List<String> coachList;
+  final List<String> userIds;
+  final List<String> usersList;
+
 
   GroupModel({
     required this.days,
@@ -433,6 +464,12 @@ class GroupModel {
     required this.pid,
     required this.schedulesIds,
     required this.schedulesDays,
+    required this.coachIds,
+    required this.coachList,
+    required this.userIds,
+    required this.usersList,
+
+
   });
 
   factory GroupModel.fromJson(Map<String, dynamic> json) {
@@ -456,6 +493,16 @@ class GroupModel {
       pid: json['pid'],
       schedulesIds: json['schedule_ids']?.cast<String>() ?? [],
       schedulesDays: json['schedule_days']?.cast<String>() ?? [],
+      // 'usersList': FieldValue.arrayUnion([user.name]),
+      //                 'userIds': FieldValue.arrayUnion([user.uId]),
+      //         'schedule_ids': FieldValue.arrayUnion([scheduleRef.id]),
+      //               'schedule_days': FieldValue.arrayUnion([day]),
+//  'coachList': FieldValue.arrayUnion([coach.name]),
+//  'coachIds': FieldValue.arrayUnion([coach.uId]),
+      coachIds: json['coachIds']?.cast<String>() ?? [],
+      coachList: json['coachList']?.cast<String>() ?? [],
+      userIds: json['userIds']?.cast<String>() ?? [],
+      usersList: json['usersList']?.cast<String>() ?? [],
     );
   }
 
@@ -479,6 +526,11 @@ class GroupModel {
       'pid': pid,
       'schedule_ids': schedulesIds,
       'schedule_days': schedulesDays,
+      'coachIds': coachIds,
+      'coachList': coachList,
+      'userIds': userIds,
+      'usersList': usersList,
+
     };
   }
 }

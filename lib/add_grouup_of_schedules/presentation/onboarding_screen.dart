@@ -30,8 +30,11 @@ import 'package:admin_future/add_grouup_of_schedules/presentation/select_coaches
 
 class AddGroupCubit extends Cubit<AddGroupState> {
   var _searchController;
+  //final String updatedMaxUsers;
 
-  AddGroupCubit()
+  AddGroupCubit(
+      //this.updatedMaxUsers
+      )
       : super(AddGroupState(screens: [
           SelectCoachesScreen(
             isCoach: true,
@@ -39,8 +42,10 @@ class AddGroupCubit extends Cubit<AddGroupState> {
           SelectCoachesScreen(
             isCoach: false,
           ),
-          Screen2(),
-          SelectBranchScreen(),
+          TimeSelectionScreen(),
+          SelectBranchScreen(
+           // maxUsers: updatedMaxUsers,
+          ),
           InfoScreen()
         ]));
 
@@ -67,6 +72,11 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     'الخميس': {'start': null, 'end': null},
     'الجمعة': {'start': null, 'end': null},
   };
+  //function to update _times
+  void updateTimes(Map<String, Map<dynamic, dynamic>> times) {
+    _times.addAll(times);
+    emit(state.copyWith(times: _times));
+  }
 
   Map<String, Map<dynamic, dynamic>> get times => _times;
 
@@ -91,16 +101,22 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     // // 'error',
     // times: //call the times map from screen 2
     //     context.read<AddGroupCubit>().state.times,
-    // //TODO :fix this error
-    // // {
-    // //   'السبت': {'start': TimeOfDay.now(), 'end': TimeOfDay.now()},
-    // //  },
-    // maxUsers: context.read<AddGroupCubit>().state.maxUsers,
+    // //TODO : delete 
+    // //TODO : delete 
+    // //TODO : delete 
+    // //TODO : delete 
+    // //TODO : delete 
+    // //TODO : delete 
+    // //TODO : delete 
+    // //TODO : delete 
+    // //TODO : delete 
+    
     selectedCoaches = [];
     selectedUsers = [];
     selectedCoachesUids = [];
     selectedUsersUids = [];
-    maxUsers = null;
+    
+    // maxUsers = null;
     _times['السبت'] = {'start': null, 'end': null};
     _times['الأحد'] = {'start': null, 'end': null};
     _times['الاثنين'] = {'start': null, 'end': null};
@@ -236,6 +252,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   void nextScreen(
        BuildContext context,
   ) {
+    //delete keyBoard if it is open
     FocusScope.of(context).unfocus();
     int currentIndex = state.currentIndex;
     if (currentIndex < state.screens.length - 1) {
@@ -1132,6 +1149,14 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     _times[day]?['end'] = startTime.replacing(hour: startTime.hour + 1);
     emit(state.copyWith(times: _times));
   }
+  //update time3 which take Map<String, Map<dynamic, dynamic>>
+  void updateTime3(Map<String, Map<dynamic, dynamic>> times) {
+    //Get the day from the map and update the start and end time of the day
+    for (var day in times.keys) {
+      _times[day]?['start'] = times[day]!['start'];
+      _times[day]?['end'] = times[day]!['end'];
+    }
+  }
   // setState(() {
   //   if (widget.isCoach) {
   //     _selectedCoachesUids = users.map((e) => e.uId!).toList();
@@ -1247,8 +1272,53 @@ class AddGroupState {
 }
 
 class OnboardingScreen extends StatelessWidget {
+  final bool? isAdd;
+  final String? branchId;
+  final String? groupId;
+  final List<String>? schedule_days;
+  final List<String>? userIds;
+  final List<String>? scheduleId;
+  final List<String>? coachIds;
+  final List<String>? coachList;
+  final List<String>? usersList;
+  final Map<String, Map<dynamic, dynamic>>? days;
+  final String? maxUsers;
+
+  const OnboardingScreen(
+      {Key? key,
+    this.isAdd,
+    this.branchId,
+    this.groupId,
+    this.schedule_days,
+    this.userIds,
+    this.scheduleId,
+    this.coachIds,
+    this.coachList,
+    this.usersList,
+    this.days,
+    this.maxUsers}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    //if isAdd is false update data in the cubit
+  //  if (isAdd == true) {
+    //  context.read<AddGroupCubit>().updateSelectedBranch(branchId!);
+      ManageAttendenceCubit.get(context)
+          .updateSelectedBranch(branchId!);
+      context.read<AddGroupCubit>().updateTime3(days!);
+     // context.read<AddGroupCubit>().updateSelectedUsers(userIds!);
+     // context.read<AddGroupCubit>().updateSelectedCoaches(coachIds!);
+      print('days in onboarding screen $days');
+      print('branchId in onboarding screen $branchId');
+      print('groupId in onboarding screen $groupId');
+      print('schedule_days in onboarding screen $schedule_days');
+      print('userIds in onboarding screen $userIds');
+      print('scheduleId in onboarding screen $scheduleId');
+      print('coachIds in onboarding screen $coachIds');
+      print('coachList in onboarding screen $coachList');
+      print('usersList in onboarding screen $usersList');
+      print('maxUsers in onboarding screen $maxUsers');
+      context.read<AddGroupCubit>().updateMaxUsers(int.parse(maxUsers!));
+    //}
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
@@ -1578,7 +1648,7 @@ class OnboardingScreen extends StatelessWidget {
 }
 
 //assets/images/delete-2_svgrepo.com.svg
-class Screen2 extends StatelessWidget {
+class TimeSelectionScreen extends StatelessWidget {
   // static final Map<String, Map<dynamic, dynamic>> _times = {
   //   'السبت': {'start': null, 'end': null},
   //   'الأحد': {'start': null, 'end': null},
@@ -2049,136 +2119,149 @@ class SelectCoachesScreen extends StatelessWidget {
 }
 
 class SelectBranchScreen extends StatelessWidget {
+//intaialize the controller with the value of cubit maxUsers
+  final _formKey = GlobalKey<FormState>();
+  final String? maxUsers;
+  SelectBranchScreen({super.key, this.maxUsers});
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Align(
-          alignment: AlignmentDirectional.topEnd,
-          child: Text(
-            ':اقصى عدد للمتدربين',
-            //make it in arabic align right
+    final maxUsersController = TextEditingController(text: '${context.read<AddGroupCubit>().maxUsers}');
+  print('maxUsers::: ${context.read<AddGroupCubit>().maxUsers}\n\n\n\n');
+    return Form(
+      key: _formKey,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Align(
+            alignment: AlignmentDirectional.topEnd,
+            child: Text(
+              ':اقصى عدد للمتدربين',
+              //make it in arabic align right
 
-            textAlign: TextAlign.right,
-            style: TextStyle(
-              color: Color(0xFF333333),
-              fontSize: 14.sp,
-              fontFamily: 'IBM Plex Sans Arabic',
-              fontWeight: FontWeight.w400,
-              height: 0,
-            ),
-          ),
-        ),
-        SizedBox(height: 10),
-        Align(
-          alignment: AlignmentDirectional.topEnd,
-          child: Container(
-            width: 150.w,
-            height: 48.h,
-            //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            clipBehavior: Clip.antiAlias,
-            decoration: ShapeDecoration(
-              color: Color(0xFFF6F6F6),
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // Text(
-                //   // اقصى عدد
-                //   ':اقصى عدد',
-                //   style: TextStyle(
-                //     color: Color(0xFF666666),
-                //     fontSize: 16,
-                //     fontFamily: 'IBM Plex Sans Arabic',
-                //     fontWeight: FontWeight.w400,
-                //     height: 0,
-                //   ),
-                // ),
-                Flexible(
-                  child: TextFormField(
-                     onEditingComplete: () {
-      // Unfocus the text field when editing is complete
-      FocusScope.of(context).unfocus();
-    },
-                    //rtl
-                    textAlign: TextAlign.right,
-                    keyboardType: TextInputType.number,
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter a number';
-                      }
-                      return null;
-                    },
-                    onChanged: (value) {
-                      context
-                          .read<AddGroupCubit>()
-                          .updateMaxUsers(int.parse(value));
-                    },
-                    decoration: InputDecoration(
-                      hintText: ':اقصى عدد',
-                      border: OutlineInputBorder(),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            Text(
-              'مكان التدريب:',
               textAlign: TextAlign.right,
               style: TextStyle(
                 color: Color(0xFF333333),
-                fontSize: 16.sp,
+                fontSize: 14.sp,
                 fontFamily: 'IBM Plex Sans Arabic',
                 fontWeight: FontWeight.w400,
+                height: 0,
               ),
             ),
-          ],
-        ),
-        //SizedBox(height: 5.0.h),
-        // List<String> items = ['Item 1', 'Item 2', 'Item 3'];
+          ),
+          SizedBox(height: 10),
+          Align(
+            alignment: AlignmentDirectional.topEnd,
+            child: Container(
+              width: 150.w,
+              height: 48.h,
+              //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              clipBehavior: Clip.antiAlias,
+              decoration: ShapeDecoration(
+                color: Color(0xFFF6F6F6),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(4)),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  // Text(
+                  //   // اقصى عدد
+                  //   ':اقصى عدد',
+                  //   style: TextStyle(
+                  //     color: Color(0xFF666666),
+                  //     fontSize: 16,
+                  //     fontFamily: 'IBM Plex Sans Arabic',
+                  //     fontWeight: FontWeight.w400,
+                  //     height: 0,
+                  //   ),
+                  // ),
+                  Flexible(
+                    child: TextFormField(
+controller: maxUsersController ,
 
-        BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
-          builder: (context, state) {
-            return ManageAttendenceCubit.get(context).branches == null
-                ? const Center(child: CircularProgressIndicator())
-                : Container(
-                    height: 400.h,
-                    child: CheckboxListWidget(
-                      onBranchSelected: (branch) {
-                        // setState(() {
-                        //   print('selected branch: $branch');
-                        //   selectedBranch = branch;
-                        // });
-                        ManageAttendenceCubit.get(context)
-                            .updateSelectedBranch(branch);
+                       onEditingComplete: () {
+
+        // Unfocus the text field when editing is complete
+        FocusScope.of(context).unfocus();
+      },
+                      //rtl
+                      textAlign: TextAlign.right,
+                      keyboardType: TextInputType.number,
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a number';
+                        }
+                        return null;
                       },
-                      items: ManageAttendenceCubit.get(context).branches ?? [],
+                      onChanged: (value) {
+                        context
+                            .read<AddGroupCubit>()
+                            .updateMaxUsers(int.parse(value));
+                      },
+                      decoration: InputDecoration(
+                        hintText: //cubit maxUsers
+                            '${context.read<AddGroupCubit>().maxUsers}',
+                        border: OutlineInputBorder(),
+                      ),
                     ),
-                  );
-          },
-        ),
-        // ElevatedButton(
-        //   onPressed: () {
-        //     if (_formKey.currentState!.validate()) {
-        //       _formKey.currentState!.save();
-        //       // Do something with _maxUsers
-        //       Navigator.pop(context);
-        //     }
-        //   },
-        //   child: Text('Save'),
-        // ),
-      ],
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Text(
+                'مكان التدريب:',
+                textAlign: TextAlign.right,
+                style: TextStyle(
+                  color: Color(0xFF333333),
+                  fontSize: 16.sp,
+                  fontFamily: 'IBM Plex Sans Arabic',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ],
+          ),
+          //SizedBox(height: 5.0.h),
+          // List<String> items = ['Item 1', 'Item 2', 'Item 3'];
+
+          BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
+            builder: (context, state) {
+              return ManageAttendenceCubit.get(context).branches == null
+                  ? const Center(child: CircularProgressIndicator())
+                  : Container(
+                      height: 400.h,
+                      child: CheckboxListWidget(
+                        onBranchSelected: (branch) {
+                          // setState(() {
+                          //   print('selected branch: $branch');
+                          //   selectedBranch = branch;
+                          // });
+                          ManageAttendenceCubit.get(context)
+                              .updateSelectedBranch(branch);
+                        },
+                        items: ManageAttendenceCubit.get(context).branches ?? [],
+                      ),
+                    );
+            },
+          ),
+          // ElevatedButton(
+          //   onPressed: () {
+          //     if (_formKey.currentState!.validate()) {
+          //       _formKey.currentState!.save();
+          //       // Do something with _maxUsers
+          //       Navigator.pop(context);
+          //     }
+          //   },
+          //   child: Text('Save'),
+          // ),
+        ],
+      ),
     );
   }
 }

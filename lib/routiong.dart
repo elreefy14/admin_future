@@ -31,7 +31,19 @@ class RouteGenerator {
     switch (settings.name) {
       //OnboardingScreen
       case AppRoutes.onboarding:
-        return MaterialPageRoute(builder: (_) => OnboardingScreen());
+       args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(builder: (_) => OnboardingScreen(         // isAdd: (args as Map<String, dynamic>)?['isAdd'],
+          branchId: (args as Map<String, dynamic>)?['branchId'],
+          maxUsers: (args as Map<String, dynamic>)?['maxUsers'],
+          days: (args as Map<String, dynamic>)?['days'],
+          usersList: (args as Map<String, dynamic>)?['usersList'],
+          coachList: (args as Map<String, dynamic>)?['coachList'],
+          coachIds: (args as Map<String, dynamic>)?['coachIds'],
+          userIds: (args as Map<String, dynamic>)?['userIds'],
+          scheduleId: (args as Map<String, dynamic>)?['scheduleId'],
+          schedule_days: (args as Map<String, dynamic>)?['schedule_days'],
+          groupId: (args as Map<String, dynamic>)?['groupId'],
+        ));
       //AddSchedule
 //AddCoachScreen
 case AppRoutes.addCoach:
@@ -80,8 +92,38 @@ case AppRoutes.addCoach:
       case AppRoutes.manageCoaches:
         return MaterialPageRoute(builder: (_) => ManageCoaches());
         //ManageGroupsScreen
+    // Navigator.pushNamed(
+    //                                                            context,
+    //                                                         AppRoutes.manageGroups,
+    //                                                         arguments: {
+    //                                                           'isAdd': false,
+    //                                                           'branchId': group.name,
+    //                                                           'maxUsers': group.maxUsers,
+    //                                                           'days': group.days,
+    //                                                           'usersList': group.usersList,
+    //                                                           'coachList': group.coachList,
+    //                                                           'coachIds': group.coachIds,
+    //                                                           'userIds': group.userIds,
+    //                                                           'scheduleId': group.schedulesIds,
+    //                                                           'schedule_days': group.schedulesDays,
+    //                                                           'groupId': group.groupId,
+    //                                                         },
+    //                                                         );
       case AppRoutes.manageGroups:
-        return MaterialPageRoute(builder: (_) => ManageGroupsScreen());
+       // args = settings.arguments as Map<String, dynamic>;
+        return MaterialPageRoute(builder: (_) => ManageGroupsScreen(
+          // isAdd: (args as Map<String, dynamic>)?['isAdd'],
+          // branchId: (args as Map<String, dynamic>)?['branchId'],
+          // maxUsers: (args as Map<String, dynamic>)?['maxUsers'],
+          // days: (args as Map<String, dynamic>)?['days'],
+          // usersList: (args as Map<String, dynamic>)?['usersList'],
+          // coachList: (args as Map<String, dynamic>)?['coachList'],
+          // coachIds: (args as Map<String, dynamic>)?['coachIds'],
+          // userIds: (args as Map<String, dynamic>)?['userIds'],
+          // scheduleId: (args as Map<String, dynamic>)?['scheduleId'],
+          // schedule_days: (args as Map<String, dynamic>)?['schedule_days'],
+          // groupId: (args as Map<String, dynamic>)?['groupId'],
+        ));
 
     // manage Salary
       case AppRoutes.manageSalary:

@@ -109,7 +109,9 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => AddGroupCubit(),
+        BlocProvider(create: (context) => AddGroupCubit(
+
+        ),
         ),
         BlocProvider(create: (context) => SignUpCubit()
           //..addBranches()
@@ -152,7 +154,7 @@ class MyApp extends StatelessWidget {
                 //MyColors.primaryColor,
               ),
               initialRoute:
-             // mainRoute,
+              //mainRoute,
               AppRoutes.manageGroups,
               onGenerateRoute: RouteGenerator.generateRoute,
             ),
