@@ -1611,10 +1611,15 @@ if (!isConnected) {
     required String branchId,
     required List<String> schedulesIds,
     required List<String> schedulesDays,
+    context,
   }) async {
    // bool isConnected = checkInternetConnectivity();
     emit(DeleteGroupLoadingState());
-
+ //debug parameters
+    print('groupId: $groupId');
+    print('branchId: $branchId');
+    print('schedulesIds: $schedulesIds');
+    print('schedulesDays: $schedulesDays');
      //if (!isConnected) {
     //   FirebaseFirestore.instance
     //       .collection('branches')
@@ -1676,6 +1681,9 @@ if (!isConnected) {
         state: ToastStates.SUCCESS,
         msg: 'Group deleted',
       );
+      //pop
+      Navigator.pop(context);
+
 
       emit(DeleteGroupSuccessState());
     } catch (error) {

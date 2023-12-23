@@ -1358,7 +1358,7 @@ class OnboardingScreen extends StatelessWidget {
   final bool? isAdd;
   final String? branchId;
   final String? groupId;
-  final List<String>? schedule_days;
+  final List<String>? scheduleDays;
   final List<String>? userIds;
   final List<String>? scheduleId;
   final List<String>? coachIds;
@@ -1375,7 +1375,7 @@ class OnboardingScreen extends StatelessWidget {
     this.isAdd,
     this.branchId,
     this.groupId,
-    this.schedule_days,
+    this.scheduleDays,
     this.userIds,
     this.scheduleId,
     this.coachIds,
@@ -1388,6 +1388,20 @@ class OnboardingScreen extends StatelessWidget {
       }) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    // String? group_id = groupId;
+    // String? branch_id = branchId;
+    // String? max_users = maxUsers;
+    // List<String>? schedule_days = this.schedule_days;
+    // List<String>? user_ids = userIds;
+    // List<String>? schedule_ids = scheduleId;
+    // List<String>? coach_ids = coachIds;
+    // List<String>? coach_list = coachList;
+    // List<String>? users_list = usersList;
+    // List? users = this.users;
+    // //List<UserModel>? coaches = this.coaches;
+    // Map<String, Map<dynamic, dynamic>>? days = this.days;
+    // bool? isAdd = this.isAdd;
+    //
 
     return Builder(
       builder: (context) {
@@ -1571,7 +1585,72 @@ class OnboardingScreen extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      if (context.watch<AddGroupCubit>().state.currentIndex > 0)
+                      //if current index is 0 add button delete button and next button
+                      //add delete button like that
+                      // Container(
+                      //                                         height: 50.h,
+                      //                                         width: 150.w,
+                      //                                         decoration: BoxDecoration(
+                      //                                           color: Colors.blue,
+                      //                                           borderRadius: BorderRadius.circular(8),
+                      //                                         ),
+                      //                                         child: Align(
+                      //                                             alignment: AlignmentDirectional(0, 0),
+                      //                                             child: Text(
+                      //                                               'حفظ',
+                      //                                               textAlign: TextAlign.right,
+                      //                                               style: TextStyle(
+                      //                                                   color: Colors.white,
+                      //                                                   fontSize: 18.sp,
+                      //                                                   fontFamily: 'Montserrat-Arabic',
+                      //                                                   fontWeight: FontWeight.w400,
+                      //                                                   height: 0.08.h),
+                      //                                             )),
+                      //                                       );
+                      //when tap on it show dialog to confirm delete or not
+                      //if yes delete the group
+                      //if no do nothing
+                      if (context.watch<AddGroupCubit>().state.currentIndex == 0)
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 4.0.w,
+                          ),
+                          child: InkWell(
+                            onTap: () =>   ManageSalaryCubit.get(
+                                context)
+                                .deleteGroup(
+                              groupId: groupId ?? '',
+                              branchId: branchId ?? '',
+                              schedulesIds:
+                              scheduleId ?? [],
+                              schedulesDays:
+                              scheduleDays ?? [],
+                              context: context,
+                            ),
+                            child: Container(
+                              height: 50.h,
+                              width: 150.w,
+                              decoration: BoxDecoration(
+                                color: Colors.red,
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Align(
+                                  alignment: AlignmentDirectional(0, 0),
+                                  child: Text(
+                                    'حذف',
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.sp,
+                                      fontFamily: 'Montserrat-Arabic',
+                                      fontWeight: FontWeight.w400,
+                                      height: 0.08.h,
+                                    ),
+                                  )),
+                            ),
+                          ),
+                        ),
+                           if (context.watch<AddGroupCubit>().state.currentIndex > 0)
                         Padding(
                           padding: EdgeInsets.symmetric(
                             horizontal: 4.0.w,

@@ -1259,6 +1259,7 @@ Future<void> addGroup(
         .collection('branches')
         .doc(branchId)
         .collection('groups')
+    //todo change this to group id
         .doc('p0sGJt5s8Bv5opkP8ny9')
         .get()
         .then((docSnapshot) {
@@ -1294,7 +1295,7 @@ Future<void> addGroup(
 //use group Model to get data from firebase 
 //use fromJson to convert data from firebase to group model
       GroupModel group = GroupModel.fromJson(docSnapshot.data() as Map<String, dynamic>);
-        Map<String, dynamic> groupData = docSnapshot.data() as Map<String, dynamic>;
+      //  Map<String, dynamic> groupData = docSnapshot.data() as Map<String, dynamic>;
         context.read<AddGroupCubit>().updateSelectedUsersAndCoachesAndTimesAndBranchAndMaxUsers(
             selectedUsers: group.users,
             selectedOption: 'تعديل',
@@ -1305,32 +1306,35 @@ Future<void> addGroup(
             selectedCoaches: group.coaches,
         //    selectedDays: groupData['days']
         );
-
+//debug parameters schedule id
+        print('scheduleId: ${group.schedulesIds}');
+        print('scheduleDay in ddelete : ${group.schedulesDays}');
         Navigator.pushNamed(
           context,
           AppRoutes.onboarding,
           arguments: {
             'isAdd': false,
             'branchId': branchId,
-            'maxUsers': groupData['max_users'],
- //   'days': groupData['days'],
-   //             'usersList':
-    //                groupData['usersList'],
-     //          'coachList':
-      //              groupData['coachList'],
-   //              'coachIds':
-   //                  groupData['coachIds'],
-   //              'userIds':
-   //                  groupData['userIds'],
-   //               'scheduleId':
-   //                  groupData['schedule_ids'],
-   //                'schedule_days':
-   //                  groupData['schedule_days'],
-   //               'groupId':
-   //                  groupData['group_id'],
+            'maxUsers': group.maxUsers,
+    'days': group.days,
+                'usersList':
+                    group.usersList,
+              'coachList':
+                    group.coachList,
+                'coachIds':
+                    group.coachIds,
+                'userIds':
+                    group.userIds,
+                 'scheduleId':
+                    group.schedulesIds,
+                 'scheduleDays':
+                    group.schedulesDays,
+                 'groupId':
+                    group.groupId,
                  'users':
-                    groupData['users'],
-            'coaches': groupData['coaches'],
+                    group.users,
+            'coaches':
+                    group.coaches,
           },
         );
       }

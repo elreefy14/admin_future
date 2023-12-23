@@ -61,7 +61,7 @@ class RouteGenerator {
           isAdd: (args as Map<String, dynamic>)?['isAdd'],
           branchId: (args as Map<String, dynamic>)?['branchId'],
           groupId: (args as Map<String, dynamic>)?['groupId'],
-          schedule_days: (args as Map<String, dynamic>)?['schedule_days'],
+          scheduleDays: (args as Map<String, dynamic>)?['scheduleDays'],
           userIds: (args as Map<String, dynamic>)?['userIds'],
           scheduleId: (args as Map<String, dynamic>)?['scheduleId'],
           coachIds: (args as Map<String, dynamic>)?['coachIds'],
