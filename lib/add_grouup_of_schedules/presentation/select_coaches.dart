@@ -2432,6 +2432,7 @@ class ShowCoachesInDialog extends StatelessWidget {
             ),
           ],
         ):
+            //edit or add dialog list
         Dialog(
           child: Column(
             mainAxisSize: MainAxisSize.min,

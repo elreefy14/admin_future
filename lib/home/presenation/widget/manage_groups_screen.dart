@@ -20,324 +20,417 @@ import '../../../add_grouup_of_schedules/presentation/onboarding_screen.dart';
 import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
 import '../../../core/flutter_flow/flutter_flow_widgets.dart';
+import '../../../registeration/data/userModel.dart';
 import '../../business_logic/Home/manage_salary_cubit.dart';
 import '../../data/schedules.dart';
+
 class ManageGroupsScreen extends StatelessWidget {
   const ManageGroupsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-      future: ManageSalaryCubit.get(context).getBranches(),
-       builder: (context, snapshot) {
-        return Scaffold(
-          appBar: AppBar(
-            backgroundColor: Colors.white,
-            shadowColor: Colors.transparent,
-            leading: InkWell(
-              onTap: () async {
-                Navigator.pop(context);
-              },
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.asset(
-                  'assets/images/back.png',
-                  width: 50.w,
-                  height: 50.h,
-                  fit: BoxFit.none,
+        future: ManageSalaryCubit.get(context).getBranches(),
+        builder: (context, snapshot) {
+          return Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.white,
+              shadowColor: Colors.transparent,
+              leading: InkWell(
+                onTap: () async {
+                  Navigator.pop(context);
+                },
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(8),
+                  child: Image.asset(
+                    'assets/images/back.png',
+                    width: 50.w,
+                    height: 50.h,
+                    fit: BoxFit.none,
+                  ),
                 ),
               ),
             ),
-          ),
-          // key: scaffoldKey,
-          backgroundColor: Colors.white,
-          body: SafeArea(
-            top: true,
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
-                      mainAxisSize: MainAxisSize.max,
-                      children: [],
-                    ),
+            // key: scaffoldKey,
+            backgroundColor: Colors.white,
+            body: SafeArea(
+              top: true,
+              child: Column(
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.max,
+                        children: [],
+                      ),
 //52
-                    SizedBox(height: 5.h),
-                    Text(
-                      'ادارة المجموعات',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Color(0xFF333333),
-                        fontSize: 32.sp,
-                        fontFamily: 'Montserrat-Arabic',
-                        fontWeight: FontWeight.w400,
-                        height: 0.03.h,
+                      SizedBox(height: 5.h),
+                      Text(
+                        'ادارة المجموعات',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: Color(0xFF333333),
+                          fontSize: 32.sp,
+                          fontFamily: 'Montserrat-Arabic',
+                          fontWeight: FontWeight.w400,
+                          height: 0.03.h,
+                        ),
                       ),
-                    ),
 //65
-                    SizedBox(height: 0.h),
-                    // ScheduleDaysList(),
-                    BranchList(),
-                    Container(
-                      height: 400.h,
-                      child: SingleChildScrollView(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Divider(
-                              thickness: 2,
-                              color: Color(0xFFF4F4F4),
-                            ),
-                            Column(
-                              mainAxisSize: MainAxisSize.max,
-                              children: [
-                                BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
-                                  builder: (context, state) {
-                                    return //if branch is null return empty container
-                                      ManageSalaryCubit.get(context).branches.isEmpty
-                                          ? Container()
-                                          :
-                                      FirestoreListView(query:
-                                    FirebaseFirestore.instance
-                                        .collection('branches').
-                                    doc(ManageSalaryCubit.get(context).branches[ManageSalaryCubit.get(context).selectedBranchIndex??1].name)
-                                        .collection('groups'),
-                                      pageSize: 8,
-                                      cacheExtent: 500,
-                                      scrollDirection: Axis.vertical,
-                                      shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
-                                      itemBuilder: (context, doc)
-                                      {
-                                        final data = doc.data() as Map<String, dynamic>;
-                                        final group = GroupModel.fromJson(data);
-                                        var days = group.days.entries.toList();
-                                        return Container(
-                                          width: 350.w,
-                                          //  height: 200.h,
-                                          color: Colors.purpleAccent,
-                                          child: ListView.separated(
-                                            separatorBuilder: (context, index) {
-                                              return Divider(
-                                                thickness: 0,
-                                                color: Color(0xFFF4F4F4),
-                                              );
-                                            },
-                                            physics: NeverScrollableScrollPhysics(),
-                                            shrinkWrap: true,
-                                            cacheExtent: 100,
-                                            scrollDirection: Axis.vertical,
-                                            itemCount: days.length,
-                                            itemBuilder: (context, index) {
-                                              String day = days[index].key;
-                                              var start = days[index].value['start'];
-                                              //    Timestamp timestamp = days[index].value;
-                                              //  DateTime dateTime = timestamp.toDate();
-                                              return ListTile(
-                                                leading: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  children: [
-                                                    FFButtonWidget(
-                                                      onPressed: () {
-                                                        print('Delete button pressed ...');
-                                                        // ManageSalaryCubit.get(context).deleteSchedule(
-                                                        //   coachesIds: coachesIds?.cast<String>() ?? [],
-                                                        //   usersIds: usersIds?.cast<String>() ?? [],
-                                                        //   scheduleId: scheduleId,
-                                                        //   day: day,
-                                                        // );
-                                                        ManageSalaryCubit.get(context).deleteGroup(
-                                                          groupId: group.groupId,
-                                                          branchId: group.name,
-                                                          schedulesIds: group.schedulesIds,
-                                                          schedulesDays:group.schedulesDays,
-                                                        );
+                      SizedBox(height: 0.h),
+                      // ScheduleDaysList(),
+                      BranchList(),
+                      Container(
+                        height: 400.h,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Divider(
+                                thickness: 2,
+                                color: Color(0xFFF4F4F4),
+                              ),
+                              Column(
+                                mainAxisSize: MainAxisSize.max,
+                                children: [
+                                  BlocBuilder<ManageSalaryCubit,
+                                      ManageSalaryState>(
+                                    builder: (context, state) {
+                                      return //if branch is null return empty container
+                                          ManageSalaryCubit.get(context)
+                                                  .branches
+                                                  .isEmpty
+                                              ? Container()
+                                              : FirestoreListView(
+                                                  query: FirebaseFirestore
+                                                      .instance
+                                                      .collection('branches')
+                                                      .doc(ManageSalaryCubit
+                                                              .get(context)
+                                                          .branches[ManageSalaryCubit
+                                                                      .get(
+                                                                          context)
+                                                                  .selectedBranchIndex ??
+                                                              1]
+                                                          .name)
+                                                      .collection('groups'),
+                                                  pageSize: 8,
+                                                  cacheExtent: 500,
+                                                  scrollDirection:
+                                                      Axis.vertical,
+                                                  shrinkWrap: true,
+                                                  physics:
+                                                      NeverScrollableScrollPhysics(),
+                                                  itemBuilder: (context, doc) {
+                                                    final data = doc.data()
+                                                        as Map<String, dynamic>;
+                                                    final group =
+                                                        GroupModel.fromJson(
+                                                            data);
+                                                    var days = group
+                                                        .days.entries
+                                                        .toList();
+                                                    return Container(
+                                                      width: 350.w,
+                                                      //  height: 200.h,
+                                                      color:
+                                                          Colors.purpleAccent,
+                                                      child: ListView.separated(
+                                                        separatorBuilder:
+                                                            (context, index) {
+                                                          return Divider(
+                                                            thickness: 0,
+                                                            color: Color(
+                                                                0xFFF4F4F4),
+                                                          );
+                                                        },
+                                                        physics:
+                                                            NeverScrollableScrollPhysics(),
+                                                        shrinkWrap: true,
+                                                        cacheExtent: 100,
+                                                        scrollDirection:
+                                                            Axis.vertical,
+                                                        itemCount: days.length,
+                                                        itemBuilder:
+                                                            (context, index) {
+                                                          String day =
+                                                              days[index].key;
+                                                          var start =
+                                                              days[index].value[
+                                                                  'start'];
+                                                          //    Timestamp timestamp = days[index].value;
+                                                          //  DateTime dateTime = timestamp.toDate();
+                                                          return ListTile(
+                                                            leading: Row(
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                FFButtonWidget(
+                                                                  onPressed:
+                                                                      () {
+                                                                    print(
+                                                                        'Delete button pressed ...');
+                                                                    // ManageSalaryCubit.get(context).deleteSchedule(
+                                                                    //   coachesIds: coachesIds?.cast<String>() ?? [],
+                                                                    //   usersIds: usersIds?.cast<String>() ?? [],
+                                                                    //   scheduleId: scheduleId,
+                                                                    //   day: day,
+                                                                    // );
+                                                                    ManageSalaryCubit.get(
+                                                                            context)
+                                                                        .deleteGroup(
+                                                                      groupId: group
+                                                                          .groupId,
+                                                                      branchId:
+                                                                          group
+                                                                              .name,
+                                                                      schedulesIds:
+                                                                          group
+                                                                              .schedulesIds,
+                                                                      schedulesDays:
+                                                                          group
+                                                                              .schedulesDays,
+                                                                    );
+                                                                  },
+                                                                  text: 'حذف',
+                                                                  options:
+                                                                      FFButtonOptions(
+                                                                    width: 50.w,
+                                                                    height:
+                                                                        40.h,
+                                                                    padding: EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            5,
+                                                                            0,
+                                                                            5,
+                                                                            0),
+                                                                    iconPadding:
+                                                                        EdgeInsetsDirectional.fromSTEB(
+                                                                            0,
+                                                                            0,
+                                                                            0,
+                                                                            0),
+                                                                    color: Colors
+                                                                        .red,
+                                                                    textStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .titleSmall
+                                                                        .override(
+                                                                          fontFamily:
+                                                                              'Readex Pro',
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontSize:
+                                                                              12.sp,
+                                                                        ),
+                                                                    elevation:
+                                                                        3,
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      color: Colors
+                                                                          .transparent,
+                                                                      width: 1,
+                                                                    ),
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(8),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(
+                                                                    width:
+                                                                        10.w),
+                                                                FFButtonWidget(
+                                                                  onPressed:
+                                                                      () {
+                                                                    //
+                                                                    // ManageAttendenceCubit.get(context).selectedCoaches = usersList?.cast<String>() ?? [];
+                                                                    // ManageAttendenceCubit.get(context).selectedDays = [day];
+                                                                    // ManageAttendenceCubit.get(context).startTime = statrTime;
+                                                                    // ManageAttendenceCubit.get(context).endTime = endTime;
+                                                                    // //selectedBranch
+                                                                    // ManageAttendenceCubit.get(context).selectedBranch = schedule.branchId ?? '';
+                                                                    //selectedBranch
+                                                                    //print('${ManageSalaryCubit.get(context).schedules?[index].branchId}');
+                                                                    ManageAttendenceCubit.get(
+                                                                            context)
+                                                                        .getAdminData();
+                                                                    // updateSelectedUsersAndCoachesAndTimesAndBranchAndMaxUsers
 
-                                                      },
-                                                      text: 'حذف',
-                                                      options: FFButtonOptions(
-                                                        width: 50.w,
-                                                        height: 40.h,
-                                                        padding: EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
-                                                        iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                                                        color: Colors.red,
-                                                        textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                                          fontFamily: 'Readex Pro',
-                                                          color: Colors.white,
-                                                          fontSize: 12.sp,
-                                                        ),
-                                                        elevation: 3,
-                                                        borderSide: BorderSide(
-                                                          color: Colors.transparent,
-                                                          width: 1,
-                                                        ),
-                                                        borderRadius: BorderRadius.circular(8),
+                                                                    Navigator
+                                                                        .pushNamed(
+                                                                      context,
+                                                                      AppRoutes
+                                                                          .onboarding,
+                                                                      arguments: {
+                                                                        'isAdd':
+                                                                            false,
+                                                                        'branchId':
+                                                                            group.name,
+                                                                        'maxUsers':
+                                                                            group.maxUsers,
+                                                                        'days':
+                                                                            group.days,
+                                                                        'usersList':
+                                                                            group.usersList,
+                                                                        'coachList':
+                                                                            group.coachList,
+                                                                        'coachIds':
+                                                                            group.coachIds,
+                                                                        'userIds':
+                                                                            group.userIds,
+                                                                        'scheduleId':
+                                                                            group.schedulesIds,
+                                                                        'schedule_days':
+                                                                            group.schedulesDays,
+                                                                        'groupId':
+                                                                            group.groupId,
+                                                                        'users':
+                                                                            group.users,
+
+                                                                        // 'coaches': group.coaches,
+                                                                      },
+                                                                    );
+                                                                  },
+                                                                  text: 'تعديل',
+                                                                  options:
+                                                                      FFButtonOptions(
+                                                                    width: 50.w,
+                                                                    height:
+                                                                        40.h,
+                                                                    padding: EdgeInsetsDirectional
+                                                                        .fromSTEB(
+                                                                            5,
+                                                                            0,
+                                                                            5,
+                                                                            0),
+                                                                    iconPadding:
+                                                                        EdgeInsetsDirectional.fromSTEB(
+                                                                            0,
+                                                                            0,
+                                                                            0,
+                                                                            0),
+                                                                    color: Colors
+                                                                        .blue,
+                                                                    textStyle: FlutterFlowTheme.of(
+                                                                            context)
+                                                                        .titleSmall
+                                                                        .override(
+                                                                          fontFamily:
+                                                                              'Readex Pro',
+                                                                          color:
+                                                                              Colors.white,
+                                                                          fontSize:
+                                                                              12.sp,
+                                                                        ),
+                                                                    elevation:
+                                                                        3,
+                                                                    borderSide:
+                                                                        BorderSide(
+                                                                      color: Colors
+                                                                          .transparent,
+                                                                      width: 1,
+                                                                    ),
+                                                                    borderRadius:
+                                                                        BorderRadius
+                                                                            .circular(8),
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            title: Text(day),
+                                                            subtitle: Text(
+                                                              //start.toString()),
+
+                                                              //convert start time which is timestamp to get hr like that
+                                                              //'${ManageAttendenceCubit.get(context).startTime != null ? (ManageAttendenceCubit.get(context).startTime!.toDate().hour > 12 ? ManageAttendenceCubit.get(context).startTime!.toDate().hour - 12 : ManageAttendenceCubit.get(context).startTime!.toDate().hour) : 11}:${ManageAttendenceCubit.get(context).startTime?.toDate().minute.toString().padLeft(2, '0')}${ManageAttendenceCubit.get(context).startTime != null ? (ManageAttendenceCubit.get(context).startTime!.toDate().hour >= 12 ? 'م' : 'ص') : 'ص'}',
+                                                              '${start!.toDate().hour > 12 ? start.toDate().hour - 12 : start.toDate().hour}:${start.toDate().minute.toString().padLeft(2, '0')}${start.toDate().hour >= 12 ? 'م' : 'ص'}',
+                                                            ),
+                                                            //    subtitle: Text(dateTime.toString()),
+                                                          );
+                                                        },
                                                       ),
-                                                    ),
-                                                    SizedBox(width: 10.w),
-                                                    FFButtonWidget(
-                                                      onPressed: () {
-                                                        //
-                                                        // ManageAttendenceCubit.get(context).selectedCoaches = usersList?.cast<String>() ?? [];
-                                                        // ManageAttendenceCubit.get(context).selectedDays = [day];
-                                                        // ManageAttendenceCubit.get(context).startTime = statrTime;
-                                                        // ManageAttendenceCubit.get(context).endTime = endTime;
-                                                        // //selectedBranch
-                                                        // ManageAttendenceCubit.get(context).selectedBranch = schedule.branchId ?? '';
-                                                        //selectedBranch
-                                                        //print('${ManageSalaryCubit.get(context).schedules?[index].branchId}');
-                                                        ManageAttendenceCubit.get(context).getAdminData();
-                                                       // AppRoutes.manageGroups;
-                                                        //
-                                                        Navigator.pushNamed(
-                                                          context,
-                                                          AppRoutes.onboarding,
-                                                          arguments: {
-                                                            'isAdd': false,
-                                                            'branchId': group.name,
-                                                            'maxUsers': group.maxUsers,
-                                                            'days': group.days,
-                                                            'usersList': group.usersList,
-                                                            'coachList': group.coachList,
-                                                            'coachIds': group.coachIds,
-                                                            'userIds': group.userIds,
-                                                            'scheduleId': group.schedulesIds,
-                                                            'schedule_days': group.schedulesDays,
-                                                            'groupId': group.groupId,
-                                                          },
-                                                        );
-
-
-                                                        // AppRoutes.addSchedule,
-                                                        // arguments: {
-                                                        //   'toggle': false,
-                                                        //   'startTime': statrTime,
-                                                        //   'endTime': endTime,
-                                                        //   'date': day,
-                                                        //   'usersList': usersList,
-                                                        //   'scheduleId': scheduleId,
-                                                        //   'usersIds': usersIds,
-                                                        // },
-                                                        //);
-                                                      },
-                                                      text: 'تعديل',
-                                                      options: FFButtonOptions(
-                                                        width: 50.w,
-                                                        height: 40.h,
-                                                        padding: EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
-                                                        iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                                                        color: Colors.blue,
-                                                        textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                                          fontFamily: 'Readex Pro',
-                                                          color: Colors.white,
-                                                          fontSize: 12.sp,
-                                                        ),
-                                                        elevation: 3,
-                                                        borderSide: BorderSide(
-                                                          color: Colors.transparent,
-                                                          width: 1,
-                                                        ),
-                                                        borderRadius: BorderRadius.circular(8),
-                                                      ),
-                                                    ),
-
-
-                                                  ],
-                                                ),
-                                                title: Text(day),
-                                                subtitle: Text(//start.toString()),
-
-                                                  //convert start time which is timestamp to get hr like that
-                                                  //'${ManageAttendenceCubit.get(context).startTime != null ? (ManageAttendenceCubit.get(context).startTime!.toDate().hour > 12 ? ManageAttendenceCubit.get(context).startTime!.toDate().hour - 12 : ManageAttendenceCubit.get(context).startTime!.toDate().hour) : 11}:${ManageAttendenceCubit.get(context).startTime?.toDate().minute.toString().padLeft(2, '0')}${ManageAttendenceCubit.get(context).startTime != null ? (ManageAttendenceCubit.get(context).startTime!.toDate().hour >= 12 ? 'م' : 'ص') : 'ص'}',
-                                                  '${start!.toDate().hour > 12 ? start.toDate().hour - 12 : start.toDate().hour}:${start.toDate().minute.toString().padLeft(2, '0')}${start.toDate().hour >= 12 ? 'م' : 'ص'}',
-                                                ),
-                                                //    subtitle: Text(dateTime.toString()),
-                                              );
-                                            },
-                                          ),
-                                        );
-                                      },
-                                      //  itemCount: ManageSalaryCubit
-                                      //      .get(context)
-                                      //      .schedules
-                                      //      ?.length ?? 0,
-                                    );
-                                  },
-                                ),
-                              ],
-                            ),
-                            Divider(
-                              thickness: 2,
-                              color: Color(0xFFF4F4F4),
-                            ),
-                          ],
+                                                    );
+                                                  },
+                                                  //  itemCount: ManageSalaryCubit
+                                                  //      .get(context)
+                                                  //      .schedules
+                                                  //      ?.length ?? 0,
+                                                );
+                                    },
+                                  ),
+                                ],
+                              ),
+                              Divider(
+                                thickness: 2,
+                                color: Color(0xFFF4F4F4),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                    FFButtonWidget(
-                      onPressed: () {
-                        //  ManageAttendenceCubit.get(context).selectedCoaches = [];
-                        //  ManageAttendenceCubit.get(context).selectedDays = [];
-                        //  ManageAttendenceCubit.get(context).startTime = Timestamp.now();
-                        //  ManageAttendenceCubit.get(context).endTime = Timestamp.now();
-                        final addGroupCubit = context.read<AddGroupCubit>();
-                        addGroupCubit.initState(context);
-                        ManageAttendenceCubit.get(context).getAdminData();
-                        Navigator.pushNamed(
-                          context,
-                          AppRoutes.onboarding,
-                          arguments: {
-                            'isAdd': true,
-                            'branchId': ManageSalaryCubit.get(context).branches[ManageSalaryCubit.get(context).selectedBranchIndex??1].name,
-                            'maxUsers': '',
-                            'days': {},
-                            'usersList': [],
-                            'coachList': [],
-                            'coachIds': [],
-                            'userIds': [],
-                            'scheduleId': [],
-                            'schedule_days': [],
-                            'groupId': '',
-                          },
-                        );
-                      },
-                      text: 'اضافة موعد ',
-                      options: FFButtonOptions(
-                        height: 40.h,
-                        padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                        iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                        color: Color(0xFF198CE3),
-                        textStyle:
-                        FlutterFlowTheme
-                            .of(context)
-                            .titleSmall
-                            .override(
-                          fontFamily: 'Readex Pro',
-                          color: Colors.white,
-                          fontSize: 12.sp,
+                      FFButtonWidget(
+                        onPressed: () {
+                          //  ManageAttendenceCubit.get(context).selectedCoaches = [];
+                          //  ManageAttendenceCubit.get(context).selectedDays = [];
+                          //  ManageAttendenceCubit.get(context).startTime = Timestamp.now();
+                          //  ManageAttendenceCubit.get(context).endTime = Timestamp.now();
+                          final addGroupCubit = context.read<AddGroupCubit>();
+                          addGroupCubit.initState(context);
+                          ManageAttendenceCubit.get(context).getAdminData();
+                          Navigator.pushNamed(
+                            context,
+                            AppRoutes.onboarding,
+                            arguments: {
+                              'isAdd': true,
+                              'branchId': ManageSalaryCubit.get(context)
+                                  .branches[ManageSalaryCubit.get(context)
+                                          .selectedBranchIndex ??
+                                      1]
+                                  .name,
+                              'maxUsers': '',
+                              // 'days': {},
+                              //   'usersList': [],
+                              //    'coachList': [],
+                              //    'coachIds': [],
+                              //   'userIds': [],
+                              //   'scheduleId': [],
+                              //    'schedule_days': [],
+                              'groupId': '',
+                            },
+                          );
+                        },
+                        text: 'اضافة موعد ',
+                        options: FFButtonOptions(
+                          height: 40.h,
+                          padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
+                          iconPadding:
+                              EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                          color: Color(0xFF198CE3),
+                          textStyle:
+                              FlutterFlowTheme.of(context).titleSmall.override(
+                                    fontFamily: 'Readex Pro',
+                                    color: Colors.white,
+                                    fontSize: 12.sp,
+                                  ),
+                          elevation: 3,
+                          borderSide: BorderSide(
+                            color: Colors.transparent,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
                         ),
-                        elevation: 3,
-                        borderSide: BorderSide(
-                          color: Colors.transparent,
-                          width: 1,
-                        ),
-                        borderRadius: BorderRadius.circular(8),
                       ),
-                    ),
-                    //SizedBox(height: 20.h),
-                  ].divide(SizedBox(height: 30)),
-
-                ),
-
-              ],
+                      //SizedBox(height: 20.h),
+                    ].divide(SizedBox(height: 30)),
+                  ),
+                ],
+              ),
             ),
-          ),
-        );
-
-      }
-    );
+          );
+        });
   }
 }
 
@@ -348,7 +441,7 @@ class BranchList extends StatelessWidget {
   Widget build(BuildContext context) {
     // Call the function to get branches
     final manageSalaryCubit = ManageSalaryCubit.get(context);
-   // manageSalaryCubit.getBranches();
+    // manageSalaryCubit.getBranches();
 
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -392,12 +485,13 @@ class BranchList extends StatelessWidget {
                       child: Text(
                         branch.name ?? '',
                         style: FlutterFlowTheme.of(context).bodyMedium.override(
-                          fontFamily: 'Readex Pro',
-                          color: manageSalaryCubit.selectedBranchIndex == index
-                              ? Color(0xFFF4F4F4)
-                              : Colors.black,
-                          fontSize: 14.sp,
-                        ),
+                              fontFamily: 'Readex Pro',
+                              color:
+                                  manageSalaryCubit.selectedBranchIndex == index
+                                      ? Color(0xFFF4F4F4)
+                                      : Colors.black,
+                              fontSize: 14.sp,
+                            ),
                       ),
                     ),
                   ),
@@ -413,7 +507,6 @@ class BranchList extends StatelessWidget {
 
 class BranchModel {
   String? name;
-
 
   BranchModel({
     this.name,
@@ -438,10 +531,13 @@ class GroupModel {
   final int numberOfCoaches;
   final int numberOfUsers;
   final String pid;
+
   //schedule_ids
   final List<String> schedulesIds;
+
 //schedule_days
   final List<String> schedulesDays;
+
   // 'usersList': FieldValue.arrayUnion([user.name]),
   //                 'userIds': FieldValue.arrayUnion([user.uId]),
   //         'schedule_ids': FieldValue.arrayUnion([scheduleRef.id]),
@@ -452,7 +548,8 @@ class GroupModel {
   final List<String> coachList;
   final List<String> userIds;
   final List<String> usersList;
-
+  final List<UserModel> users;
+  final List<UserModel> coaches;
 
   GroupModel({
     required this.days,
@@ -468,8 +565,8 @@ class GroupModel {
     required this.coachList,
     required this.userIds,
     required this.usersList,
-
-
+    required this.users,
+    required this.coaches,
   });
 
   factory GroupModel.fromJson(Map<String, dynamic> json) {
@@ -478,8 +575,8 @@ class GroupModel {
 
     daysJson.forEach((key, value) {
       days[key] = {
-        'start': value['start'] ,
-        'end': value['end'] ,
+        'start': value['start'],
+        'end': value['end'],
       };
     });
 
@@ -503,6 +600,14 @@ class GroupModel {
       coachList: json['coachList']?.cast<String>() ?? [],
       userIds: json['userIds']?.cast<String>() ?? [],
       usersList: json['usersList']?.cast<String>() ?? [],
+      users: (json['users'] as List<dynamic>?)
+              ?.map((json) => UserModel.fromJson(json))
+              .toList() ??
+          [],
+      coaches: (json['coaches'] as List<dynamic>?)
+              ?.map((json) => UserModel.fromJson(json))
+              .toList() ??
+          [],
     );
   }
 
@@ -530,7 +635,8 @@ class GroupModel {
       'coachList': coachList,
       'userIds': userIds,
       'usersList': usersList,
-
+      'users': users,
+      'coaches': coaches,
     };
   }
 }

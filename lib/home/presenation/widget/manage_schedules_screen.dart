@@ -222,6 +222,8 @@ SizedBox(height: 0.h),
   List<String?>? coachesIds = schedule.coachIds ?? [];
   List<String?>? usersList =schedule.usersList ?? [];
     List<String?>? usersIds = schedule.userIds ?? [];
+    //group_id
+    String? groupId = schedule.groupId ?? '';
 
   String scheduleId = schedule.scheduleId ?? '';
   String day = schedule.date ?? '';
@@ -301,34 +303,58 @@ SizedBox(height: 0.h),
                                                     FFButtonWidget(
                                                       onPressed: () {
 
-                                                        ManageAttendenceCubit.get(context).selectedCoaches = usersList?.cast<String>() ?? [];
-                                                        ManageAttendenceCubit.get(context).selectedDays = [day];
-                                                        ManageAttendenceCubit.get(context).startTime = statrTime;
-                                                        ManageAttendenceCubit.get(context).endTime = endTime;
-                                                        //selectedBranch
-                                                        ManageAttendenceCubit.get(context).selectedBranch = schedule.branchId ?? '';
-                                                        //selectedBranch
+                                                        // ManageAttendenceCubit.get(context).selectedCoaches = usersList?.cast<String>() ?? [];
+                                                        // ManageAttendenceCubit.get(context).selectedDays = [day];
+                                                        // ManageAttendenceCubit.get(context).startTime = statrTime;
+                                                        // ManageAttendenceCubit.get(context).endTime = endTime;
+                                                        // //selectedBranch
+                                                        // ManageAttendenceCubit.get(context).selectedBranch = schedule.branchId ?? '';
+                                                        // //selectedBranch
                                                         //print('${ManageSalaryCubit.get(context).schedules?[index].branchId}');
                                                         ManageAttendenceCubit.get(context).getAdminData();
-                                                        Navigator.pushNamed(
-                                                  context,
+//void navigateToGroupData(String groupId) {
+//                         FirebaseFirestore.instance
+//                             .collection('branches')
+//                             .doc(branchId)
+//                             .collection('groups')
+//                             .doc(groupId)
+//                             .get()
+//                             .then((docSnapshot) {
+//                           if (docSnapshot.exists) {
+//                             Map<String, dynamic> groupData = docSnapshot.data();
+//                             Navigator.pushNamed(
+//                               context,
+//                               AppRoutes.onboarding,
+//                               arguments: {
+//                                 'isAdd': false,
+//                                 'branchId': '',
+//                                 'maxUsers': '0',
+//                                 // Pass the retrieved group data
+//                                 'groupData': groupData,
+//                               },
+//                             );
+//                           }
+//                         });
+//                       }
+                                                        ManageAttendenceCubit.get(context).navigateToGroupData(
+                                                            schedule.groupId ?? '',
+                                                            schedule.branchId ?? '',
+                                                            context);
+                                                        // Navigator.pushNamed(
+                                                  // context,
                                                           //AppRoutes.onboarding,
-
-                                                          AppRoutes.addSchedule,
-                                                  arguments: {
-                                                    'toggle': false,
-                                                    'startTime': statrTime,
-                                                    'endTime': endTime,
-                                                    'date': day,
-                                                    'usersList': usersList,
-                                                    'scheduleId': scheduleId,
-                                                    'usersIds': usersIds,
-                                                  },
-                                                );
-
-
-
-
+                                                  //
+                                                  //         AppRoutes.addSchedule,
+                                                  // arguments: {
+                                                  //   'toggle': false,
+                                                  //   'startTime': statrTime,
+                                                  //   'endTime': endTime,
+                                                  //   'date': day,
+                                                  //   'usersList': usersList,
+                                                  //   'scheduleId': scheduleId,
+                                                  //   'usersIds': usersIds,
+                                                  // },
+                                                // );
                                                       },
                                                       text: 'تعديل',
                                                       options: FFButtonOptions(
@@ -665,15 +691,40 @@ SizedBox(height: 0.h),
                     final addGroupCubit = context.read<AddGroupCubit>();
                     addGroupCubit.initState(context);
                     ManageAttendenceCubit.get(context).getAdminData();
-                    Navigator.pushNamed(
+                    
+                    Navigator
+                        .pushNamed(
                       context,
-                      AppRoutes.onboarding,
-                     // AppRoutes.addSchedule,
-                      // arguments: {
-                      //   'toggle': true,
-                      //   'startTime': Timestamp.now(),
-                      //   'endTime': Timestamp.now(),
-                      // },
+                      AppRoutes
+                          .onboarding,
+                      arguments: {
+                        'isAdd':
+                        false,
+                        'branchId':
+                       '',
+                        'maxUsers':
+                        '0',
+                     //   'days':
+                     //   [],
+                    //    'usersList':
+                     //   [],
+                    //    'coachList':
+                    //    [],
+                   //     'coachIds':
+                   //     [],
+                   //     'userIds':
+                   //     [],
+                  //      'scheduleId':
+                 //       '',
+                 //       'schedule_days':
+                  //      [],
+                  //      'groupId':
+                  //      '',
+                  //      'users':
+                   //     [],
+
+                        // 'coaches': group.coaches,
+                      },
                     );
                   },
                   text: 'اضافة موعد ',

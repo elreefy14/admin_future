@@ -154,8 +154,8 @@ class MyApp extends StatelessWidget {
                 //MyColors.primaryColor,
               ),
               initialRoute:
-              //mainRoute,
-              AppRoutes.manageGroups,
+              mainRoute,
+              //AppRoutes.manageGroups,
               onGenerateRoute: RouteGenerator.generateRoute,
             ),
 

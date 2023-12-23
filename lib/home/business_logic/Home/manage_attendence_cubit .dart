@@ -11,8 +11,11 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../../../add_grouup_of_schedules/presentation/onboarding_screen.dart';
+import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_util.dart';
 import '../../../registeration/data/userModel.dart';
+import '../../presenation/widget/manage_groups_screen.dart';
 import 'manage_attendence_state.dart';
 import 'manage_salary_cubit.dart';
 // ****this is my firestore Collections and Documents:**
@@ -1223,5 +1226,114 @@ Future<void> addGroup(
   void updateStartTime(Timestamp timestamp) {
     startTime = timestamp;
     emit(UpdateStartTimeState());
+  }
+//                FirebaseFirestore.instance
+// //                             .collection('branches')
+// //                             .doc(branchId)
+// //                             .collection('groups')
+// //                             .doc(groupId)
+// //                             .get()
+// //                             .then((docSnapshot) {
+// //                           if (docSnapshot.exists) {
+// //                             Map<String, dynamic> groupData = docSnapshot.data();
+// //                             Navigator.pushNamed(
+// //                               context,
+// //                               AppRoutes.onboarding,
+// //                               arguments: {
+// //                                 'isAdd': false,
+// //                                 'branchId': '',
+// //                                 'maxUsers': '0',
+// //                                 // Pass the retrieved group data
+// //                                 'groupData': groupData,
+// //                               },
+// //                             );
+// //                           }
+// //                         });
+// //                       }
+  void navigateToGroupData(String groupId ,String branchId, BuildContext context) {
+    emit(NavigateToGroupDataState());
+    //debug parameters
+    print('groupId: $groupId');
+    print('branchId: $branchId');
+    FirebaseFirestore.instance
+        .collection('branches')
+        .doc(branchId)
+        .collection('groups')
+        .doc('p0sGJt5s8Bv5opkP8ny9')
+        .get()
+        .then((docSnapshot) {
+      if (docSnapshot.exists) {
+        //that is group model
+//       class GroupModel {
+//       final Map<String, Map<String, Timestamp>> days;
+//       final String groupId;
+//       final String maxUsers;
+//       final String name;
+//       final int numberOfCoaches;
+//       final int numberOfUsers;
+//       final String pid;
+//
+//       //schedule_ids
+//       final List<String> schedulesIds;
+//
+// //schedule_days
+//       final List<String> schedulesDays;
+//
+//       // 'usersList': FieldValue.arrayUnion([user.name]),
+//       //                 'userIds': FieldValue.arrayUnion([user.uId]),
+//       //         'schedule_ids': FieldValue.arrayUnion([scheduleRef.id]),
+//       //               'schedule_days': FieldValue.arrayUnion([day]),
+// //  'coachList': FieldValue.arrayUnion([coach.name]),
+// //  'coachIds': FieldValue.arrayUnion([coach.uId]),
+//       final List<String> coachIds;
+//       final List<String> coachList;
+//       final List<String> userIds;
+//       final List<String> usersList;
+//       final List<UserModel> users;
+//       final List<UserModel> coaches;
+//use group Model to get data from firebase 
+//use fromJson to convert data from firebase to group model
+      GroupModel group = GroupModel.fromJson(docSnapshot.data() as Map<String, dynamic>);
+        Map<String, dynamic> groupData = docSnapshot.data() as Map<String, dynamic>;
+        context.read<AddGroupCubit>().updateSelectedUsersAndCoachesAndTimesAndBranchAndMaxUsers(
+            selectedUsers: group.users,
+            selectedOption: 'تعديل',
+            //selectedTimes: group.days,
+            context: context,
+            maxUsers: group.maxUsers,
+            selectedBranch: branchId, 
+            selectedCoaches: group.coaches,
+        //    selectedDays: groupData['days']
+        );
+
+        Navigator.pushNamed(
+          context,
+          AppRoutes.onboarding,
+          arguments: {
+            'isAdd': false,
+            'branchId': branchId,
+            'maxUsers': groupData['max_users'],
+ //   'days': groupData['days'],
+   //             'usersList':
+    //                groupData['usersList'],
+     //          'coachList':
+      //              groupData['coachList'],
+   //              'coachIds':
+   //                  groupData['coachIds'],
+   //              'userIds':
+   //                  groupData['userIds'],
+   //               'scheduleId':
+   //                  groupData['schedule_ids'],
+   //                'schedule_days':
+   //                  groupData['schedule_days'],
+   //               'groupId':
+   //                  groupData['group_id'],
+                 'users':
+                    groupData['users'],
+            'coaches': groupData['coaches'],
+          },
+        );
+      }
+    });
   }
 }

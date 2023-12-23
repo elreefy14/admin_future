@@ -101,3 +101,5 @@ class UpdateSchedulesLoadingState extends ManageAttendenceState {}
 class UpdateSchedulesSuccessState extends ManageAttendenceState {}
 //AddSchedulefinishState
 class AddSchedulefinishState extends ManageAttendenceState {}
+//NavigateToGroupDataState
+class NavigateToGroupDataState extends ManageAttendenceState {}

@@ -29,20 +29,92 @@ class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
     var args = settings.arguments;
     switch (settings.name) {
-      //OnboardingScreen
+      //  final bool? isAdd;
+    //   final String? branchId;
+    //   final String? groupId;
+    //   final List<String>? schedule_days;
+    //   final List<String>? userIds;
+    //   final List<String>? scheduleId;
+    //   final List<String>? coachIds;
+    //   final List<String>? coachList;
+    //   final List<String>? usersList;
+    //   final List<UserModel>? users;
+    //   final List<UserModel>? coaches;
+    //   final Map<String, Map<dynamic, dynamic>>? days;
+    //   final String? maxUsers;
       case AppRoutes.onboarding:
        args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(builder: (_) => OnboardingScreen(         // isAdd: (args as Map<String, dynamic>)?['isAdd'],
+    //  final bool? isAdd;
+          //   final String? branchId;
+          //   final String? groupId;
+          //   final List<String>? schedule_days;
+          //   final List<String>? userIds;
+          //   final List<String>? scheduleId;
+          //   final List<String>? coachIds;
+          //   final List<String>? coachList;
+          //   final List<String>? usersList;
+          //   final List<UserModel>? users;
+          //   final List<UserModel>? coaches;
+          //   final Map<String, Map<dynamic, dynamic>>? days;
+          //   final String? maxUsers;
+          isAdd: (args as Map<String, dynamic>)?['isAdd'],
           branchId: (args as Map<String, dynamic>)?['branchId'],
-          maxUsers: (args as Map<String, dynamic>)?['maxUsers'],
-          days: (args as Map<String, dynamic>)?['days'],
-          usersList: (args as Map<String, dynamic>)?['usersList'],
-          coachList: (args as Map<String, dynamic>)?['coachList'],
-          coachIds: (args as Map<String, dynamic>)?['coachIds'],
+          groupId: (args as Map<String, dynamic>)?['groupId'],
+          schedule_days: (args as Map<String, dynamic>)?['schedule_days'],
           userIds: (args as Map<String, dynamic>)?['userIds'],
           scheduleId: (args as Map<String, dynamic>)?['scheduleId'],
-          schedule_days: (args as Map<String, dynamic>)?['schedule_days'],
-          groupId: (args as Map<String, dynamic>)?['groupId'],
+          coachIds: (args as Map<String, dynamic>)?['coachIds'],
+          coachList: (args as Map<String, dynamic>)?['coachList'],
+          usersList: (args as Map<String, dynamic>)?['usersList'],
+       //users in firebase collection is like that
+          // users
+    // (array)
+    // 0
+    // (map)
+    // branches
+    // (array)
+    // currentMonthHours 0
+    // (number)
+    // currentMonthSalary 0
+    // (number)
+    // date December 11, 2023 at 9:36:32 AM UTC+2
+    // (timestamp)
+    // email null
+    // (null)
+    // fname "cccc"
+    // (string)
+    // hourlyRate 30
+    // (number)
+    // image null
+    // (null)
+    // level null
+    // (null)
+    // lname "cc"
+    // (string)
+    // name "cccc cc"
+    // (string)
+    // numberOfSessions 0
+    // (number)
+    // phone "01097061597"
+    // (string)
+    // pid "fJgvzdHfOORBYSw1HeG6HJP9V7o1"
+    // (string)
+    // role "user"
+    // (string)
+    // token ""
+    // (string)
+    // totalHours 0
+    // (number)
+    // totalSalary 0
+    // (number)
+    // uId "19464f4a-5abf-4ce3-8d37-7eccd1978f60"
+          //which is map of map so we need to convert it to list of userModels
+          users: (args as Map<String, dynamic>)?['users'],
+         // coaches: (args as Map<String, dynamic>)?['coaches']?.map((json) => UserModel.fromJson(json)).toList(),
+          days: (args as Map<String, dynamic>)?['days'],
+          maxUsers: (args as Map<String, dynamic>)?['maxUsers'],
+
         ));
       //AddSchedule
 //AddCoachScreen

@@ -20,6 +20,8 @@ class ScheduleModel {
   String? pId;
 //maxUsers
   String? maxUsers;
+  //group_id
+  String? groupId;
   List<UserModel>? users;
   ScheduleModel({
     required this.pId,
@@ -36,7 +38,8 @@ class ScheduleModel {
     this.scheduleId,
     this.date, 
     required this.nearestDay, 
-    List<UserModel>? users, this.maxUsers,
+    List<UserModel>? users, this.maxUsers
+    , this.groupId
 
   });
 
@@ -58,6 +61,7 @@ class ScheduleModel {
       'pId': pId,
       'users': users,
       'maxUsers': maxUsers,
+      'groupId': groupId,
     };
   }
 
@@ -76,6 +80,7 @@ class ScheduleModel {
       'maxUsers': maxUsers,
       'coachList': coachList,
       'coachIds': coachIds,
+      'groupId': groupId,
     };
   }
 
@@ -91,10 +96,14 @@ class ScheduleModel {
       nearestDay: json['nearest_day'],
       scheduleId: json['schedule_id'],
       date: json['date'],
+      //group_id
+      groupId: json['groupId'],
       users: json['users'] != null ? List<UserModel>.from(json['users'].map((x) => UserModel.fromJson(x))) : null,
       maxUsers: json['maxUsers'],
       coachList: json['coachList'] != null ? List<String>.from(json['coachList']) : null,
       coachIds: json['coachIds'] != null ? List<String>.from(json['coachIds']) : null,
+
+
     );
   }
 
@@ -113,6 +122,8 @@ class ScheduleModel {
       maxUsers: json['maxUsers'],
       coachList: json['coachList'] != null ? List<String>.from(json['coachList']) : null,
       coachIds: json['coachIds'] != null ? List<String>.from(json['coachIds']) : null,
+  //group_id
+      groupId: json['groupId'],
     );
   }
 }
