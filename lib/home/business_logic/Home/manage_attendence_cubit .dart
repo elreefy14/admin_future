@@ -1260,7 +1260,7 @@ Future<void> addGroup(
         .doc(branchId)
         .collection('groups')
     //todo change this to group id
-        .doc('p0sGJt5s8Bv5opkP8ny9')
+        .doc('VS5fM494CADhugpUQUW9')
         .get()
         .then((docSnapshot) {
       if (docSnapshot.exists) {
@@ -1304,11 +1304,13 @@ Future<void> addGroup(
             maxUsers: group.maxUsers,
             selectedBranch: branchId, 
             selectedCoaches: group.coaches,
-        //    selectedDays: groupData['days']
+            selectedDays: group.days,
         );
 //debug parameters schedule id
         print('scheduleId: ${group.schedulesIds}');
         print('scheduleDay in ddelete : ${group.schedulesDays}');
+        //days
+        print('days: ${group.days}');
         Navigator.pushNamed(
           context,
           AppRoutes.onboarding,

@@ -14,6 +14,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
+import '../../core/flutter_flow/flutter_flow_util.dart';
 import '../../home/business_logic/Home/manage_attendence_state.dart';
 import '../../home/business_logic/Home/manage_salary_cubit.dart';
 import '../../home/data/schedules.dart';
@@ -1215,15 +1216,35 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   }
   //function to update sekected user and selected coach and selected times and selected branch and max users
   void updateSelectedUsersAndCoachesAndTimesAndBranchAndMaxUsers(
-
-
   {List<UserModel>? selectedUsers,
       List<UserModel>? selectedCoaches,
       List<String>? selectedTimes,
       String? selectedBranch,
       String? selectedOption,
-      String? maxUsers,context}) {
+      String? maxUsers,context, required Map<String, Map<String, Timestamp>> selectedDays}) {
     maxUsers = maxUsers;
+    //update times variable whish is Map<String, Map<dynamic, dynamic>>
+    //it looks like that
+    //static final Map<String, Map<dynamic, dynamic>> _times = {
+    //     'السبت': {'start': null, 'end': null},
+    //     'الأحد': {'start': null, 'end': null},
+    //     'الاثنين': {'start': null, 'end': null},
+    //     'الثلاثاء': {'start': null, 'end': null},
+    //     'الأربعاء': {'start': null, 'end': null},
+    //     'الخميس': {'start': null, 'end': null},
+    //     'الجمعة': {'start': null, 'end': null},
+    //   };
+    //loop on selected days and update the start and end time of the day
+for (var day in selectedDays.keys) {
+  //selectedDays[day]!['start'];
+ //selectedDays[day]!['end'];
+ //i want to turn these 2 timestamps to time of day 
+  int? startTime = selectedDays[day]!['start']?.millisecondsSinceEpoch;
+  int? endTime = selectedDays[day]!['end']?.millisecondsSinceEpoch;
+ //assign the start and end time to the day
+  _times[day]?['start'] = TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(startTime!));
+  _times[day]?['end'] = TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(endTime!));
+}
     this.selectedUsers = selectedUsers ?? this.selectedUsers;
     this.selectedCoaches = selectedCoaches ?? this.selectedCoaches;
     //this.selectedTimes = selectedTimes ?? this.selectedTimes;
@@ -2243,7 +2264,7 @@ class SelectCoachesScreen extends StatelessWidget {
                                     //   '${user.name}-${index + 1}',
                                     //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
                                     '${index + 1}-${user.name}',
-                                    textDirection: TextDirection.rtl,
+                                    // textDirection: TextDirection.rtl,
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                       color: Colors.black,
@@ -2520,7 +2541,7 @@ class InfoScreen extends StatelessWidget {
                                   Text(
                                     '${index + 1}-${user.name}',
                                     //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                    textDirection: TextDirection.rtl,
+                                    // textDirection: TextDirection.rtl,
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                       color: Colors.black,
@@ -2621,7 +2642,7 @@ class InfoScreen extends StatelessWidget {
                                   Text(
                                     '${index + 1}-${user.name}',
                                     //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                    textDirection: TextDirection.rtl,
+                                    // textDirection: TextDirection.rtl,
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                       color: Colors.black,
@@ -2878,7 +2899,7 @@ class InfoScreen extends StatelessWidget {
                                               Text(
                                                 '$day',
                                                 //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                                textDirection: TextDirection.rtl,
+                                                // textDirection: TextDirection.rtl,
                                                 textAlign: TextAlign.right,
                                                 style: TextStyle(
                                                   color: Colors.black,
@@ -2902,8 +2923,7 @@ class InfoScreen extends StatelessWidget {
                                                     Text(
                                                       '${time?['start']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')} - ${time?['end']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')}',
                                                       //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                                      textDirection:
-                                                          TextDirection.rtl,
+                                                      // textDirection: TextDirection.rtl,
                                                       textAlign: TextAlign.right,
                                                       style: TextStyle(
                                                         color: Colors.black,
