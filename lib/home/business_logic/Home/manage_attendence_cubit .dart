@@ -17,7 +17,7 @@ import '../../../core/flutter_flow/flutter_flow_util.dart';
 import '../../../registeration/data/userModel.dart';
 import '../../presenation/widget/manage_groups_screen.dart';
 import 'manage_attendence_state.dart';
-import 'manage_salary_cubit.dart';
+import '../../../manage_users_coaches/business_logic/manage_users_cubit.dart';
 // ****this is my firestore Collections and Documents:**
 // - *users*: A collection to store the information of all coaches.
 // - Document ID: unique coach ID
@@ -567,7 +567,7 @@ void sendWhatsAppMessage(String phoneNumber) async {
       });
 
       // Remove the schedule from the list of schedules
-      ManageSalaryCubit.get(context)
+      ManageUsersCubit.get(context)
           .schedules
           .removeWhere((schedule) => schedule.scheduleId == scheduleId);
 
@@ -682,10 +682,10 @@ void sendWhatsAppMessage(String phoneNumber) async {
           date: date,
           nearestDay: Timestamp.fromDate(DateTime.now()),
         );
-        ManageSalaryCubit.get(context).updateSchedules(schedule!);
+        ManageUsersCubit.get(context).updateSchedules(schedule!);
         // }
       } else {
-        ManageSalaryCubit.get(context).deleteSchedule(
+        ManageUsersCubit.get(context).deleteSchedule(
             scheduleId: scheduleId!, day: date, usersIds: usersIds);
         // add the schedule for the first day in the list
         addSchedule(false, context,
@@ -704,7 +704,7 @@ void sendWhatsAppMessage(String phoneNumber) async {
           date: date,
           nearestDay: Timestamp.fromDate(DateTime.now()),
         );
-        ManageSalaryCubit.get(context).updateSchedules(schedule!);
+        ManageUsersCubit.get(context).updateSchedules(schedule!);
         // Update the schedule for the only day in the list
         // await FirebaseFirestore.instance
         //     .collection('admins')
@@ -812,7 +812,7 @@ void sendWhatsAppMessage(String phoneNumber) async {
     List<String> days = selectedDays ?? [];
     List<String> coaches = selectedCoaches ?? [];
 
-    ManageSalaryCubit manageSalaryCubit = ManageSalaryCubit();
+    ManageUsersCubit manageSalaryCubit = ManageUsersCubit();
     ScheduleModel? schedule;
     try {
       //emit(LoadingState());
@@ -932,7 +932,7 @@ void sendWhatsAppMessage(String phoneNumber) async {
 
       //emit(SuccessState());
       emit(AddScheduleSuccessState());
-      ManageSalaryCubit.get(context).updateSchedules(schedule!);
+      ManageUsersCubit.get(context).updateSchedules(schedule!);
       if(isEmit){
         emit(AddScheduleSuccessState());
         //show toast
@@ -1110,7 +1110,7 @@ Future<void> addGroup(
         });
       }
     }
-    ManageSalaryCubit.get(context).updateSchedules(schedule!);
+    ManageUsersCubit.get(context).updateSchedules(schedule!);
     if (isEmit) {
       emit(AddScheduleSuccessState());
       Fluttertoast.showToast(

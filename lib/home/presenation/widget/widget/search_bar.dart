@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../registeration/data/userModel.dart';
-import '../../../business_logic/Home/manage_salary_cubit.dart';
+import '../../../../manage_users_coaches/business_logic/manage_users_cubit.dart';
 
 class CustomSearchBar extends StatelessWidget {
   final TextEditingController _model = TextEditingController();
@@ -55,9 +55,9 @@ class CustomSearchBar extends StatelessWidget {
                             .map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>))
                             .toList();
                              if (isCoach) {
-                       ManageSalaryCubit.get(context).updateListOfCoaches(users);
+                     //  ManageSalaryCubit.get(context).updateListOfCoaches(users);
                     } else {
-                       ManageSalaryCubit.get(context).updateListOfUsers(users);
+                    //   ManageSalaryCubit.get(context).updateListOfUsers(users);
                     }
                       
                       } else {
@@ -70,9 +70,9 @@ class CustomSearchBar extends StatelessWidget {
                               .map((e) => UserModel.fromJson(e.data() as Map<String, dynamic>))
                               .toList();
                                    if (isCoach) {
-                       ManageSalaryCubit.get(context).updateListOfCoaches(users);
+                    //   ManageSalaryCubit.get(context).updateListOfCoaches(users);
                     } else {
-                       ManageSalaryCubit.get(context).updateListOfUsers(users);
+                    //   ManageSalaryCubit.get(context).updateListOfUsers(users);
                     }
                         });
                       }

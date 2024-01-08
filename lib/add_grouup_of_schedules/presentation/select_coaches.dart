@@ -10,7 +10,7 @@ import 'package:logger/logger.dart';
 
 import '../../core/constants/routes_manager.dart';
 import '../../core/flutter_flow/flutter_flow_theme.dart';
-import '../../home/business_logic/Home/manage_salary_cubit.dart';
+import '../../manage_users_coaches/business_logic/manage_users_cubit.dart';
 import '../../registeration/data/userModel.dart';
 import 'onboarding_screen.dart';
 class ShowCoachesInDialog extends StatelessWidget {
@@ -59,9 +59,9 @@ class ShowCoachesInDialog extends StatelessWidget {
                   margin: EdgeInsets.only(right: 10.w
                   ,bottom: 15.h),
                     decoration: ShapeDecoration(
-                      color: Color(0xFFFAFAFA),
+                      color: const Color(0xFFFAFAFA),
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(width: 1, color: Color(0xFFB9B9B9)),
+                        side: const BorderSide(width: 1, color: Color(0xFFB9B9B9)),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -84,12 +84,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                         hintText: 'Search ',
                         //trensform to arabic
                         suffixIcon: IconButton(
-                          icon: Icon(Icons.search),
+                          icon: const Icon(Icons.search),
                           onPressed: () => addGroupCubit.onSearchSubmitted(addGroupCubit.searchController.text.trim(),isCoach),
                         ),
                         prefixIcon:
                        isSearch? IconButton(
-                          icon: Icon(Icons.close),
+                          icon: const Icon(Icons.close),
                           onPressed: () {
                             addGroupCubit.searchController.clear();
                             //query ==null
@@ -114,7 +114,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                 decoration: InputDecoration(
                   hintText: 'Search by name or phone number',
                   suffixIcon: IconButton(
-                    icon: Icon(Icons.search),
+                    icon: const Icon(Icons.search),
                     onPressed: () => addGroupCubit.onSearchSubmitted(addGroupCubit.searchController.text.trim(),isCoach),
                   ),
                 ),
@@ -133,12 +133,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                     color: FlutterFlowTheme.of(context)
                         .secondaryBackground,
                     border: Border.all(
-                      color: Color(0xFFB4B4B4),
+                      color: const Color(0xFFB4B4B4),
                       width: 1,
                     ),
                   ),
                   child: Align(
-                    alignment: AlignmentDirectional(0, 0),
+                    alignment: const AlignmentDirectional(0, 0),
                     child: Text(
                       'دفع',
                       textAlign: TextAlign.end,
@@ -160,12 +160,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                     color: FlutterFlowTheme.of(context)
                         .secondaryBackground,
                     border: Border.all(
-                      color: Color(0xFFB4B4B4),
+                      color: const Color(0xFFB4B4B4),
                       width: 1,
                     ),
                   ),
                   child: Align(
-                    alignment: AlignmentDirectional(0, 0),
+                    alignment: const AlignmentDirectional(0, 0),
                     child: Text(
 
                       'مكافأة',
@@ -189,12 +189,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                     color: FlutterFlowTheme.of(context)
                         .secondaryBackground,
                     border: Border.all(
-                      color: Color(0xFFB4B4B4),
+                      color: const Color(0xFFB4B4B4),
                       width: 1,
                     ),
                   ),
                   child: Align(
-                    alignment: AlignmentDirectional(0, 0),
+                    alignment: const AlignmentDirectional(0, 0),
                     child: Text(
                       'مجموع المرتب',
                       textAlign: TextAlign.end,
@@ -209,7 +209,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                   ),
                 ),
                 Align(
-                  alignment: AlignmentDirectional(1, 0),
+                  alignment: const AlignmentDirectional(1, 0),
                   child: Container(
                     width: MediaQuery.sizeOf(context).width *
                         0.2,
@@ -218,12 +218,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                       color: FlutterFlowTheme.of(context)
                           .secondaryBackground,
                       border: Border.all(
-                        color: Color(0xFFB4B4B4),
+                        color: const Color(0xFFB4B4B4),
                         width: 1,
                       ),
                     ),
                     child: Align(
-                      alignment: AlignmentDirectional(0, 0),
+                      alignment: const AlignmentDirectional(0, 0),
                       child: Text(
                         'الاسم',
                         textAlign: TextAlign.end,
@@ -262,13 +262,13 @@ class ShowCoachesInDialog extends StatelessWidget {
                           color: FlutterFlowTheme.of(context)
                               .secondaryBackground,
                           border: Border.all(
-                            color: Color(0xFFB4B4B4),
+                            color: const Color(0xFFB4B4B4),
                             width: 1,
                           ),
                         ),
                         child: InkWell(
                           onTap: () async {
-                            final manageSalaryCubit = ManageSalaryCubit.get(context);
+                            final manageSalaryCubit = ManageUsersCubit.get(context);
                             //manageSalaryCubit.initControllers(ManageSalaryCubit.get(context).coaches[index]);
                             manageSalaryCubit.initControllers(user);
                             await Navigator.pushNamed(context,
@@ -280,7 +280,7 @@ class ShowCoachesInDialog extends StatelessWidget {
 
                           },
                           child: Align(
-                            alignment: AlignmentDirectional(0, 0),
+                            alignment: const AlignmentDirectional(0, 0),
                             child: InkWell(
                               child: Text(
                                 '...المزيد ',
@@ -299,7 +299,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                           ),
                         ),
                       ),
-                      BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+                      BlocBuilder<ManageUsersCubit, ManageUsersState>(
                         builder: (context, state) {
                           return Container(
                             width: MediaQuery.sizeOf(context).width * 0.2,
@@ -308,7 +308,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               border: Border.all(
-                                color: Color(0xFFB4B4B4),
+                                color: const Color(0xFFB4B4B4),
                                 width: 1,
                               ),
                             ),
@@ -362,18 +362,18 @@ class ShowCoachesInDialog extends StatelessWidget {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Align(
-                                                  alignment: AlignmentDirectional(0, 0),
+                                                  alignment: const AlignmentDirectional(0, 0),
                                                   child: Row(
                                                     mainAxisSize: MainAxisSize.max,
                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                     children: [
                                                       Expanded(
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(1, 0),
+                                                          alignment: const AlignmentDirectional(1, 0),
                                                           child: Container(
                                                             width: 100,
                                                             child: TextFormField(
-                                                              controller: ManageSalaryCubit.get(context).salaryController,
+                                                              controller: ManageUsersCubit.get(context).salaryController,
                                                               autofocus: true,
                                                               obscureText: false,
                                                               decoration: InputDecoration(
@@ -391,14 +391,14 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                                   fontSize: 10,
                                                                 ),
                                                                 enabledBorder: OutlineInputBorder(
-                                                                  borderSide: BorderSide(
+                                                                  borderSide: const BorderSide(
                                                                     color: Color(0xFFF4F4F4),
                                                                     width: 2,
                                                                   ),
                                                                   borderRadius: BorderRadius.circular(8),
                                                                 ),
                                                                 focusedBorder: OutlineInputBorder(
-                                                                  borderSide: BorderSide(
+                                                                  borderSide: const BorderSide(
                                                                     color: Colors.blue,
                                                                     width: 2,
                                                                   ),
@@ -427,7 +427,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                               ),
                                                               textAlign: TextAlign.end,
                                                               keyboardType: TextInputType.number,
-                                                              cursorColor: Color(0xFF333333),
+                                                              cursorColor: const Color(0xFF333333),
                                                               //   validator: _model.textControllerValidator
                                                               //     .asValidator(context),
                                                             ),
@@ -443,8 +443,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         ),
                                                       ),
                                                     ]
-                                                        .divide(SizedBox(width: 10))
-                                                        .addToEnd(SizedBox(width: 15)),
+                                                        .divide(const SizedBox(width: 10))
+                                                        .addToEnd(const SizedBox(width: 15)),
                                                   ),
                                                 ),
                                                 Row(
@@ -457,22 +457,22 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
                                                       //  userSalary = ManageSalaryCubit.get(context).users[index].totalSalary;
-                                                        await ManageSalaryCubit.get(context).payPartialSalary
+                                                        await ManageUsersCubit.get(context).payPartialSalary
                                                           (
                                                           currentTotalSalary: userSalary??0,
                                                           userId:
-                                                          uid,salaryPaid: ManageSalaryCubit.get(context).salaryController.text,
+                                                          uid,salaryPaid: ManageUsersCubit.get(context).salaryController.text,
                                                         ).then((value) => Navigator.pop(context));
                                                       },
                                                       child: Container(
                                                         width: 130,
                                                         height: 40,
                                                         decoration: BoxDecoration(
-                                                          color: Color(0xFFB9B9B9),
+                                                          color: const Color(0xFFB9B9B9),
                                                           borderRadius: BorderRadius.circular(8),
                                                         ),
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(0, 0),
+                                                          alignment: const AlignmentDirectional(0, 0),
                                                           child: Text(
                                                             'دفع جزئي',
                                                             style: FlutterFlowTheme.of(context)
@@ -491,7 +491,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                       onTap: () async {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
-                                                        await ManageSalaryCubit.get(context).paySalary(
+                                                        await ManageUsersCubit.get(context).paySalary(
                                                           userId:
                                                           uid,
                                                         ).then((value) => Navigator.pop(context));
@@ -504,7 +504,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           borderRadius: BorderRadius.circular(8),
                                                         ),
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(0, 0),
+                                                          alignment: const AlignmentDirectional(0, 0),
                                                           child: Text(
                                                             'دفع كل المرتب',
                                                             style: FlutterFlowTheme.of(context)
@@ -518,15 +518,15 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         ),
                                                       ),
                                                     )
-                                                  ].divide(SizedBox(width: 10)),
+                                                  ].divide(const SizedBox(width: 10)),
                                                 ),
 
-                                              ].divide(SizedBox(height: 35)).addToStart(SizedBox(height: 50)),
+                                              ].divide(const SizedBox(height: 35)).addToStart(const SizedBox(height: 50)),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 20,
                                             )
-                                          ].divide(SizedBox(height: 0)),
+                                          ].divide(const SizedBox(height: 0)),
                                         ),
                                       ),
                                     );
@@ -534,7 +534,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                 );
                               },
                               child: Align(
-                                alignment: AlignmentDirectional(0, 0),
+                                alignment: const AlignmentDirectional(0, 0),
                                 child: Text(
                                   'دفع الراتب',
                                   textAlign: TextAlign.end,
@@ -553,7 +553,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                           );
                         },
                       ),
-                      BlocConsumer<ManageSalaryCubit, ManageSalaryState>(
+                      BlocConsumer<ManageUsersCubit, ManageUsersState>(
                         listener: (context, state) {
 
                         },
@@ -565,7 +565,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               border: Border.all(
-                                color: Color(0xFFB4B4B4),
+                                color: const Color(0xFFB4B4B4),
                                 width: 1,
                               ),
                             ),
@@ -619,18 +619,18 @@ class ShowCoachesInDialog extends StatelessWidget {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Align(
-                                                  alignment: AlignmentDirectional(0, 0),
+                                                  alignment: const AlignmentDirectional(0, 0),
                                                   child: Row(
                                                     mainAxisSize: MainAxisSize.max,
                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                     children: [
                                                       Expanded(
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(1, 0),
+                                                          alignment: const AlignmentDirectional(1, 0),
                                                           child: Container(
                                                             width: 100,
                                                             child: TextFormField(
-                                                              controller: ManageSalaryCubit.get(context).salaryController,
+                                                              controller: ManageUsersCubit.get(context).salaryController,
                                                               autofocus: true,
                                                               obscureText: false,
                                                               decoration: InputDecoration(
@@ -648,14 +648,14 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                                   fontSize: 10,
                                                                 ),
                                                                 enabledBorder: OutlineInputBorder(
-                                                                  borderSide: BorderSide(
+                                                                  borderSide: const BorderSide(
                                                                     color: Color(0xFFF4F4F4),
                                                                     width: 2,
                                                                   ),
                                                                   borderRadius: BorderRadius.circular(8),
                                                                 ),
                                                                 focusedBorder: OutlineInputBorder(
-                                                                  borderSide: BorderSide(
+                                                                  borderSide: const BorderSide(
                                                                     color: Colors.blue,
                                                                     width: 2,
                                                                   ),
@@ -684,7 +684,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                               ),
                                                               textAlign: TextAlign.end,
                                                               keyboardType: TextInputType.number,
-                                                              cursorColor: Color(0xFF333333),
+                                                              cursorColor: const Color(0xFF333333),
                                                               //   validator: _model.textControllerValidator
                                                               //     .asValidator(context),
                                                             ),
@@ -700,8 +700,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         ),
                                                       ),
                                                     ]
-                                                        .divide(SizedBox(width: 10))
-                                                        .addToEnd(SizedBox(width: 15)),
+                                                        .divide(const SizedBox(width: 10))
+                                                        .addToEnd(const SizedBox(width: 15)),
                                                   ),
                                                 ),
                                                 Row(
@@ -714,9 +714,9 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                       onTap: () async {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
-                                                        await ManageSalaryCubit.get(context).payBonus(
+                                                        await ManageUsersCubit.get(context).payBonus(
                                                           userId: uid,TotalSalary: user.totalSalary??0,
-                                                          salaryPaid: ManageSalaryCubit.get(context).salaryController.text,
+                                                          salaryPaid: ManageUsersCubit.get(context).salaryController.text,
                                                         ).then((value) => Navigator.pop(context));
                                                       },
                                                       child: Container(
@@ -727,7 +727,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           borderRadius: BorderRadius.circular(8),
                                                         ),
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(0, 0),
+                                                          alignment: const AlignmentDirectional(0, 0),
                                                           child: Text(
                                                             //pay bonus
                                                             isCoachInfoList??false?
@@ -745,15 +745,15 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         ),
                                                       ),
                                                     )
-                                                  ].divide(SizedBox(width: 10)),
+                                                  ].divide(const SizedBox(width: 10)),
                                                 ),
 
-                                              ].divide(SizedBox(height: 35)).addToStart(SizedBox(height: 50)),
+                                              ].divide(const SizedBox(height: 35)).addToStart(const SizedBox(height: 50)),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 20,
                                             )
-                                          ].divide(SizedBox(height: 0)),
+                                          ].divide(const SizedBox(height: 0)),
                                         ),
                                       ),
                                     );
@@ -761,7 +761,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                 );
                               },
                               child: Align(
-                                alignment: AlignmentDirectional(0, 0),
+                                alignment: const AlignmentDirectional(0, 0),
                                 child: Text(
                                   'مكافأة',
                                   textAlign: TextAlign.end,
@@ -789,12 +789,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                           color: FlutterFlowTheme.of(context)
                               .secondaryBackground,
                           border: Border.all(
-                            color: Color(0xFFB4B4B4),
+                            color: const Color(0xFFB4B4B4),
                             width: 1,
                           ),
                         ),
                         child: Align(
-                          alignment: AlignmentDirectional(0, 0),
+                          alignment: const AlignmentDirectional(0, 0),
                           child: Text(
                             //  ManageSalaryCubit.get(context).coaches[index].totalSalary.toString(),
                             user.totalSalary.toString(),
@@ -813,7 +813,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                         ),
                       ),
                       Align(
-                        alignment: AlignmentDirectional(1, 0),
+                        alignment: const AlignmentDirectional(1, 0),
                         child: Container(
                           width: MediaQuery.sizeOf(context).width *
                               0.2,
@@ -822,12 +822,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                             color: FlutterFlowTheme.of(context)
                                 .secondaryBackground,
                             border: Border.all(
-                              color: Color(0xFFB4B4B4),
+                              color: const Color(0xFFB4B4B4),
                               width: 1,
                             ),
                           ),
                           child: Align(
-                            alignment: AlignmentDirectional(0, 0),
+                            alignment: const AlignmentDirectional(0, 0),
                             child: Text(
                               ' ${
                               // ManageSalaryCubit.get(context).coaches[index].fname??''} ${(ManageSalaryCubit.get(context).coaches[index].lname??'')}',
@@ -905,7 +905,7 @@ class ShowCoachesInDialog extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: () {
@@ -913,13 +913,14 @@ class ShowCoachesInDialog extends StatelessWidget {
 
                     Navigator.of(context).pop();
                   },
-                  child: Text('Save'),
+                  child: const Text('Save'),
                 ),
               ],
             ),
           ],
         )
             : isUserInfoList ?? false ?
+            //manage users screen
         Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -931,9 +932,9 @@ class ShowCoachesInDialog extends StatelessWidget {
                     margin: EdgeInsets.only(right: 10.w
                         ,bottom: 15.h),
                     decoration: ShapeDecoration(
-                      color: Color(0xFFFAFAFA),
+                      color: const Color(0xFFFAFAFA),
                       shape: RoundedRectangleBorder(
-                        side: BorderSide(width: 1, color: Color(0xFFB9B9B9)),
+                        side: const BorderSide(width: 1, color: Color(0xFFB9B9B9)),
                         borderRadius: BorderRadius.circular(2),
                       ),
                     ),
@@ -956,12 +957,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                         hintText: 'Search ',
                         //trensform to arabic
                         suffixIcon: IconButton(
-                          icon: Icon(Icons.search),
+                          icon: const Icon(Icons.search),
                           onPressed: () => addGroupCubit.onSearchSubmitted(addGroupCubit.searchController.text.trim(),isCoach),
                         ),
                         prefixIcon:
                         isSearch? IconButton(
-                            icon: Icon(Icons.close),
+                            icon: const Icon(Icons.close),
                             onPressed: () {
                               addGroupCubit.searchController.clear();
                               //query ==null
@@ -1006,12 +1007,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                     color: FlutterFlowTheme.of(context)
                         .secondaryBackground,
                     border: Border.all(
-                      color: Color(0xFFB4B4B4),
+                      color: const Color(0xFFB4B4B4),
                       width: 1,
                     ),
                   ),
                   child: Align(
-                    alignment: AlignmentDirectional(0, 0),
+                    alignment: const AlignmentDirectional(0, 0),
                     child: Text(
                       //reduce sessions
                       'خصم حصص',
@@ -1034,12 +1035,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                     color: FlutterFlowTheme.of(context)
                         .secondaryBackground,
                     border: Border.all(
-                      color: Color(0xFFB4B4B4),
+                      color: const Color(0xFFB4B4B4),
                       width: 1,
                     ),
                   ),
                   child: Align(
-                    alignment: AlignmentDirectional(0, 0),
+                    alignment: const AlignmentDirectional(0, 0),
                     child: Text(
 
                       //'add sessions',
@@ -1064,12 +1065,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                     color: FlutterFlowTheme.of(context)
                         .secondaryBackground,
                     border: Border.all(
-                      color: Color(0xFFB4B4B4),
+                      color: const Color(0xFFB4B4B4),
                       width: 1,
                     ),
                   ),
                   child: Align(
-                    alignment: AlignmentDirectional(0, 0),
+                    alignment: const AlignmentDirectional(0, 0),
                     child: Text(
                       //number of sessions
                       'عدد الحصص',
@@ -1085,7 +1086,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                   ),
                 ),
                 Align(
-                  alignment: AlignmentDirectional(1, 0),
+                  alignment: const AlignmentDirectional(1, 0),
                   child: Container(
                     width: MediaQuery.sizeOf(context).width *
                         0.2,
@@ -1094,12 +1095,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                       color: FlutterFlowTheme.of(context)
                           .secondaryBackground,
                       border: Border.all(
-                        color: Color(0xFFB4B4B4),
+                        color: const Color(0xFFB4B4B4),
                         width: 1,
                       ),
                     ),
                     child: Align(
-                      alignment: AlignmentDirectional(0, 0),
+                      alignment: const AlignmentDirectional(0, 0),
                       child: Text(
                         'الاسم',
                         textAlign: TextAlign.end,
@@ -1138,13 +1139,13 @@ class ShowCoachesInDialog extends StatelessWidget {
                           color: FlutterFlowTheme.of(context)
                               .secondaryBackground,
                           border: Border.all(
-                            color: Color(0xFFB4B4B4),
+                            color: const Color(0xFFB4B4B4),
                             width: 1,
                           ),
                         ),
                         child: InkWell(
                           onTap: () async {
-                            final manageSalaryCubit = ManageSalaryCubit.get(context);
+                            final manageSalaryCubit = ManageUsersCubit.get(context);
                             //manageSalaryCubit.initControllers(ManageSalaryCubit.get(context).coaches[index]);
                             manageSalaryCubit.initControllers(user);
                             await Navigator.pushNamed(context,
@@ -1156,7 +1157,7 @@ class ShowCoachesInDialog extends StatelessWidget {
 
                           },
                           child: Align(
-                            alignment: AlignmentDirectional(0, 0),
+                            alignment: const AlignmentDirectional(0, 0),
                             child: InkWell(
                               child: Text(
                                 '...المزيد ',
@@ -1175,7 +1176,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                           ),
                         ),
                       ),
-                      BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+                      BlocBuilder<ManageUsersCubit, ManageUsersState>(
                         builder: (context, state) {
                           return Container(
                             width: MediaQuery.sizeOf(context).width * 0.2,
@@ -1184,7 +1185,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               border: Border.all(
-                                color: Color(0xFFB4B4B4),
+                                color: const Color(0xFFB4B4B4),
                                 width: 1,
                               ),
                             ),
@@ -1239,18 +1240,18 @@ class ShowCoachesInDialog extends StatelessWidget {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Align(
-                                                  alignment: AlignmentDirectional(0, 0),
+                                                  alignment: const AlignmentDirectional(0, 0),
                                                   child: Row(
                                                     mainAxisSize: MainAxisSize.max,
                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                     children: [
                                                       Expanded(
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(1, 0),
+                                                          alignment: const AlignmentDirectional(1, 0),
                                                           child: Container(
                                                             width: 100,
                                                             child: TextFormField(
-                                                              controller: ManageSalaryCubit.get(context).salaryController,
+                                                              controller: ManageUsersCubit.get(context).salaryController,
                                                               autofocus: true,
                                                               obscureText: false,
                                                               decoration: InputDecoration(
@@ -1268,14 +1269,14 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                                   fontSize: 10,
                                                                 ),
                                                                 enabledBorder: OutlineInputBorder(
-                                                                  borderSide: BorderSide(
+                                                                  borderSide: const BorderSide(
                                                                     color: Color(0xFFF4F4F4),
                                                                     width: 2,
                                                                   ),
                                                                   borderRadius: BorderRadius.circular(8),
                                                                 ),
                                                                 focusedBorder: OutlineInputBorder(
-                                                                  borderSide: BorderSide(
+                                                                  borderSide: const BorderSide(
                                                                     color: Colors.blue,
                                                                     width: 2,
                                                                   ),
@@ -1304,7 +1305,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                               ),
                                                               textAlign: TextAlign.end,
                                                               keyboardType: TextInputType.number,
-                                                              cursorColor: Color(0xFF333333),
+                                                              cursorColor: const Color(0xFF333333),
                                                               //   validator: _model.textControllerValidator
                                                               //     .asValidator(context),
                                                             ),
@@ -1320,8 +1321,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         ),
                                                       ),
                                                     ]
-                                                        .divide(SizedBox(width: 10))
-                                                        .addToEnd(SizedBox(width: 15)),
+                                                        .divide(const SizedBox(width: 10))
+                                                        .addToEnd(const SizedBox(width: 15)),
                                                   ),
                                                 ),
                                                 Row(
@@ -1333,21 +1334,21 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                       onTap: () async {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
-                                                        await ManageSalaryCubit.get(context).payPartialSalary(
+                                                        await ManageUsersCubit.get(context).payPartialSalary(
                                                           currentTotalSalary: userSalary??0,
                                                           userId:
-                                                          uid,salaryPaid: ManageSalaryCubit.get(context).salaryController.text,
+                                                          uid,salaryPaid: ManageUsersCubit.get(context).salaryController.text,
                                                         ).then((value) => Navigator.pop(context));
                                                       },
                                                       child: Container(
                                                         width: 130,
                                                         height: 40,
                                                         decoration: BoxDecoration(
-                                                          color: Color(0xFFB9B9B9),
+                                                          color: const Color(0xFFB9B9B9),
                                                           borderRadius: BorderRadius.circular(8),
                                                         ),
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(0, 0),
+                                                          alignment: const AlignmentDirectional(0, 0),
                                                           child: Text(
                                                             'دفع جزئي',
                                                             style: FlutterFlowTheme.of(context)
@@ -1366,7 +1367,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                       onTap: () async {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
-                                                        await ManageSalaryCubit.get(context).paySalary(
+                                                        await ManageUsersCubit.get(context).paySalary(
                                                           userId:
                                                           uid,
                                                         ).then((value) => Navigator.pop(context));
@@ -1379,7 +1380,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           borderRadius: BorderRadius.circular(8),
                                                         ),
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(0, 0),
+                                                          alignment: const AlignmentDirectional(0, 0),
                                                           child: Text(
                                                             'دفع كل المرتب',
                                                             style: FlutterFlowTheme.of(context)
@@ -1393,15 +1394,15 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         ),
                                                       ),
                                                     )
-                                                  ].divide(SizedBox(width: 10)),
+                                                  ].divide(const SizedBox(width: 10)),
                                                 ),
 
-                                              ].divide(SizedBox(height: 35)).addToStart(SizedBox(height: 50)),
+                                              ].divide(const SizedBox(height: 35)).addToStart(const SizedBox(height: 50)),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 20,
                                             )
-                                          ].divide(SizedBox(height: 0)),
+                                          ].divide(const SizedBox(height: 0)),
                                         ),
                                       ),
                                     );
@@ -1409,7 +1410,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                 );
                               },
                               child: Align(
-                                alignment: AlignmentDirectional(0, 0),
+                                alignment: const AlignmentDirectional(0, 0),
                                 child: Text(
                                   'دفع الراتب',
                                   textAlign: TextAlign.end,
@@ -1428,7 +1429,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                           );
                         },
                       ),
-                      BlocConsumer<ManageSalaryCubit, ManageSalaryState>(
+                      BlocConsumer<ManageUsersCubit, ManageUsersState>(
                         listener: (context, state) {
 
                         },
@@ -1440,7 +1441,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               border: Border.all(
-                                color: Color(0xFFB4B4B4),
+                                color: const Color(0xFFB4B4B4),
                                 width: 1,
                               ),
                             ),
@@ -1494,18 +1495,18 @@ class ShowCoachesInDialog extends StatelessWidget {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Align(
-                                                  alignment: AlignmentDirectional(0, 0),
+                                                  alignment: const AlignmentDirectional(0, 0),
                                                   child: Row(
                                                     mainAxisSize: MainAxisSize.max,
                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                     children: [
                                                       Expanded(
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(1, 0),
+                                                          alignment: const AlignmentDirectional(1, 0),
                                                           child: Container(
                                                             width: 100,
                                                             child: TextFormField(
-                                                              controller: ManageSalaryCubit.get(context).salaryController,
+                                                              controller: ManageUsersCubit.get(context).salaryController,
                                                               autofocus: true,
                                                               obscureText: false,
                                                               decoration: InputDecoration(
@@ -1523,14 +1524,14 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                                   fontSize: 10,
                                                                 ),
                                                                 enabledBorder: OutlineInputBorder(
-                                                                  borderSide: BorderSide(
+                                                                  borderSide: const BorderSide(
                                                                     color: Color(0xFFF4F4F4),
                                                                     width: 2,
                                                                   ),
                                                                   borderRadius: BorderRadius.circular(8),
                                                                 ),
                                                                 focusedBorder: OutlineInputBorder(
-                                                                  borderSide: BorderSide(
+                                                                  borderSide: const BorderSide(
                                                                     color: Colors.blue,
                                                                     width: 2,
                                                                   ),
@@ -1559,7 +1560,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                               ),
                                                               textAlign: TextAlign.end,
                                                               keyboardType: TextInputType.number,
-                                                              cursorColor: Color(0xFF333333),
+                                                              cursorColor: const Color(0xFF333333),
                                                               //   validator: _model.textControllerValidator
                                                               //     .asValidator(context),
                                                             ),
@@ -1575,8 +1576,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         ),
                                                       ),
                                                     ]
-                                                        .divide(SizedBox(width: 10))
-                                                        .addToEnd(SizedBox(width: 15)),
+                                                        .divide(const SizedBox(width: 10))
+                                                        .addToEnd(const SizedBox(width: 15)),
                                                   ),
                                                 ),
                                                 Row(
@@ -1589,9 +1590,9 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                       onTap: () async {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
-                                                        await ManageSalaryCubit.get(context).payBonus(
+                                                        await ManageUsersCubit.get(context).payBonus(
                                                           userId: uid,TotalSalary: user.totalSalary??0,
-                                                          salaryPaid: ManageSalaryCubit.get(context).salaryController.text,
+                                                          salaryPaid: ManageUsersCubit.get(context).salaryController.text,
                                                         ).then((value) => Navigator.pop(context));
                                                       },
                                                       child: Container(
@@ -1602,7 +1603,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           borderRadius: BorderRadius.circular(8),
                                                         ),
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(0, 0),
+                                                          alignment: const AlignmentDirectional(0, 0),
                                                           child: Text(
                                                             isCoachInfoList??false?
                                                             ' صرف مكافأة'
@@ -1618,15 +1619,15 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         ),
                                                       ),
                                                     )
-                                                  ].divide(SizedBox(width: 10)),
+                                                  ].divide(const SizedBox(width: 10)),
                                                 ),
 
-                                              ].divide(SizedBox(height: 35)).addToStart(SizedBox(height: 50)),
+                                              ].divide(const SizedBox(height: 35)).addToStart(const SizedBox(height: 50)),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 20,
                                             )
-                                          ].divide(SizedBox(height: 0)),
+                                          ].divide(const SizedBox(height: 0)),
                                         ),
                                       ),
                                     );
@@ -1634,7 +1635,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                 );
                               },
                               child: Align(
-                                alignment: AlignmentDirectional(0, 0),
+                                alignment: const AlignmentDirectional(0, 0),
                                 child: Text(
                                   'مكافأة',
                                   textAlign: TextAlign.end,
@@ -1662,12 +1663,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                           color: FlutterFlowTheme.of(context)
                               .secondaryBackground,
                           border: Border.all(
-                            color: Color(0xFFB4B4B4),
+                            color: const Color(0xFFB4B4B4),
                             width: 1,
                           ),
                         ),
                         child: Align(
-                          alignment: AlignmentDirectional(0, 0),
+                          alignment: const AlignmentDirectional(0, 0),
                           child: Text(
                             //  ManageSalaryCubit.get(context).coaches[index].totalSalary.toString(),
                             user.totalSalary.toString(),
@@ -1686,7 +1687,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                         ),
                       ),
                       Align(
-                        alignment: AlignmentDirectional(1, 0),
+                        alignment: const AlignmentDirectional(1, 0),
                         child: Container(
                           width: MediaQuery.sizeOf(context).width *
                               0.2,
@@ -1695,12 +1696,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                             color: FlutterFlowTheme.of(context)
                                 .secondaryBackground,
                             border: Border.all(
-                              color: Color(0xFFB4B4B4),
+                              color: const Color(0xFFB4B4B4),
                               width: 1,
                             ),
                           ),
                           child: Align(
-                            alignment: AlignmentDirectional(0, 0),
+                            alignment: const AlignmentDirectional(0, 0),
                             child: Text(
                               ' ${
                               // ManageSalaryCubit.get(context).coaches[index].fname??''} ${(ManageSalaryCubit.get(context).coaches[index].lname??'')}',
@@ -1733,13 +1734,13 @@ class ShowCoachesInDialog extends StatelessWidget {
                           color: FlutterFlowTheme.of(context)
                               .secondaryBackground,
                           border: Border.all(
-                            color: Color(0xFFB4B4B4),
+                            color: const Color(0xFFB4B4B4),
                             width: 1,
                           ),
                         ),
                         child: InkWell(
                           onTap: () async {
-                            final manageSalaryCubit = ManageSalaryCubit.get(context);
+                            final manageSalaryCubit = ManageUsersCubit.get(context);
                             //manageSalaryCubit.initControllers(ManageSalaryCubit.get(context).coaches[index]);
                             manageSalaryCubit.initControllers(user);
                             await Navigator.pushNamed(context,
@@ -1751,7 +1752,7 @@ class ShowCoachesInDialog extends StatelessWidget {
 
                           },
                           child: Align(
-                            alignment: AlignmentDirectional(0, 0),
+                            alignment: const AlignmentDirectional(0, 0),
                             child: InkWell(
                               child: Text(
                                 '...المزيد ',
@@ -1770,7 +1771,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                           ),
                         ),
                       ),
-                      BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+                      BlocBuilder<ManageUsersCubit, ManageUsersState>(
                         builder: (context, state) {
                           return Container(
                             width: MediaQuery.sizeOf(context).width * 0.2,
@@ -1779,7 +1780,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               border: Border.all(
-                                color: Color(0xFFB4B4B4),
+                                color: const Color(0xFFB4B4B4),
                                 width: 1,
                               ),
                             ),
@@ -1839,18 +1840,18 @@ class ShowCoachesInDialog extends StatelessWidget {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Align(
-                                                  alignment: AlignmentDirectional(0, 0),
+                                                  alignment: const AlignmentDirectional(0, 0),
                                                   child: Row(
                                                     mainAxisSize: MainAxisSize.max,
                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                     children: [
                                                       Expanded(
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(1, 0),
+                                                          alignment: const AlignmentDirectional(1, 0),
                                                           child: Container(
                                                             width: 100,
                                                             child: TextFormField(
-                                                              controller: ManageSalaryCubit.get(context).salaryController,
+                                                              controller: ManageUsersCubit.get(context).salaryController,
                                                               autofocus: true,
                                                               obscureText: false,
                                                               decoration: InputDecoration(
@@ -1868,14 +1869,14 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                                   fontSize: 10,
                                                                 ),
                                                                 enabledBorder: OutlineInputBorder(
-                                                                  borderSide: BorderSide(
+                                                                  borderSide: const BorderSide(
                                                                     color: Color(0xFFF4F4F4),
                                                                     width: 2,
                                                                   ),
                                                                   borderRadius: BorderRadius.circular(8),
                                                                 ),
                                                                 focusedBorder: OutlineInputBorder(
-                                                                  borderSide: BorderSide(
+                                                                  borderSide: const BorderSide(
                                                                     color: Colors.blue,
                                                                     width: 2,
                                                                   ),
@@ -1904,7 +1905,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                               ),
                                                               textAlign: TextAlign.end,
                                                               keyboardType: TextInputType.number,
-                                                              cursorColor: Color(0xFF333333),
+                                                              cursorColor: const Color(0xFF333333),
                                                               //   validator: _model.textControllerValidator
                                                               //     .asValidator(context),
                                                             ),
@@ -1922,8 +1923,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         ),
                                                       ),
                                                     ]
-                                                        .divide(SizedBox(width: 10))
-                                                        .addToEnd(SizedBox(width: 15)),
+                                                        .divide(const SizedBox(width: 10))
+                                                        .addToEnd(const SizedBox(width: 15)),
                                                   ),
                                                 ),
                                                 Row(
@@ -1936,14 +1937,14 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
                                                         if(isCoachInfoList??false){
-                                                          await ManageSalaryCubit.get(context).payPartialSalary(
+                                                          await ManageUsersCubit.get(context).payPartialSalary(
                                                             userId:
-                                                            uid,salaryPaid: ManageSalaryCubit.get(context).salaryController.text, currentTotalSalary: userSalary??0,                                                          ).then((value) => Navigator.pop(context));
+                                                            uid,salaryPaid: ManageUsersCubit.get(context).salaryController.text, currentTotalSalary: userSalary??0,                                                          ).then((value) => Navigator.pop(context));
                                                         }else{
-                                                          await ManageSalaryCubit.get(context).reduceSessions(
+                                                          await ManageUsersCubit.get(context).reduceSessions(
                                                             context,
                                                             userId:
-                                                            uid,sessions: ManageSalaryCubit.get(context).salaryController.text, NumberOfSessions: userSessions??0,
+                                                            uid,sessions: ManageUsersCubit.get(context).salaryController.text, NumberOfSessions: userSessions??0,
                                                           ).then((value) => Navigator.pop(context));
                                                         }
 
@@ -1952,11 +1953,11 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         width: 130,
                                                         height: 40,
                                                         decoration: BoxDecoration(
-                                                          color: Color(0xFFB9B9B9),
+                                                          color: const Color(0xFFB9B9B9),
                                                           borderRadius: BorderRadius.circular(8),
                                                         ),
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(0, 0),
+                                                          alignment: const AlignmentDirectional(0, 0),
                                                           child: Text(
                                                             isCoachInfoList??false ?
                                                             'دفع جزئي'
@@ -1978,7 +1979,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                       onTap: () async {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
-                                                        await ManageSalaryCubit.get(context).paySalary(
+                                                        await ManageUsersCubit.get(context).paySalary(
                                                           userId:
                                                           uid,
                                                         ).then((value) => Navigator.pop(context));
@@ -1991,7 +1992,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           borderRadius: BorderRadius.circular(8),
                                                         ),
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(0, 0),
+                                                          alignment: const AlignmentDirectional(0, 0),
                                                           child: Text(
                                                             'دفع كل المرتب',
                                                             style: FlutterFlowTheme.of(context)
@@ -2005,15 +2006,15 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         ),
                                                       ),
                                                     ):Container(),
-                                                  ].divide(SizedBox(width: 10)),
+                                                  ].divide(const SizedBox(width: 10)),
                                                 ),
 
-                                              ].divide(SizedBox(height: 35)).addToStart(SizedBox(height: 50)),
+                                              ].divide(const SizedBox(height: 35)).addToStart(const SizedBox(height: 50)),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 20,
                                             )
-                                          ].divide(SizedBox(height: 0)),
+                                          ].divide(const SizedBox(height: 0)),
                                         ),
                                       ),
                                     );
@@ -2021,7 +2022,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                 );
                               },
                               child: Align(
-                                alignment: AlignmentDirectional(0, 0),
+                                alignment: const AlignmentDirectional(0, 0),
                                 child: Text(
                                   isCoachInfoList??false ?
                                   'دفع الراتب':
@@ -2043,7 +2044,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                           );
                         },
                       ),
-                      BlocConsumer<ManageSalaryCubit, ManageSalaryState>(
+                      BlocConsumer<ManageUsersCubit, ManageUsersState>(
                         listener: (context, state) {
 
                         },
@@ -2055,7 +2056,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               border: Border.all(
-                                color: Color(0xFFB4B4B4),
+                                color: const Color(0xFFB4B4B4),
                                 width: 1,
                               ),
                             ),
@@ -2113,18 +2114,18 @@ class ShowCoachesInDialog extends StatelessWidget {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Align(
-                                                  alignment: AlignmentDirectional(0, 0),
+                                                  alignment: const AlignmentDirectional(0, 0),
                                                   child: Row(
                                                     mainAxisSize: MainAxisSize.max,
                                                     mainAxisAlignment: MainAxisAlignment.end,
                                                     children: [
                                                       Expanded(
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(1, 0),
+                                                          alignment: const AlignmentDirectional(1, 0),
                                                           child: Container(
                                                             width: 100,
                                                             child: TextFormField(
-                                                              controller: ManageSalaryCubit.get(context).salaryController,
+                                                              controller: ManageUsersCubit.get(context).salaryController,
                                                               autofocus: true,
                                                               obscureText: false,
                                                               decoration: InputDecoration(
@@ -2142,14 +2143,14 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                                   fontSize: 10,
                                                                 ),
                                                                 enabledBorder: OutlineInputBorder(
-                                                                  borderSide: BorderSide(
+                                                                  borderSide: const BorderSide(
                                                                     color: Color(0xFFF4F4F4),
                                                                     width: 2,
                                                                   ),
                                                                   borderRadius: BorderRadius.circular(8),
                                                                 ),
                                                                 focusedBorder: OutlineInputBorder(
-                                                                  borderSide: BorderSide(
+                                                                  borderSide: const BorderSide(
                                                                     color: Colors.blue,
                                                                     width: 2,
                                                                   ),
@@ -2178,7 +2179,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                               ),
                                                               textAlign: TextAlign.end,
                                                               keyboardType: TextInputType.number,
-                                                              cursorColor: Color(0xFF333333),
+                                                              cursorColor: const Color(0xFF333333),
                                                               //   validator: _model.textControllerValidator
                                                               //     .asValidator(context),
                                                             ),
@@ -2196,8 +2197,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         ),
                                                       ),
                                                     ]
-                                                        .divide(SizedBox(width: 10))
-                                                        .addToEnd(SizedBox(width: 15)),
+                                                        .divide(const SizedBox(width: 10))
+                                                        .addToEnd(const SizedBox(width: 15)),
                                                   ),
                                                 ),
                                                 Row(
@@ -2211,17 +2212,17 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         print('uiiiiiiiiid \n\n');
                                                         //     print(ManageSalaryCubit.get(context).users[index].uId);
                                                         if(isCoachInfoList??false){
-                                                          await ManageSalaryCubit.get(context).payPartialSalary(
+                                                          await ManageUsersCubit.get(context).payPartialSalary(
                                                             userId:
-                                                            uid,salaryPaid: ManageSalaryCubit.get(context).salaryController.text, currentTotalSalary: userSalary ??0,
+                                                            uid,salaryPaid: ManageUsersCubit.get(context).salaryController.text, currentTotalSalary: userSalary ??0,
                                                           ).then((value) => Navigator.pop(context));
                                                         }else{
-                                                          await ManageSalaryCubit.get(context).addSessions(
+                                                          await ManageUsersCubit.get(context).addSessions(
                                                             context,
                                                             NumberOfSessions: userSessions??0,
 
                                                             userId:
-                                                            uid,sessions: ManageSalaryCubit.get(context).salaryController.text,
+                                                            uid,sessions: ManageUsersCubit.get(context).salaryController.text,
                                                           ).then((value) => Navigator.pop(context));
                                                         }
 
@@ -2234,7 +2235,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           borderRadius: BorderRadius.circular(8),
                                                         ),
                                                         child: Align(
-                                                          alignment: AlignmentDirectional(0, 0),
+                                                          alignment: const AlignmentDirectional(0, 0),
                                                           child: Text(
                                                             //pay bonus
                                                             isCoachInfoList??false ?
@@ -2251,15 +2252,15 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         ),
                                                       ),
                                                     )
-                                                  ].divide(SizedBox(width: 10)),
+                                                  ].divide(const SizedBox(width: 10)),
                                                 ),
 
-                                              ].divide(SizedBox(height: 35)).addToStart(SizedBox(height: 50)),
+                                              ].divide(const SizedBox(height: 35)).addToStart(const SizedBox(height: 50)),
                                             ),
-                                            SizedBox(
+                                            const SizedBox(
                                               height: 20,
                                             )
-                                          ].divide(SizedBox(height: 0)),
+                                          ].divide(const SizedBox(height: 0)),
                                         ),
                                       ),
                                     );
@@ -2267,7 +2268,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                 );
                               },
                               child: Align(
-                                alignment: AlignmentDirectional(0, 0),
+                                alignment: const AlignmentDirectional(0, 0),
                                 child: Text(
                                   isCoachInfoList??false ?
                                   'مكافأة':
@@ -2297,12 +2298,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                           color: FlutterFlowTheme.of(context)
                               .secondaryBackground,
                           border: Border.all(
-                            color: Color(0xFFB4B4B4),
+                            color: const Color(0xFFB4B4B4),
                             width: 1,
                           ),
                         ),
                         child: Align(
-                          alignment: AlignmentDirectional(0, 0),
+                          alignment: const AlignmentDirectional(0, 0),
                           child: Text(
                             //  ManageSalaryCubit.get(context).coaches[index].totalSalary.toString(),
                             isCoachInfoList??false ?
@@ -2324,7 +2325,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                         ),
                       ),
                       Align(
-                        alignment: AlignmentDirectional(1, 0),
+                        alignment: const AlignmentDirectional(1, 0),
                         child: Container(
                           width: MediaQuery.sizeOf(context).width *
                               0.2,
@@ -2333,12 +2334,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                             color: FlutterFlowTheme.of(context)
                                 .secondaryBackground,
                             border: Border.all(
-                              color: Color(0xFFB4B4B4),
+                              color: const Color(0xFFB4B4B4),
                               width: 1,
                             ),
                           ),
                           child: Align(
-                            alignment: AlignmentDirectional(0, 0),
+                            alignment: const AlignmentDirectional(0, 0),
                             child: Text(
                               ' ${
                               // ManageSalaryCubit.get(context).coaches[index].fname??''} ${(ManageSalaryCubit.get(context).coaches[index].lname??'')}',
@@ -2418,7 +2419,7 @@ class ShowCoachesInDialog extends StatelessWidget {
               children: [
                 TextButton(
                   onPressed: () => Navigator.of(context).pop(),
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: () {
@@ -2426,7 +2427,7 @@ class ShowCoachesInDialog extends StatelessWidget {
 
                     Navigator.of(context).pop();
                   },
-                  child: Text('Save'),
+                  child: const Text('Save'),
                 ),
               ],
             ),
@@ -2440,9 +2441,9 @@ class ShowCoachesInDialog extends StatelessWidget {
                 isCoachInfoList ?? false ?
                 Container(
             decoration: ShapeDecoration(
-              color: Color(0xFFFAFAFA),
+              color: const Color(0xFFFAFAFA),
               shape: RoundedRectangleBorder(
-                side: BorderSide(width: 1, color: Color(0xFFB9B9B9)),
+                side: const BorderSide(width: 1, color: Color(0xFFB9B9B9)),
                 borderRadius: BorderRadius.circular(2),
               ),
             ),
@@ -2464,12 +2465,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                                           decoration: InputDecoration(
                                             hintText: 'Search',
                                             suffixIcon: IconButton(
-                                              icon: Icon(Icons.search),
+                                              icon: const Icon(Icons.search),
                                               onPressed: () => addGroupCubit.onSearchSubmitted(addGroupCubit.searchController.text.trim(),isCoach),
                                             ),
                                             prefixIcon:
                                             isSearch? IconButton(
-                                                icon: Icon(Icons.close),
+                                                icon: const Icon(Icons.close),
                                                 onPressed: () {
                                                   addGroupCubit.searchController.clear();
                                                   //query ==null
@@ -2498,12 +2499,12 @@ class ShowCoachesInDialog extends StatelessWidget {
 
                                             hintText: 'Search ',
                                             suffixIcon: IconButton(
-                                              icon: Icon(Icons.search),
+                                              icon: const Icon(Icons.search),
                                               onPressed: () => addGroupCubit.onSearchSubmitted(addGroupCubit.searchController.text.trim(),isCoach),
                                             ),
                                             prefixIcon:
                                               isSearch ? IconButton(
-                                                  icon: Icon(Icons.close),
+                                                  icon: const Icon(Icons.close),
                                                   onPressed: () {
                                                     addGroupCubit.searchController.clear();
                                                     //query ==null
@@ -2531,12 +2532,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                                               color: FlutterFlowTheme.of(context)
                                                   .secondaryBackground,
                                               border: Border.all(
-                                                color: Color(0xFFB4B4B4),
+                                                color: const Color(0xFFB4B4B4),
                                                 width: 1,
                                               ),
                                             ),
                                             child: Align(
-                                              alignment: AlignmentDirectional(0, 0),
+                                              alignment: const AlignmentDirectional(0, 0),
                                               child: Text(
                                                 'دفع',
                                                 textAlign: TextAlign.end,
@@ -2558,12 +2559,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                                               color: FlutterFlowTheme.of(context)
                                                   .secondaryBackground,
                                               border: Border.all(
-                                                color: Color(0xFFB4B4B4),
+                                                color: const Color(0xFFB4B4B4),
                                                 width: 1,
                                               ),
                                             ),
                                             child: Align(
-                                              alignment: AlignmentDirectional(0, 0),
+                                              alignment: const AlignmentDirectional(0, 0),
                                               child: Text(
 
                                                 'مكافأة',
@@ -2587,12 +2588,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                                               color: FlutterFlowTheme.of(context)
                                                   .secondaryBackground,
                                               border: Border.all(
-                                                color: Color(0xFFB4B4B4),
+                                                color: const Color(0xFFB4B4B4),
                                                 width: 1,
                                               ),
                                             ),
                                             child: Align(
-                                              alignment: AlignmentDirectional(0, 0),
+                                              alignment: const AlignmentDirectional(0, 0),
                                               child: Text(
                                                 'مجموع المرتب',
                                                 textAlign: TextAlign.end,
@@ -2607,7 +2608,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                             ),
                                           ),
                                           Align(
-                                            alignment: AlignmentDirectional(1, 0),
+                                            alignment: const AlignmentDirectional(1, 0),
                                             child: Container(
                                               width: MediaQuery.sizeOf(context).width *
                                                   0.2,
@@ -2616,12 +2617,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                 color: FlutterFlowTheme.of(context)
                                                     .secondaryBackground,
                                                 border: Border.all(
-                                                  color: Color(0xFFB4B4B4),
+                                                  color: const Color(0xFFB4B4B4),
                                                   width: 1,
                                                 ),
                                               ),
                                               child: Align(
-                                                alignment: AlignmentDirectional(0, 0),
+                                                alignment: const AlignmentDirectional(0, 0),
                                                 child: Text(
                                                   'الاسم',
                                                   textAlign: TextAlign.end,
@@ -2660,13 +2661,13 @@ class ShowCoachesInDialog extends StatelessWidget {
                             color: FlutterFlowTheme.of(context)
                                 .secondaryBackground,
                             border: Border.all(
-                              color: Color(0xFFB4B4B4),
+                              color: const Color(0xFFB4B4B4),
                               width: 1,
                             ),
                           ),
                           child: InkWell(
                             onTap: () async {
-                              final manageSalaryCubit = ManageSalaryCubit.get(context);
+                              final manageSalaryCubit = ManageUsersCubit.get(context);
                               //manageSalaryCubit.initControllers(ManageSalaryCubit.get(context).coaches[index]);
                               manageSalaryCubit.initControllers(user);
                               await Navigator.pushNamed(context,
@@ -2678,7 +2679,7 @@ class ShowCoachesInDialog extends StatelessWidget {
 
                             },
                             child: Align(
-                              alignment: AlignmentDirectional(0, 0),
+                              alignment: const AlignmentDirectional(0, 0),
                               child: InkWell(
                                 child: Text(
                                   '...المزيد ',
@@ -2697,7 +2698,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                             ),
                           ),
                         ),
-                        BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+                        BlocBuilder<ManageUsersCubit, ManageUsersState>(
                           builder: (context, state) {
                             return Container(
                               width: MediaQuery.sizeOf(context).width * 0.2,
@@ -2706,7 +2707,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                 color: FlutterFlowTheme.of(context)
                                     .secondaryBackground,
                                 border: Border.all(
-                                  color: Color(0xFFB4B4B4),
+                                  color: const Color(0xFFB4B4B4),
                                   width: 1,
                                 ),
                               ),
@@ -2759,18 +2760,18 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
                                                   Align(
-                                                    alignment: AlignmentDirectional(0, 0),
+                                                    alignment: const AlignmentDirectional(0, 0),
                                                     child: Row(
                                                       mainAxisSize: MainAxisSize.max,
                                                       mainAxisAlignment: MainAxisAlignment.end,
                                                       children: [
                                                         Expanded(
                                                           child: Align(
-                                                            alignment: AlignmentDirectional(1, 0),
+                                                            alignment: const AlignmentDirectional(1, 0),
                                                             child: Container(
                                                               width: 100,
                                                               child: TextFormField(
-                                                                controller: ManageSalaryCubit.get(context).salaryController,
+                                                                controller: ManageUsersCubit.get(context).salaryController,
                                                                 autofocus: true,
                                                                 obscureText: false,
                                                                 decoration: InputDecoration(
@@ -2788,14 +2789,14 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                                     fontSize: 10,
                                                                   ),
                                                                   enabledBorder: OutlineInputBorder(
-                                                                    borderSide: BorderSide(
+                                                                    borderSide: const BorderSide(
                                                                       color: Color(0xFFF4F4F4),
                                                                       width: 2,
                                                                     ),
                                                                     borderRadius: BorderRadius.circular(8),
                                                                   ),
                                                                   focusedBorder: OutlineInputBorder(
-                                                                    borderSide: BorderSide(
+                                                                    borderSide: const BorderSide(
                                                                       color: Colors.blue,
                                                                       width: 2,
                                                                     ),
@@ -2824,7 +2825,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                                 ),
                                                                 textAlign: TextAlign.end,
                                                                 keyboardType: TextInputType.number,
-                                                                cursorColor: Color(0xFF333333),
+                                                                cursorColor: const Color(0xFF333333),
                                                                 //   validator: _model.textControllerValidator
                                                                 //     .asValidator(context),
                                                               ),
@@ -2840,8 +2841,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           ),
                                                         ),
                                                       ]
-                                                          .divide(SizedBox(width: 10))
-                                                          .addToEnd(SizedBox(width: 15)),
+                                                          .divide(const SizedBox(width: 10))
+                                                          .addToEnd(const SizedBox(width: 15)),
                                                     ),
                                                   ),
                                                   Row(
@@ -2853,20 +2854,20 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         onTap: () async {
                                                           print('uiiiiiiiiid \n\n');
                                                           //     print(ManageSalaryCubit.get(context).users[index].uId);
-                                                          await ManageSalaryCubit.get(context).payPartialSalary(
+                                                          await ManageUsersCubit.get(context).payPartialSalary(
                                                             userId:
-                                                            uid,salaryPaid: ManageSalaryCubit.get(context).salaryController.text, currentTotalSalary: user.totalSalary ??0,
+                                                            uid,salaryPaid: ManageUsersCubit.get(context).salaryController.text, currentTotalSalary: user.totalSalary ??0,
                                                           ).then((value) => Navigator.pop(context));
                                                         },
                                                         child: Container(
                                                           width: 130,
                                                           height: 40,
                                                           decoration: BoxDecoration(
-                                                            color: Color(0xFFB9B9B9),
+                                                            color: const Color(0xFFB9B9B9),
                                                             borderRadius: BorderRadius.circular(8),
                                                           ),
                                                           child: Align(
-                                                            alignment: AlignmentDirectional(0, 0),
+                                                            alignment: const AlignmentDirectional(0, 0),
                                                             child: Text(
                                                               'دفع جزئي',
                                                               style: FlutterFlowTheme.of(context)
@@ -2885,7 +2886,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         onTap: () async {
                                                           print('uiiiiiiiiid \n\n');
                                                           //     print(ManageSalaryCubit.get(context).users[index].uId);
-                                                          await ManageSalaryCubit.get(context).paySalary(
+                                                          await ManageUsersCubit.get(context).paySalary(
                                                             userId:
                                                             uid,
                                                           ).then((value) => Navigator.pop(context));
@@ -2898,7 +2899,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                             borderRadius: BorderRadius.circular(8),
                                                           ),
                                                           child: Align(
-                                                            alignment: AlignmentDirectional(0, 0),
+                                                            alignment: const AlignmentDirectional(0, 0),
                                                             child: Text(
                                                               'دفع كل المرتب',
                                                               style: FlutterFlowTheme.of(context)
@@ -2912,15 +2913,15 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           ),
                                                         ),
                                                       )
-                                                    ].divide(SizedBox(width: 10)),
+                                                    ].divide(const SizedBox(width: 10)),
                                                   ),
 
-                                                ].divide(SizedBox(height: 35)).addToStart(SizedBox(height: 50)),
+                                                ].divide(const SizedBox(height: 35)).addToStart(const SizedBox(height: 50)),
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 height: 20,
                                               )
-                                            ].divide(SizedBox(height: 0)),
+                                            ].divide(const SizedBox(height: 0)),
                                           ),
                                         ),
                                       );
@@ -2928,7 +2929,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                   );
                                 },
                                 child: Align(
-                                  alignment: AlignmentDirectional(0, 0),
+                                  alignment: const AlignmentDirectional(0, 0),
                                   child: Text(
                                     'دفع الراتب',
                                     textAlign: TextAlign.end,
@@ -2947,7 +2948,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                             );
                           },
                         ),
-                        BlocConsumer<ManageSalaryCubit, ManageSalaryState>(
+                        BlocConsumer<ManageUsersCubit, ManageUsersState>(
                           listener: (context, state) {
 
                           },
@@ -2959,7 +2960,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                 color: FlutterFlowTheme.of(context)
                                     .secondaryBackground,
                                 border: Border.all(
-                                  color: Color(0xFFB4B4B4),
+                                  color: const Color(0xFFB4B4B4),
                                   width: 1,
                                 ),
                               ),
@@ -3013,18 +3014,18 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                 mainAxisSize: MainAxisSize.max,
                                                 children: [
                                                   Align(
-                                                    alignment: AlignmentDirectional(0, 0),
+                                                    alignment: const AlignmentDirectional(0, 0),
                                                     child: Row(
                                                       mainAxisSize: MainAxisSize.max,
                                                       mainAxisAlignment: MainAxisAlignment.end,
                                                       children: [
                                                         Expanded(
                                                           child: Align(
-                                                            alignment: AlignmentDirectional(1, 0),
+                                                            alignment: const AlignmentDirectional(1, 0),
                                                             child: Container(
                                                               width: 100,
                                                               child: TextFormField(
-                                                                controller: ManageSalaryCubit.get(context).salaryController,
+                                                                controller: ManageUsersCubit.get(context).salaryController,
                                                                 autofocus: true,
                                                                 obscureText: false,
                                                                 decoration: InputDecoration(
@@ -3042,14 +3043,14 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                                     fontSize: 10,
                                                                   ),
                                                                   enabledBorder: OutlineInputBorder(
-                                                                    borderSide: BorderSide(
+                                                                    borderSide: const BorderSide(
                                                                       color: Color(0xFFF4F4F4),
                                                                       width: 2,
                                                                     ),
                                                                     borderRadius: BorderRadius.circular(8),
                                                                   ),
                                                                   focusedBorder: OutlineInputBorder(
-                                                                    borderSide: BorderSide(
+                                                                    borderSide: const BorderSide(
                                                                       color: Colors.blue,
                                                                       width: 2,
                                                                     ),
@@ -3078,7 +3079,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                                 ),
                                                                 textAlign: TextAlign.end,
                                                                 keyboardType: TextInputType.number,
-                                                                cursorColor: Color(0xFF333333),
+                                                                cursorColor: const Color(0xFF333333),
                                                                 //   validator: _model.textControllerValidator
                                                                 //     .asValidator(context),
                                                               ),
@@ -3094,8 +3095,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           ),
                                                         ),
                                                       ]
-                                                          .divide(SizedBox(width: 10))
-                                                          .addToEnd(SizedBox(width: 15)),
+                                                          .divide(const SizedBox(width: 10))
+                                                          .addToEnd(const SizedBox(width: 15)),
                                                     ),
                                                   ),
                                                   Row(
@@ -3108,9 +3109,9 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                         onTap: () async {
                                                           print('uiiiiiiiiid \n\n');
                                                           //     print(ManageSalaryCubit.get(context).users[index].uId);
-                                                          await ManageSalaryCubit.get(context).payBonus(
+                                                          await ManageUsersCubit.get(context).payBonus(
                                                             userId:
-                                                            uid,salaryPaid: ManageSalaryCubit.get(context).salaryController.text, TotalSalary: user.totalSalary ??0,
+                                                            uid,salaryPaid: ManageUsersCubit.get(context).salaryController.text, TotalSalary: user.totalSalary ??0,
                                                           ).then((value) => Navigator.pop(context));
                                                         },
                                                         child: Container(
@@ -3121,7 +3122,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                             borderRadius: BorderRadius.circular(8),
                                                           ),
                                                           child: Align(
-                                                            alignment: AlignmentDirectional(0, 0),
+                                                            alignment: const AlignmentDirectional(0, 0),
                                                             child: Text(
                                                               //pay bonus
                                                               isCoachInfoList??false ?
@@ -3138,15 +3139,15 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                           ),
                                                         ),
                                                       )
-                                                    ].divide(SizedBox(width: 10)),
+                                                    ].divide(const SizedBox(width: 10)),
                                                   ),
 
-                                                ].divide(SizedBox(height: 35)).addToStart(SizedBox(height: 50)),
+                                                ].divide(const SizedBox(height: 35)).addToStart(const SizedBox(height: 50)),
                                               ),
-                                              SizedBox(
+                                              const SizedBox(
                                                 height: 20,
                                               )
-                                            ].divide(SizedBox(height: 0)),
+                                            ].divide(const SizedBox(height: 0)),
                                           ),
                                         ),
                                       );
@@ -3154,7 +3155,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                   );
                                 },
                                 child: Align(
-                                  alignment: AlignmentDirectional(0, 0),
+                                  alignment: const AlignmentDirectional(0, 0),
                                   child: Text(
                                     'مكافأة',
                                     textAlign: TextAlign.end,
@@ -3182,12 +3183,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                             color: FlutterFlowTheme.of(context)
                                 .secondaryBackground,
                             border: Border.all(
-                              color: Color(0xFFB4B4B4),
+                              color: const Color(0xFFB4B4B4),
                               width: 1,
                             ),
                           ),
                           child: Align(
-                            alignment: AlignmentDirectional(0, 0),
+                            alignment: const AlignmentDirectional(0, 0),
                             child: Text(
                             //  ManageSalaryCubit.get(context).coaches[index].totalSalary.toString(),
                               user.totalSalary.toString(),
@@ -3206,7 +3207,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                           ),
                         ),
                         Align(
-                          alignment: AlignmentDirectional(1, 0),
+                          alignment: const AlignmentDirectional(1, 0),
                           child: Container(
                             width: MediaQuery.sizeOf(context).width *
                                 0.2,
@@ -3215,12 +3216,12 @@ class ShowCoachesInDialog extends StatelessWidget {
                               color: FlutterFlowTheme.of(context)
                                   .secondaryBackground,
                               border: Border.all(
-                                color: Color(0xFFB4B4B4),
+                                color: const Color(0xFFB4B4B4),
                                 width: 1,
                               ),
                             ),
                             child: Align(
-                              alignment: AlignmentDirectional(0, 0),
+                              alignment: const AlignmentDirectional(0, 0),
                               child: Text(
                                 ' ${
                                    // ManageSalaryCubit.get(context).coaches[index].fname??''} ${(ManageSalaryCubit.get(context).coaches[index].lname??'')}',
@@ -3298,7 +3299,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                 children: [
                   TextButton(
                     onPressed: () => Navigator.of(context).pop(),
-                    child: Text('Cancel'),
+                    child: const Text('Cancel'),
                   ),
                   TextButton(
                     onPressed: () {
@@ -3306,7 +3307,7 @@ class ShowCoachesInDialog extends StatelessWidget {
 
                       Navigator.of(context).pop();
                     },
-                    child: Text('Save'),
+                    child: const Text('Save'),
                   ),
                 ],
               ),
@@ -3317,176 +3318,3 @@ class ShowCoachesInDialog extends StatelessWidget {
     );
   }
 }
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
-// import 'package:flutter/cupertino.dart';
-// import 'package:flutter/material.dart';
-//
-// import '../../registeration/data/userModel.dart';
-//
-// class ShowCoachesInDialog extends StatefulWidget {
-//   final List<UserModel> selectedUsers;
-//   final Function(List<UserModel>) onSelectedUsersChanged;
-//   final isCoach ;
-//
-//   const ShowCoachesInDialog({
-//     Key? key,
-//     required this.selectedUsers,
-//     required this.onSelectedUsersChanged, required this.isCoach,
-//   }) : super(key: key);
-//
-//   @override
-//   _ShowCoachesInDialogState createState() => _ShowCoachesInDialogState();
-// }
-//
-// class _ShowCoachesInDialogState extends State<ShowCoachesInDialog> {
-//   late List<UserModel> _selectedUsers;
-//   late List<String> _selectedUsersUids;
-//   late TextEditingController _searchController;
-//   late Query<Map<String, dynamic>> _query;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _selectedUsers = widget.selectedUsers;
-//     _selectedUsersUids = _selectedUsers.map((user) => user.uId!).toList();
-//     _searchController = TextEditingController();
-//     if(widget.isCoach) {
-//       _query = FirebaseFirestore.instance.collection('users').orderBy('name').where('role', isEqualTo: 'coach');
-//     } else {
-//       _query = FirebaseFirestore.instance.collection('users').orderBy('name').where('role', isEqualTo: 'user');
-//     }
-//   }
-//
-//   @override
-//   void dispose() {
-//     _searchController.dispose();
-//     super.dispose();
-//   }
-//
-//   Future<void> _onSearchSubmitted(String value) async {
-//    late Query newQuery;
-//     if(widget.isCoach)
-//        newQuery = FirebaseFirestore.instance
-//           .collection('users')
-// .orderBy('name')
-// .startAt([value])
-// .endAt([value + '\uf8ff'])
-//           .where('role', isEqualTo: 'coach')
-//           .limit(100);
-//     else
-//      newQuery = FirebaseFirestore.instance
-//        .collection('users')
-// .orderBy('name')
-// .startAt([value])
-// .endAt([value + '\uf8ff'])
-//          .where('role', isEqualTo: 'user')
-//         .limit(100);
-//
-//     QuerySnapshot querySnapshot =
-//         await newQuery.get(GetOptions(source: Source.serverAndCache));
-//     var numberOfQuery = querySnapshot.docs.length;
-//     print('number of query is $numberOfQuery');
-//     print(numberOfQuery);
-//
-//     if (numberOfQuery == 0) {
-//       if(widget.isCoach)
-//         newQuery = FirebaseFirestore.instance
-//             .collection('users')
-//             .where('phone', isGreaterThanOrEqualTo: value)
-//             .where('phone', isLessThan: value + 'z')
-//             //order by name
-//             .orderBy('phone', descending: false)
-//             .where('role', isEqualTo: 'coach')
-//             .limit(100);
-//       else
-//         newQuery = FirebaseFirestore.instance
-//             .collection('users')
-//             .where('phone', isGreaterThanOrEqualTo: value)
-//             .where('phone', isLessThan: value + 'z')
-//             //order by name
-//             .orderBy('phone', descending: false)
-//             .where('role', isEqualTo: 'user')
-//             .limit(100);
-//     }
-//
-//     setState(() {
-//       _query = newQuery as Query<Map<String, dynamic>>;
-//     });
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Dialog(
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           Padding(
-//             padding: const EdgeInsets.all(8.0),
-//             child: TextField(
-//               //i want when i click on search icon the keyboard will be closed
-//               textInputAction: TextInputAction.search,
-//               onSubmitted: (value) => _onSearchSubmitted(value.trim()),
-//               controller: _searchController,
-//               decoration: InputDecoration(
-//                 hintText: 'Search by name or phone number',
-//                 suffixIcon: IconButton(
-//                   icon: Icon(Icons.search),
-//                   onPressed: () =>
-//                       _onSearchSubmitted(_searchController.text.trim()),
-//                 ),
-//               ),
-//             ),
-//           ),
-//           Expanded(
-//             child: FirestoreListView(
-//               shrinkWrap: true,
-//               cacheExtent: 300,
-//               pageSize: 5,
-//               query: _query,
-//               itemBuilder: (context, document) {
-//                 final data = document.data() as Map<String, dynamic>;
-//                 final user = UserModel.fromJson(data);
-//                 return ListTile(
-//                   title: Text(user.name ?? ''),
-//                   subtitle: Text(user.phone ?? ''),
-//                   trailing: Checkbox(
-//                     value: _selectedUsersUids.contains(user.uId),
-//                     onChanged: (value) {
-//                       setState(() {
-//                         if (value!) {
-//                           _selectedUsersUids.add(user.uId!);
-//                           _selectedUsers.add(user);
-//                         } else {
-//                           _selectedUsersUids.remove(user.uId!);
-//                           _selectedUsers.remove(user);
-//                         }
-//                         widget.onSelectedUsersChanged(_selectedUsers);
-//                       });
-//                     },
-//                   ),
-//                 );
-//               },
-//             ),
-//           ),
-//           Row(
-//             mainAxisAlignment: MainAxisAlignment.end,
-//             children: [
-//               TextButton(
-//                 onPressed: () => Navigator.of(context).pop(),
-//                 child: Text('Cancel'),
-//               ),
-//               TextButton(
-//                 onPressed: () {
-//                   widget.onSelectedUsersChanged(_selectedUsers);
-//                   Navigator.of(context).pop();
-//                 },
-//                 child: Text('Save'),
-//               ),
-//             ],
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }

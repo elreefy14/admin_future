@@ -3,7 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 
-import '../../../business_logic/Home/manage_salary_cubit.dart';
+import '../../../../manage_users_coaches/business_logic/manage_users_cubit.dart';
 
 class CoachList extends StatelessWidget {
   final String uid;
@@ -21,7 +21,7 @@ class CoachList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: ManageSalaryCubit.get(context).schedules?.length ?? 0,
+      itemCount: ManageUsersCubit.get(context).schedules?.length ?? 0,
       itemBuilder: (context, index) {
         return FirestoreListView<Map<String, dynamic>>(
           pageSize: 5,
@@ -32,17 +32,17 @@ class CoachList extends StatelessWidget {
               .collection('admins')
               .doc(FirebaseAuth.instance.currentUser?.uid)
               .collection('schedules')
-              .doc(ManageSalaryCubit.get(context).days?[
-          ManageSalaryCubit.get(context).selectedDayIndex
+              .doc(ManageUsersCubit.get(context).days?[
+          ManageUsersCubit.get(context).selectedDayIndex
           ].name ?? '')
               .collection('schedules')
-              .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+              .doc('${ManageUsersCubit.get(context).schedules?[index].scheduleId}')
               .collection('users'),
               //.where('role', isEqualTo: role),
           itemBuilder: (context, snapshot) {
             Map<String, dynamic> user = snapshot.data();
-            int startTime = ManageSalaryCubit.get(context).schedules?[index].startTime?.toDate().hour ?? 0;
-            int endTime = ManageSalaryCubit.get(context).schedules?[index].endTime?.toDate().hour ?? 0;
+            int startTime = ManageUsersCubit.get(context).schedules?[index].startTime?.toDate().hour ?? 0;
+            int endTime = ManageUsersCubit.get(context).schedules?[index].endTime?.toDate().hour ?? 0;
             int totalHours = endTime - startTime;
             totalHours += Duration(minutes: 2).inHours;
             return Column(
@@ -57,11 +57,11 @@ class CoachList extends StatelessWidget {
                           .collection('admins')
                           .doc(FirebaseAuth.instance.currentUser?.uid)
                           .collection('schedules')
-                          .doc(ManageSalaryCubit.get(context).days?[
-                      ManageSalaryCubit.get(context).selectedDayIndex
+                          .doc(ManageUsersCubit.get(context).days?[
+                      ManageUsersCubit.get(context).selectedDayIndex
                       ].name ?? '')
                           .collection('schedules')
-                          .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+                          .doc('${ManageUsersCubit.get(context).schedules?[index].scheduleId}')
                           .collection('users')
                           .doc(user['uid'])
                           .update({'finished': value,});
@@ -75,11 +75,11 @@ class CoachList extends StatelessWidget {
                           .collection('admins')
                           .doc(FirebaseAuth.instance.currentUser?.uid)
                           .collection('schedules')
-                          .doc(ManageSalaryCubit.get(context).days?[
-                      ManageSalaryCubit.get(context).selectedDayIndex
+                          .doc(ManageUsersCubit.get(context).days?[
+                      ManageUsersCubit.get(context).selectedDayIndex
                       ].name ?? '')
                           .collection('schedules')
-                          .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+                          .doc('${ManageUsersCubit.get(context).schedules?[index].scheduleId}')
                           .collection('users')
                           .doc(user['uid'])
                           .update({'finished': value,});

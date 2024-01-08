@@ -207,7 +207,7 @@ class HomeLayout extends StatelessWidget {
                              //   await ManageSalaryCubit.get(context).getUsers();
                             //    ManageSalaryCubit.get(context).syncData();
                                 Navigator.pushNamed(
-                                    context, AppRoutes.manageCoaches);
+                                    context, AppRoutes.manageUseers);
                               },
                               child: Container(
                                 width: 155.w,

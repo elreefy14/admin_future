@@ -20,7 +20,7 @@ import '../../../add_grouup_of_schedules/presentation/onboarding_screen.dart';
 import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
 import '../../../core/flutter_flow/flutter_flow_widgets.dart';
-import '../../business_logic/Home/manage_salary_cubit.dart';
+import '../../../manage_users_coaches/business_logic/manage_users_cubit.dart';
 import '../../data/schedules.dart';
 class ManageSchedulesScreen extends StatelessWidget {
   const ManageSchedulesScreen({Key? key}) : super(key: key);
@@ -48,7 +48,7 @@ class ManageSchedulesScreen extends StatelessWidget {
         ),
         actions: [
     FutureBuilder(
-    future: ManageSalaryCubit.get(context).getDays(),
+    future: ManageUsersCubit.get(context).getDays(),
     builder: (context, snapshot) {
     // if (snapshot.connectionState == ConnectionState.waiting) {
     // return Center(
@@ -61,7 +61,7 @@ class ManageSchedulesScreen extends StatelessWidget {
    // String day = ManageSalaryCubit.get(context).days?[0].name ?? 'الأربعاء';
     // Call getSchedules with the first day
    // ManageSalaryCubit.get(context).getSchedules(day: day);
-    return BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+    return BlocBuilder<ManageUsersCubit, ManageUsersState>(
   builder: (context, state) {
     return //if state is     emit(GetSchedulesLoadingState());
 //      show loading indicator
@@ -73,16 +73,16 @@ class ManageSchedulesScreen extends StatelessWidget {
         children: [
               InkWell(
                 onTap: () {
-                  ManageSalaryCubit.get(context).changeIsCoach(true);
+                  ManageUsersCubit.get(context).changeIsCoach(true);
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.0),
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
-                        color:ManageSalaryCubit.get(context).isCoach
+                        color:ManageUsersCubit.get(context).isCoach
                          ? Colors.blue : Colors.grey,
-                        width: ManageSalaryCubit.get(context).isCoach  ? 2.0 : 0.0,
+                        width: ManageUsersCubit.get(context).isCoach  ? 2.0 : 0.0,
                       ),
                     ),
                   ),
@@ -93,7 +93,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                     child: Text(
                       'المدربين',
                       style: TextStyle(
-                        color: ManageSalaryCubit.get(context).isCoach  ? Colors.blue : Colors.grey,
+                        color: ManageUsersCubit.get(context).isCoach  ? Colors.blue : Colors.grey,
                         fontSize: 18.sp,
 
                         fontFamily: 'Arial',
@@ -106,15 +106,15 @@ class ManageSchedulesScreen extends StatelessWidget {
               ),
               InkWell(
                 onTap: () {
-                  ManageSalaryCubit.get(context).changeIsCoach(false);
+                  ManageUsersCubit.get(context).changeIsCoach(false);
                 },
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.0.w),
                   decoration: BoxDecoration(
                     border: Border(
                       bottom: BorderSide(
-                        color: ManageSalaryCubit.get(context).isCoach  ? Colors.grey : Colors.blue,
-                        width: ManageSalaryCubit.get(context).isCoach  ? 0.0 : 2.0,
+                        color: ManageUsersCubit.get(context).isCoach  ? Colors.grey : Colors.blue,
+                        width: ManageUsersCubit.get(context).isCoach  ? 0.0 : 2.0,
                       ),
                     ),
                   ),
@@ -126,7 +126,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                     child: Text(
                       'المتدربين',
                       style: TextStyle(
-                        color:ManageSalaryCubit.get(context).isCoach ? Colors.grey : Colors.blue,
+                        color:ManageUsersCubit.get(context).isCoach ? Colors.grey : Colors.blue,
                         fontSize: 18.sp,
                         fontFamily: 'Arial',
                         fontWeight: FontWeight.w400,
@@ -191,7 +191,7 @@ SizedBox(height: 0.h),
                         Column(
                           mainAxisSize: MainAxisSize.max,
                           children: [
-                            BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+                            BlocBuilder<ManageUsersCubit, ManageUsersState>(
                               builder: (context, state) {
 
 
@@ -201,9 +201,9 @@ SizedBox(height: 0.h),
                                           //todo change this to admin id
                                           .doc(FirebaseAuth.instance.currentUser!.uid)
                                           .collection('schedules')
-                                          .doc(ManageSalaryCubit.get(context).days?[
+                                          .doc(ManageUsersCubit.get(context).days?[
                                             //selectedDayIndex
-                                            ManageSalaryCubit.get(context).selectedDayIndex
+                                            ManageUsersCubit.get(context).selectedDayIndex
                                           ].name ?? ''
                                           )
                                           .collection('schedules')
@@ -271,7 +271,7 @@ SizedBox(height: 0.h),
                                                     FFButtonWidget(
                                                       onPressed: () {
                                                         print('Delete button pressed ...');
-                                                       ManageSalaryCubit.get(context).deleteSchedule(
+                                                       ManageUsersCubit.get(context).deleteSchedule(
                                             coachesIds: coachesIds?.cast<String>() ?? [],
                                             usersIds: usersIds?.cast<String>() ?? [],
                                             scheduleId: scheduleId,
@@ -380,7 +380,7 @@ SizedBox(height: 0.h),
 
                                                   ],
                                                 ),
-                                                title: BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+                                                title: BlocBuilder<ManageUsersCubit, ManageUsersState>(
   builder: (context, state) {
     return Row(
                                                   children: [
@@ -410,7 +410,7 @@ SizedBox(height: 0.h),
 ),
                                                 children: [
 
-                                               if(ManageSalaryCubit.get(context).isCoach ==true)
+                                               if(ManageUsersCubit.get(context).isCoach ==true)
 
                                           FirestoreListView<Map<String, dynamic>>(
                                               pageSize: 8,
@@ -421,9 +421,9 @@ SizedBox(height: 0.h),
                                                   .collection('admins')
                                                   .doc(FirebaseAuth.instance.currentUser?.uid)
                                                    .collection('schedules')
-                                                  .doc(ManageSalaryCubit.get(context).days?[
+                                                  .doc(ManageUsersCubit.get(context).days?[
                                                     //selectedDayIndex
-                                                    ManageSalaryCubit.get(context).selectedDayIndex
+                                                    ManageUsersCubit.get(context).selectedDayIndex
                                                   ].name ?? '')
                                                   .collection('schedules')
                                                   .doc('${schedule.scheduleId}')
@@ -443,8 +443,8 @@ SizedBox(height: 0.h),
                                                                     .collection('admins')
                                                                     .doc(FirebaseAuth.instance.currentUser?.uid)
                                                                     .collection('schedules')
-                                                                    .doc(ManageSalaryCubit.get(context).days?[
-                                                                        ManageSalaryCubit.get(context).selectedDayIndex
+                                                                    .doc(ManageUsersCubit.get(context).days?[
+                                                                        ManageUsersCubit.get(context).selectedDayIndex
                                                                     ].name ?? '')
                                                                     .collection('schedules')
                                                                     .doc('${schedule.scheduleId}')
@@ -489,9 +489,9 @@ SizedBox(height: 0.h),
                                                                     .collection('admins')
                                                                     .doc(FirebaseAuth.instance.currentUser?.uid)
                                                                     .collection('schedules')
-                                                                    .doc(ManageSalaryCubit.get(context).days?[
+                                                                    .doc(ManageUsersCubit.get(context).days?[
                                                                       //selectedDayIndex
-                                                                      ManageSalaryCubit.get(context).selectedDayIndex
+                                                                      ManageUsersCubit.get(context).selectedDayIndex
                                                                     ].name ?? '')
                                                                     .collection('schedules')
                                                                     .doc('${schedule.scheduleId}')
@@ -509,9 +509,9 @@ SizedBox(height: 0.h),
                                                                     .collection('admins')
                                                                     .doc(FirebaseAuth.instance.currentUser?.uid)
                                                                     .collection('schedules')
-                                                                    .doc(ManageSalaryCubit.get(context).days?[
+                                                                    .doc(ManageUsersCubit.get(context).days?[
                                                                       //selectedDayIndex
-                                                                      ManageSalaryCubit.get(context).selectedDayIndex
+                                                                      ManageUsersCubit.get(context).selectedDayIndex
                                                                     ].name ?? '')
                                                                     .collection('schedules')
                                                                     .doc('${schedule.scheduleId}')
@@ -541,9 +541,9 @@ SizedBox(height: 0.h),
                                                        .collection('admins')
                                                        .doc(FirebaseAuth.instance.currentUser?.uid)
                                                        .collection('schedules')
-                                                       .doc(ManageSalaryCubit.get(context).days?[
+                                                       .doc(ManageUsersCubit.get(context).days?[
                                                    //selectedDayIndex
-                                                   ManageSalaryCubit.get(context).selectedDayIndex
+                                                   ManageUsersCubit.get(context).selectedDayIndex
                                                    ].name ?? '')
                                                        .collection('schedules')
                                                        .doc('${schedule.scheduleId}')
@@ -570,8 +570,8 @@ SizedBox(height: 0.h),
                                                                     .collection('admins')
                                                                     .doc(FirebaseAuth.instance.currentUser?.uid)
                                                                     .collection('schedules')
-                                                                    .doc(ManageSalaryCubit.get(context).days?[
-                                                                        ManageSalaryCubit.get(context).selectedDayIndex
+                                                                    .doc(ManageUsersCubit.get(context).days?[
+                                                                        ManageUsersCubit.get(context).selectedDayIndex
                                                                     ].name ?? '')
                                                                     .collection('schedules')
                                                                     .doc('${schedule.scheduleId}')
@@ -615,9 +615,9 @@ SizedBox(height: 0.h),
                                                                      .collection('admins')
                                                                      .doc(FirebaseAuth.instance.currentUser?.uid)
                                                                      .collection('schedules')
-                                                                     .doc(ManageSalaryCubit.get(context).days?[
+                                                                     .doc(ManageUsersCubit.get(context).days?[
                                                                  //selectedDayIndex
-                                                                 ManageSalaryCubit.get(context).selectedDayIndex
+                                                                 ManageUsersCubit.get(context).selectedDayIndex
                                                                  ].name ?? '')
                                                                      .collection('schedules')
                                                                      .doc('${schedule.scheduleId}')
@@ -635,9 +635,9 @@ SizedBox(height: 0.h),
                                                                      .collection('admins')
                                                                      .doc(FirebaseAuth.instance.currentUser?.uid)
                                                                      .collection('schedules')
-                                                                     .doc(ManageSalaryCubit.get(context).days?[
+                                                                     .doc(ManageUsersCubit.get(context).days?[
                                                                  //selectedDayIndex
-                                                                 ManageSalaryCubit.get(context).selectedDayIndex
+                                                                 ManageUsersCubit.get(context).selectedDayIndex
                                                                  ].name ?? '')
                                                                      .collection('schedules')
                                                                      .doc('${schedule.scheduleId}')
@@ -777,7 +777,7 @@ SizedBox(height: 0.h),
                           ),
                         ),
                         child: Expanded(
-                          child: BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+                          child: BlocBuilder<ManageUsersCubit, ManageUsersState>(
                             builder: (context, state) {
                               return ListView.separated(
                                 separatorBuilder: (context, index) => SizedBox(
@@ -786,10 +786,10 @@ SizedBox(height: 0.h),
                                 scrollDirection: Axis.horizontal,
                                 itemBuilder: (context, index) => GestureDetector(
                                   onTap: () {
-                                    ManageSalaryCubit.get(context).getSchedulesForDay(
-                                      ManageSalaryCubit.get(context).days?[index].name ?? '',
+                                    ManageUsersCubit.get(context).getSchedulesForDay(
+                                      ManageUsersCubit.get(context).days?[index].name ?? '',
                                     );
-                                    ManageSalaryCubit.get(context).changeSelectedDayIndex(index);
+                                    ManageUsersCubit.get(context).changeSelectedDayIndex(index);
                                   },
                                   child: Align(
                                     alignment: AlignmentDirectional(0, 0),
@@ -797,7 +797,7 @@ SizedBox(height: 0.h),
                                       width: 75.w,
                                       height: 50.h,
                                       decoration: BoxDecoration(
-                                        color: ManageSalaryCubit.get(context).selectedDayIndex == index
+                                        color: ManageUsersCubit.get(context).selectedDayIndex == index
                                             ? Colors.blue
                                             : Color(0xFFF3F3F3),
                                         borderRadius: BorderRadius.circular(8),
@@ -805,10 +805,10 @@ SizedBox(height: 0.h),
                                       ),
                                       alignment: AlignmentDirectional(0, 0),
                                       child: Text(
-                                        ManageSalaryCubit.get(context).days?[index].name ?? '',
+                                        ManageUsersCubit.get(context).days?[index].name ?? '',
                                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                                           fontFamily: 'Readex Pro',
-                                          color: ManageSalaryCubit.get(context).selectedDayIndex == index
+                                          color: ManageUsersCubit.get(context).selectedDayIndex == index
                                               ? Color(0xFFF4F4F4)
                                               : Colors.black,
                                           fontSize: 14.sp,
@@ -819,7 +819,7 @@ SizedBox(height: 0.h),
                                 ),
                                 physics: BouncingScrollPhysics(),
                                 shrinkWrap: true,
-                                itemCount: ManageSalaryCubit.get(context).days?.length ?? 0,
+                                itemCount: ManageUsersCubit.get(context).days?.length ?? 0,
                               );
                             },
                           ),

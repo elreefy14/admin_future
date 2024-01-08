@@ -9,31 +9,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../../../add_grouup_of_schedules/presentation/select_coaches.dart';
-import '../../../core/constants/routes_manager.dart';
-import '../../../core/flutter_flow/flutter_flow_theme.dart';
-import '../../../registeration/data/userModel.dart';
-import '../../business_logic/Home/manage_salary_cubit.dart';
-import '../../business_logic/Home/manage_salary_cubit.dart';
+import '../../add_grouup_of_schedules/presentation/select_coaches.dart';
+import '../../core/constants/routes_manager.dart';
+import '../../core/flutter_flow/flutter_flow_theme.dart';
+import '../../registeration/data/userModel.dart';
+import '../business_logic/manage_users_cubit.dart';
+import '../business_logic/manage_users_cubit.dart';
 
-class ManageSalary extends StatelessWidget {
-  const ManageSalary({super.key});
+class ManageCoaches extends StatelessWidget {
+  const ManageCoaches({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
           floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
-          floatingActionButton:  BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+          floatingActionButton:  BlocBuilder<ManageUsersCubit, ManageUsersState>(
             builder: (context, state) {
               return
 
-                ManageSalaryCubit.get(context).showRollbackButton
+                ManageUsersCubit.get(context).showRollbackButton
                //     true
                         ?
                 InkWell(
                 onTap: () async {
-                  await ManageSalaryCubit.get(context).rollbackSalary();
-                  ManageSalaryCubit.get(context).updateShowRollbackButton();
+                  await ManageUsersCubit.get(context).rollbackSalary();
+                  ManageUsersCubit.get(context).updateShowRollbackButton();
                 },
                 child: // circle button for rollback show for 5 seconds
                 Container(
@@ -168,10 +168,10 @@ InkWell(
                                               ),
                                               SizedBox(
                                                 width: 48,
-                                                child: BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+                                                child: BlocBuilder<ManageUsersCubit, ManageUsersState>(
         builder: (context, state) {
           return Text(
-                                                  ManageSalaryCubit.get(context).globalTotalSalary.toString(),
+                                                  ManageUsersCubit.get(context).globalTotalSalary.toString(),
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
                                                     color: Color(0xFF2196F3),

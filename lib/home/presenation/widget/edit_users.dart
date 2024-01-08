@@ -1,5 +1,5 @@
 import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
-import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
+import 'package:admin_future/manage_users_coaches/business_logic/manage_users_cubit.dart';
 import 'package:admin_future/home/presenation/widget/widget/custom_app_bar.dart';
 import 'package:admin_future/registeration/data/userModel.dart';
 import 'package:flutter/cupertino.dart';
@@ -35,7 +35,7 @@ class EditUsers extends StatelessWidget {
             child: SingleChildScrollView(
 
               child: Form(
-                key: ManageSalaryCubit.get(context).formKey,
+                key: ManageUsersCubit.get(context).formKey,
                 child: Column(
                   mainAxisSize: MainAxisSize.max,
                   children: [
@@ -91,7 +91,7 @@ class EditUsers extends StatelessWidget {
                                           MediaQuery.sizeOf(context).width * 0.8,
                                           child: TextFormField(
                                             // initialValue: user.fname??'a',
-                                            controller: ManageSalaryCubit.get(context)
+                                            controller: ManageUsersCubit.get(context)
                                                 .firstNameController,
                                             autofocus: true,
                                             obscureText: false,
@@ -197,7 +197,7 @@ class EditUsers extends StatelessWidget {
                                           width:
                                           MediaQuery.sizeOf(context).width * 0.8,
                                           child: TextFormField(
-                                            controller: ManageSalaryCubit.get(context)
+                                            controller: ManageUsersCubit.get(context)
                                                 .lastNameController,
                                             autofocus: true,
                                             obscureText: false,
@@ -302,7 +302,7 @@ class EditUsers extends StatelessWidget {
                                           width:
                                           MediaQuery.sizeOf(context).width * 0.8,
                                           child: TextFormField(
-                                            controller: ManageSalaryCubit.get(context)
+                                            controller: ManageUsersCubit.get(context)
                                                 .phoneController,
                                             autofocus: true,
                                             obscureText: false,
@@ -502,7 +502,7 @@ class EditUsers extends StatelessWidget {
                                                         child: Container(
                                                           width: 225,
                                                           child: TextFormField(
-                                                            controller: ManageSalaryCubit.get(context).messageController,
+                                                            controller: ManageUsersCubit.get(context).messageController,
                                                             autofocus: true,
                                                             obscureText: false,
                                                             decoration: InputDecoration(
@@ -607,16 +607,16 @@ class EditUsers extends StatelessWidget {
                                                   //     borderRadius: BorderRadius.circular(8),
                                                   //   ),
                                                   // ),
-                                                  BlocBuilder<ManageSalaryCubit,ManageSalaryState>(
+                                                  BlocBuilder<ManageUsersCubit,ManageUsersState>(
   builder: (context, state) {
     return InkWell(
       onTap: () {
 
-        ManageSalaryCubit.get(context).sendMessage(
+        ManageUsersCubit.get(context).sendMessage(
           //uid
             uid: uid,
           context: context,
-          message: ManageSalaryCubit.get(context).messageController.text,
+          message: ManageUsersCubit.get(context).messageController.text,
         );
       },
       child: Container(
@@ -731,10 +731,10 @@ class EditUsers extends StatelessWidget {
                                                         0.8,
                                                     child: TextFormField(
                                                       controller: isCoach?
-                                                        ManageSalaryCubit
+                                                        ManageUsersCubit
                                                           .get(context)
                                                           .salaryPerHourController:
-                                                          ManageSalaryCubit.get(context).numberOfSessionsController,
+                                                          ManageUsersCubit.get(context).numberOfSessionsController,
                                                       autofocus: true,
                                                       obscureText: false,
                                                       decoration: InputDecoration(
@@ -840,26 +840,26 @@ class EditUsers extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
 
-                                    BlocBuilder<ManageSalaryCubit, ManageSalaryState>(
+                                    BlocBuilder<ManageUsersCubit, ManageUsersState>(
                                       builder: (context, state) {
                                         return InkWell(
                                           onTap: () async {
-                                            await ManageSalaryCubit.get(context)
+                                            await ManageUsersCubit.get(context)
                                                 .updateUserInfo(
                                               uid: user.uId,
-                                              fname: ManageSalaryCubit.get(context)
+                                              fname: ManageUsersCubit.get(context)
                                                   .firstNameController
                                                   .text.toString(),
-                                              lname: ManageSalaryCubit.get(context)
+                                              lname: ManageUsersCubit.get(context)
                                                   .lastNameController
                                                   .text.toString(),
-                                              phone: ManageSalaryCubit.get(context)
+                                              phone: ManageUsersCubit.get(context)
                                                   .phoneController
                                                   .text.toString(),
-                                              hourlyRate: ManageSalaryCubit.get(context)
+                                              hourlyRate: ManageUsersCubit.get(context)
                                                   .salaryPerHourController
                                                   .text.toString(),
-                                              numberOfSessions: ManageSalaryCubit.get(context)
+                                              numberOfSessions: ManageUsersCubit.get(context)
                                                   .numberOfSessionsController
                                                   .text.toString(),
                                             //  password: ManageSalaryCubit.get(context)
@@ -900,7 +900,7 @@ class EditUsers extends StatelessWidget {
                                 ),
                                 InkWell(
                                   onTap: () async {
-                                    await ManageSalaryCubit.get(context)
+                                    await ManageUsersCubit.get(context)
                                         .deleteUser(
                                       uid: user.uId,
                                     );

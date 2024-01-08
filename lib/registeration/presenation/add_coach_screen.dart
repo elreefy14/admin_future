@@ -1,4 +1,4 @@
-import 'package:admin_future/home/presenation/widget/manage_users.dart';
+import 'package:admin_future/manage_users_coaches/presenation/manage_users_screen.dart';
 import 'package:admin_future/registeration/presenation/widget/component.dart';
 import 'package:admin_future/registeration/presenation/widget/sign_up_multScelect.dart';
 import 'package:admin_future/registeration/presenation/widget/widget.dart';
@@ -11,8 +11,8 @@ import '../../core/constants/routes_manager.dart';
 import '../../core/flutter_flow/flutter_flow_theme.dart';
 import '../../core/flutter_flow/flutter_flow_widgets.dart';
 import '../../home/presenation/widget/manage_attendence.dart';
-import '../../home/presenation/widget/manage_users.dart';
-import '../../home/presenation/widget/manage_users.dart';
+import '../../manage_users_coaches/presenation/manage_users_screen.dart';
+import '../../manage_users_coaches/presenation/manage_users_screen.dart';
 import '../../home/presenation/widget/widget/custom_app_bar.dart';
 import '../business_logic/auth_cubit/sign_up_cubit.dart';
 import '../business_logic/auth_cubit/sign_up_state.dart';

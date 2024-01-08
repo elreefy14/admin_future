@@ -14,21 +14,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../core/flutter_flow/flutter_flow_util.dart';
-import '../../../registeration/data/userModel.dart';
-import '../../../registeration/presenation/widget/widget.dart';
-import '../../data/Notification.dart';
-import '../../data/day_model.dart';
-import '../../data/schedules.dart';
-import '../../presenation/widget/manage_groups_screen.dart';
+import '../../core/flutter_flow/flutter_flow_util.dart';
+import '../../registeration/data/userModel.dart';
+import '../../registeration/presenation/widget/widget.dart';
+import '../../home/data/Notification.dart';
+import '../../home/data/day_model.dart';
+import '../../home/data/schedules.dart';
+import '../../home/presenation/widget/manage_groups_screen.dart';
 
-part 'manage_salary_state.dart';
+part 'manage_users_state.dart';
 
-class ManageSalaryCubit extends Cubit<ManageSalaryState> {
+class ManageUsersCubit extends Cubit<ManageUsersState> {
 
   //final UserModel userModel;
-  ManageSalaryCubit() : super(ManageSalaryInitial());
-  static ManageSalaryCubit get(context) => BlocProvider.of(context);
+  ManageUsersCubit() : super(ManageSalaryInitial());
+  static ManageUsersCubit get(context) => BlocProvider.of(context);
   bool isGrey = false;
   TabController? tabController;
   //messageController
@@ -165,152 +165,48 @@ class ManageSalaryCubit extends Cubit<ManageSalaryState> {
     });
   }
 
-  //generate random data to test getSchedules function
-  // Future<void> generateRandomSchedules() async {
-  //   emit(GenerateRandomSchedulesLoadingState());
-  //   List<String> days = ['الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس'];
-  //   List<String> branches = ['فرع جرين بارك', 'فرع النزهة', 'فرع الدقي'];
-  //   List<String> startTimes = ['10:00', '12:00', '14:00', '16:00'];
-  //   List<String> endTimes = ['12:00', '14:00', '16:00', '18:00'];
-  //   List<List<String>> usersNames = [
-  //     [
-  //       'محمد محمود',
-  //       'محمود علي',
-  //       'أحمد محمود',
-  //     ],
-  //     [
-  //       'محمد محمود',
-  //       'محمود علي',
-  //       'أحمد محمود',
-  //     ],
-  //     [
-  //       'محمد محمود',
-  //       'محمود علي',
-  //       'أحمد محمود',
-  //     ],
-  //     [
-  //       'محمد محمود',
-  //       'محمود علي',
-  //       'أحمد محمود',
-  //     ],
-  //   ];
-  //   List<bool> finished = [false, true];
-  //   for (int i = 0; i < 7; i++) {
-  //     for (int j = 0; j < 4; j++) {
-  //       final randomDay = days[Random().nextInt(days.length)];
-  //       final randomBranch = branches[Random().nextInt(branches.length)];
-  //       final randomStartTime = startTimes[Random().nextInt(startTimes.length)];
-  //       final randomEndTime = endTimes[Random().nextInt(endTimes.length)];
-  //       final randomFinished = finished[Random().nextInt(finished.length)];
-  //       final randomUsersNames =
-  //           usersNames[Random().nextInt(usersNames.length)];
-  //
-  //       final DateTime startDate =
-  //           DateFormat('dd/MM/yyyy hh:mm').parse('10/10/2021 $randomStartTime');
-  //       final DateTime endDate =
-  //           DateFormat('dd/MM/yyyy hh:mm').parse('10/10/2021 $randomEndTime');
-  //
-  //       final schedule = SchedulesModel(
-  //         scheduleId: ,
-  //         pId: 'pId',
-  //         branchId: randomBranch,
-  //         startTime: Timestamp.fromDate(startDate),
-  //         endTime: Timestamp.fromDate(endDate),
-  //         finished: randomFinished,
-  //         usersList: randomUsersNames,
-  //       );
-  //
-  //       await FirebaseFirestore.instance
-  //           .collection('admins')
-  //           //todo change this to admin id
-  //           .doc(FirebaseAuth.instance.currentUser!.uid)
-  //           .collection('schedules')
-  //           .doc(randomDay)
-  //           .collection('schedules')
-  //           .add(schedule.toJson2())
-  //           .then((value) {
-  //         print('Schedule added');
-  //       }).catchError((error) {
-  //         print(error.toString());
-  //       });
-  //     }
-  //   }
-  //   emit(GenerateRandomSchedulesSuccessState());
+  // List<UserModel> users = [];
+  // Future<void> getUsers() async {
+  //   emit(GetUsersLoadingState());
+  //   users = [];
+  //   await FirebaseFirestore.instance
+  //       .collection('users')
+  //       .where('role', isEqualTo: 'user') // filter by role
+  //       .get(GetOptions(source: Source.serverAndCache))
+  //       .then((value) {
+  //     value.docs.forEach((element) {
+  //       users.add(UserModel.fromJson(element.data()));
+  //     });
+  //     emit(GetUsersSuccessState());
+  //   }).catchError((error) {
+  //     print(error.toString());
+  //     emit(GetUsersErrorState(error.toString()));
+  //   });
   // }
-
-//*users*: A collection to store the information of all users.
-// // - Document ID: unique coach ID
-// // - Fields: *`name`, *`level`*, *`hourly_rate`*, *`total_hours`*, *`total_salary`*, *`current_month_hours`*, *`current_month_salary`**
-// // - Subcollection: *`schedules`*
-// // - Document ID: unique schedule ID
-// // - Fields: *`branch_id`, *`start_time`*, *`end_time`*, *`date`*, *`finished`**
-// // - Subcollection: *`attendance`*
-// // - Document ID: unique attendance ID (usually just the coach ID)
-// // - Fields: *`attended`, *`qr_code`**
-// // - Subcollection: *`salaryHistory`*
-// // - Document ID: unique salary history ID (usually just the month and year)
-// // - Fields: *`month`, *`year`*, *`total_hours`*, *`total_salary`**
-// // - Fields: *`branches`* (array of branch IDs that the coach works at)
-// //
-// // - *branches*: A collection to store the information of all branches.
-// // - Document ID: unique branch ID
-// // - Fields: *`name`, *`address`**
-// // - Subcollection: *`users`*
-// // - Document ID: unique coach ID who works at this branch
-// //
-// // - *admins*: A collection to store the information of all admins.
-// // - Document ID: unique admin ID
-// // - Fields: *`name`, *`email`*, *`branch_id`** (the ID of the branch they're responsible for)
-// //
-// // - *schedules*: A collection to store the information of all schedules.
-// // - Document ID: unique schedule ID
-// // - Fields: *`branch_id`, *`start_time`*, *`end_time`*, *`date`**
-// // - Subcollection: *`attendance`*
-// // - Document ID: unique attendance ID (usually just the coach ID)
-// // - Fields: *`attended`, *`qr_code`**
-
-  List<UserModel> users = [];
-  Future<void> getUsers() async {
-    emit(GetUsersLoadingState());
-    users = [];
-    await FirebaseFirestore.instance
-        .collection('users')
-        .where('role', isEqualTo: 'user') // filter by role
-        .get(GetOptions(source: Source.serverAndCache))
-        .then((value) {
-      value.docs.forEach((element) {
-        users.add(UserModel.fromJson(element.data()));
-      });
-      emit(GetUsersSuccessState());
-    }).catchError((error) {
-      print(error.toString());
-      emit(GetUsersErrorState(error.toString()));
-    });
-  }
-
-  List<UserModel> coaches = [];
-  Future<void> getCoaches() async {
-    emit(GetUsersLoadingState());
-    coaches = [];
-    await FirebaseFirestore.instance
-        .collection('users')
-        .where('role', isEqualTo: 'coach') // add this line to filter by role
-        .get(GetOptions(source: Source.serverAndCache))
-        .then((value) {
-      num totalSalary = 0; // Change the type of totalSalary to num
-      value.docs.forEach((element) {
-        coaches.add(UserModel.fromJson(element.data()));
-        totalSalary += element.data()['totalSalary'];
-      });
-      globalTotalSalary =
-          totalSalary; // Assign totalSalary value to globalTotalSalary
-      print('Total salary of all users: $globalTotalSalary');
-      emit(GetUsersSuccessState());
-    }).catchError((error) {
-      print(error.toString());
-      emit(GetUsersErrorState(error.toString()));
-    });
-  }
+  //
+  // List<UserModel> coaches = [];
+  // Future<void> getCoaches() async {
+  //   emit(GetUsersLoadingState());
+  //   coaches = [];
+  //   await FirebaseFirestore.instance
+  //       .collection('users')
+  //       .where('role', isEqualTo: 'coach') // add this line to filter by role
+  //       .get(GetOptions(source: Source.serverAndCache))
+  //       .then((value) {
+  //     num totalSalary = 0; // Change the type of totalSalary to num
+  //     value.docs.forEach((element) {
+  //       coaches.add(UserModel.fromJson(element.data()));
+  //       totalSalary += element.data()['totalSalary'];
+  //     });
+  //     globalTotalSalary =
+  //         totalSalary; // Assign totalSalary value to globalTotalSalary
+  //     print('Total salary of all users: $globalTotalSalary');
+  //     emit(GetUsersSuccessState());
+  //   }).catchError((error) {
+  //     print(error.toString());
+  //     emit(GetUsersErrorState(error.toString()));
+  //   });
+  // }
 
   checkInternetConnectivity() async {
     try {
@@ -711,23 +607,23 @@ if (!isConnected) {
     ));
   }
 
-  void updateListOfCoaches(List users14) {
-    //merge user14 with users
-    coaches = [];
-    coaches.addAll(users14 as Iterable<UserModel>);
-    emit(UpdateListOfUsersState(
-      coaches,
-    ));
-  }
+  // void updateListOfCoaches(List users14) {
+  //   //merge user14 with users
+  //   coaches = [];
+  //   coaches.addAll(users14 as Iterable<UserModel>);
+  //   emit(UpdateListOfUsersState(
+  //     coaches,
+  //   ));
+  // }
 
-  void updateListOfUsers(List users14) {
-    //merge user14 with users
-    users = [];
-    users.addAll(users14 as Iterable<UserModel>);
-    emit(UpdateListOfUsersState(
-      users,
-    ));
-  }
+  // void updateListOfUsers(List users14) {
+  //   //merge user14 with users
+  //   users = [];
+  //   users.addAll(users14 as Iterable<UserModel>);
+  //   emit(UpdateListOfUsersState(
+  //     users,
+  //   ));
+  // }
 
   deleteUser({required uid}) {
     emit(DeleteUserLoadingState());
@@ -1023,10 +919,10 @@ if (!isConnected) {
           // Update the user in the users list
           UserModel updatedUser = UserModel.fromJson(userData);
           updatedUser.totalSalary = newTotalSalary;
-          int userIndex = coaches.indexWhere((user) => user.uId == userId);
-          if (userIndex != -1) {
-            coaches[userIndex] = updatedUser;
-          }
+        //  int userIndex = coaches.indexWhere((user) => user.uId == userId);
+       //   if (userIndex != -1) {
+       //     coaches[userIndex] = updatedUser;
+      //    }
 
           // Show elevated button if user wants to rollback this action
           showRollbackButton = true;
@@ -1126,10 +1022,10 @@ if (!isConnected) {
 
       UserModel updatedUser = UserModel.fromJson(userData!);
       updatedUser.totalSalary = currentTotalSalary;
-      int userIndex = coaches.indexWhere((user) => user.uId == latestUserId);
-      if (userIndex != -1) {
-        coaches[userIndex] = updatedUser;
-      }
+    //  int userIndex = coaches.indexWhere((user) => user.uId == latestUserId);
+    //  if (userIndex != -1) {
+    //    coaches[userIndex] = updatedUser;
+    //  }
 
 
       //   Map<String, dynamic>? userData =
@@ -1249,10 +1145,10 @@ if (!isConnected) {
           .doc(userId)
           .update({'totalSalary': newTotalSalary});
       // Update the user in the users list
-      int userIndex = coaches.indexWhere((user) => user.uId == userId);
-      if (userIndex != -1) {
-        coaches[userIndex].totalSalary = newTotalSalary;
-      }
+    //  int userIndex = coaches.indexWhere((user) => user.uId == userId);
+    //  if (userIndex != -1) {
+    //    coaches[userIndex].totalSalary = newTotalSalary;
+    //  }
       salaryController.clear();
       //show toast message
       // showToast(
@@ -1412,10 +1308,10 @@ if (!isConnected) {
 
       UserModel updatedUser = UserModel.fromJson(userData!);
       updatedUser.totalSalary = currentTotalSalary;
-      int userIndex = coaches.indexWhere((user) => user.uId == latestUserId);
-      if (userIndex != -1) {
-        coaches[userIndex] = updatedUser;
-      }
+    //  int userIndex = coaches.indexWhere((user) => user.uId == latestUserId);
+    //  if (userIndex != -1) {
+   //     coaches[userIndex] = updatedUser;
+   //   }
 
       showToast(
         state: ToastStates.SUCCESS,
@@ -1425,83 +1321,6 @@ if (!isConnected) {
       print(error.toString());
     }
   }
-  //
-  // Future<void> payBonus(String? userId, context, {String? salary, required int TotalSalary}) async {
-  //   latestUserId = userId;
-  //   currentTotalSalary = TotalSalary;
-  //
-  //   emit(PayBonusLoadingState());
-  //
-  //   try {
-  //     bool isConnected =
-  //     await checkInternetConnectivity(); // Custom function to check internet connectivity
-  //
-  //     if (!isConnected) {
-  //       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-  //           .collection('users')
-  //           .doc(userId)
-  //           .get(GetOptions(source: Source.serverAndCache));
-  //
-  //       Map<String, dynamic>? userData =
-  //       userSnapshot.data() as Map<String, dynamic>?;
-  //
-  //       if (userData != null) {
-  //         int? totalSalary = userData['totalSalary'];
-  //         int? salary14 = int.parse(salary!);
-  //         int? newTotalSalary = totalSalary! + salary14!;
-  //         print('newTotalSalary: $newTotalSalary');
-  //
-  //         // Store the updated salary locally until an internet connection is available
-  //        // saveSalaryLocally(userId, newTotalSalary);
-  //
-  //         // Update the user in the users list
-  //       //  UserModel updatedUser = UserModel.fromJson(userData);
-  //       //  updatedUser.totalSalary = newTotalSalary;
-  //       //  int userIndex = coaches.indexWhere((user) => user.uId == userId);
-  //       //  if (userIndex != -1) {
-  //       //    coaches[userIndex] = updatedUser;
-  //       //  }
-  //         emit(PayBonusSuccessStateWithoutInternet());
-  //         return;
-  //       }
-  //     }
-  //
-  //     DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-  //         .collection('users')
-  //         .doc(userId)
-  //         .get(GetOptions(source: Source.server));
-  //
-  //     Map<String, dynamic>? userData =
-  //     userSnapshot.data() as Map<String, dynamic>?;
-  //
-  //     if (userData != null) {
-  //       int? totalSalary = userData['totalSalary'];
-  //       int? salary14 = int.parse(salary!);
-  //       int? newTotalSalary = totalSalary! + salary14!;
-  //       print('newTotalSalary: $newTotalSalary');
-  //
-  //       await FirebaseFirestore.instance
-  //           .collection('users')
-  //           .doc(userId)
-  //           .update({'totalSalary': newTotalSalary});
-  //
-  //       // Update the user in the users list
-  //       UserModel updatedUser = UserModel.fromJson(userData);
-  //       updatedUser.totalSalary = newTotalSalary;
-  //       int userIndex = coaches.indexWhere((user) => user.uId == userId);
-  //       if (userIndex != -1) {
-  //         coaches[userIndex] = updatedUser;
-  //       }
-  //       salaryController.clear();
-  //       emit(PayBonusSuccessState());
-  //     } else {
-  //       throw 'User data not found';
-  //     }
-  //   } catch (error) {
-  //     print(error.toString());
-  //     emit(PayBonusErrorState(error.toString()));
-  //   }
-  // }
 
   Future<void>rollbackSession() async {
     try {
@@ -1565,13 +1384,7 @@ if (!isConnected) {
     showRollbackButton = false;
     emit(UpdateShowRollbackButtonSuccessState());
   }
-//int selectedDayIndex = 0;
-//   void changeSelectedDayIndex(int index) {
-//     selectedDayIndex = index;
-//     emit(ChangeSelectedDayIndexState(
-//       selectedDayIndex,
-//     ));
-//   }
+
   int? selectedBranchIndex = 0;
   void changeSelectedBranchIndex(int index) {
     selectedBranchIndex = index;

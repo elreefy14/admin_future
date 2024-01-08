@@ -1,6 +1,6 @@
 import 'package:admin_future/add_grouup_of_schedules/presentation/onboarding_screen.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
-import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
+import 'package:admin_future/manage_users_coaches/business_logic/manage_users_cubit.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/sign_up_cubit.dart';
 import 'package:admin_future/routiong.dart';
 import 'package:bloc/bloc.dart';
@@ -106,10 +106,7 @@ class MyApp extends StatelessWidget {
           //..addBranches()
           ..getBranches()
         ),
-        BlocProvider(create: (context) => ManageSalaryCubit()
-        //    ..generateRandomSchedules()
-       //    ..generateRandomSchedules()
-          //..getDays()
+        BlocProvider(create: (context) => ManageUsersCubit()
         ),
         BlocProvider(create: (context) => ManageAttendenceCubit()
         //    ..addToWhatsAppGroup('https://chat.whatsapp.com/FV27zAcLJocKycZDScif1S', '+2001020684123 ')

@@ -16,7 +16,7 @@ import 'package:provider/provider.dart';
 
 import '../../core/flutter_flow/flutter_flow_util.dart';
 import '../../home/business_logic/Home/manage_attendence_state.dart';
-import '../../home/business_logic/Home/manage_salary_cubit.dart';
+import '../../manage_users_coaches/business_logic/manage_users_cubit.dart';
 import '../../home/data/schedules.dart';
 import '../../home/presenation/widget/add_schedule.dart';
 import 'package:flutter/material.dart';
@@ -1637,7 +1637,7 @@ class OnboardingScreen extends StatelessWidget {
                             horizontal: 4.0.w,
                           ),
                           child: InkWell(
-                            onTap: () =>   ManageSalaryCubit.get(
+                            onTap: () =>   ManageUsersCubit.get(
                                 context)
                                 .deleteGroup(
                               groupId: groupId ?? '',

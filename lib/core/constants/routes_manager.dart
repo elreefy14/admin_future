@@ -14,7 +14,7 @@ class AppRoutes {
   //manageSalary
   static const String manageSalary = "/manageSalary";
   //manageCoaches
-  static const String manageCoaches = "/manageCoaches";
+  static const String manageUseers = "/manageCoaches";
   //manageAttendence
   static const String manageAttendence = "/manageAttendence";
   static const String editProfile = "/editProfile";

@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
-import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
+import 'package:admin_future/manage_users_coaches/business_logic/manage_users_cubit.dart';
 import 'package:admin_future/registeration/data/userModel.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/login_cubit.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/sign_up_cubit.dart';
@@ -21,9 +21,9 @@ import 'home/presenation/widget/edit_users.dart';
 import 'home/presenation/widget/home_layout.dart';
 import 'home/presenation/widget/manage_attendence.dart';
 import 'home/presenation/widget/manage_groups_screen.dart';
-import 'home/presenation/widget/manage_users.dart';
+import 'manage_users_coaches/presenation/manage_users_screen.dart';
 import 'home/presenation/widget/manage_schedules_screen.dart';
-import 'home/presenation/widget/mange_coaches.dart';
+import 'manage_users_coaches/presenation/mange_coaches_screen.dart';
 
 class RouteGenerator {
   static Route<dynamic>? generateRoute(RouteSettings settings) {
@@ -161,8 +161,11 @@ case AppRoutes.addCoach:
         return MaterialPageRoute(builder: (_) =>
              ManageAttendence());
     //ManageCoaches
-      case AppRoutes.manageCoaches:
-        return MaterialPageRoute(builder: (_) => ManageCoaches());
+      case AppRoutes.manageUseers:
+        return MaterialPageRoute(builder: (_) =>  BlocProvider(
+  create: (context) => ManageUsersCubit(),
+  child: ManageUsers(),
+));
         //ManageGroupsScreen
     // Navigator.pushNamed(
     //                                                            context,
@@ -181,9 +184,9 @@ case AppRoutes.addCoach:
     //                                                           'groupId': group.groupId,
     //                                                         },
     //                                                         );
-      case AppRoutes.manageGroups:
+    //  case AppRoutes.manageGroups:
        // args = settings.arguments as Map<String, dynamic>;
-        return MaterialPageRoute(builder: (_) => ManageGroupsScreen(
+   //     return MaterialPageRoute(builder: (_) => ManageGroupsScreen(
           // isAdd: (args as Map<String, dynamic>)?['isAdd'],
           // branchId: (args as Map<String, dynamic>)?['branchId'],
           // maxUsers: (args as Map<String, dynamic>)?['maxUsers'],
@@ -195,11 +198,11 @@ case AppRoutes.addCoach:
           // scheduleId: (args as Map<String, dynamic>)?['scheduleId'],
           // schedule_days: (args as Map<String, dynamic>)?['schedule_days'],
           // groupId: (args as Map<String, dynamic>)?['groupId'],
-        ));
+     //   ));
 
     // manage Salary
       case AppRoutes.manageSalary:
-        return MaterialPageRoute(builder: (_) => ManageSalary());
+        return MaterialPageRoute(builder: (_) => ManageCoaches());
     // default:
     //   return _errorRoute();
     //EditUsers
