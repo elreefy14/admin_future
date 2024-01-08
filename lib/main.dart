@@ -1,7 +1,6 @@
 import 'package:admin_future/add_grouup_of_schedules/presentation/onboarding_screen.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:admin_future/home/business_logic/Home/manage_salary_cubit.dart';
-import 'package:admin_future/home/presenation/widget/mange_coaches.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/sign_up_cubit.dart';
 import 'package:admin_future/routiong.dart';
 import 'package:bloc/bloc.dart';
@@ -15,10 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'core/bloc_observer.dart';
-import 'core/cashe_helper.dart';
-import 'core/constants/my_color.dart';
 import 'core/constants/routes_manager.dart';
 
 Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
@@ -49,18 +45,11 @@ Future<void> main() async {
       statusBarIconBrightness: Brightness.dark,
     ),
   );
-  //await //init shared pref and dio
-  await CacheHelper.init();
-
-  // RegisterationRepo repo = getIt<RegisterationRepo>();
-  // repo.signIn(
-  // 'ahemd@gmail.com',
-  //    '123456789',
-  // );
-  //enable persistance
-
-  await Firebase.initializeApp(
-  );
+  // use future builder to wait for firebase to be initialized and cache to be initialized
+  // await CacheHelper.init();
+  //
+   await Firebase.initializeApp(
+   );
   FirebaseFirestore.instance.settings =
   const Settings(persistenceEnabled: true);
   //if frebase login is null
