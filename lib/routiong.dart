@@ -123,7 +123,7 @@ case AppRoutes.addCoach:
   return MaterialPageRoute(builder: (_) => AddCoachScreen(
     isCoach: (args as Map<String, dynamic>)?['isCoach'],
   ));
-    
+
       case AppRoutes.addSchedule:
         args = settings.arguments as Map<String, dynamic>;
         return MaterialPageRoute(builder: (_) => AddSchedule(
@@ -215,6 +215,18 @@ case AppRoutes.addCoach:
         return MaterialPageRoute(builder: (_) => EditUsers(user: args,
           isCoach: (args as UserModel).role == AppStrings.coach,
    ));
+        //else if noo route found  show dialog to ask user to exit app
+    // default:
+    //   return MaterialPageRoute(builder: (_) =>AlertDialog(
+    //     title: const Text('Error'),
+    //     content: const Text('No route defined for that name.'),
+    //     actions: <Widget>[
+    //       TextButton(
+    //         onPressed: () => exit(0),
+    //         child: const Text('Exit'),
+    //       ),
+    //     ],
+    //   ));
   }
 
   // static Route<dynamic> _errorRoute() {
@@ -223,5 +235,44 @@ case AppRoutes.addCoach:
   //     WidgetsBinding.instance.addPostFrameCallback((_) => exit(0));
   //     return Container();
   //   });
+  }
+}
+
+
+class DefaultDialogToAskUserToExitAppOrNot {
+  static Future<bool?> show(BuildContext context) async {
+    return showDialog<bool?>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(//arabic
+            'تنبيه',
+          ),
+          content:// Text('Are you sure you want to exit the app?'),
+          //translate to arabic
+          Text('هل انت متاكد من انك تريد الخروج من التطبيق؟'),
+
+          actions: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                TextButton(
+                  child: Text('لا'),
+                  onPressed: () {
+                    Navigator.of(context).pop(false);
+                  },
+                ),
+                TextButton(
+                  child: Text('نعم'),
+                  onPressed: () {
+                    Navigator.of(context).pop(true);
+                  },
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
 }

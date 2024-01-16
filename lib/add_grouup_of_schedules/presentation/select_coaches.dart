@@ -33,22 +33,31 @@ class ShowCoachesInDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return BlocBuilder<AddGroupCubit, AddGroupState>(
-      builder: (context, state) {
-        final logger = Logger();
-
-        final addGroupCubit = context.read<AddGroupCubit>();
-        final query = addGroupCubit.usersQuery;
-       bool isSearch = addGroupCubit.isSearch;
+    // return BlocBuilder<AddGroupCubit, AddGroupState>(
+    //   builder: (context, state) {
+       //  final logger = Logger();
+       //
+       //  final addGroupCubit = context.read<AddGroupCubit>();
+       //  final query = addGroupCubit.usersQuery;
+       // bool isSearch = addGroupCubit.isSearch;
 
 
         return
-          //if isCoachInfoList is true then dont show parent diakog 
+          //if isCoachInfoList is true then dont show parent diakog
           //instead show the child column of the dialog
           //else show the parent dialog
 
         isCoachInfoList ??false ?
-        Column(
+        BlocBuilder<AddGroupCubit, AddGroupState>(
+          builder: (context, state) {
+            final logger = Logger();
+
+            final addGroupCubit = context.read<AddGroupCubit>();
+            final query = addGroupCubit.usersQuery;
+            bool isSearch = addGroupCubit.isSearch;
+
+
+            return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             isCoachInfoList ?? false ?
@@ -98,6 +107,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                             addGroupCubit.updateUsersQuery(null);
                             //update isSearch
                             addGroupCubit.updateIsSearch(false);
+                            FocusScope.of(context).unfocus();
+
                           }
                         ):null,
                       ),
@@ -918,10 +929,19 @@ class ShowCoachesInDialog extends StatelessWidget {
               ],
             ),
           ],
-        )
+        );
+  },
+)
             : isUserInfoList ?? false ?
             //manage users screen
-        Column(
+        BlocBuilder<AddGroupCubit, AddGroupState>(
+          builder: (context, state) {
+            final logger = Logger();
+
+            final addGroupCubit = context.read<AddGroupCubit>();
+            final query = addGroupCubit.usersQuery;
+            bool isSearch = addGroupCubit.isSearch;
+    return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             //isCoachInfoList ?? false ?
@@ -971,6 +991,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                               addGroupCubit.updateUsersQuery(null);
                               //update isSearch
                               addGroupCubit.updateIsSearch(false);
+                              //pop the keyboard
+                              FocusScope.of(context).unfocus();
                             }
                         ):null,
                       ),
@@ -1722,7 +1744,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                   isUserInfoList ?? false ?
                   //error
                   //!Todo: error!
-                  //7ot hena il row dh 
+                  //7ot hena il row dh
                   Row(
                     mainAxisSize: MainAxisSize.max,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -2368,7 +2390,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                           ? state.selectedCoaches.map((user) => user.uId).contains(user.uId)
                           : state.selectedUsers.map((user) => user.uId).contains(user.uId),
                       onChanged: (value) {
-                        logger.d('value is $value');
+                        //logger.d('value is $value');
                         if (value!) {
                           if (isCoach) {
                             addGroupCubit.selectCoach(user);
@@ -2377,7 +2399,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                           }
                         } else if (!value) {
                           if (isCoach) {
-                            logger.d('user id is ${user.uId}');
+                           // logger.d('user id is ${user.uId}');
                             context
                                 .read<AddGroupCubit>()
                                 .deselectCoach(user);
@@ -2432,9 +2454,20 @@ class ShowCoachesInDialog extends StatelessWidget {
               ],
             ),
           ],
-        ):
+        );
+  },
+):
             //edit or add dialog list
-        Dialog(
+        BlocBuilder<AddGroupCubit, AddGroupState>(
+          builder: (context, state) {
+            final logger = Logger();
+
+            final addGroupCubit = context.read<AddGroupCubit>();
+            final query = addGroupCubit.usersQuery;
+            bool isSearch = addGroupCubit.isSearch;
+
+
+            return Dialog(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -2479,6 +2512,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                   addGroupCubit.updateUsersQuery(null);
                                                   //update isSearch
                                                   addGroupCubit.updateIsSearch(false);
+                                                  //pop keyboard
+                                                  FocusScope.of(context).unfocus();
                                                 }
                                             ):null,
                                           ),
@@ -2513,6 +2548,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                                                     addGroupCubit.updateUsersQuery(null);
                                                     //update isSearch
                                                     addGroupCubit.updateIsSearch(false);
+                                                  //pop keyboard
+                                                    FocusScope.of(context).unfocus();
                                                   }
                                               ):null,
 
@@ -2639,7 +2676,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                                         ],
                                       )
               :Container(),
-              
+
               Expanded(
                 child: FirestoreListView(
                   shrinkWrap: true,
@@ -3193,8 +3230,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                             //  ManageSalaryCubit.get(context).coaches[index].totalSalary.toString(),
                               user.totalSalary.toString(),
 
-                                       
-                              
+
+
                               textAlign: TextAlign.end,
                               style: FlutterFlowTheme.of(context)
                                   .bodyMedium
@@ -3314,7 +3351,8 @@ class ShowCoachesInDialog extends StatelessWidget {
             ],
           ),
         );
-      },
-    );
+  },
+);
+
   }
 }

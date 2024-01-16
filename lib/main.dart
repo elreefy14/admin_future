@@ -99,14 +99,15 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => AddGroupCubit(
-
         ),
-        ),
-        BlocProvider(create: (context) => SignUpCubit()
-          //..addBranches()
-          ..getBranches()
-        ),
+          lazy: false,
+         ),
+       BlocProvider(create: (context) => SignUpCubit()
+          ..addBranches()
+         ..getBranches()
+       ),
         BlocProvider(create: (context) => ManageUsersCubit()
+        ,lazy: false
         ),
         BlocProvider(create: (context) => ManageAttendenceCubit()
         //    ..addToWhatsAppGroup('https://chat.whatsapp.com/FV27zAcLJocKycZDScif1S', '+2001020684123 ')

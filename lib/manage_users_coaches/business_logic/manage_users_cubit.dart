@@ -29,6 +29,86 @@ class ManageUsersCubit extends Cubit<ManageUsersState> {
   //final UserModel userModel;
   ManageUsersCubit() : super(ManageSalaryInitial());
   static ManageUsersCubit get(context) => BlocProvider.of(context);
+  bool isSearch = false;
+  Query? usersQuery;
+  final TextEditingController searchController = TextEditingController();
+
+  //  void updateIsSearch(bool bool) {
+  //     isSearch = bool;
+  //     emit(state.copyWith(isSearch: bool));
+  //   }
+  //Future<void> onSearchSubmitted(String value, bool isCoach) async {
+  //     late Query newQuery;
+  //     if (isCoach)
+  //       newQuery = FirebaseFirestore.instance
+  //           .collection('users')
+  //           .orderBy('name')
+  //           .startAt([value])
+  //           .endAt([value + '\uf8ff'])
+  //           .where('role', isEqualTo: 'coach')
+  //           .limit(100);
+  //     else
+  //       newQuery = FirebaseFirestore.instance
+  //           .collection('users')
+  //           .orderBy('name')
+  //           .startAt([value])
+  //           .endAt([value + '\uf8ff'])
+  //           .where('role', isEqualTo: 'user')
+  //           .limit(100);
+  //
+  //     QuerySnapshot querySnapshot =
+  //         await newQuery.get(GetOptions(source: Source.serverAndCache));
+  //     var numberOfQuery = querySnapshot.docs.length;
+  //     print('number of query is $numberOfQuery');
+  //     print(numberOfQuery);
+  //
+  //     if (numberOfQuery == 0) {
+  //       if (isCoach)
+  //         newQuery = FirebaseFirestore.instance
+  //             .collection('users')
+  //             .where('phone', isGreaterThanOrEqualTo: value)
+  //             .where('phone', isLessThan: value + 'z')
+  //             //order by name
+  //             .orderBy('phone', descending: false)
+  //             .where('role', isEqualTo: 'coach')
+  //             .limit(100);
+  //       else
+  //         newQuery = FirebaseFirestore.instance
+  //             .collection('users')
+  //             .where('phone', isGreaterThanOrEqualTo: value)
+  //             .where('phone', isLessThan: value + 'z')
+  //             //order by name
+  //             .orderBy('phone', descending: false)
+  //             .where('role', isEqualTo: 'user')
+  //             .limit(100);
+  //     }
+  //     //update query
+  //     updateQuery(newQuery);
+  //   }
+  // void updateQuery(Query query) {
+  //   usersQuery = query;
+  //   emit(state.copyWith(query: query));
+  // }
+  //  void updateUsersQuery(param0) {
+  //     usersQuery = param0;
+  //     emit(state.copyWith(query: param0));
+  //   }
+  //  void updateIsSearch(bool bool) {
+  //     isSearch = bool;
+  //     emit(state.copyWith(isSearch: bool));
+  //   }
+
+
+
+
+
+
+
+
+
+
+
+
   bool isGrey = false;
   TabController? tabController;
   //messageController
@@ -80,9 +160,12 @@ class ManageUsersCubit extends Cubit<ManageUsersState> {
   List<DayModel> days = [];
   String? today;
 
-  Future<void> getDays() async {
-    emit(GetSchedulesLoadingState());
-
+  getDays() async {
+    emit(GetDaysLoadingState());
+//dalay 5 seconds
+//   await  Future.delayed(const Duration(seconds: 5), () {
+//       print('delayed');
+//     });
     days = [];
     if (kDebugMode) {
       print('getDays\n\n\n');
@@ -124,6 +207,7 @@ class ManageUsersCubit extends Cubit<ManageUsersState> {
       }
     }
     today = days[0].name;
+    emit(GetDaysSuccessState());
   }
 
   //get list of schedules from admin collection then schedule subcollection for specific day like friday

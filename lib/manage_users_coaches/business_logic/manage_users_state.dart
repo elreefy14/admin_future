@@ -194,3 +194,11 @@ class DeleteGroupErrorState extends ManageUsersState {
   final String error;
   DeleteGroupErrorState(this.error);
 }//UpdateListOfSchedulesState
+//GetDaysLoadingState
+class GetDaysLoadingState extends ManageUsersState {
+
+}//UpdateListOfSchedulesState
+//GetDaysSuccessState
+class GetDaysSuccessState extends ManageUsersState {
+
+}//UpdateListOfSchedulesState
