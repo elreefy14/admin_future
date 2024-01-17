@@ -3,6 +3,7 @@ import 'package:conditional_builder_null_safety/conditional_builder_null_safety.
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import '../../home/presenation/widget/widget/custom_app_bar.dart';
 import '../business_logic/auth_cubit/sign_up_cubit.dart';
 import '../business_logic/auth_cubit/sign_up_state.dart';
@@ -30,7 +31,7 @@ class AddCoachScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Colors.white,
-          appBar: const CustomAppBar(
+          appBar: CustomAppBar(
             text: '',
           ),
           body: ListView(
@@ -45,24 +46,24 @@ class AddCoachScreen extends StatelessWidget {
                 ),
                 child: Center(
                   child: Container(
-                 //   width: 99.w,
-                 //   height: 26.h,
+                    //   width: 99.w,
+                    //   height: 26.h,
                     alignment: Alignment.center,
                     child: isCoach ==true ?Text(
-   'اضافة مدرب',
-    textAlign: TextAlign.center,
-    style: TextStyle(
-        color: const Color(0xFF333333),
-        fontSize: 32.sp,
-        fontFamily: 'Montserrat-Arabic',
-        fontWeight: FontWeight.w400,
-        height: 0.03.h,
-    ),
-):Text(
+                      'اضافة مدرب',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: Color(0xFF333333),
+                        fontSize: 32.sp,
+                        fontFamily: 'Montserrat-Arabic',
+                        fontWeight: FontWeight.w400,
+                        height: 0.03.h,
+                      ),
+                    ):Text(
                       'اضافة متدرب',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: const Color(0xFF333333),
+                        color: Color(0xFF333333),
                         fontSize: 32.sp,
                         fontFamily: 'Montserrat-Arabic',
                         fontWeight: FontWeight.w400,
@@ -109,7 +110,7 @@ class AddCoachScreen extends StatelessWidget {
                               return null;
                             }, Icons.person),
                       ),
-                      const SizedBox(height: 20.0),
+                      SizedBox(height: 20.0),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35.0.w),
                         child: BuildTextFormField2('رقم الهاتف',
@@ -139,28 +140,28 @@ class AddCoachScreen extends StatelessWidget {
                             }
                             return null;
                           }, Icons.lock,
-                        context: context,
+                          context: context,
                         ),
                       ),
                       if(isCoach ==true)
-                      const SizedBox(height: 20.0),
+                        SizedBox(height: 20.0),
                       if(isCoach ==true)
-                      Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 35.0.w),
-                        child: BuildTextFormField2(//hourlyRate
-                          //salaty per hour
-                          'الراتب لكل ساعة',
-                          SignUpCubit
-                              .get(context)
-                              .hourlyRateController,
-                          TextInputType.phone,
-                          'ادخل الراتب لكل ساعة', (value) {
+                        Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 35.0.w),
+                          child: BuildTextFormField2(//hourlyRate
+                            //salaty per hour
+                            'الراتب لكل ساعة',
+                            SignUpCubit
+                                .get(context)
+                                .hourlyRateController,
+                            TextInputType.phone,
+                            'ادخل الراتب لكل ساعة', (value) {
                             if (value!.isEmpty) {
                               return 'الرجاء ادخال الراتب لكل ساعة';
                             }
                             return null;
                           }, Icons.monetization_on,),
-                      ),
+                        ),
 
                       SizedBox(height: 10.0.h),
                       //10.0.h
@@ -348,30 +349,30 @@ class AddCoachScreen extends StatelessWidget {
                                         );
                                       }
                                       else
-                                      //signUp
-                                      SignUpCubit.get(context).addUser(
-                                        role: 'user',
-                                        fName: SignUpCubit
-                                            .get(context)
-                                            .firstNameController
-                                            .text,
-                                        lName: SignUpCubit
-                                            .get(context)
-                                            .lastNameController
-                                            .text,
-                                        phone: SignUpCubit
-                                            .get(context)
-                                            .phoneController
-                                            .text,
-                                        password: SignUpCubit
-                                            .get(context)
-                                            .passwordController
-                                            .text,
-                                      );
+                                        //signUp
+                                        SignUpCubit.get(context).addUser(
+                                          role: 'user',
+                                          fName: SignUpCubit
+                                              .get(context)
+                                              .firstNameController
+                                              .text,
+                                          lName: SignUpCubit
+                                              .get(context)
+                                              .lastNameController
+                                              .text,
+                                          phone: SignUpCubit
+                                              .get(context)
+                                              .phoneController
+                                              .text,
+                                          password: SignUpCubit
+                                              .get(context)
+                                              .passwordController
+                                              .text,
+                                        );
                                       // OtpCubit.get(context).phoneNumberSubmitted(phoneController.text);
                                     }
                                   },
-                                  child: const Text(
+                                  child: Text(
                                     'تسجيل حساب جديد',
                                     style: TextStyle(
                                       fontFamily: 'Montserrat-Arabic',
@@ -384,14 +385,14 @@ class AddCoachScreen extends StatelessWidget {
                                     textAlign: TextAlign.center,
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: const Color(0xFF2196F3),
+                                    primary: Color(0xFF2196F3),
                                     // Background color
-                                    padding: const EdgeInsets.symmetric(
+                                    padding: EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 9),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    textStyle: const TextStyle(
+                                    textStyle: TextStyle(
                                       fontSize: 18, // Adjust the font size if needed
                                     ),
                                   ),
@@ -400,7 +401,7 @@ class AddCoachScreen extends StatelessWidget {
                               );
                             },
                             fallback: (context) {
-                              return const Center(
+                              return Center(
                                 child: CircularProgressIndicator(),
                               );
                             },

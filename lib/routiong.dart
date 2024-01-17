@@ -140,7 +140,7 @@ case AppRoutes.addCoach:
      SignUpScreen());
       //ManageSchedulesScreen
        case AppRoutes.manageSchedules:
-         return MaterialPageRoute(builder: (_) => ManageSchedulesScreen());
+         return MaterialPageRoute(builder: (_) => const ManageSchedulesScreen());
     //HomeScreen
       case AppRoutes.welcome:
         return MaterialPageRoute(builder: (_) => WelcomeScreen());
@@ -151,14 +151,14 @@ case AppRoutes.addCoach:
               child: SignInScreen(),
             ));
       case AppRoutes.home:
-        return MaterialPageRoute(builder: (_) => HomeLayout());
+        return MaterialPageRoute(builder: (_) => const HomeLayout());
     // manage attendence
       case AppRoutes.manageAttendence:
         return MaterialPageRoute(builder: (_) =>
-             ManageAttendence());
+             const ManageAttendence());
     //ManageCoaches
       case AppRoutes.manageUseers:
-        return MaterialPageRoute(builder: (_) =>  ManageUsersScreen());
+        return MaterialPageRoute(builder: (_) =>  const ManageUsersScreen());
         //ManageGroupsScreen
     // Navigator.pushNamed(
     //                                                            context,
@@ -195,7 +195,7 @@ case AppRoutes.addCoach:
 
     // manage Salary
       case AppRoutes.manageSalary:
-        return MaterialPageRoute(builder: (_) => ManageCoaches());
+        return MaterialPageRoute(builder: (_) => const ManageCoaches());
     // default:
     //   return _errorRoute();
     //EditUsers
@@ -238,25 +238,25 @@ class DefaultDialogToAskUserToExitAppOrNot {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(//arabic
+          title: const Text(//arabic
             'تنبيه',
           ),
           content:// Text('Are you sure you want to exit the app?'),
           //translate to arabic
-          Text('هل انت متاكد من انك تريد الخروج من التطبيق؟'),
+          const Text('هل انت متاكد من انك تريد الخروج من التطبيق؟'),
 
           actions: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 TextButton(
-                  child: Text('لا'),
+                  child: const Text('لا'),
                   onPressed: () {
                     Navigator.of(context).pop(false);
                   },
                 ),
                 TextButton(
-                  child: Text('نعم'),
+                  child: const Text('نعم'),
                   onPressed: () {
                     Navigator.of(context).pop(true);
                   },

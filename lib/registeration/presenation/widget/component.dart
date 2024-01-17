@@ -1,16 +1,9 @@
 import 'dart:convert';
 import 'dart:math';
-
-import 'package:admin_future/add_grouup_of_schedules/presentation/onboarding_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import '../../business_logic/auth_cubit/sign_up_cubit.dart';
 
 Widget BuildTextFormField2(
@@ -74,6 +67,7 @@ Widget BuildTextFormField2(
 
           suffixIcon: labelText == 'كلمة المرور'
               ? Padding(padding: EdgeInsets.symmetric(horizontal: 5.0.w),child: ElevatedButton(
+
             onPressed: () {
               String randomPassword =
               generateRandomPassword(); // Replace with your random password generation logic
@@ -87,7 +81,7 @@ Widget BuildTextFormField2(
               );
             },
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.grey.shade100),
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4.0),
