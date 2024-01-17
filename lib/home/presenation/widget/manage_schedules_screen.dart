@@ -12,7 +12,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -21,7 +20,6 @@ import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
 import '../../../core/flutter_flow/flutter_flow_widgets.dart';
 import '../../../manage_users_coaches/business_logic/manage_users_cubit.dart';
-import '../../data/day_model.dart';
 import '../../data/schedules.dart';
 class ManageSchedulesScreen extends StatelessWidget {
   const ManageSchedulesScreen({Key? key}) : super(key: key);
@@ -66,7 +64,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                       ManageUsersCubit.get(context).changeIsCoach(true);
                     },
                     child: Container(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       decoration: BoxDecoration(
                         border: Border(
                           bottom: BorderSide(
@@ -143,7 +141,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                 Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Row(
+                    const Row(
                       mainAxisSize: MainAxisSize.max,
                       children: [
                                       ],
@@ -156,7 +154,7 @@ SizedBox(height: 5.h),
         'ادارة المواعيد',
         textAlign: TextAlign.center,
         style: TextStyle(
-            color: Color(0xFF333333),
+            color: const Color(0xFF333333),
             fontSize: 32.sp,
             fontFamily: 'Montserrat-Arabic',
             fontWeight: FontWeight.w400,
@@ -169,16 +167,16 @@ SizedBox(height: 0.h),
                     Builder(
                       builder: (context) {
                         ManageUsersCubit.get(context).getDays();
-                        return ScheduleDaysList();
+                        return const ScheduleDaysList();
                       }
                     ),
-                    Container(
+                    SizedBox(
                       height: 400.h,
                       child: SingleChildScrollView(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Divider(
+                            const Divider(
                               thickness: 2,
                               color: Color(0xFFF4F4F4),
                             ),
@@ -190,7 +188,7 @@ SizedBox(height: 0.h),
 
 
                                     return ManageUsersCubit.get(context).days.isEmpty ?
-                                Center(child: CircularProgressIndicator())
+                                const Center(child: CircularProgressIndicator())
                                     :FirestoreListView(query:
                                       FirebaseFirestore.instance
                                               .collection('admins')
@@ -209,22 +207,18 @@ SizedBox(height: 0.h),
                                       cacheExtent: 100,
                                       scrollDirection: Axis.vertical,
                                       shrinkWrap: true,
-                                      physics: NeverScrollableScrollPhysics(),
+                                      physics: const NeverScrollableScrollPhysics(),
                                       itemBuilder: (context, doc)
 {
-      final data = doc.data() as Map<String, dynamic>;
+      final data = doc.data();
       final schedule = ScheduleModel.fromJson2(data);
 
       List<String?>? coachesIds = schedule.coachIds ?? [];
-      List<String?>? usersList =schedule.usersList ?? [];
         List<String?>? usersIds = schedule.userIds ?? [];
         //group_id
-        String? groupId = schedule.groupId ?? '';
 
       String scheduleId = schedule.scheduleId ?? '';
       String day = schedule.date ?? '';
-      Timestamp? statrTime = (schedule.startTime ?? '') as Timestamp?;
-      Timestamp? endTime = (schedule.endTime ?? '') as Timestamp?;
 
                                         return  Column(
                                             children: [
@@ -244,70 +238,55 @@ SizedBox(height: 0.h),
                                                                                                                                 //   ManageSalaryCubit.get(context).changeIsGrey(false);
                                                                                                                                 //
                                                                                                                                 // },
-                                                                                                                                child: Container( // updated
-                                                                                                                          //        decoration: BoxDecoration(
-                                                                                                                                  //   color: ManageSalaryCubit.get(context).isGrey == true
-                                                                                                                                  //       ? Colors.white : Colors.white, // updated
-                                                                                                                                  //   borderRadius: BorderRadius.circular(10),
-                                                                                                                                  //   boxShadow: [
-                                                                                                                                  //     // BoxShadow(
-                                                                                                                                  //     //   color: Colors.grey.withOpacity(0.5),
-                                                                                                                                  //     //   spreadRadius: 2,
-                                                                                                                                  //     //   blurRadius: 5,
-                                                                                                                                  //     //   offset: Offset(0, 3),
-                                                                                                                                  //     // ),
-                                                                                                                                  //   ],
-                                                                                                                                  // ),
+                                                                                                                                child: ExpansionTile(
 
-                                                  child: ExpansionTile(
+                                                                                                                                  leading: Row(
+                                                                                                                                    mainAxisSize: MainAxisSize.min,
+                                                                                                                                    children: [
+                                                                                                                                      FFButtonWidget(
+                                                                                                                                        onPressed: () {
 
-                                                    leading: Row(
-                                                      mainAxisSize: MainAxisSize.min,
-                                                      children: [
-                                                        FFButtonWidget(
-                                                          onPressed: () {
-                                                            print('Delete button pressed ...');
-                                                           ManageUsersCubit.get(context).deleteSchedule(
+                                                                                                                                         ManageUsersCubit.get(context).deleteSchedule(
                                                 coachesIds: coachesIds?.cast<String>() ?? [],
                                                 usersIds: usersIds?.cast<String>() ?? [],
                                                 scheduleId: scheduleId,
                                                 day: day,
                                                 );
 
-                                                          },
-                                                          text: 'حذف',
-                                                          options: FFButtonOptions(
-                                                            width: 50.w,
-                                                            height: 40.h,
-                                                            padding: EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
-                                                            iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                                                            color: Colors.red,
-                                                            textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                                              fontFamily: 'Readex Pro',
-                                                              color: Colors.white,
-                                                              fontSize: 12.sp,
-                                                            ),
-                                                            elevation: 3,
-                                                            borderSide: BorderSide(
-                                                              color: Colors.transparent,
-                                                              width: 1,
-                                                            ),
-                                                            borderRadius: BorderRadius.circular(8),
-                                                          ),
-                                                        ),
-                                                        SizedBox(width: 10.w),
-                                                        FFButtonWidget(
-                                                          onPressed: () {
+                                                                                                                                        },
+                                                                                                                                        text: 'حذف',
+                                                                                                                                        options: FFButtonOptions(
+                                                                                                                                          width: 50.w,
+                                                                                                                                          height: 40.h,
+                                                                                                                                          padding: const EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
+                                                                                                                                          iconPadding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                                                                                                                                          color: Colors.red,
+                                                                                                                                          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                                                                                                                            fontFamily: 'Readex Pro',
+                                                                                                                                            color: Colors.white,
+                                                                                                                                            fontSize: 12.sp,
+                                                                                                                                          ),
+                                                                                                                                          elevation: 3,
+                                                                                                                                          borderSide: const BorderSide(
+                                                                                                                                            color: Colors.transparent,
+                                                                                                                                            width: 1,
+                                                                                                                                          ),
+                                                                                                                                          borderRadius: BorderRadius.circular(8),
+                                                                                                                                        ),
+                                                                                                                                      ),
+                                                                                                                                      SizedBox(width: 10.w),
+                                                                                                                                      FFButtonWidget(
+                                                                                                                                        onPressed: () {
 
-                                                            // ManageAttendenceCubit.get(context).selectedCoaches = usersList?.cast<String>() ?? [];
-                                                            // ManageAttendenceCubit.get(context).selectedDays = [day];
-                                                            // ManageAttendenceCubit.get(context).startTime = statrTime;
-                                                            // ManageAttendenceCubit.get(context).endTime = endTime;
-                                                            // //selectedBranch
-                                                            // ManageAttendenceCubit.get(context).selectedBranch = schedule.branchId ?? '';
-                                                            // //selectedBranch
-                                                            //print('${ManageSalaryCubit.get(context).schedules?[index].branchId}');
-                                                            ManageAttendenceCubit.get(context).getAdminData();
+                                                                                                                                          // ManageAttendenceCubit.get(context).selectedCoaches = usersList?.cast<String>() ?? [];
+                                                                                                                                          // ManageAttendenceCubit.get(context).selectedDays = [day];
+                                                                                                                                          // ManageAttendenceCubit.get(context).startTime = statrTime;
+                                                                                                                                          // ManageAttendenceCubit.get(context).endTime = endTime;
+                                                                                                                                          // //selectedBranch
+                                                                                                                                          // ManageAttendenceCubit.get(context).selectedBranch = schedule.branchId ?? '';
+                                                                                                                                          // //selectedBranch
+                                                                                                                                          //print('${ManageSalaryCubit.get(context).schedules?[index].branchId}');
+                                                                                                                                          ManageAttendenceCubit.get(context).getAdminData();
 //void navigateToGroupData(String groupId) {
 //                         FirebaseFirestore.instance
 //                             .collection('branches')
@@ -332,332 +311,329 @@ SizedBox(height: 0.h),
 //                           }
 //                         });
 //                       }
-                                                            ManageAttendenceCubit.get(context).navigateToGroupData(
-                                                                schedule.groupId ?? '',
-                                                                schedule.branchId ?? '',
-                                                                context);
-                                                            // Navigator.pushNamed(
-                                                      // context,
-                                                              //AppRoutes.onboarding,
-                                                      //
-                                                      //         AppRoutes.addSchedule,
-                                                      // arguments: {
-                                                      //   'toggle': false,
-                                                      //   'startTime': statrTime,
-                                                      //   'endTime': endTime,
-                                                      //   'date': day,
-                                                      //   'usersList': usersList,
-                                                      //   'scheduleId': scheduleId,
-                                                      //   'usersIds': usersIds,
-                                                      // },
-                                                    // );
-                                                          },
-                                                          text: 'تعديل',
-                                                          options: FFButtonOptions(
-                                                            width: 50.w,
-                                                            height: 40.h,
-                                                            padding: EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
-                                                            iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                                                            color: Colors.blue,
-                                                            textStyle: FlutterFlowTheme.of(context).titleSmall.override(
-                                                              fontFamily: 'Readex Pro',
-                                                              color: Colors.white,
-                                                              fontSize: 12.sp,
-                                                            ),
-                                                            elevation: 3,
-                                                            borderSide: BorderSide(
-                                                              color: Colors.transparent,
-                                                              width: 1,
-                                                            ),
-                                                            borderRadius: BorderRadius.circular(8),
-                                                          ),
-                                                        ),
+                                                                                                                                          ManageAttendenceCubit.get(context).navigateToGroupData(
+                                                                                                                                              schedule.groupId ?? '',
+                                                                                                                                              schedule.branchId ?? '',
+                                                                                                                                              context);
+                                                                                                                                          // Navigator.pushNamed(
+                                                                                                                                    // context,
+                                                                                                                                            //AppRoutes.onboarding,
+                                                                                                                                    //
+                                                                                                                                    //         AppRoutes.addSchedule,
+                                                                                                                                    // arguments: {
+                                                                                                                                    //   'toggle': false,
+                                                                                                                                    //   'startTime': statrTime,
+                                                                                                                                    //   'endTime': endTime,
+                                                                                                                                    //   'date': day,
+                                                                                                                                    //   'usersList': usersList,
+                                                                                                                                    //   'scheduleId': scheduleId,
+                                                                                                                                    //   'usersIds': usersIds,
+                                                                                                                                    // },
+                                                                                                                                  // );
+                                                                                                                                        },
+                                                                                                                                        text: 'تعديل',
+                                                                                                                                        options: FFButtonOptions(
+                                                                                                                                          width: 50.w,
+                                                                                                                                          height: 40.h,
+                                                                                                                                          padding: const EdgeInsetsDirectional.fromSTEB(5, 0, 5, 0),
+                                                                                                                                          iconPadding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                                                                                                                                          color: Colors.blue,
+                                                                                                                                          textStyle: FlutterFlowTheme.of(context).titleSmall.override(
+                                                                                                                                            fontFamily: 'Readex Pro',
+                                                                                                                                            color: Colors.white,
+                                                                                                                                            fontSize: 12.sp,
+                                                                                                                                          ),
+                                                                                                                                          elevation: 3,
+                                                                                                                                          borderSide: const BorderSide(
+                                                                                                                                            color: Colors.transparent,
+                                                                                                                                            width: 1,
+                                                                                                                                          ),
+                                                                                                                                          borderRadius: BorderRadius.circular(8),
+                                                                                                                                        ),
+                                                                                                                                      ),
 
 
-                                                      ],
-                                                    ),
-                                                    title: BlocBuilder<ManageUsersCubit, ManageUsersState>(
+                                                                                                                                    ],
+                                                                                                                                  ),
+                                                                                                                                  title: BlocBuilder<ManageUsersCubit, ManageUsersState>(
       builder: (context, state) {
         return Row(
-                                                      children: [
-                                                        Expanded(
-                                                          child: SizedBox(
-                                                            width: 200,
-                                                            child: AutoSizeText(
-                                                              '${DateFormat('hh:mm a').format(schedule.endTime!.toDate())} '
-                                                              '<---'
-                                                              '${DateFormat('hh:mm a').format(schedule.startTime!.toDate())} '
-                                                              '-'
-                                                              '${schedule.branchId}',
-                                                              style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                                fontFamily: 'Readex Pro',
-                                                               // fontSize: ,
-                                                              ),
-                                                              minFontSize: 6,
-                                                              maxFontSize: 19,
-                                                              maxLines: 1,
-                                                              overflow: TextOverflow.ellipsis,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      ].divide(SizedBox(width: 5)),
-                                                    );
+                                                                                                                                    children: [
+                                                                                                                                      Expanded(
+                                                                                                                                        child: SizedBox(
+                                                                                                                                          width: 200,
+                                                                                                                                          child: AutoSizeText(
+                                                                                                                                            '${DateFormat('hh:mm a').format(schedule.endTime!.toDate())} '
+                                                                                                                                            '<---'
+                                                                                                                                            '${DateFormat('hh:mm a').format(schedule.startTime!.toDate())} '
+                                                                                                                                            '-'
+                                                                                                                                            '${schedule.branchId}',
+                                                                                                                                            style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                                                                                                                              fontFamily: 'Readex Pro',
+                                                                                                                                             // fontSize: ,
+                                                                                                                                            ),
+                                                                                                                                            minFontSize: 6,
+                                                                                                                                            maxFontSize: 19,
+                                                                                                                                            maxLines: 1,
+                                                                                                                                            overflow: TextOverflow.ellipsis,
+                                                                                                                                          ),
+                                                                                                                                        ),
+                                                                                                                                      ),
+                                                                                                                                    ].divide(const SizedBox(width: 5)),
+                                                                                                                                  );
       },
 ),
-                                                    children: [
+                                                                                                                                  children: [
 
-                                                   if(ManageUsersCubit.get(context).isCoach ==true)
+                                                                                                                                 if(ManageUsersCubit.get(context).isCoach ==true)
 
                                               FirestoreListView<Map<String, dynamic>>(
-                                                  pageSize: 8,
-                                                  shrinkWrap: true,
-                                                  loadingBuilder: (context) => Center(child: CircularProgressIndicator()),
-                                                  cacheExtent: 100,
-                                                  query:FirebaseFirestore.instance
-                                                      .collection('admins')
-                                                      .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                       .collection('schedules')
-                                                      .doc(ManageUsersCubit.get(context).days?[
-                                                        //selectedDayIndex
-                                                        ManageUsersCubit.get(context).selectedDayIndex
-                                                      ].name ?? '')
-                                                      .collection('schedules')
-                                                      .doc('${schedule.scheduleId}')
-                                                      .collection('users')
-                                                      .where('role', isEqualTo: 'coach')
+                                                                                                                                pageSize: 8,
+                                                                                                                                shrinkWrap: true,
+                                                                                                                                loadingBuilder: (context) => const Center(child: CircularProgressIndicator()),
+                                                                                                                                cacheExtent: 100,
+                                                                                                                                query:FirebaseFirestore.instance
+                                                                                                                                    .collection('admins')
+                                                                                                                                    .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                                                                                                     .collection('schedules')
+                                                                                                                                    .doc(ManageUsersCubit.get(context).days?[
+                                                                                                                                      //selectedDayIndex
+                                                                                                                                      ManageUsersCubit.get(context).selectedDayIndex
+                                                                                                                                    ].name ?? '')
+                                                                                                                                    .collection('schedules')
+                                                                                                                                    .doc('${schedule.scheduleId}')
+                                                                                                                                    .collection('users')
+                                                                                                                                    .where('role', isEqualTo: 'coach')
 
                                                 ,
-                                                  itemBuilder: (context, snapshot) {
-                                                       DateTime nearestDay = schedule.nearestDay?.toDate() ?? DateTime.now();
-                                                                                    // Calculate the difference between the nearest day and today's date
-                                                                                    int differenceInDays =nearestDay.difference( DateTime.now()).inDays;
-                                                                                     bool? isTimeExceed;
-                                                               // Duration difference = DateTime.now().difference(nearestDay);
-                                                         Map<String, dynamic> user = snapshot.data();
-                                                             if (differenceInDays > 5) {
-                                                                    FirebaseFirestore.instance
-                                                                        .collection('admins')
-                                                                        .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                                        .collection('schedules')
-                                                                        .doc(ManageUsersCubit.get(context).days?[
-                                                                            ManageUsersCubit.get(context).selectedDayIndex
-                                                                        ].name ?? '')
-                                                                        .collection('schedules')
-                                                                        .doc('${schedule.scheduleId}')
-                                                                        .collection('users')
-                                                                        .where('finished', isEqualTo: true)
-                                                                        .where('role', isEqualTo: 'coach')
-                                                                        .get()
-                                                                        .then((querySnapshot) {
+                                                                                                                                itemBuilder: (context, snapshot) {
+                                                                                                                                     DateTime nearestDay = schedule.nearestDay?.toDate() ?? DateTime.now();
+                                                                                                                                                                  // Calculate the difference between the nearest day and today's date
+                                                                                                                                                                  int differenceInDays =nearestDay.difference( DateTime.now()).inDays;
+                                                                                                                                             // Duration difference = DateTime.now().difference(nearestDay);
+                                                                                                                                       Map<String, dynamic> user = snapshot.data();
+                                                                                                                                           if (differenceInDays > 5) {
+                                                                                                                                                  FirebaseFirestore.instance
+                                                                                                                                                      .collection('admins')
+                                                                                                                                                      .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                                                                                                                      .collection('schedules')
+                                                                                                                                                      .doc(ManageUsersCubit.get(context).days?[
+                                                                                                                                                          ManageUsersCubit.get(context).selectedDayIndex
+                                                                                                                                                      ].name ?? '')
+                                                                                                                                                      .collection('schedules')
+                                                                                                                                                      .doc('${schedule.scheduleId}')
+                                                                                                                                                      .collection('users')
+                                                                                                                                                      .where('finished', isEqualTo: true)
+                                                                                                                                                      .where('role', isEqualTo: 'coach')
+                                                                                                                                                      .get()
+                                                                                                                                                      .then((querySnapshot) {
 
-                                                                          print('querySnapshot.docs.length ${querySnapshot.docs.length}');
-                                                                          querySnapshot.docs.forEach((doc) {
-                                                                            doc.reference.update({'finished': false});
-                                                                          });
-                                                                        });
-                                                                        isTimeExceed = false;
-                                                                 }
-                                                    user = snapshot.data();
-                                                    return //Text('Schedule id is ${user['name']}');
-                                                    Column(
-                                                          children: [
-                                                          //  for (int i = 0; i < user.length; i++)
-                                                              CheckboxListTile(
-                                                                title: Text(user['name']),
-                                                                value: user['finished'],
-                                                                onChanged: (value) async {
-                                                                   FirebaseFirestore firestore = FirebaseFirestore.instance;
-                                                                  // DocumentSnapshot scheduleSnapshot = await firestore
-                                                                  //     .collection('admins')
-                                                                  //     .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                                  //     .collection('schedules')
-                                                                  //     .doc(ManageSalaryCubit.get(context).days?[index].name ?? '')
-                                                                  //     .collection('schedules')
-                                                                  //     .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
-                                                                  //     .get();
-                                                                  int startTime = schedule.startTime?.toDate().hour ?? 0;
-                                                                  int endTime = schedule.endTime?.toDate().hour ?? 0;
-                                                                  int totalHours = endTime - startTime;
-                                                                  totalHours += Duration(minutes: 2).inHours;
+                                                                                                                                                        print('querySnapshot.docs.length ${querySnapshot.docs.length}');
+                                                                                                                                                        querySnapshot.docs.forEach((doc) {
+                                                                                                                                                          doc.reference.update({'finished': false});
+                                                                                                                                                        });
+                                                                                                                                                      });
+                                                                                                                                               }
+                                                                                                                                  user = snapshot.data();
+                                                                                                                                  return //Text('Schedule id is ${user['name']}');
+                                                                                                                                  Column(
+                                                                                                                                        children: [
+                                                                                                                                        //  for (int i = 0; i < user.length; i++)
+                                                                                                                                            CheckboxListTile(
+                                                                                                                                              title: Text(user['name']),
+                                                                                                                                              value: user['finished'],
+                                                                                                                                              onChanged: (value) async {
+                                                                                                                                                 FirebaseFirestore firestore = FirebaseFirestore.instance;
+                                                                                                                                                // DocumentSnapshot scheduleSnapshot = await firestore
+                                                                                                                                                //     .collection('admins')
+                                                                                                                                                //     .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                                                                                                                //     .collection('schedules')
+                                                                                                                                                //     .doc(ManageSalaryCubit.get(context).days?[index].name ?? '')
+                                                                                                                                                //     .collection('schedules')
+                                                                                                                                                //     .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+                                                                                                                                                //     .get();
+                                                                                                                                                int startTime = schedule.startTime?.toDate().hour ?? 0;
+                                                                                                                                                int endTime = schedule.endTime?.toDate().hour ?? 0;
+                                                                                                                                                int totalHours = endTime - startTime;
+                                                                                                                                                totalHours += const Duration(minutes: 2).inHours;
 
-                                                                  if (value == true) {
-                                                                    firestore
-                                                                        .collection('admins')
-                                                                        .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                                        .collection('schedules')
-                                                                        .doc(ManageUsersCubit.get(context).days?[
-                                                                          //selectedDayIndex
-                                                                          ManageUsersCubit.get(context).selectedDayIndex
-                                                                        ].name ?? '')
-                                                                        .collection('schedules')
-                                                                        .doc('${schedule.scheduleId}')
-                                                                        .collection('users')
-                                                                        .doc(user['uid'])
-                                                                        .update({'finished': value,});
-                                                                        firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(totalHours)});
-                                                                 //send notification to users model contain 2 fields message and timestamp
-                                                                 firestore.collection('users').doc(user['uid']).collection('notifications').add({
-                                                                   'message': 'تم اضافة ${totalHours} ساعات لحسابك',
-                                                                   'timestamp': Timestamp.now(),
-                                                                  });
-                                                                  } else {
-                                                                    firestore
-                                                                        .collection('admins')
-                                                                        .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                                        .collection('schedules')
-                                                                        .doc(ManageUsersCubit.get(context).days?[
-                                                                          //selectedDayIndex
-                                                                          ManageUsersCubit.get(context).selectedDayIndex
-                                                                        ].name ?? '')
-                                                                        .collection('schedules')
-                                                                        .doc('${schedule.scheduleId}')
-                                                                        .collection('users')
-                                                                        .doc(user['uid'])
-                                                                        .update({'finished': value,});
-                                                                        firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(-totalHours)});
-                                                                  //send notification to users model contain 2 fields message and timestamp
-                                                                  firestore.collection('users').doc(user['uid']).collection('notifications').add({
-                                                                   'message': 'تم خصم ${totalHours} ساعات من حسابك',
-                                                                   'timestamp': Timestamp.now(),
-                                                                  });
-                                                                  }
-                                                                },
-                                                              ),
-                                                          ],
-                                                        );
-                                                  },
+                                                                                                                                                if (value == true) {
+                                                                                                                                                  firestore
+                                                                                                                                                      .collection('admins')
+                                                                                                                                                      .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                                                                                                                      .collection('schedules')
+                                                                                                                                                      .doc(ManageUsersCubit.get(context).days?[
+                                                                                                                                                        //selectedDayIndex
+                                                                                                                                                        ManageUsersCubit.get(context).selectedDayIndex
+                                                                                                                                                      ].name ?? '')
+                                                                                                                                                      .collection('schedules')
+                                                                                                                                                      .doc('${schedule.scheduleId}')
+                                                                                                                                                      .collection('users')
+                                                                                                                                                      .doc(user['uid'])
+                                                                                                                                                      .update({'finished': value,});
+                                                                                                                                                      firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(totalHours)});
+                                                                                                                                               //send notification to users model contain 2 fields message and timestamp
+                                                                                                                                               firestore.collection('users').doc(user['uid']).collection('notifications').add({
+                                                                                                                                                 'message': 'تم اضافة ${totalHours} ساعات لحسابك',
+                                                                                                                                                 'timestamp': Timestamp.now(),
+                                                                                                                                                });
+                                                                                                                                                } else {
+                                                                                                                                                  firestore
+                                                                                                                                                      .collection('admins')
+                                                                                                                                                      .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                                                                                                                      .collection('schedules')
+                                                                                                                                                      .doc(ManageUsersCubit.get(context).days?[
+                                                                                                                                                        //selectedDayIndex
+                                                                                                                                                        ManageUsersCubit.get(context).selectedDayIndex
+                                                                                                                                                      ].name ?? '')
+                                                                                                                                                      .collection('schedules')
+                                                                                                                                                      .doc('${schedule.scheduleId}')
+                                                                                                                                                      .collection('users')
+                                                                                                                                                      .doc(user['uid'])
+                                                                                                                                                      .update({'finished': value,});
+                                                                                                                                                      firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(-totalHours)});
+                                                                                                                                                //send notification to users model contain 2 fields message and timestamp
+                                                                                                                                                firestore.collection('users').doc(user['uid']).collection('notifications').add({
+                                                                                                                                                 'message': 'تم خصم ${totalHours} ساعات من حسابك',
+                                                                                                                                                 'timestamp': Timestamp.now(),
+                                                                                                                                                });
+                                                                                                                                                }
+                                                                                                                                              },
+                                                                                                                                            ),
+                                                                                                                                        ],
+                                                                                                                                      );
+                                                                                                                                },
                                                 )else
 
-                                                     FirestoreListView<Map<String, dynamic>>(
+                                                                                                                                   FirestoreListView<Map<String, dynamic>>(
 
-                                                       pageSize: 8,
-                                                       shrinkWrap: true,
-                                                       loadingBuilder: (context) => Center(child: CircularProgressIndicator()),
-                                                       cacheExtent: 100,
-                                                       query:FirebaseFirestore.instance
-                                                           .collection('admins')
-                                                           .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                           .collection('schedules')
-                                                           .doc(ManageUsersCubit.get(context).days?[
-                                                       //selectedDayIndex
-                                                       ManageUsersCubit.get(context).selectedDayIndex
-                                                       ].name ?? '')
-                                                           .collection('schedules')
-                                                           .doc('${schedule.scheduleId}')
-                                                           .collection('users')
-                                                           .where('role', isEqualTo: 'user')
+                                                                                                                                     pageSize: 8,
+                                                                                                                                     shrinkWrap: true,
+                                                                                                                                     loadingBuilder: (context) => const Center(child: CircularProgressIndicator()),
+                                                                                                                                     cacheExtent: 100,
+                                                                                                                                     query:FirebaseFirestore.instance
+                                                                                                                                         .collection('admins')
+                                                                                                                                         .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                                                                                                         .collection('schedules')
+                                                                                                                                         .doc(ManageUsersCubit.get(context).days?[
+                                                                                                                                     //selectedDayIndex
+                                                                                                                                     ManageUsersCubit.get(context).selectedDayIndex
+                                                                                                                                     ].name ?? '')
+                                                                                                                                         .collection('schedules')
+                                                                                                                                         .doc('${schedule.scheduleId}')
+                                                                                                                                         .collection('users')
+                                                                                                                                         .where('role', isEqualTo: 'user')
 
-                                                       ,
-                                                       itemBuilder: (context, snapshot) {
+                                                                                                                                     ,
+                                                                                                                                     itemBuilder: (context, snapshot) {
 
-                                                                                 //nearestDay 2023-10-11 15:35:13.858087
-                                                                                 //differenceInDays 0
-                                                                                 //DateTime.now()  DateTime.now() 2023-10-11 15:36:59.950
-                                                                                 print('DateTime.now() ${DateTime.now()}');
-                                                                                    DateTime nearestDay = schedule.nearestDay?.toDate() ?? DateTime.now();
-                                                                                    print('nearestDay $nearestDay');
-                                                                                    // Calculate the difference between the nearest day and today's date
-                                                                                    int differenceInDays =nearestDay.difference( DateTime.now()).inDays;
-                                                                                    print('differenceInDays $differenceInDays');
-                                                                                     bool? isTimeExceed;
-                                                               // Duration difference = DateTime.now().difference(nearestDay);
-                                                         Map<String, dynamic> user = snapshot.data();
-                                                             if (differenceInDays > 5) {
-                                                                    FirebaseFirestore.instance
-                                                                        .collection('admins')
-                                                                        .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                                        .collection('schedules')
-                                                                        .doc(ManageUsersCubit.get(context).days?[
-                                                                            ManageUsersCubit.get(context).selectedDayIndex
-                                                                        ].name ?? '')
-                                                                        .collection('schedules')
-                                                                        .doc('${schedule.scheduleId}')
-                                                                        .collection('users')
-                                                                        .where('finished', isEqualTo: true)
-                                                                        .where('role', isEqualTo: 'user')
-                                                                        .get()
-                                                                        .then((querySnapshot) {
+                                                                                                                                                               //nearestDay 2023-10-11 15:35:13.858087
+                                                                                                                                                               //differenceInDays 0
+                                                                                                                                                               //DateTime.now()  DateTime.now() 2023-10-11 15:36:59.950
+                                                                                                                                                               print('DateTime.now() ${DateTime.now()}');
+                                                                                                                                                                  DateTime nearestDay = schedule.nearestDay?.toDate() ?? DateTime.now();
+                                                                                                                                                                  print('nearestDay $nearestDay');
+                                                                                                                                                                  // Calculate the difference between the nearest day and today's date
+                                                                                                                                                                  int differenceInDays =nearestDay.difference( DateTime.now()).inDays;
+                                                                                                                                                                  print('differenceInDays $differenceInDays');
+                                                                                                                                                                   bool? isTimeExceed;
+                                                                                                                                             // Duration difference = DateTime.now().difference(nearestDay);
+                                                                                                                                       Map<String, dynamic> user = snapshot.data();
+                                                                                                                                           if (differenceInDays > 5) {
+                                                                                                                                                  FirebaseFirestore.instance
+                                                                                                                                                      .collection('admins')
+                                                                                                                                                      .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                                                                                                                      .collection('schedules')
+                                                                                                                                                      .doc(ManageUsersCubit.get(context).days?[
+                                                                                                                                                          ManageUsersCubit.get(context).selectedDayIndex
+                                                                                                                                                      ].name ?? '')
+                                                                                                                                                      .collection('schedules')
+                                                                                                                                                      .doc('${schedule.scheduleId}')
+                                                                                                                                                      .collection('users')
+                                                                                                                                                      .where('finished', isEqualTo: true)
+                                                                                                                                                      .where('role', isEqualTo: 'user')
+                                                                                                                                                      .get()
+                                                                                                                                                      .then((querySnapshot) {
 
-                                                                          print('querySnapshot.docs.length ${querySnapshot.docs.length}');
-                                                                          querySnapshot.docs.forEach((doc) {
-                                                                            doc.reference.update({'finished': false});
-                                                                          });
-                                                                        });
-                                                                        isTimeExceed = false;
-                                                                 }
-                                                         return //Text('Schedule id is ${user['name']}');
-                                                           Column(
-                                                             children: [
+                                                                                                                                                        print('querySnapshot.docs.length ${querySnapshot.docs.length}');
+                                                                                                                                                        querySnapshot.docs.forEach((doc) {
+                                                                                                                                                          doc.reference.update({'finished': false});
+                                                                                                                                                        });
+                                                                                                                                                      });
+                                                                                                                                                      isTimeExceed = false;
+                                                                                                                                               }
+                                                                                                                                       return //Text('Schedule id is ${user['name']}');
+                                                                                                                                         Column(
+                                                                                                                                           children: [
 
-                                                               CheckboxListTile(
-                                                                 title: Text(user['name']),
-                                                                 value: isTimeExceed?? user['finished'],
-                                                                 onChanged: (value) async {
-                                                                   FirebaseFirestore firestore = FirebaseFirestore.instance;
-                                                                   // DocumentSnapshot scheduleSnapshot = await firestore
-                                                                   //     .collection('admins')
-                                                                   //     .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                                   //     .collection('schedules')
-                                                                   //     .doc(ManageSalaryCubit.get(context).days?[index].name ?? '')
-                                                                   //     .collection('schedules')
-                                                                   //     .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
-                                                                   //     .get();
-                                                                   int startTime = schedule.startTime?.toDate().hour ?? 0;
-                                                                   int endTime = schedule.endTime?.toDate().hour ?? 0;
-                                                                   int totalHours = endTime - startTime;
-                                                                   totalHours += Duration(minutes: 2).inHours;
+                                                                                                                                             CheckboxListTile(
+                                                                                                                                               title: Text(user['name']),
+                                                                                                                                               value: isTimeExceed?? user['finished'],
+                                                                                                                                               onChanged: (value) async {
+                                                                                                                                                 FirebaseFirestore firestore = FirebaseFirestore.instance;
+                                                                                                                                                 // DocumentSnapshot scheduleSnapshot = await firestore
+                                                                                                                                                 //     .collection('admins')
+                                                                                                                                                 //     .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                                                                                                                 //     .collection('schedules')
+                                                                                                                                                 //     .doc(ManageSalaryCubit.get(context).days?[index].name ?? '')
+                                                                                                                                                 //     .collection('schedules')
+                                                                                                                                                 //     .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
+                                                                                                                                                 //     .get();
+                                                                                                                                                 int startTime = schedule.startTime?.toDate().hour ?? 0;
+                                                                                                                                                 int endTime = schedule.endTime?.toDate().hour ?? 0;
+                                                                                                                                                 int totalHours = endTime - startTime;
+                                                                                                                                                 totalHours += const Duration(minutes: 2).inHours;
 
-                                                                   if (value == true) {
-                                                                     firestore
-                                                                         .collection('admins')
-                                                                         .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                                         .collection('schedules')
-                                                                         .doc(ManageUsersCubit.get(context).days?[
-                                                                     //selectedDayIndex
-                                                                     ManageUsersCubit.get(context).selectedDayIndex
-                                                                     ].name ?? '')
-                                                                         .collection('schedules')
-                                                                         .doc('${schedule.scheduleId}')
-                                                                         .collection('users')
-                                                                         .doc(user['uid'])
-                                                                         .update({'finished': value,});
-                                                                     firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(totalHours)});
-                                                                     //send notification to users model contain 2 fields message and timestamp
-                                                                     firestore.collection('users').doc(user['uid']).collection('notifications').add({
-                                                                       'message': 'تم اضافة ${totalHours} ساعات لحسابك',
-                                                                       'timestamp': Timestamp.now(),
-                                                                     });
-                                                                   } else {
-                                                                     firestore
-                                                                         .collection('admins')
-                                                                         .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                                         .collection('schedules')
-                                                                         .doc(ManageUsersCubit.get(context).days?[
-                                                                     //selectedDayIndex
-                                                                     ManageUsersCubit.get(context).selectedDayIndex
-                                                                     ].name ?? '')
-                                                                         .collection('schedules')
-                                                                         .doc('${schedule.scheduleId}')
-                                                                         .collection('users')
-                                                                         .doc(user['uid'])
-                                                                         .update({'finished': value,});
-                                                                     firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(-totalHours)});
-                                                                     //send notification to users model contain 2 fields message and timestamp
-                                                                     firestore.collection('users').doc(user['uid']).collection('notifications').add({
-                                                                       'message': 'تم خصم ${totalHours} ساعات من حسابك',
-                                                                       'timestamp': Timestamp.now(),
-                                                                     });
-                                                                   }
-                                                                 },
-                                                               ),
-                                                             ],
-                                                           );
-                                                       },
-                                                     )
+                                                                                                                                                 if (value == true) {
+                                                                                                                                                   firestore
+                                                                                                                                                       .collection('admins')
+                                                                                                                                                       .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                                                                                                                       .collection('schedules')
+                                                                                                                                                       .doc(ManageUsersCubit.get(context).days?[
+                                                                                                                                                   //selectedDayIndex
+                                                                                                                                                   ManageUsersCubit.get(context).selectedDayIndex
+                                                                                                                                                   ].name ?? '')
+                                                                                                                                                       .collection('schedules')
+                                                                                                                                                       .doc('${schedule.scheduleId}')
+                                                                                                                                                       .collection('users')
+                                                                                                                                                       .doc(user['uid'])
+                                                                                                                                                       .update({'finished': value,});
+                                                                                                                                                   firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(totalHours)});
+                                                                                                                                                   //send notification to users model contain 2 fields message and timestamp
+                                                                                                                                                   firestore.collection('users').doc(user['uid']).collection('notifications').add({
+                                                                                                                                                     'message': 'تم اضافة ${totalHours} ساعات لحسابك',
+                                                                                                                                                     'timestamp': Timestamp.now(),
+                                                                                                                                                   });
+                                                                                                                                                 } else {
+                                                                                                                                                   firestore
+                                                                                                                                                       .collection('admins')
+                                                                                                                                                       .doc(FirebaseAuth.instance.currentUser?.uid)
+                                                                                                                                                       .collection('schedules')
+                                                                                                                                                       .doc(ManageUsersCubit.get(context).days?[
+                                                                                                                                                   //selectedDayIndex
+                                                                                                                                                   ManageUsersCubit.get(context).selectedDayIndex
+                                                                                                                                                   ].name ?? '')
+                                                                                                                                                       .collection('schedules')
+                                                                                                                                                       .doc('${schedule.scheduleId}')
+                                                                                                                                                       .collection('users')
+                                                                                                                                                       .doc(user['uid'])
+                                                                                                                                                       .update({'finished': value,});
+                                                                                                                                                   firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(-totalHours)});
+                                                                                                                                                   //send notification to users model contain 2 fields message and timestamp
+                                                                                                                                                   firestore.collection('users').doc(user['uid']).collection('notifications').add({
+                                                                                                                                                     'message': 'تم خصم ${totalHours} ساعات من حسابك',
+                                                                                                                                                     'timestamp': Timestamp.now(),
+                                                                                                                                                   });
+                                                                                                                                                 }
+                                                                                                                                               },
+                                                                                                                                             ),
+                                                                                                                                           ],
+                                                                                                                                         );
+                                                                                                                                     },
+                                                                                                                                   )
 
-                                                    ],
-                                                  ),
-                                                ),
+                                                                                                                                  ],
+                                                                                                                                ),
                                               ),
                                             ],
                                           ) ;},
@@ -670,7 +646,7 @@ SizedBox(height: 0.h),
                                 ),
                               ],
                             ),
-                            Divider(
+                            const Divider(
                               thickness: 2,
                               color: Color(0xFFF4F4F4),
                             ),
@@ -727,9 +703,9 @@ SizedBox(height: 0.h),
                       text: 'اضافة موعد ',
                       options: FFButtonOptions(
                         height: 40.h,
-                        padding: EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
-                        iconPadding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                        color: Color(0xFF198CE3),
+                        padding: const EdgeInsetsDirectional.fromSTEB(24, 0, 24, 0),
+                        iconPadding: const EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+                        color: const Color(0xFF198CE3),
                         textStyle:
                         FlutterFlowTheme
                             .of(context)
@@ -740,7 +716,7 @@ SizedBox(height: 0.h),
                           fontSize: 12.sp,
                         ),
                         elevation: 3,
-                        borderSide: BorderSide(
+                        borderSide: const BorderSide(
                           color: Colors.transparent,
                           width: 1,
                         ),
@@ -748,7 +724,7 @@ SizedBox(height: 0.h),
                        ),
                      ),
                     //SizedBox(height: 20.h),
-                   ].divide(SizedBox(height: 30)),
+                   ].divide(const SizedBox(height: 30)),
 
                  ),
 
@@ -770,7 +746,7 @@ SizedBox(height: 0.h),
                         width: MediaQuery.of(context).size.width,
                         height: 65.h,
                         decoration: BoxDecoration(
-                          color: Color.fromARGB(0, 195, 162, 162),
+                          color: const Color.fromARGB(0, 195, 162, 162),
                           border: Border.all(
                             color: Colors.blue,
                           ),
@@ -797,24 +773,24 @@ SizedBox(height: 0.h),
                                     ManageUsersCubit.get(context).changeSelectedDayIndex(index);
                                   },
                                   child: Align(
-                                    alignment: AlignmentDirectional(0, 0),
+                                    alignment: const AlignmentDirectional(0, 0),
                                     child: Container(
                                       width: 75.w,
                                       height: 50.h,
                                       decoration: BoxDecoration(
                                         color: ManageUsersCubit.get(context).selectedDayIndex == index
                                             ? Colors.blue
-                                            : Color(0xFFF3F3F3),
+                                            : const Color(0xFFF3F3F3),
                                         borderRadius: BorderRadius.circular(8),
                                         shape: BoxShape.rectangle,
                                       ),
-                                      alignment: AlignmentDirectional(0, 0),
+                                      alignment: const AlignmentDirectional(0, 0),
                                       child: Text(
                                         ManageUsersCubit.get(context).days?[index].name ?? '',
                                         style: FlutterFlowTheme.of(context).bodyMedium.override(
                                           fontFamily: 'Readex Pro',
                                           color: ManageUsersCubit.get(context).selectedDayIndex == index
-                                              ? Color(0xFFF4F4F4)
+                                              ? const Color(0xFFF4F4F4)
                                               : Colors.black,
                                           fontSize: 14.sp,
                                         ),
@@ -822,7 +798,7 @@ SizedBox(height: 0.h),
                                     ),
                                   ),
                                 ),
-                                physics: BouncingScrollPhysics(),
+                                physics: const BouncingScrollPhysics(),
                                 shrinkWrap: true,
                                 itemCount: ManageUsersCubit.get(context).days?.length ?? 0,
                               );

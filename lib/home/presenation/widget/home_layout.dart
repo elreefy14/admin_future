@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
-import '../../../manage_users_coaches/business_logic/manage_users_cubit.dart';
 import '../../../routiong.dart';
 
 class HomeLayout extends StatelessWidget {
@@ -26,7 +25,6 @@ class HomeLayout extends StatelessWidget {
       WillPopScope(
         onWillPop: () async {
           bool shouldExit = await DefaultDialogToAskUserToExitAppOrNot.show(context) ?? false;
-          print('shouldExit $shouldExit');
           // if (shouldExit) {
           //   SystemNavigator.pop();
           // }

@@ -1,10 +1,7 @@
-import 'dart:io';
 
-import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:admin_future/manage_users_coaches/business_logic/manage_users_cubit.dart';
 import 'package:admin_future/registeration/data/userModel.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/login_cubit.dart';
-import 'package:admin_future/registeration/business_logic/auth_cubit/sign_up_cubit.dart';
 import 'package:admin_future/registeration/presenation/SignUpScreen.dart';
 import 'package:admin_future/registeration/presenation/add_coach_screen.dart';
 import 'package:admin_future/registeration/presenation/login_screen.dart';
@@ -20,7 +17,6 @@ import 'home/presenation/widget/add_schedule.dart';
 import 'home/presenation/widget/edit_users.dart';
 import 'home/presenation/widget/home_layout.dart';
 import 'home/presenation/widget/manage_attendence.dart';
-import 'home/presenation/widget/manage_groups_screen.dart';
 import 'manage_users_coaches/presenation/manage_users_screen.dart';
 import 'home/presenation/widget/manage_schedules_screen.dart';
 import 'manage_users_coaches/presenation/mange_coaches_screen.dart';

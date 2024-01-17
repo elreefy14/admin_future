@@ -1,18 +1,8 @@
-import 'package:admin_future/manage_users_coaches/presenation/manage_users_screen.dart';
 import 'package:admin_future/registeration/presenation/widget/component.dart';
-import 'package:admin_future/registeration/presenation/widget/sign_up_multScelect.dart';
-import 'package:admin_future/registeration/presenation/widget/widget.dart';
 import 'package:conditional_builder_null_safety/conditional_builder_null_safety.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../core/constants/routes_manager.dart';
-import '../../core/flutter_flow/flutter_flow_theme.dart';
-import '../../core/flutter_flow/flutter_flow_widgets.dart';
-import '../../home/presenation/widget/manage_attendence.dart';
-import '../../manage_users_coaches/presenation/manage_users_screen.dart';
-import '../../manage_users_coaches/presenation/manage_users_screen.dart';
 import '../../home/presenation/widget/widget/custom_app_bar.dart';
 import '../business_logic/auth_cubit/sign_up_cubit.dart';
 import '../business_logic/auth_cubit/sign_up_state.dart';
@@ -40,7 +30,7 @@ class AddCoachScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Colors.white,
-          appBar: CustomAppBar(
+          appBar: const CustomAppBar(
             text: '',
           ),
           body: ListView(
@@ -62,7 +52,7 @@ class AddCoachScreen extends StatelessWidget {
    'اضافة مدرب',
     textAlign: TextAlign.center,
     style: TextStyle(
-        color: Color(0xFF333333),
+        color: const Color(0xFF333333),
         fontSize: 32.sp,
         fontFamily: 'Montserrat-Arabic',
         fontWeight: FontWeight.w400,
@@ -72,7 +62,7 @@ class AddCoachScreen extends StatelessWidget {
                       'اضافة متدرب',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color(0xFF333333),
+                        color: const Color(0xFF333333),
                         fontSize: 32.sp,
                         fontFamily: 'Montserrat-Arabic',
                         fontWeight: FontWeight.w400,
@@ -119,7 +109,7 @@ class AddCoachScreen extends StatelessWidget {
                               return null;
                             }, Icons.person),
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: 20.0),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35.0.w),
                         child: BuildTextFormField2('رقم الهاتف',
@@ -153,7 +143,7 @@ class AddCoachScreen extends StatelessWidget {
                         ),
                       ),
                       if(isCoach ==true)
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: 20.0),
                       if(isCoach ==true)
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35.0.w),
@@ -381,7 +371,7 @@ class AddCoachScreen extends StatelessWidget {
                                       // OtpCubit.get(context).phoneNumberSubmitted(phoneController.text);
                                     }
                                   },
-                                  child: Text(
+                                  child: const Text(
                                     'تسجيل حساب جديد',
                                     style: TextStyle(
                                       fontFamily: 'Montserrat-Arabic',
@@ -394,14 +384,14 @@ class AddCoachScreen extends StatelessWidget {
                                     textAlign: TextAlign.center,
                                   ),
                                   style: ElevatedButton.styleFrom(
-                                    primary: Color(0xFF2196F3),
+                                    backgroundColor: const Color(0xFF2196F3),
                                     // Background color
-                                    padding: EdgeInsets.symmetric(
+                                    padding: const EdgeInsets.symmetric(
                                         horizontal: 16, vertical: 9),
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12),
                                     ),
-                                    textStyle: TextStyle(
+                                    textStyle: const TextStyle(
                                       fontSize: 18, // Adjust the font size if needed
                                     ),
                                   ),
@@ -410,7 +400,7 @@ class AddCoachScreen extends StatelessWidget {
                               );
                             },
                             fallback: (context) {
-                              return Center(
+                              return const Center(
                                 child: CircularProgressIndicator(),
                               );
                             },

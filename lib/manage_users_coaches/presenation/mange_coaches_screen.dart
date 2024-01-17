@@ -1,19 +1,12 @@
 import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
-import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:admin_future/home/presenation/widget/widget/custom_app_bar.dart';
-import 'package:admin_future/home/presenation/widget/widget/search_bar.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../add_grouup_of_schedules/presentation/select_coaches.dart';
 import '../../core/constants/routes_manager.dart';
 import '../../core/flutter_flow/flutter_flow_theme.dart';
-import '../../registeration/data/userModel.dart';
-import '../business_logic/manage_users_cubit.dart';
 import '../business_logic/manage_users_cubit.dart';
 
 class ManageCoaches extends StatelessWidget {
@@ -43,7 +36,7 @@ class ManageCoaches extends StatelessWidget {
                     color: Colors.red,
                     borderRadius: BorderRadius.circular(50),
                   ),
-                  child: Align(
+                  child: const Align(
                     alignment: AlignmentDirectional(0, 0),
                     child: Icon(
                       Icons.history_sharp,
@@ -56,13 +49,13 @@ class ManageCoaches extends StatelessWidget {
             },
           ),
 
-          appBar: CustomAppBar(text: 'ادارة المدربين'),
+          appBar: const CustomAppBar(text: 'ادارة المدربين'),
                 // key: scaffoldKey,
                 backgroundColor: Colors.white,
                 body: SafeArea(
                   top: true,
                   child: SingleChildScrollView(
-                    physics: BouncingScrollPhysics(),
+                    physics: const BouncingScrollPhysics(),
                     child: Column(
                                    //   mainAxisSize: MainAxisSize.max,
                                       children: [
@@ -71,12 +64,12 @@ class ManageCoaches extends StatelessWidget {
                                         SizedBox(
                                           height: 50.h,
                                         ),
-                                        Container(
+                                        SizedBox(
                                           width: double.infinity,
                                           height: 550.h,
                                           child: ShowCoachesInDialog(
                                             isCoachInfoList: true,
-                                            selectedUsers: [],
+                                            selectedUsers: const [],
                                             isCoach:  true,
                                        //   selectedUsers: isCoach
                                        //       ? context.read<AddGroupCubit>().state.selectedCoaches
@@ -104,94 +97,88 @@ class ManageCoaches extends StatelessWidget {
                                      // is //showRollbackButton
                                        //10
                                           SizedBox(height: 10.h,),
-                                        Container(
-                                        //  width: 169,
-                                         // height: 49,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                            children: [
+                                        Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          mainAxisAlignment: MainAxisAlignment.start,
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
 InkWell(
-                                                onTap: () async {
-                                                  await Navigator.pushNamed(context,
-                                                      AppRoutes.addCoach,
-                                                     arguments: {
-                                                    'isCoach':true,
-                                                     }
-                                                     // arguments: ManageSalaryCubit.get(context).users
-                                                  ) ;
-                                                },
-                                          child: Container(
-                                                  height: 50.h,
-                                                  width: 180.w,
-                                                  decoration: BoxDecoration(
-                                                    color: Colors.blue,
-                                                    borderRadius: BorderRadius.circular(8),
-                                                  ),
-                                                  child: Align(
-                                                    alignment: AlignmentDirectional(0, 0),
-                                                    child: Text(
-                                                      'اضافة مدرب',
-                                                      textAlign: TextAlign.center,
-                                                      style: FlutterFlowTheme.of(context)
-                                                          .titleSmall
-                                                          .override(
-                                                        fontFamily: 'Readex Pro',
-                                                        color: Colors.white,
-                                                        fontSize: 12.sp,
-                                                      ),
+                                              onTap: () async {
+                                                await Navigator.pushNamed(context,
+                                                    AppRoutes.addCoach,
+                                                   arguments: {
+                                                  'isCoach':true,
+                                                   }
+                                                   // arguments: ManageSalaryCubit.get(context).users
+                                                ) ;
+                                              },
+                                        child: Container(
+                                                height: 50.h,
+                                                width: 180.w,
+                                                decoration: BoxDecoration(
+                                                  color: Colors.blue,
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                                child: Align(
+                                                  alignment: const AlignmentDirectional(0, 0),
+                                                  child: Text(
+                                                    'اضافة مدرب',
+                                                    textAlign: TextAlign.center,
+                                                    style: FlutterFlowTheme.of(context)
+                                                        .titleSmall
+                                                        .override(
+                                                      fontFamily: 'Readex Pro',
+                                                      color: Colors.white,
+                                                      fontSize: 12.sp,
                                                     ),
                                                   ),
                                                 ),
                                               ),
-                                              const SizedBox(height: 5),
-                                              Container(
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  mainAxisAlignment: MainAxisAlignment.center,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      'مجموع مرتب كل المدربين',
-                                                      textAlign: TextAlign.center,
-                                                      style: TextStyle(
-                                                        color: Color(0xFF333333),
-                                                        fontSize: 16,
-                                                        fontFamily: 'Montserrat-Arabic',
-                                                        fontWeight: FontWeight.w400,
-                                                        height: 1.62,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 48,
-                                                child: BlocBuilder<ManageUsersCubit, ManageUsersState>(
-        builder: (context, state) {
-          return Text(
-                                                  ManageUsersCubit.get(context).globalTotalSalary.toString(),
+                                            ),
+                                            const SizedBox(height: 5),
+                                            const Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              mainAxisAlignment: MainAxisAlignment.center,
+                                              crossAxisAlignment: CrossAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  'مجموع مرتب كل المدربين',
                                                   textAlign: TextAlign.center,
                                                   style: TextStyle(
-                                                    color: Color(0xFF2196F3),
-                                                    fontSize: 14,
+                                                    color: Color(0xFF333333),
+                                                    fontSize: 16,
                                                     fontFamily: 'Montserrat-Arabic',
                                                     fontWeight: FontWeight.w400,
-                                                    height: 1.30,
+                                                    height: 1.62,
                                                   ),
-                                                );
+                                                ),
+                                              ],
+                                            ),
+                                            SizedBox(
+                                              width: 48,
+                                              child: BlocBuilder<ManageUsersCubit, ManageUsersState>(
+        builder: (context, state) {
+          return Text(
+                                                ManageUsersCubit.get(context).globalTotalSalary.toString(),
+                                                textAlign: TextAlign.center,
+                                                style: const TextStyle(
+                                                  color: Color(0xFF2196F3),
+                                                  fontSize: 14,
+                                                  fontFamily: 'Montserrat-Arabic',
+                                                  fontWeight: FontWeight.w400,
+                                                  height: 1.30,
+                                                ),
+                                              );
         },
 ),
-                                              ),
+                                            ),
 
-                                            ],
-                                          ),
+                                          ],
                                         ),
                                         //20
                                         SizedBox(height: 50.h,),
 
-                                      ].divide(SizedBox(height: 0)),
+                                      ].divide(const SizedBox(height: 0)),
                                     ),
                   ),
 
