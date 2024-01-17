@@ -1138,7 +1138,9 @@ class AddGroupCubit extends Cubit<AddGroupState> {
       'الجمعة',
       'السبت'
     ].indexOf(dayOfWeek);
+ ////vdfdf
 
+    //dfdfgdfg/d
     // Calculate the difference between the selected day of the week and the current day of the week
     int difference = selectedDayOfWeek - now.weekday;
 
