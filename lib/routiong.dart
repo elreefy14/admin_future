@@ -158,10 +158,7 @@ case AppRoutes.addCoach:
              ManageAttendence());
     //ManageCoaches
       case AppRoutes.manageUseers:
-        return MaterialPageRoute(builder: (_) =>  BlocProvider(
-  create: (context) => ManageUsersCubit(),
-  child: ManageUsers(),
-));
+        return MaterialPageRoute(builder: (_) =>  ManageUsersScreen());
         //ManageGroupsScreen
     // Navigator.pushNamed(
     //                                                            context,

@@ -9,8 +9,8 @@ import '../../core/constants/routes_manager.dart';
 import '../../core/flutter_flow/flutter_flow_theme.dart';
 import '../business_logic/manage_users_cubit.dart';
 
-class ManageUsers extends StatelessWidget {
-  const ManageUsers({super.key});
+class ManageUsersScreen extends StatelessWidget {
+  const ManageUsersScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class ManageUsers extends StatelessWidget {
                     ),
                     SizedBox(
                       width: double.infinity,
-                      height: 550.h,
+                      height: 579.h,
                       child: ShowCoachesInDialog(
                         isUserInfoList: true,
                        // isCoachInfoList: true,
@@ -157,7 +157,10 @@ class ManageUsers extends StatelessWidget {
                         // //                                       )
                         // //                                       ),
                         // //                              ),
-                        // //                            ),
+                        // //
+                         //),
+
+                        SizedBox(height: 5.h,),
                         InkWell(
                           onTap: () async {
                             await Navigator.pushNamed(context,

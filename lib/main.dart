@@ -1,3 +1,4 @@
+
 import 'package:admin_future/add_grouup_of_schedules/presentation/onboarding_screen.dart';
 import 'package:admin_future/home/business_logic/Home/manage_attendence_cubit%20.dart';
 import 'package:admin_future/manage_users_coaches/business_logic/manage_users_cubit.dart';
@@ -54,7 +55,7 @@ Future<void> main() async {
   //if frebase login is null
   //late String mainRoute;
   if (FirebaseAuth.instance.currentUser == null) {
-    mainRoute = AppRoutes.welcome;
+    mainRoute = AppRoutes.login;
   } else {
     print('user is not null');
     //uid
@@ -102,7 +103,7 @@ class MyApp extends StatelessWidget {
           lazy: false,
          ),
        BlocProvider(create: (context) => SignUpCubit()
-          ..addBranches()
+         // ..addBranches()
          ..getBranches()
        ),
         BlocProvider(create: (context) => ManageUsersCubit()
@@ -134,7 +135,19 @@ class MyApp extends StatelessWidget {
               navigatorObservers: [BotToastNavigatorObserver()],
               debugShowCheckedModeBanner: false,
               theme: ThemeData(
-                
+                timePickerTheme: const TimePickerThemeData(
+                  elevation: 10,
+                  entryModeIconColor: Colors.black,
+                  hourMinuteShape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(8)),
+                  ),
+                  backgroundColor: Colors.white,
+                ),
+                textSelectionTheme: const TextSelectionThemeData(
+                  cursorColor: Colors.blue,
+                  selectionColor: Colors.blue,
+                  selectionHandleColor: Colors.blue,
+                ),
                 primarySwatch: //use this as material color #4F46E5
                 Colors.blue,
                 //MyColors.primaryColor,

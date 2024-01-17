@@ -1,5 +1,6 @@
 import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -254,10 +255,11 @@ class ShowCoachesInDialog extends StatelessWidget {
             Expanded(
               child: FirestoreListView(
                 shrinkWrap: true,
-                cacheExtent: 500,
-                pageSize: 5,
+                cacheExtent: 0,
+                pageSize: 2,
                 query: query ??FirebaseFirestore.instance.collection('users').where(
-                    'role', isEqualTo: isCoachInfoList??false ? 'coach' : 'user'),
+                    'role', isEqualTo: isCoachInfoList??false ? 'coach' : 'user')
+            .where('pid', isEqualTo: FirebaseAuth.instance.currentUser!.uid),
                 itemBuilder: (context, document) {
                   final data = document.data() as Map<String, dynamic>;
                   final user = UserModel.fromJson(data);
@@ -1142,10 +1144,12 @@ class ShowCoachesInDialog extends StatelessWidget {
             Expanded(
               child: FirestoreListView(
                 shrinkWrap: true,
-                cacheExtent: 500,
-                pageSize: 8,
+                cacheExtent: 0,
+                pageSize: 2,
                 query: query ??FirebaseFirestore.instance.collection('users').where(
-                    'role', isEqualTo: isCoachInfoList??false ? 'coach' : 'user'),
+                    'role', isEqualTo: isCoachInfoList??false ? 'coach' : 'user')
+                    .where('pid', isEqualTo: FirebaseAuth.instance.currentUser!.uid),
+
                 itemBuilder: (context, document) {
                   final data = document.data() as Map<String, dynamic>;
                   final user = UserModel.fromJson(data);
@@ -2680,9 +2684,11 @@ class ShowCoachesInDialog extends StatelessWidget {
               Expanded(
                 child: FirestoreListView(
                   shrinkWrap: true,
-                  cacheExtent: 500,
-                  pageSize: 5,
-                  query: query ??FirebaseFirestore.instance.collection('users') ,
+                  cacheExtent: 0,
+                  pageSize: 2,
+                  query: query ??FirebaseFirestore.instance.collection('users')
+                      .where('pid', isEqualTo: FirebaseAuth.instance.currentUser!.uid),
+
                   itemBuilder: (context, document) {
                     final data = document.data() as Map<String, dynamic>;
                     final user = UserModel.fromJson(data);

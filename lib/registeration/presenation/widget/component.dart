@@ -19,9 +19,9 @@ Widget BuildTextFormField2(
     TextInputType input,
     String hintText,
     String? Function(String?) validator,
-    IconData? icon,
-{BuildContext? context,}
-    ) {
+    IconData? icon, {
+      BuildContext? context,
+    }) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.stretch,
     children: [
@@ -72,22 +72,31 @@ Widget BuildTextFormField2(
           contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
           // Add the random password button
 
-          suffixIcon: labelText == 'كلمة المرور' ?
-          ElevatedButton(
+          suffixIcon: labelText == 'كلمة المرور'
+              ? Padding(padding: EdgeInsets.symmetric(horizontal: 5.0.w),child: ElevatedButton(
             onPressed: () {
-              String randomPassword = generateRandomPassword(); // Replace with your random password generation logic
+              String randomPassword =
+              generateRandomPassword(); // Replace with your random password generation logic
               Clipboard.setData(ClipboardData(text: randomPassword));
               //   addGroupCubit.searchController.text = randomPassword;\
-              SignUpCubit
-                  .get(context)
-                  .passwordController.text = randomPassword;
+              SignUpCubit.get(context).passwordController.text =
+                  randomPassword;
               //context.read<AddGroupCubit>().searchController.text = randomPassword;
               ScaffoldMessenger.of(context!).showSnackBar(
-                SnackBar(content: Text('Password copied to clipboard')),
+                SnackBar(content: Text('تم نسخ كلمة المرور إلى الحافظة')),
               );
             },
-            child: Text('Generate Password'),
-          ): null,
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(4.0),
+                    ))),
+            child: Text('إنشاء كلمة المرور',  style: TextStyle(
+              color: Colors.blue,
+            ),),
+          ),)
+              : null,
           // IconButton(
           //   icon: Icon(Icons.vpn_key),
           //   onPressed: () {
@@ -117,81 +126,78 @@ String generateRandomPassword() {
   return base64Url.encode(values);
 }
 
-
-
 Widget BuildTextFormField(
-   String labelText,
-   TextEditingController controller,
-   TextInputType input,
-   String hintText,
-   String? Function(String?) validator,
-  String? prefixIconPath,
-  String? suffixIconPath,
-) {
+    String labelText,
+    TextEditingController controller,
+    TextInputType input,
+    String hintText,
+    String? Function(String?) validator,
+    String? prefixIconPath,
+    String? suffixIconPath,
+    ) {
   return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
+    crossAxisAlignment: CrossAxisAlignment.stretch,
+    children: [
       Text(
-      labelText,
-           style: TextStyle(
-  fontSize: 14.0,
-  color: Color(0xFF333333),
-  fontFamily: 'IBM Plex Sans Arabic',
-  ),
-  textAlign: TextAlign.right,
-  ),
-  SizedBox(height: 8),
-  TextFormField(
-  //  scrollPadding: //50 from bottom of screen
- //   EdgeInsets.only(bottom: 50.h),
-  controller: controller,
-  keyboardType: input,
-  obscureText: labelText == 'كلمة المرور' ? true : false,
-  decoration: InputDecoration(
-  prefixIcon: prefixIconPath != null
-  ? ImageIcon(
-  AssetImage(prefixIconPath),
-  color: Color(0xFF333333),
-  )
-      : null,
-  suffixIcon: suffixIconPath != null
-  ? ImageIcon(
-  AssetImage(suffixIconPath),
-  color: Color(0xFF333333),
-  )
-      : null,
-  hintText: hintText,
-  hintStyle: TextStyle(
-  fontFamily: 'IBM Plex Sans Arabic',
-  fontStyle: FontStyle.normal,
-  fontWeight: FontWeight.w400,
-  fontSize: 16.0,
-  height: 24.0 / 16.0,
-  color: Color(0xFF666666),
-  ),
-  errorStyle: TextStyle(
-  fontFamily: 'Inter',
-  fontStyle: FontStyle.normal,
-  fontWeight: FontWeight.w400,
-  fontSize: 14.0,
-  height: 20.0 / 14.0,
-  color: Color(0xFFD92D20),
-  ),
-  filled: true,
-  fillColor: Color(0xFFF4F4F4),
-  border: OutlineInputBorder(
-  borderRadius: BorderRadius.circular(4.0),
-  borderSide: BorderSide.none,
-  ),
-  focusedBorder: OutlineInputBorder(
-  borderRadius: BorderRadius.circular(4.0),
-  borderSide: BorderSide(color: Color(0xFF2196F3), width: 1.5),
-  ),
-  contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-  ),
-  validator: validator,
-  ),
-  ],
+        labelText,
+        style: TextStyle(
+          fontSize: 14.0,
+          color: Color(0xFF333333),
+          fontFamily: 'IBM Plex Sans Arabic',
+        ),
+        textAlign: TextAlign.right,
+      ),
+      SizedBox(height: 8),
+      TextFormField(
+        //  scrollPadding: //50 from bottom of screen
+        //   EdgeInsets.only(bottom: 50.h),
+        controller: controller,
+        keyboardType: input,
+        obscureText: labelText == 'كلمة المرور' ? true : false,
+        decoration: InputDecoration(
+          prefixIcon: prefixIconPath != null
+              ? ImageIcon(
+            AssetImage(prefixIconPath),
+            color: Color(0xFF333333),
+          )
+              : null,
+          suffixIcon: suffixIconPath != null
+              ? ImageIcon(
+            AssetImage(suffixIconPath),
+            color: Color(0xFF333333),
+          )
+              : null,
+          hintText: hintText,
+          hintStyle: TextStyle(
+            fontFamily: 'IBM Plex Sans Arabic',
+            fontStyle: FontStyle.normal,
+            fontWeight: FontWeight.w400,
+            fontSize: 16.0,
+            height: 24.0 / 16.0,
+            color: Color(0xFF666666),
+          ),
+          errorStyle: TextStyle(
+            fontFamily: 'Inter',
+            fontStyle: FontStyle.normal,
+            fontWeight: FontWeight.w400,
+            fontSize: 14.0,
+            height: 20.0 / 14.0,
+            color: Color(0xFFD92D20),
+          ),
+          filled: true,
+          fillColor: Color(0xFFF4F4F4),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4.0),
+            borderSide: BorderSide.none,
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(4.0),
+            borderSide: BorderSide(color: Color(0xFF2196F3), width: 1.5),
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+        ),
+        validator: validator,
+      ),
+    ],
   );
-  }
-
+}
