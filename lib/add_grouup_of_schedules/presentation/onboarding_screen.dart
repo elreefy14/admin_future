@@ -4,7 +4,6 @@ import 'package:admin_future/registeration/data/userModel.dart';
 
 import 'package:admin_future/home/presenation/widget/widget/custom_app_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,41 +13,27 @@ import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
-import '../../core/flutter_flow/flutter_flow_util.dart';
 import '../../home/business_logic/Home/manage_attendence_state.dart';
-import '../../manage_users_coaches/business_logic/manage_users_cubit.dart';
-import '../../home/data/schedules.dart';
 import '../../home/presenation/widget/add_schedule.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 // BEGIN: ed8c6549bwf9 (already existing code)
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:admin_future/add_grouup_of_schedules/presentation/select_coaches.dart';
 
 class AddGroupCubit extends Cubit<AddGroupState> {
   var _searchController;
-  //final String updatedMaxUsers;
 
-  AddGroupCubit(
-      //this.updatedMaxUsers
-      )
+  AddGroupCubit()
       : super(AddGroupState(screens: [
-          SelectCoachesScreen(
-            isCoach: true,
-          ),
-          SelectCoachesScreen(
-            isCoach: false,
-          ),
-          TimeSelectionScreen(),
-          SelectBranchScreen(
-           // maxUsers: updatedMaxUsers,
-          ),
-          InfoScreen()
-        ]));
+    SelectCoachesScreen(
+      isCoach: true,
+    ),
+    SelectCoachesScreen(
+      isCoach: false,
+    ),
+    Screen2(),
+    SelectBranchScreen(),
+    InfoScreen()
+  ]));
 
   final TextEditingController searchController = TextEditingController();
   bool isSearch = false;
@@ -57,10 +42,12 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   String? onSubmitted;
   List<String> selectedUsersUids = [];
   String? maxUsers;
+
   //final TextEditingController _searchController = TextEditingController();
   // Query? _query;
   int? numberOfQuery;
   List<String> selectedCoachesUids = [];
+
   //List<String> _selectedUsersUids = [];
   List<UserModel> selectedCoaches = [];
   List<UserModel> selectedUsers = [];
@@ -73,11 +60,6 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     'الخميس': {'start': null, 'end': null},
     'الجمعة': {'start': null, 'end': null},
   };
-  //function to update _times
-  void updateTimes(Map<String, Map<dynamic, dynamic>> times) {
-    _times.addAll(times);
-    emit(state.copyWith(times: _times));
-  }
 
   Map<String, Map<dynamic, dynamic>> get times => _times;
 
@@ -102,22 +84,16 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     // // 'error',
     // times: //call the times map from screen 2
     //     context.read<AddGroupCubit>().state.times,
-    // //TODO : delete 
-    // //TODO : delete 
-    // //TODO : delete 
-    // //TODO : delete 
-    // //TODO : delete 
-    // //TODO : delete 
-    // //TODO : delete 
-    // //TODO : delete 
-    // //TODO : delete 
-    
+    // //TODO :fix this error
+    // // {
+    // //   'السبت': {'start': TimeOfDay.now(), 'end': TimeOfDay.now()},
+    // //  },
+    // maxUsers: context.read<AddGroupCubit>().state.maxUsers,
     selectedCoaches = [];
     selectedUsers = [];
     selectedCoachesUids = [];
     selectedUsersUids = [];
-    
-    // maxUsers = null;
+    maxUsers = null;
     _times['السبت'] = {'start': null, 'end': null};
     _times['الأحد'] = {'start': null, 'end': null};
     _times['الاثنين'] = {'start': null, 'end': null};
@@ -133,7 +109,6 @@ class AddGroupCubit extends Cubit<AddGroupState> {
         selectedUsersUids: List.empty(),
         selectedCoaches: List.empty(),
         selectedBranch: null,
-        
       ),
     );
   }
@@ -158,7 +133,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
           .limit(100);
 
     QuerySnapshot querySnapshot =
-        await newQuery.get(GetOptions(source: Source.serverAndCache));
+    await newQuery.get(GetOptions(source: Source.serverAndCache));
     var numberOfQuery = querySnapshot.docs.length;
     print('number of query is $numberOfQuery');
     print(numberOfQuery);
@@ -169,7 +144,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
             .collection('users')
             .where('phone', isGreaterThanOrEqualTo: value)
             .where('phone', isLessThan: value + 'z')
-            //order by name
+        //order by name
             .orderBy('phone', descending: false)
             .where('role', isEqualTo: 'coach')
             .limit(100);
@@ -178,7 +153,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
             .collection('users')
             .where('phone', isGreaterThanOrEqualTo: value)
             .where('phone', isLessThan: value + 'z')
-            //order by name
+        //order by name
             .orderBy('phone', descending: false)
             .where('role', isEqualTo: 'user')
             .limit(100);
@@ -200,7 +175,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     // selectedUsers.removeWhere((u) => u.uId == user.uId);
     emit(state.copyWith(
         selectedUsers:
-            state.selectedUsers.where((u) => u.uId != user.uId).toList()));
+        state.selectedUsers.where((u) => u.uId != user.uId).toList()));
   }
 
   void selectCoach(UserModel coach) {
@@ -216,8 +191,8 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     //  selectedCoaches.removeWhere((c) => c.uId == coach.uId);
     emit(state.copyWith(
         selectedCoaches:
-            //  state.selectedCoaches.where((c) => c != coach).toList()));
-            state.selectedCoaches.where((c) => c.uId != coach.uId).toList()));
+        //  state.selectedCoaches.where((c) => c != coach).toList()));
+        state.selectedCoaches.where((c) => c.uId != coach.uId).toList()));
     print(selectedCoaches.length);
   }
 
@@ -251,9 +226,8 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   }
 
   void nextScreen(
-       BuildContext context,
-  ) {
-    //delete keyBoard if it is open
+      BuildContext context,
+      ) {
     FocusScope.of(context).unfocus();
     int currentIndex = state.currentIndex;
     if (currentIndex < state.screens.length - 1) {
@@ -262,9 +236,9 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   }
 
   void previousScreen(
-        BuildContext context,
-  ) {
-     FocusScope.of(context).unfocus();
+      BuildContext context,
+      ) {
+    FocusScope.of(context).unfocus();
     int currentIndex = state.currentIndex;
     if (currentIndex > 0) {
       emit(state.copyWith(currentIndex: currentIndex - 1));
@@ -311,8 +285,10 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     _times[day]?['start'] = endTime.replacing(hour: endTime.hour - 1);
     emit(state.copyWith(times: _times));
   }
-  //edit thais to add list of maps for branch collection contains schedule.date as key and schedule.id as value
+
+  //handle selected users like selected coaches
   late Map<String, Map<dynamic, dynamic>> nonNullableDays = {};
+
   Future<void> addGroup(
       bool isEmit,
       BuildContext context, {
@@ -325,7 +301,9 @@ class AddGroupCubit extends Cubit<AddGroupState> {
         String? maxUsers,
       }) async {
     emit(state.copyWith(loading: true));
+    // late Map<String, Map<dynamic, dynamic>> nonNullableDays = {};
 
+    // Convert times to nonNullableDays
     for (var day in times!.keys) {
       if (times[day]!['start'] != null && times[day]!['end'] != null) {
         DateTime nearestDay = getNearestDayOfWeek(day);
@@ -348,8 +326,10 @@ class AddGroupCubit extends Cubit<AddGroupState> {
       }
     }
 
+    // Get all non-null days
     List<String> days = nonNullableDays.keys.toList();
-
+    //if days is empty or selectedUsers is empty or selectedCoaches is empty
+    // or maxUsers is empty or branch is empty return error message
     if (days.isEmpty ||
         selectedUsers.isEmpty ||
         selectedCoaches.isEmpty ||
@@ -358,47 +338,22 @@ class AddGroupCubit extends Cubit<AddGroupState> {
       emit(state.copyWith(loading: false));
 
       Fluttertoast.showToast(
-        msg: 'يجب إدخال جميع البيانات المطلوبة',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 5,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+          msg: 'يجب إدخال جميع البيانات المطلوبة',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 5,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
 
       return;
     }
 
+    // Create a batched write
     WriteBatch batch = FirebaseFirestore.instance.batch();
-    DocumentReference branchRef = FirebaseFirestore.instance
-        .collection('branches')
-        .doc(branch)
-        .collection('groups')
-        .doc();
-    String groupId = branchRef.id;
-    batch.set(branchRef, {
-      'name': branch,
-      'max_users': maxUsers,
-      'number_of_users': selectedUsers.length,
-      'number_of_coaches': selectedCoaches.length,
-      
-      //add list of coaches and users to the branch
-
-      'usersList': selectedUsers.map((e) => e.name).toList(),
-      'userIds': selectedUsers.map((e) => e.uId).toList(),
-      'coachList': selectedCoaches.map((e) => e.name).toList(),
-      'coachIds': selectedCoaches.map((e) => e.uId).toList(),
-      //can i upload ;ist of maps to firebase like list of userModels
-      'users': selectedUsers.map((e) => e.toMap()).toList(),
-      'coaches': selectedCoaches.map((e) => e.toMap()).toList(),
-
-      'pid': FirebaseAuth.instance.currentUser!.uid,
-      'group_id': branchRef.id,
-      'days': nonNullableDays,
-    });
 
     try {
+      // Add schedules to batch
       for (var day in days) {
         if (nonNullableDays.containsKey(day)) {
           Timestamp nearestDayTimestamp = nonNullableDays[day]!['nearest_day'];
@@ -410,19 +365,20 @@ class AddGroupCubit extends Cubit<AddGroupState> {
               .doc(day)
               .collection('schedules')
               .doc();
+
           batch.set(scheduleRef, {
             'start_time': nonNullableDays[day]!['start'],
             'end_time': nonNullableDays[day]!['end'],
             'date': day,
             'nearest_day': nearestDayTimestamp,
             'branch_id': branch,
-            'group_id': groupId,
             'usersList': [],
             'userIds': [],
             'max_users': maxUsers,
             'schedule_id': scheduleRef.id ?? '',
           });
 
+          // Add coaches to batch
           if (selectedCoaches != null && selectedCoaches.isNotEmpty) {
             for (var coach in selectedCoaches) {
               DocumentReference coachRef = FirebaseFirestore.instance
@@ -440,7 +396,6 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'pId': FirebaseAuth.instance.currentUser!.uid,
                 'max_users': maxUsers,
                 'schedule_id': scheduleRef.id ?? '',
-                'group_id': groupId,
               });
 
               DocumentReference adminRef = FirebaseFirestore.instance
@@ -464,18 +419,6 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'coachList': FieldValue.arrayUnion([coach.name]),
                 'coachIds': FieldValue.arrayUnion([coach.uId]),
               });
-          //        batch.update(
-          //   FirebaseFirestore.instance
-          //       .collection('branches')
-          //       .doc(branch)
-          //       .collection('groups')
-          //       .doc(groupId),
-          //   {
-          //     //'schedule_ids': FieldValue.arrayUnion([scheduleRef.id]),
-          //     'coachList': FieldValue.arrayUnion([coach.name]),
-          //     'coachIds': FieldValue.arrayUnion([coach.uId]),
-          //   },
-          // );
 
               DocumentReference coachScheduleRef = FirebaseFirestore.instance
                   .collection('users')
@@ -492,11 +435,11 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'pId': FirebaseAuth.instance.currentUser!.uid,
                 'max_users': maxUsers,
                 'schedule_id': scheduleRef.id ?? '',
-                'group_id': groupId,
               });
             }
           }
 
+          // Add users to batch
           if (selectedUsers != null && selectedUsers.isNotEmpty) {
             for (var user in selectedUsers) {
               DocumentReference userRef = FirebaseFirestore.instance
@@ -514,7 +457,6 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'pId': FirebaseAuth.instance.currentUser!.uid,
                 'max_users': maxUsers,
                 'schedule_id': scheduleRef.id ?? '',
-                'group_id': groupId,
               });
 
               DocumentReference adminRef = FirebaseFirestore.instance
@@ -555,83 +497,76 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'schedule_id': scheduleRef.id ?? '',
                 'max_users': maxUsers,
               });
-          //      batch.update(
-          //   FirebaseFirestore.instance
-          //       .collection('branches')
-          //       .doc(branch)
-          //       .collection('groups')
-          //       .doc(groupId),
-          //   {
-          //     'usersList': FieldValue.arrayUnion([user.name]),
-          //     'userIds': FieldValue.arrayUnion([user.uId]),
-          //   },
-          // );
             }
           }
-
-          // Add the schedule ID to the branch collection
-          batch.update(
-            FirebaseFirestore.instance
-                .collection('branches')
-                .doc(branch)
-                .collection('groups')
-                .doc(groupId),
-            {
-              'schedule_ids': FieldValue.arrayUnion([scheduleRef.id]),
-              'schedule_days': FieldValue.arrayUnion([day]),
-             // 'users': selectedUsers,
-             // 'coaches': selectedCoaches,
-             //add list of coaches and users to the branch 
-
-  
-
-            },
-          );
         }
       }
+      //todo :fix branch is null
+      DocumentReference branchRef = FirebaseFirestore.instance
+          .collection('branches')
+          .doc(branch)
+          .collection('groups')
+          .doc();
 
+      batch.set(branchRef, {
+        'name': branch,
+        'max_users': maxUsers,
+        'number_of_users': selectedUsers.length,
+        'number_of_coaches': selectedCoaches.length,
+        'pid': FirebaseAuth.instance.currentUser!.uid,
+        'group_id': branchRef.id,
+        //non nullable days as map
+        'days': nonNullableDays,
+      });
 
+      // Commit the batched write
       await batch.commit();
 
       emit(state.copyWith(loading: false));
 
       Fluttertoast.showToast(
-        msg: 'تم إضافة المواعيد بنجاح',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 5,
-        backgroundColor: Colors.green,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+          msg: 'تم إضافة المواعيد بنجاح',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 5,
+          backgroundColor: Colors.green,
+          textColor: Colors.white,
+          fontSize: 16.0);
     } catch (e) {
       emit(state.copyWith(loading: false));
-      print(e.toString());
 
       Fluttertoast.showToast(
-        msg: 'حدث خطأ أثناء إضافة المواعيد\n${e.toString()}',
-        toastLength: Toast.LENGTH_LONG,
-        gravity: ToastGravity.BOTTOM,
-        timeInSecForIosWeb: 5,
-        backgroundColor: Colors.red,
-        textColor: Colors.white,
-        fontSize: 16.0,
-      );
+          msg: 'حدث خطأ أثناء إضافة المواعيد\n${e.toString()}',
+          toastLength: Toast.LENGTH_LONG,
+          gravity: ToastGravity.BOTTOM,
+          timeInSecForIosWeb: 5,
+          backgroundColor: Colors.red,
+          textColor: Colors.white,
+          fontSize: 16.0);
     }
   }
-  //todo sh3ala bs na2s el schedulesids
+
+  //
   // Future<void> addGroup(
-  //     bool isEmit,
-  //     BuildContext context, {
-  //       required List<UserModel> selectedUsers,
-  //       required List<UserModel> selectedCoaches,
-  //       required Timestamp startTrainingTime,
-  //       required Timestamp endTrainingTime,
-  //       required String branch,
-  //       Map<String, Map<dynamic, dynamic>>? times,
-  //       String? maxUsers,
-  //     }) async {
-  //   emit(state.copyWith(loading: true));
+  //   bool isEmit,
+  //   BuildContext context, {
+  //   required List<UserModel> selectedCoaches,
+  //   required Timestamp startTrainingTime,
+  //   required Timestamp endTrainingTime,
+  //   required String branch,
+  //   Map<String, Map<dynamic, dynamic>>? times,
+  //   String? maxUsers,
+  // }) async {
+  //   // void addSchedule(
+  //   //     bool isEmit  ,
+  //   //   BuildContext context, {
+  //   //  // List<String>? selectedDays,
+  //   //   String? startTrainingTime,
+  //   //   String? endTrainingTime,
+  //   //   String? branch,
+  //   //   Map<String, Map<dynamic, dynamic>>? times,
+  //   // }) async {
+  //   //todo change use thsi map
   //
   //   for (var day in times!.keys) {
   //     if (times[day]!['start'] != null && times[day]!['end'] != null) {
@@ -654,44 +589,29 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   //       };
   //     }
   //   }
+  //   print('nonNullableDays: ${nonNullableDays.toString()}}');
   //
-  //   List<String> days = nonNullableDays.keys.toList();
+  //   List<String> days = //get all non null days
+  //       nonNullableDays.keys.toList();
+  //   //get all non null days start and end time as timestamp . note start and end time is timeofday
   //
-  //   if (days.isEmpty ||
-  //       selectedUsers.isEmpty ||
-  //       selectedCoaches.isEmpty ||
-  //       maxUsers == null ||
-  //       branch == '') {
-  //     emit(state.copyWith(loading: false));
-  //
-  //     Fluttertoast.showToast(
-  //         msg: 'يجب إدخال جميع البيانات المطلوبة',
-  //         toastLength: Toast.LENGTH_LONG,
-  //         gravity: ToastGravity.BOTTOM,
-  //         timeInSecForIosWeb: 5,
-  //         backgroundColor: Colors.red,
-  //         textColor: Colors.white,
-  //         fontSize: 16.0);
-  //
-  //     return;
-  //   }
-  //
-  //   WriteBatch batch = FirebaseFirestore.instance.batch();
-  //
+  //   SchedulesModel? schedule;
   //   try {
+  //     //  if (isEmit)
+  //     // emit(AddScheduleLoadingState());
+  //     emit(state.copyWith(loading: true));
   //     for (var day in days) {
   //       if (nonNullableDays.containsKey(day)) {
+  //         //DateTime nearestDay = nonNullableDays[day]!['nearest_day'].toDate();
   //         Timestamp nearestDayTimestamp = nonNullableDays[day]!['nearest_day'];
   //
-  //         DocumentReference scheduleRef = FirebaseFirestore.instance
+  //         await FirebaseFirestore.instance
   //             .collection('admins')
   //             .doc(FirebaseAuth.instance.currentUser!.uid)
   //             .collection('schedules')
   //             .doc(day)
   //             .collection('schedules')
-  //             .doc();
-  //
-  //         batch.set(scheduleRef, {
+  //             .add({
   //           'start_time': nonNullableDays[day]!['start'],
   //           'end_time': nonNullableDays[day]!['end'],
   //           'date': day,
@@ -700,150 +620,88 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   //           'usersList': [],
   //           'userIds': [],
   //           'max_users': maxUsers,
-  //           'schedule_id': scheduleRef.id ?? '',
+  //         }).then((scheduleDoc) async {
+  //           if (selectedCoaches != null && selectedCoaches.isNotEmpty) {
+  //             for (var coach in selectedCoaches) {
+  //               await FirebaseFirestore.instance
+  //                   .collection('users')
+  //                   .doc(coach.uId)
+  //                   .collection('schedules')
+  //                   .doc(scheduleDoc.id)
+  //                   .set({
+  //                 'start_time': nonNullableDays[day]!['start'],
+  //                 'end_time': nonNullableDays[day]!['end'],
+  //                 'date': day,
+  //                 'nearest_day': nearestDayTimestamp,
+  //                 'branch_id': branch,
+  //                 'pId': FirebaseAuth.instance.currentUser!.uid,
+  //                 'max_users': maxUsers,
+  //               });
+  //               await FirebaseFirestore.instance
+  //                   .collection('admins')
+  //                   .doc(FirebaseAuth.instance.currentUser!.uid)
+  //                   .collection('schedules')
+  //                   .doc(day)
+  //                   .collection('schedules')
+  //                   .doc(scheduleDoc.id)
+  //                   .collection('users')
+  //                   .doc(coach.uId)
+  //                   .set({
+  //                 'name': coach.name,
+  //                 'uid': coach.uId,
+  //                 'finished': false,
+  //               });
+  //
+  //               await scheduleDoc.update({
+  //                 'usersList': FieldValue.arrayUnion([coach.name]),
+  //                 'userIds': FieldValue.arrayUnion([coach.uId]),
+  //               });
+  //
+  //               await FirebaseFirestore.instance
+  //                   .collection('users')
+  //                   .doc(coach.uId)
+  //                   .collection('schedules')
+  //                   .doc(scheduleDoc.id)
+  //                   .set({
+  //                 'start_time': nonNullableDays[day]!['start'],
+  //                 'end_time': nonNullableDays[day]!['end'],
+  //                 'date': day,
+  //                 'nearest_day': nearestDayTimestamp,
+  //                 'branch_id': branch,
+  //                 'pId': FirebaseAuth.instance.currentUser!.uid,
+  //                 'scheduleId': scheduleDoc.id,
+  //                 'max_users': maxUsers,
+  //               });
+  //             }
+  //           }
+  //
+  //           await scheduleDoc.update({
+  //             'schedule_id': scheduleDoc.id,
+  //           });
+  //
+  //           schedule = SchedulesModel(
+  //             startTime: nonNullableDays[day]!['start'],
+  //             endTime: nonNullableDays[day]!['end'],
+  //             date: day,
+  //             nearestDay: nearestDayTimestamp,
+  //             branchId: branch,
+  //             users: selectedCoaches,
+  //             usersList:
+  //                 selectedCoaches?.map((coach) => coach.name).toList() ?? [],
+  //             userIds:
+  //                 selectedCoaches?.map((coach) => coach.uId).toList() ?? [],
+  //             scheduleId: scheduleDoc.id,
+  //             finished: false,
+  //             pId: FirebaseAuth.instance.currentUser!.uid,
+  //             maxUsers: maxUsers,
+  //           );
   //         });
-  //
-  //         if (selectedCoaches != null && selectedCoaches.isNotEmpty) {
-  //           for (var coach in selectedCoaches) {
-  //             DocumentReference coachRef = FirebaseFirestore.instance
-  //                 .collection('users')
-  //                 .doc(coach.uId)
-  //                 .collection('schedules')
-  //                 .doc(scheduleRef.id);
-  //
-  //             batch.set(coachRef, {
-  //               'start_time': nonNullableDays[day]!['start'],
-  //               'end_time': nonNullableDays[day]!['end'],
-  //               'date': day,
-  //               'nearest_day': nearestDayTimestamp,
-  //               'branch_id': branch,
-  //               'pId': FirebaseAuth.instance.currentUser!.uid,
-  //               'max_users': maxUsers,
-  //               'schedule_id': scheduleRef.id ?? '',
-  //             });
-  //
-  //             DocumentReference adminRef = FirebaseFirestore.instance
-  //                 .collection('admins')
-  //                 .doc(FirebaseAuth.instance.currentUser!.uid)
-  //                 .collection('schedules')
-  //                 .doc(day)
-  //                 .collection('schedules')
-  //                 .doc(scheduleRef.id)
-  //                 .collection('users')
-  //                 .doc(coach.uId);
-  //
-  //             batch.set(adminRef, {
-  //               'name': coach.name,
-  //               'uid': coach.uId,
-  //               'finished': false,
-  //               'role': 'coach',
-  //             });
-  //
-  //             batch.update(scheduleRef, {
-  //               'coachList': FieldValue.arrayUnion([coach.name]),
-  //               'coachIds': FieldValue.arrayUnion([coach.uId]),
-  //             });
-  //
-  //             DocumentReference coachScheduleRef = FirebaseFirestore.instance
-  //                 .collection('users')
-  //                 .doc(coach.uId)
-  //                 .collection('schedules')
-  //                 .doc(scheduleRef.id);
-  //
-  //             batch.set(coachScheduleRef, {
-  //               'start_time': nonNullableDays[day]!['start'],
-  //               'end_time': nonNullableDays[day]!['end'],
-  //               'date': day,
-  //               'nearest_day': nearestDayTimestamp,
-  //               'branch_id': branch,
-  //               'pId': FirebaseAuth.instance.currentUser!.uid,
-  //               'max_users': maxUsers,
-  //               'schedule_id': scheduleRef.id ?? '',
-  //             });
-  //           }
-  //         }
-  //
-  //         if (selectedUsers != null && selectedUsers.isNotEmpty) {
-  //           for (var user in selectedUsers) {
-  //             DocumentReference userRef = FirebaseFirestore.instance
-  //                 .collection('users')
-  //                 .doc(user.uId)
-  //                 .collection('schedules')
-  //                 .doc(scheduleRef.id);
-  //
-  //             batch.set(userRef, {
-  //               'start_time': nonNullableDays[day]!['start'],
-  //               'end_time': nonNullableDays[day]!['end'],
-  //               'date': day,
-  //               'nearest_day': nearestDayTimestamp,
-  //               'branch_id': branch,
-  //               'pId': FirebaseAuth.instance.currentUser!.uid,
-  //               'max_users': maxUsers,
-  //               'schedule_id': scheduleRef.id ?? '',
-  //             });
-  //
-  //             DocumentReference adminRef = FirebaseFirestore.instance
-  //                 .collection('admins')
-  //                 .doc(FirebaseAuth.instance.currentUser!.uid)
-  //                 .collection('schedules')
-  //                 .doc(day)
-  //                 .collection('schedules')
-  //                 .doc(scheduleRef.id)
-  //                 .collection('users')
-  //                 .doc(user.uId);
-  //
-  //             batch.set(adminRef, {
-  //               'name': user.name,
-  //               'uid': user.uId,
-  //               'finished': false,
-  //               'role': 'user',
-  //             });
-  //
-  //             batch.update(scheduleRef, {
-  //               'usersList': FieldValue.arrayUnion([user.name]),
-  //               'userIds': FieldValue.arrayUnion([user.uId]),
-  //             });
-  //
-  //             DocumentReference userScheduleRef = FirebaseFirestore.instance
-  //                 .collection('users')
-  //                 .doc(user.uId)
-  //                 .collection('schedules')
-  //                 .doc(scheduleRef.id);
-  //
-  //             batch.set(userScheduleRef, {
-  //               'start_time': nonNullableDays[day]!['start'],
-  //               'end_time': nonNullableDays[day]!['end'],
-  //               'date': day,
-  //               'nearest_day': nearestDayTimestamp,
-  //               'branch_id': branch,
-  //               'pId': FirebaseAuth.instance.currentUser!.uid,
-  //               'schedule_id': scheduleRef.id ?? '',
-  //               'max_users': maxUsers,
-  //             });
-  //           }
-  //         }
   //       }
   //     }
-  //
-  //     DocumentReference branchRef = FirebaseFirestore.instance
-  //         .collection('branches')
-  //         .doc(branch)
-  //         .collection('groups')
-  //         .doc();
-  //     batch.set(branchRef, {
-  //       'name': branch,
-  //       'max_users': maxUsers,
-  //       'number_of_users': selectedUsers.length,
-  //       'number_of_coaches': selectedCoaches.length,
-  //       'pid': FirebaseAuth.instance.currentUser!.uid,
-  //       'group_id': branchRef.id,
-  //       'days': nonNullableDays,
-  //     });
-  //
-  //     await batch.commit();
-  //
+  //     ManageSalaryCubit.get(context).updateSchedules(schedule!);
+  //     // if (isEmit) {
+  //     // emit(AddScheduleSuccessState());
   //     emit(state.copyWith(loading: false));
-  //
   //     Fluttertoast.showToast(
   //         msg: 'تم إضافة المواعيد بنجاح',
   //         toastLength: Toast.LENGTH_LONG,
@@ -852,9 +710,10 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   //         backgroundColor: Colors.green,
   //         textColor: Colors.white,
   //         fontSize: 16.0);
+  //     // }
   //   } catch (e) {
+  //     // if (isEmit) emit(AddScheduleErrorState(e.toString()));
   //     emit(state.copyWith(loading: false));
-  //
   //     Fluttertoast.showToast(
   //         msg: 'حدث خطأ أثناء إضافة المواعيد\n${e.toString()}',
   //         toastLength: Toast.LENGTH_LONG,
@@ -863,266 +722,9 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   //         backgroundColor: Colors.red,
   //         textColor: Colors.white,
   //         fontSize: 16.0);
+  //     // }
   //   }
   // }
-//todo sh3ala bs na2s el schedulesids
-//   late Map<String, Map<dynamic, dynamic>> nonNullableDays = {};
-//   Future<void> addGroup(
-//     bool isEmit,
-//     BuildContext context, {
-//     required List<UserModel> selectedUsers,
-//     required List<UserModel> selectedCoaches,
-//     required Timestamp startTrainingTime,
-//     required Timestamp endTrainingTime,
-//     required String branch,
-//     Map<String, Map<dynamic, dynamic>>? times,
-//     String? maxUsers,
-//   }) async {
-//     emit(state.copyWith(loading: true));
-//     // late Map<String, Map<dynamic, dynamic>> nonNullableDays = {};
-//
-//     // Convert times to nonNullableDays
-//     for (var day in times!.keys) {
-//       if (times[day]!['start'] != null && times[day]!['end'] != null) {
-//         DateTime nearestDay = getNearestDayOfWeek(day);
-//         Timestamp nearestDayTimestamp = Timestamp.fromDate(nearestDay);
-//         nonNullableDays[day] = {
-//           'start': Timestamp.fromDate(DateTime(
-//               nearestDay.year,
-//               nearestDay.month,
-//               nearestDay.day,
-//               times[day]!['start'].hour,
-//               times[day]!['start'].minute)),
-//           'end': Timestamp.fromDate(DateTime(
-//               nearestDay.year,
-//               nearestDay.month,
-//               nearestDay.day,
-//               times[day]!['end'].hour,
-//               times[day]!['end'].minute)),
-//           'nearest_day': nearestDayTimestamp,
-//         };
-//       }
-//     }
-//
-//     // Get all non-null days
-//     List<String> days = nonNullableDays.keys.toList();
-//     //if days is empty or selectedUsers is empty or selectedCoaches is empty
-//     // or maxUsers is empty or branch is empty return error message
-//     if (days.isEmpty ||
-//         selectedUsers.isEmpty ||
-//         selectedCoaches.isEmpty ||
-//         maxUsers == null ||
-//         branch == '') {
-//       emit(state.copyWith(loading: false));
-//
-//       Fluttertoast.showToast(
-//           msg: 'يجب إدخال جميع البيانات المطلوبة',
-//           toastLength: Toast.LENGTH_LONG,
-//           gravity: ToastGravity.BOTTOM,
-//           timeInSecForIosWeb: 5,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white,
-//           fontSize: 16.0);
-//
-//       return;
-//     }
-//
-//     // Create a batched write
-//     WriteBatch batch = FirebaseFirestore.instance.batch();
-//
-//     try {
-//       // Add schedules to batch
-//       for (var day in days) {
-//         if (nonNullableDays.containsKey(day)) {
-//           Timestamp nearestDayTimestamp = nonNullableDays[day]!['nearest_day'];
-//
-//           DocumentReference scheduleRef = FirebaseFirestore.instance
-//               .collection('admins')
-//               .doc(FirebaseAuth.instance.currentUser!.uid)
-//               .collection('schedules')
-//               .doc(day)
-//               .collection('schedules')
-//               .doc();
-//
-//           batch.set(scheduleRef, {
-//             'start_time': nonNullableDays[day]!['start'],
-//             'end_time': nonNullableDays[day]!['end'],
-//             'date': day,
-//             'nearest_day': nearestDayTimestamp,
-//             'branch_id': branch,
-//             'usersList': [],
-//             'userIds': [],
-//             'max_users': maxUsers,
-//             'schedule_id': scheduleRef.id ?? '',
-//           });
-//
-//           // Add coaches to batch
-//           if (selectedCoaches != null && selectedCoaches.isNotEmpty) {
-//             for (var coach in selectedCoaches) {
-//               DocumentReference coachRef = FirebaseFirestore.instance
-//                   .collection('users')
-//                   .doc(coach.uId)
-//                   .collection('schedules')
-//                   .doc(scheduleRef.id);
-//
-//               batch.set(coachRef, {
-//                 'start_time': nonNullableDays[day]!['start'],
-//                 'end_time': nonNullableDays[day]!['end'],
-//                 'date': day,
-//                 'nearest_day': nearestDayTimestamp,
-//                 'branch_id': branch,
-//                 'pId': FirebaseAuth.instance.currentUser!.uid,
-//                 'max_users': maxUsers,
-//                 'schedule_id': scheduleRef.id ?? '',
-//               });
-//
-//               DocumentReference adminRef = FirebaseFirestore.instance
-//                   .collection('admins')
-//                   .doc(FirebaseAuth.instance.currentUser!.uid)
-//                   .collection('schedules')
-//                   .doc(day)
-//                   .collection('schedules')
-//                   .doc(scheduleRef.id)
-//                   .collection('users')
-//                   .doc(coach.uId);
-//
-//               batch.set(adminRef, {
-//                 'name': coach.name,
-//                 'uid': coach.uId,
-//                 'finished': false,
-//                 'role': 'coach',
-//               });
-//
-//               batch.update(scheduleRef, {
-//                 'coachList': FieldValue.arrayUnion([coach.name]),
-//                 'coachIds': FieldValue.arrayUnion([coach.uId]),
-//               });
-//
-//               DocumentReference coachScheduleRef = FirebaseFirestore.instance
-//                   .collection('users')
-//                   .doc(coach.uId)
-//                   .collection('schedules')
-//                   .doc(scheduleRef.id);
-//
-//               batch.set(coachScheduleRef, {
-//                 'start_time': nonNullableDays[day]!['start'],
-//                 'end_time': nonNullableDays[day]!['end'],
-//                 'date': day,
-//                 'nearest_day': nearestDayTimestamp,
-//                 'branch_id': branch,
-//                 'pId': FirebaseAuth.instance.currentUser!.uid,
-//                 'max_users': maxUsers,
-//                 'schedule_id': scheduleRef.id ?? '',
-//               });
-//             }
-//           }
-//
-//           // Add users to batch
-//           if (selectedUsers != null && selectedUsers.isNotEmpty) {
-//             for (var user in selectedUsers) {
-//               DocumentReference userRef = FirebaseFirestore.instance
-//                   .collection('users')
-//                   .doc(user.uId)
-//                   .collection('schedules')
-//                   .doc(scheduleRef.id);
-//
-//               batch.set(userRef, {
-//                 'start_time': nonNullableDays[day]!['start'],
-//                 'end_time': nonNullableDays[day]!['end'],
-//                 'date': day,
-//                 'nearest_day': nearestDayTimestamp,
-//                 'branch_id': branch,
-//                 'pId': FirebaseAuth.instance.currentUser!.uid,
-//                 'max_users': maxUsers,
-//                 'schedule_id': scheduleRef.id ?? '',
-//               });
-//
-//               DocumentReference adminRef = FirebaseFirestore.instance
-//                   .collection('admins')
-//                   .doc(FirebaseAuth.instance.currentUser!.uid)
-//                   .collection('schedules')
-//                   .doc(day)
-//                   .collection('schedules')
-//                   .doc(scheduleRef.id)
-//                   .collection('users')
-//                   .doc(user.uId);
-//
-//               batch.set(adminRef, {
-//                 'name': user.name,
-//                 'uid': user.uId,
-//                 'finished': false,
-//                 'role': 'user',
-//               });
-//
-//               batch.update(scheduleRef, {
-//                 'usersList': FieldValue.arrayUnion([user.name]),
-//                 'userIds': FieldValue.arrayUnion([user.uId]),
-//               });
-//
-//               DocumentReference userScheduleRef = FirebaseFirestore.instance
-//                   .collection('users')
-//                   .doc(user.uId)
-//                   .collection('schedules')
-//                   .doc(scheduleRef.id);
-//
-//               batch.set(userScheduleRef, {
-//                 'start_time': nonNullableDays[day]!['start'],
-//                 'end_time': nonNullableDays[day]!['end'],
-//                 'date': day,
-//                 'nearest_day': nearestDayTimestamp,
-//                 'branch_id': branch,
-//                 'pId': FirebaseAuth.instance.currentUser!.uid,
-//                 'schedule_id': scheduleRef.id ?? '',
-//                 'max_users': maxUsers,
-//               });
-//             }
-//           }
-//         }
-//       }
-//       //todo :fix branch is null
-//       DocumentReference branchRef = FirebaseFirestore.instance
-//           .collection('branches')
-//           .doc(branch)
-//           .collection('groups')
-//           .doc();
-//       batch.set(branchRef, {
-//         'name': branch,
-//         'max_users': maxUsers,
-//         'number_of_users': selectedUsers.length,
-//         'number_of_coaches': selectedCoaches.length,
-//         'pid': FirebaseAuth.instance.currentUser!.uid,
-//         'group_id': branchRef.id,
-//         //non nullable days as map
-//         'days': nonNullableDays,
-//        // 'schedules':
-//       });
-//
-//       // Commit the batched write
-//       await batch.commit();
-//
-//       emit(state.copyWith(loading: false));
-//
-//       Fluttertoast.showToast(
-//           msg: 'تم إضافة المواعيد بنجاح',
-//           toastLength: Toast.LENGTH_LONG,
-//           gravity: ToastGravity.BOTTOM,
-//           timeInSecForIosWeb: 5,
-//           backgroundColor: Colors.green,
-//           textColor: Colors.white,
-//           fontSize: 16.0);
-//     } catch (e) {
-//       emit(state.copyWith(loading: false));
-//
-//       Fluttertoast.showToast(
-//           msg: 'حدث خطأ أثناء إضافة المواعيد\n${e.toString()}',
-//           toastLength: Toast.LENGTH_LONG,
-//           gravity: ToastGravity.BOTTOM,
-//           timeInSecForIosWeb: 5,
-//           backgroundColor: Colors.red,
-//           textColor: Colors.white,
-//           fontSize: 16.0);
-//     }
-//   }
 
   DateTime getNearestDayOfWeek(String dayOfWeek) {
     // Get the current date
@@ -1138,9 +740,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
       'الجمعة',
       'السبت'
     ].indexOf(dayOfWeek);
- ////vdfdf
 
-    //dfdfgdfg/d
     // Calculate the difference between the selected day of the week and the current day of the week
     int difference = selectedDayOfWeek - now.weekday;
 
@@ -1160,14 +760,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     _times[day]?['end'] = startTime.replacing(hour: startTime.hour + 1);
     emit(state.copyWith(times: _times));
   }
-  //update time3 which take Map<String, Map<dynamic, dynamic>>
-  void updateTime3(Map<String, Map<dynamic, dynamic>> times) {
-    //Get the day from the map and update the start and end time of the day
-    for (var day in times.keys) {
-      _times[day]?['start'] = times[day]!['start'];
-      _times[day]?['end'] = times[day]!['end'];
-    }
-  }
+
   // setState(() {
   //   if (widget.isCoach) {
   //     _selectedCoachesUids = users.map((e) => e.uId!).toList();
@@ -1182,19 +775,11 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     selectedCoaches = users;
     emit(state.copyWith(selectedCoaches: users));
   }
-  void setSelectedCoachesUids(List<String> users) {
-    selectedCoachesUids = users;
-    emit(state.copyWith(selectedCoachesUids: users));
-  }
 
   void setSelectedUsers(List<UserModel> users) {
     selectedUsersUids = users.map((e) => e.uId!).toList();
     selectedUsers = users;
     emit(state.copyWith(selectedUsers: users));
-  }
-  void setSelectedUsersUids(List<String> users) {
-    selectedUsersUids = users;
-    emit(state.copyWith(selectedUsersUids: users));
   }
 
   void updateQuery(Query query) {
@@ -1215,91 +800,6 @@ class AddGroupCubit extends Cubit<AddGroupState> {
   void updateIsSearch(bool bool) {
     isSearch = bool;
     emit(state.copyWith(isSearch: bool));
-  }
-  //function to update sekected user and selected coach and selected times and selected branch and max users
-  void updateSelectedUsersAndCoachesAndTimesAndBranchAndMaxUsers(
-  {List<UserModel>? selectedUsers,
-      List<UserModel>? selectedCoaches,
-      List<String>? selectedTimes,
-      String? selectedBranch,
-      String? selectedOption,
-      String? maxUsers,context, required Map<String, Map<String, Timestamp>> selectedDays}) {
-    maxUsers = maxUsers;
-    //update times variable whish is Map<String, Map<dynamic, dynamic>>
-    //it looks like that
-    //static final Map<String, Map<dynamic, dynamic>> _times = {
-    //     'السبت': {'start': null, 'end': null},
-    //     'الأحد': {'start': null, 'end': null},
-    //     'الاثنين': {'start': null, 'end': null},
-    //     'الثلاثاء': {'start': null, 'end': null},
-    //     'الأربعاء': {'start': null, 'end': null},
-    //     'الخميس': {'start': null, 'end': null},
-    //     'الجمعة': {'start': null, 'end': null},
-    //   };
-    //loop on selected days and update the start and end time of the day
-for (var day in selectedDays.keys) {
-  //selectedDays[day]!['start'];
- //selectedDays[day]!['end'];
- //i want to turn these 2 timestamps to time of day 
-  int? startTime = selectedDays[day]!['start']?.millisecondsSinceEpoch;
-  int? endTime = selectedDays[day]!['end']?.millisecondsSinceEpoch;
- //assign the start and end time to the day
-  _times[day]?['start'] = TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(startTime!));
-  _times[day]?['end'] = TimeOfDay.fromDateTime(DateTime.fromMillisecondsSinceEpoch(endTime!));
-}
-    this.selectedUsers = selectedUsers ?? this.selectedUsers;
-    this.selectedCoaches = selectedCoaches ?? this.selectedCoaches;
-    //this.selectedTimes = selectedTimes ?? this.selectedTimes;
-    ManageAttendenceCubit.get(context)
- .updateSelectedBranch(selectedBranch!);
-    ///if isAdd is false update data in the cubit
-    //         //  if (isAdd == true) {
-    //         //loop on users and convert it to UserModel
-    //         // List<UserModel> usersList = [];
-    //         // for (var user in users!) {
-    //         //   context.read<AddGroupCubit>().selectUser(user);
-    //         //   //use this to se
-    //         //   //usersList.add(UserModel.fromJson(user));
-    //         // }
-    //         //
-    //         //  List<UserModel> coachesList = [];
-    //         // for (var coach in coaches!) {
-    //         //   coachesList.add(UserModel.fromJson(coach));
-    //         //   }
-    //         //update data in the cubit using selectedUsers and selectedCoaches
-    //         // context.read<AddGroupCubit>().selectUser(usersList);
-    //         //  context.read<AddGroupCubit>().selectCoach(coachesList);
-    //         //  context.read<AddGroupCubit>().updateTime3(days!);
-    //
-    //         //  context.read<AddGroupCubit>().setSelectedUsers(users??[]);
-    //         // context.read<AddGroupCubit>().setSelectedUsers(coaches??[]);
-    //        // print('isAdd in onboarding screen $isAdd');
-    //         //users
-    //         // print('users in onboarding screen $users');
-    //         // print('users in onboarding screen ${users?.length}');
-    //
-    //
-    //         // print('days in onboarding screen $days');
-    //         // print('branchId in onboarding screen $branchId');
-    //         // print('groupId in onboarding screen $groupId');
-    //         // print('schedule_days in onboarding screen $schedule_days');
-    //         // print('userIds in onboarding screen $userIds');
-    //         // print('scheduleId in onboarding screen $scheduleId');
-    //         // print('coachIds in onboarding screen $coachIds');
-    //         // print('coachList in onboarding screen $coachList');
-    //         // print('usersList in onboarding screen $usersList');
-    //         // print('maxUsers in onboarding screen $maxUsers');
-    //         //context.read<AddGroupCubit>().updateMaxUsers(int.parse(maxUsers!));
-    //         //ManageAttendenceCubit.get(context)
-    //         //    .updateSelectedBranch(branchId!);
-    //         //}
-    emit(state.copyWith(
-        selectedUsers: selectedUsers,
-        selectedCoaches: selectedCoaches,
-        selectedTimes: selectedTimes,
-        selectedBranch: selectedBranch,
-        selectedOption: selectedOption,
-        maxUsers: maxUsers));
   }
 }
 
@@ -1354,7 +854,8 @@ class AddGroupState {
     Map<String, Map>? times,
     bool? loading,
     Query? query,
-    String? maxUsers,  bool? isSearch, List<String>? selectedCoachesUids,
+    String? maxUsers,
+    bool? isSearch,
   }) {
     return AddGroupState(
       query: query ?? this.query,
@@ -1370,106 +871,59 @@ class AddGroupState {
       times: times ?? this.times,
       loading: loading ?? this.loading,
       maxUsers: maxUsers ?? this.maxUsers,
-
-
-
     );
   }
 }
 
 class OnboardingScreen extends StatelessWidget {
-  final bool? isAdd;
-  final String? branchId;
-  final String? groupId;
-  final List<String>? scheduleDays;
-  final List<String>? userIds;
-  final List<String>? scheduleId;
-  final List<String>? coachIds;
-  final List<String>? coachList;
-  final List<String>? usersList;
-  //users is list of json from firebase collection users i will get here and then use userModel.fromJson to convert it to UserModel
-  final List? users;
- // final List<UserModel>? coaches;
-  final Map<String, Map<dynamic, dynamic>>? days;
-  final String? maxUsers;
-
-   OnboardingScreen(
-      {Key? key,
-    this.isAdd,
-    this.branchId,
-    this.groupId,
-    this.scheduleDays,
-    this.userIds,
-    this.scheduleId,
-    this.coachIds,
-    this.coachList,
-    this.usersList,
-    this.days,
-    this.maxUsers,
-    this.users,
-      //  this.coaches,
-      }) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    // String? group_id = groupId;
-    // String? branch_id = branchId;
-    // String? max_users = maxUsers;
-    // List<String>? schedule_days = this.schedule_days;
-    // List<String>? user_ids = userIds;
-    // List<String>? schedule_ids = scheduleId;
-    // List<String>? coach_ids = coachIds;
-    // List<String>? coach_list = coachList;
-    // List<String>? users_list = usersList;
-    // List? users = this.users;
-    // //List<UserModel>? coaches = this.coaches;
-    // Map<String, Map<dynamic, dynamic>>? days = this.days;
-    // bool? isAdd = this.isAdd;
-    //
-
-    return Builder(
-      builder: (context) {
-        return Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: CustomAppBar(
-//         text: 'Add group of schedules',
-            //traanslate the text to arabic
-            text: 'اضافة مجموعة',
-          ),
-          backgroundColor: Colors.white,
-          body: SafeArea(
-            child: SingleChildScrollView(
-              child: Column(
-                children: [
-                  SizedBox(
-                    //delete borders
-                    //  decoration: BoxDecoration(
-                    //    border: Border.all(
-                    //      color: Colors.white,
-                    //    ),
-                    //  ),
-                    height: 650.h,
-                    width: double.infinity,
-                    child: Container(
-                      //delete borders
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Colors.white,
-                        ),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: CustomAppBar(
+        //         text: 'Add group of schedules',
+        //traanslate the text to arabic
+        text: 'اضافة مجموعة',
+      ),
+      backgroundColor: Colors.white,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(
+                //delete borders
+                //  decoration: BoxDecoration(
+                //    border: Border.all(
+                //      color: Colors.white,
+                //    ),
+                //  ),
+                height: 650.h,
+                width: double.infinity,
+                child: Container(
+                  //delete borders
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.white,
+                      ),
+                    ),
+                    child: Theme(
+                      data: ThemeData(
+                        canvasColor: Colors.white,
                       ),
                       child: Stepper(
                         controlsBuilder:
-                            //return Container();
+                        //return Container();
                             (context, details) => Container(),
                         onStepContinue: //use AddGroupCubit
                             () {
                           context.read<AddGroupCubit>().nextScreen(
-                                context,
+                            context,
                           );
                         },
                         onStepCancel: //use AddGroupCubit
                             () {
                           context.read<AddGroupCubit>().previousScreen(
-                                context,
+                            context,
                           );
                         },
                         onStepTapped: (index) {
@@ -1482,22 +936,22 @@ class OnboardingScreen extends StatelessWidget {
                           if (stepState == StepState.complete) {
                             return
 
-                                ///home/elreefy14/admin14/admin_future/assets/images/Group 1.svg
-                                Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.purple,
-                                //make thick white border
-                                border: Border.all(
-                                  color: Colors.white,
-                                  width: 2.5,
+                              ///home/elreefy14/admin14/admin_future/assets/images/Group 1.svg
+                              Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.blue,
+                                  //make thick white border
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2.5,
+                                  ),
                                 ),
-                              ),
-                              child: SvgPicture.asset(
-                                'assets/images/check.svg',
-                                color: Colors.white,
-                              ),
-                            );
+                                child: SvgPicture.asset(
+                                  'assets/images/check.svg',
+                                  color: Colors.white,
+                                ),
+                              );
                           } else if (stepState == StepState.indexed) {
                             //assets/images/emty14.svg
                             return Container(
@@ -1531,7 +985,7 @@ class OnboardingScreen extends StatelessWidget {
                               ),
                               child: SvgPicture.asset(
                                 'assets/images/Group 1.svg',
-                                color: Colors.purple,
+                                color: Colors.blue,
                               ),
                             );
                           } else {
@@ -1551,242 +1005,147 @@ class OnboardingScreen extends StatelessWidget {
 
                         type: StepperType.horizontal,
                         currentStep:
-                            context.watch<AddGroupCubit>().state.currentIndex,
+                        context.watch<AddGroupCubit>().state.currentIndex,
                         steps: context
                             .watch<AddGroupCubit>()
                             .state
                             .screens
                             .asMap()
                             .map((index, screen) => MapEntry(
-                                index,
-                                Step(
-                                  title: Text(''),
-                                  isActive: context
-                                          .watch<AddGroupCubit>()
-                                          .state
-                                          .currentIndex >=
-                                      index,
-                                  state: context
-                                              .watch<AddGroupCubit>()
-                                              .state
-                                              .currentIndex ==
-                                          index
-                                      ? StepState.editing
-                                      : context
-                                                  .watch<AddGroupCubit>()
-                                                  .state
-                                                  .currentIndex >
-                                              index
-                                          ? StepState.complete
-                                          : StepState.indexed,
-                                  content: SingleChildScrollView(
-                                    physics: AlwaysScrollableScrollPhysics(),
-                                    child: SizedBox(
-                                      height: 600.h,
-                                      width: double.infinity,
-                                      child: screen,
-                                    ),
-                                  ),
-                                  //Expanded(
+                            index,
+                            Step(
+                              title: Text(''),
+                              isActive: context
+                                  .watch<AddGroupCubit>()
+                                  .state
+                                  .currentIndex >=
+                                  index,
+                              state: context
+                                  .watch<AddGroupCubit>()
+                                  .state
+                                  .currentIndex ==
+                                  index
+                                  ? StepState.editing
+                                  : context
+                                  .watch<AddGroupCubit>()
+                                  .state
+                                  .currentIndex >
+                                  index
+                                  ? StepState.complete
+                                  : StepState.indexed,
+                              content: SingleChildScrollView(
+                                physics: AlwaysScrollableScrollPhysics(),
+                                child: SizedBox(
+                                  height: 600.h,
+                                  width: double.infinity,
+                                  child: screen,
+                                ),
+                              ),
+                              //Expanded(
 
-                                  //     child: SizedBox(
-                                  //            height: MediaQuery.of(context).size.height,
-                                  //            width: double.infinity,
-                                  //         child: screen),
-                                  //  ),
-                                )))
+                              //     child: SizedBox(
+                              //            height: MediaQuery.of(context).size.height,
+                              //            width: double.infinity,
+                              //         child: screen),
+                              //  ),
+                            )))
                             .values
                             .toList(),
                       ),
+                    )),
+              ),
+              // Expanded(
+              //   child: //_screens[_currentIndex],
+              //   context.watch<AddGroupCubit>().state.screens[
+              //       context.watch<AddGroupCubit>().state.currentIndex],
+              //  ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  if (context.watch<AddGroupCubit>().state.currentIndex > 0)
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.0.w,
+                      ),
+                      child: InkWell(
+                        onTap: () =>
+                            context.read<AddGroupCubit>().previousScreen(
+                              context,
+                            ),
+                        child: Container(
+                          height: 50.h,
+                          width: 150.w,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Align(
+                              alignment: AlignmentDirectional(0, 0),
+                              child: Text(
+                                'السابق',
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18.sp,
+                                  fontFamily: 'Montserrat-Arabic',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0.08.h,
+                                ),
+                              )),
+                        ),
+                      ),
                     ),
-                  ),
-                  // Expanded(
-                  //   child: //_screens[_currentIndex],
-                  //   context.watch<AddGroupCubit>().state.screens[
-                  //       context.watch<AddGroupCubit>().state.currentIndex],
-                  //  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      //if current index is 0 add button delete button and next button
-                      //add delete button like that
-                      // Container(
-                      //                                         height: 50.h,
-                      //                                         width: 150.w,
-                      //                                         decoration: BoxDecoration(
-                      //                                           color: Colors.blue,
-                      //                                           borderRadius: BorderRadius.circular(8),
-                      //                                         ),
-                      //                                         child: Align(
-                      //                                             alignment: AlignmentDirectional(0, 0),
-                      //                                             child: Text(
-                      //                                               'حفظ',
-                      //                                               textAlign: TextAlign.right,
-                      //                                               style: TextStyle(
-                      //                                                   color: Colors.white,
-                      //                                                   fontSize: 18.sp,
-                      //                                                   fontFamily: 'Montserrat-Arabic',
-                      //                                                   fontWeight: FontWeight.w400,
-                      //                                                   height: 0.08.h),
-                      //                                             )),
-                      //                                       );
-                      //when tap on it show dialog to confirm delete or not
-                      //if yes delete the group
-                      //if no do nothing
-                      if (context.watch<AddGroupCubit>().state.currentIndex == 0)
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 4.0.w,
-                          ),
-                          child: InkWell(
-                            onTap: () =>   ManageUsersCubit.get(
-                                context)
-                                .deleteGroup(
-                              groupId: groupId ?? '',
-                              branchId: branchId ?? '',
-                              schedulesIds:
-                              scheduleId ?? [],
-                              schedulesDays:
-                              scheduleDays ?? [],
-                              context: context,
-                            ),
-                            child: Container(
-                              height: 50.h,
-                              width: 150.w,
-                              decoration: BoxDecoration(
-                                color: Colors.red,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Align(
-                                  alignment: AlignmentDirectional(0, 0),
-                                  child: Text(
-                                    'حذف',
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.sp,
-                                      fontFamily: 'Montserrat-Arabic',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.08.h,
-                                    ),
-                                  )),
-                            ),
-                          ),
-                        ),
-                           if (context.watch<AddGroupCubit>().state.currentIndex > 0)
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 4.0.w,
-                          ),
-                          child: InkWell(
-                            onTap: () => context.read<AddGroupCubit>().previousScreen(
-                                  context,
-                            ),
-                            child: Container(
-                              height: 50.h,
-                              width: 150.w,
-                              decoration: BoxDecoration(
-                                color: Colors.grey,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Align(
-                                  alignment: AlignmentDirectional(0, 0),
-                                  child: Text(
-                                    'السابق',
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 18.sp,
-                                      fontFamily: 'Montserrat-Arabic',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0.08.h,
-                                    ),
-                                  )),
-                            ),
-                          ),
-                        ),
-                      //if current index is last index 'حفظ',
+                  //if current index is last index 'حفظ',
 
-                      if (context.watch<AddGroupCubit>().state.currentIndex ==
-                          context.watch<AddGroupCubit>().state.screens.length - 1)
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 4.0.w,
-                          ),
-                          child: InkWell(
-                            onTap: () {
-                              print('save');
-                              //print all   context.watch<AddGroupCubit>().state.times,
-                              print(
-                                  'Selected Times: ${context.read<AddGroupCubit>().state.times}');
+                  if (context.watch<AddGroupCubit>().state.currentIndex ==
+                      context.watch<AddGroupCubit>().state.screens.length - 1)
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 4.0.w,
+                      ),
+                      child: InkWell(
+                        onTap: () {
+                          print('save');
+                          //print all   context.watch<AddGroupCubit>().state.times,
+                          print(
+                              'Selected Times: ${context.read<AddGroupCubit>().state.times}');
 
-                              context.read<AddGroupCubit>().addGroup(
-                                    true,
-                                    context,
-                                    selectedUsers: context
-                                        .read<AddGroupCubit>()
-                                        .state
-                                        .selectedUsers,
-                                    selectedCoaches: context
-                                        .read<AddGroupCubit>()
-                                        .state
-                                        .selectedCoaches,
-                                    startTrainingTime: //random time
-                                        Timestamp.now(),
-                                    endTrainingTime: //random time
-                                        Timestamp.now(),
-                                    branch: ManageAttendenceCubit.get(context)
-                                            .selectedBranch ??
-                                        '',
-                                    // 'error',
-                                    times: //call the times map from screen 2
-                                        context.read<AddGroupCubit>().state.times,
-                                    //TODO :fix this error
-                                    // {
-                                    //   'السبت': {'start': TimeOfDay.now(), 'end': TimeOfDay.now()},
-                                    //  },
-                                    maxUsers:
-                                        context.read<AddGroupCubit>().maxUsers,
-                                  );
-            //clr   context.read<AddGroupCubit>().state.times,
-                              context.read<AddGroupCubit>().state.times.clear();
-                            },
-                            child: BlocBuilder<AddGroupCubit, AddGroupState>(
-                              builder: (context, state) {
-                                return state.loading
-                                    ? CircularProgressIndicator()
-                                    : Container(
-                                        height: 50.h,
-                                        width: 150.w,
-                                        decoration: BoxDecoration(
-                                          color: Colors.blue,
-                                          borderRadius: BorderRadius.circular(8),
-                                        ),
-                                        child: Align(
-                                            alignment: AlignmentDirectional(0, 0),
-                                            child: Text(
-                                              'حفظ',
-                                              textAlign: TextAlign.right,
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 18.sp,
-                                                  fontFamily: 'Montserrat-Arabic',
-                                                  fontWeight: FontWeight.w400,
-                                                  height: 0.08.h),
-                                            )),
-                                      );
-                              },
-                            ),
-                          ),
-                        ),
-
-                      if (context.watch<AddGroupCubit>().state.currentIndex <
-                          context.watch<AddGroupCubit>().state.screens.length - 1)
-                        Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8.0),
-                          child: InkWell(
-                            onTap: () => context.read<AddGroupCubit>().nextScreen(context),
-                            child: Container(
+                          context.read<AddGroupCubit>().addGroup(
+                            true,
+                            context,
+                            selectedUsers: context
+                                .read<AddGroupCubit>()
+                                .state
+                                .selectedUsers,
+                            selectedCoaches: context
+                                .read<AddGroupCubit>()
+                                .state
+                                .selectedCoaches,
+                            startTrainingTime: //random time
+                            Timestamp.now(),
+                            endTrainingTime: //random time
+                            Timestamp.now(),
+                            branch: ManageAttendenceCubit.get(context)
+                                .selectedBranch ??
+                                '',
+                            // 'error',
+                            times: //call the times map from screen 2
+                            context.read<AddGroupCubit>().state.times,
+                            //TODO :fix this error
+                            // {
+                            //   'السبت': {'start': TimeOfDay.now(), 'end': TimeOfDay.now()},
+                            //  },
+                            maxUsers:
+                            context.read<AddGroupCubit>().maxUsers,
+                          );
+                          //clr   context.read<AddGroupCubit>().state.times,
+                          context.read<AddGroupCubit>().state.times.clear();
+                        },
+                        child: BlocBuilder<AddGroupCubit, AddGroupState>(
+                          builder: (context, state) {
+                            return state.loading
+                                ? CircularProgressIndicator()
+                                : Container(
                               height: 50.h,
                               width: 150.w,
                               decoration: BoxDecoration(
@@ -1796,7 +1155,7 @@ class OnboardingScreen extends StatelessWidget {
                               child: Align(
                                   alignment: AlignmentDirectional(0, 0),
                                   child: Text(
-                                    'التالي',
+                                    'حفظ',
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                         color: Colors.white,
@@ -1805,26 +1164,56 @@ class OnboardingScreen extends StatelessWidget {
                                         fontWeight: FontWeight.w400,
                                         height: 0.08.h),
                                   )),
-                            ),
-                          ),
+                            );
+                          },
                         ),
-                    ],
-                  ),
-                  //  SizedBox(
-                  //    height: 30,
-                  // )
+                      ),
+                    ),
+
+                  if (context.watch<AddGroupCubit>().state.currentIndex <
+                      context.watch<AddGroupCubit>().state.screens.length - 1)
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      child: InkWell(
+                        onTap: () =>
+                            context.read<AddGroupCubit>().nextScreen(context),
+                        child: Container(
+                          height: 50.h,
+                          width: 150.w,
+                          decoration: BoxDecoration(
+                            color: Colors.blue,
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Align(
+                              alignment: AlignmentDirectional(0, 0),
+                              child: Text(
+                                'التالي',
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 18.sp,
+                                    fontFamily: 'Montserrat-Arabic',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0.08.h),
+                              )),
+                        ),
+                      ),
+                    ),
                 ],
               ),
-            ),
+              //  SizedBox(
+              //    height: 30,
+              // )
+            ],
           ),
-        );
-      }
+        ),
+      ),
     );
   }
 }
 
 //assets/images/delete-2_svgrepo.com.svg
-class TimeSelectionScreen extends StatelessWidget {
+class Screen2 extends StatelessWidget {
   // static final Map<String, Map<dynamic, dynamic>> _times = {
   //   'السبت': {'start': null, 'end': null},
   //   'الأحد': {'start': null, 'end': null},
@@ -1897,10 +1286,10 @@ class TimeSelectionScreen extends StatelessWidget {
                         // _times[day]?['end']?.format(context) ?? 'نهاية التدريب',
                         //make it in arabic like that 11 ص
                         _times[day]?['end']
-                                ?.format(context)
-                                .toString()
-                                .replaceAll('PM', 'م')
-                                .replaceAll('AM', 'ص') ??
+                            ?.format(context)
+                            .toString()
+                            .replaceAll('PM', 'م')
+                            .replaceAll('AM', 'ص') ??
                             'نهاية التدريب',
 
                         textAlign: TextAlign.center,
@@ -1934,7 +1323,7 @@ class TimeSelectionScreen extends StatelessWidget {
                           TimeOfDay? startTime = await showTimePicker(
                             context: context,
                             initialTime:
-                                _times[day]?['start'] ?? TimeOfDay.now(),
+                            _times[day]?['start'] ?? TimeOfDay.now(),
                           );
                           if (startTime != null) {
                             // setState(() {
@@ -1994,10 +1383,10 @@ class TimeSelectionScreen extends StatelessWidget {
                             // _times[day]?['start']?.format(context) ?? 'بداية التدريب',
                             //make it in arabic like that 11 ص
                             _times[day]?['start']
-                                    ?.format(context)
-                                    .toString()
-                                    .replaceAll('PM', 'م')
-                                    .replaceAll('AM', 'ص') ??
+                                ?.format(context)
+                                .toString()
+                                .replaceAll('PM', 'م')
+                                .replaceAll('AM', 'ص') ??
                                 'بداية التدريب',
                             textAlign: TextAlign.center,
                             style: TextStyle(
@@ -2044,6 +1433,7 @@ class SelectCoachesScreen extends StatelessWidget {
   final bool isCoach;
 
   SelectCoachesScreen({super.key, required this.isCoach});
+
   final TextEditingController _searchController = TextEditingController();
 
   // Future<void> _onSearchSubmitted(String value) async {
@@ -2065,19 +1455,19 @@ class SelectCoachesScreen extends StatelessWidget {
         return Column(
           children: [
             /*
-        Text(
-          'المدربين:',
-          style: TextStyle(
-        color: Color(0xFF333333),
-        fontSize: 14,
-        fontFamily: 'IBM Plex Sans Arabic',
-        fontWeight: FontWeight.w400,
-        height: 0,
-          ),
-        )
-        //50
+          Text(
+            'المدربين:',
+            style: TextStyle(
+          color: Color(0xFF333333),
+          fontSize: 14,
+          fontFamily: 'IBM Plex Sans Arabic',
+          fontWeight: FontWeight.w400,
+          height: 0,
+            ),
+          )
+          //50
 
-        */
+          */
             //50
             SizedBox(
               height: 40.h,
@@ -2095,6 +1485,9 @@ class SelectCoachesScreen extends StatelessWidget {
                   // added this line
                 ),
               ),
+            ),
+            SizedBox(
+              height: 10.h,
             ),
             GestureDetector(
               onTap: () {
@@ -2117,27 +1510,31 @@ class SelectCoachesScreen extends StatelessWidget {
                 }
                 showDialog(
                   context: context,
-                  builder: (context) => ShowCoachesInDialog(
-                    isCoach: isCoach ?? true,
-                    selectedUsers: isCoach
-                        ? context.read<AddGroupCubit>().state.selectedCoaches
-                        : context.read<AddGroupCubit>().state.selectedUsers,
-                    onSelectedUsersChanged: (users) {
-                      // setState(() {
-                      //   if (widget.isCoach) {
-                      //     _selectedCoachesUids = users.map((e) => e.uId!).toList();
-                      //   } else {
-                      //     _selectedUsersUids = users.map((e) => e.uId!).toList();
-                      //   }
-                      //   // _selectedCoaches = users;
-                      // });
-                      // if (widget.isCoach) {
-                      //
-                      //   context.read<AddGroupCubit>().setSelectedCoaches(users);
-                      // } else {
-                      //   context.read<AddGroupCubit>().setSelectedUsers(users);
-                      // }
-                    },
+                  builder: (context) => Theme(
+                    data: Theme.of(context)
+                        .copyWith(canvasColor: Colors.white,dialogBackgroundColor: Colors.white),
+                    child: ShowCoachesInDialog(
+                      isCoach: isCoach ?? true,
+                      selectedUsers: isCoach
+                          ? context.read<AddGroupCubit>().state.selectedCoaches
+                          : context.read<AddGroupCubit>().state.selectedUsers,
+                      onSelectedUsersChanged: (users) {
+                        // setState(() {
+                        //   if (widget.isCoach) {
+                        //     _selectedCoachesUids = users.map((e) => e.uId!).toList();
+                        //   } else {
+                        //     _selectedUsersUids = users.map((e) => e.uId!).toList();
+                        //   }
+                        //   // _selectedCoaches = users;
+                        // });
+                        // if (widget.isCoach) {
+                        //
+                        //   context.read<AddGroupCubit>().setSelectedCoaches(users);
+                        // } else {
+                        //   context.read<AddGroupCubit>().setSelectedUsers(users);
+                        // }
+                      },
+                    ),
                   ),
                 );
               },
@@ -2148,7 +1545,7 @@ class SelectCoachesScreen extends StatelessWidget {
                     width: 280.w,
                     height: 48.h,
                     padding:
-                        EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
+                    EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     clipBehavior: Clip.antiAlias,
                     decoration: ShapeDecoration(
                       color: Color(0xFFF6F6F6),
@@ -2191,14 +1588,17 @@ class SelectCoachesScreen extends StatelessWidget {
                 ],
               ),
             ),
+            SizedBox(
+              height: 10.h,
+            ),
             SingleChildScrollView(
               //  physics: BouncingScrollPhysics(),
               child: SizedBox(
-                height: 500.h,
+                height: 250.h,
                 child: ListView.separated(
                   //    physics:  NeverScrollableScrollPhysics(),
                   separatorBuilder: (context, index) => //5
-                      SizedBox(
+                  SizedBox(
                     height: 15.h,
                   ),
                   shrinkWrap: true,
@@ -2266,7 +1666,7 @@ class SelectCoachesScreen extends StatelessWidget {
                                     //   '${user.name}-${index + 1}',
                                     //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
                                     '${index + 1}-${user.name}',
-                                    // textDirection: TextDirection.rtl,
+                                    textDirection: TextDirection.rtl,
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                       color: Colors.black,
@@ -2295,149 +1695,136 @@ class SelectCoachesScreen extends StatelessWidget {
 }
 
 class SelectBranchScreen extends StatelessWidget {
-//intaialize the controller with the value of cubit maxUsers
-  final _formKey = GlobalKey<FormState>();
-  final String? maxUsers;
-  SelectBranchScreen({super.key, this.maxUsers});
   @override
   Widget build(BuildContext context) {
-    final maxUsersController = TextEditingController(text: '${context.read<AddGroupCubit>().maxUsers}');
-  print('maxUsers::: ${context.read<AddGroupCubit>().maxUsers}\n\n\n\n');
-    return Form(
-      key: _formKey,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Align(
-            alignment: AlignmentDirectional.topEnd,
-            child: Text(
-              ':اقصى عدد للمتدربين',
-              //make it in arabic align right
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Align(
+          alignment: AlignmentDirectional.topEnd,
+          child: Text(
+            ':اقصى عدد للمتدربين',
+            //make it in arabic align right
 
+            textAlign: TextAlign.right,
+            style: TextStyle(
+              color: Color(0xFF333333),
+              fontSize: 14.sp,
+              fontFamily: 'IBM Plex Sans Arabic',
+              fontWeight: FontWeight.w400,
+              height: 0,
+            ),
+          ),
+        ),
+        SizedBox(height: 10),
+        Align(
+          alignment: AlignmentDirectional.topEnd,
+          child: Container(
+            width: 150.w,
+            height: 48.h,
+            //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            clipBehavior: Clip.antiAlias,
+            decoration: ShapeDecoration(
+              color: Color(0xFFF6F6F6),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(4)),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Text(
+                //   // اقصى عدد
+                //   ':اقصى عدد',
+                //   style: TextStyle(
+                //     color: Color(0xFF666666),
+                //     fontSize: 16,
+                //     fontFamily: 'IBM Plex Sans Arabic',
+                //     fontWeight: FontWeight.w400,
+                //     height: 0,
+                //   ),
+                // ),
+                Flexible(
+                  child: TextFormField(
+                    onEditingComplete: () {
+                      // Unfocus the text field when editing is complete
+                      FocusScope.of(context).unfocus();
+                    },
+                    //rtl
+                    textAlign: TextAlign.right,
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      if (value == null || value.isEmpty) {
+                        return 'Please enter a number';
+                      }
+                      return null;
+                    },
+                    onChanged: (value) {
+                      context
+                          .read<AddGroupCubit>()
+                          .updateMaxUsers(int.parse(value));
+                    },
+                    decoration: InputDecoration(
+                      hintText: ':اقصى عدد',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+        SizedBox(height: 20),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              'مكان التدريب:',
               textAlign: TextAlign.right,
               style: TextStyle(
                 color: Color(0xFF333333),
-                fontSize: 14.sp,
+                fontSize: 16.sp,
                 fontFamily: 'IBM Plex Sans Arabic',
                 fontWeight: FontWeight.w400,
-                height: 0,
               ),
             ),
-          ),
-          SizedBox(height: 10),
-          Align(
-            alignment: AlignmentDirectional.topEnd,
-            child: Container(
-              width: 150.w,
-              height: 48.h,
-              //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              clipBehavior: Clip.antiAlias,
-              decoration: ShapeDecoration(
-                color: Color(0xFFF6F6F6),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4)),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // Text(
-                  //   // اقصى عدد
-                  //   ':اقصى عدد',
-                  //   style: TextStyle(
-                  //     color: Color(0xFF666666),
-                  //     fontSize: 16,
-                  //     fontFamily: 'IBM Plex Sans Arabic',
-                  //     fontWeight: FontWeight.w400,
-                  //     height: 0,
-                  //   ),
-                  // ),
-                  Flexible(
-                    child: TextFormField(
-controller: maxUsersController ,
+          ],
+        ),
+        //SizedBox(height: 5.0.h),
+        // List<String> items = ['Item 1', 'Item 2', 'Item 3'];
 
-                       onEditingComplete: () {
-
-        // Unfocus the text field when editing is complete
-        FocusScope.of(context).unfocus();
-      },
-                      //rtl
-                      textAlign: TextAlign.right,
-                      keyboardType: TextInputType.number,
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a number';
-                        }
-                        return null;
-                      },
-                      onChanged: (value) {
-                        context
-                            .read<AddGroupCubit>()
-                            .updateMaxUsers(int.parse(value));
-                      },
-                      decoration: InputDecoration(
-                        hintText: //cubit maxUsers
-                            '${context.read<AddGroupCubit>().maxUsers}',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
-                ],
+        BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
+          builder: (context, state) {
+            return ManageAttendenceCubit.get(context).branches == null
+                ? const Center(child: CircularProgressIndicator())
+                : Container(
+              height: 400.h,
+              child: CheckboxListWidget(
+                onBranchSelected: (branch) {
+                  // setState(() {
+                  //   print('selected branch: $branch');
+                  //   selectedBranch = branch;
+                  // });
+                  ManageAttendenceCubit.get(context)
+                      .updateSelectedBranch(branch);
+                },
+                items: ManageAttendenceCubit.get(context).branches ?? [],
               ),
-            ),
-          ),
-          SizedBox(height: 20),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                'مكان التدريب:',
-                textAlign: TextAlign.right,
-                style: TextStyle(
-                  color: Color(0xFF333333),
-                  fontSize: 16.sp,
-                  fontFamily: 'IBM Plex Sans Arabic',
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-            ],
-          ),
-          //SizedBox(height: 5.0.h),
-          // List<String> items = ['Item 1', 'Item 2', 'Item 3'];
-
-          BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
-            builder: (context, state) {
-              return ManageAttendenceCubit.get(context).branches == null
-                  ? const Center(child: CircularProgressIndicator())
-                  : Container(
-                      height: 400.h,
-                      child: CheckboxListWidget(
-                        onBranchSelected: (branch) {
-                          // setState(() {
-                          //   print('selected branch: $branch');
-                          //   selectedBranch = branch;
-                          // });
-                          ManageAttendenceCubit.get(context)
-                              .updateSelectedBranch(branch);
-                        },
-                        items: ManageAttendenceCubit.get(context).branches ?? [],
-                      ),
-                    );
-            },
-          ),
-          // ElevatedButton(
-          //   onPressed: () {
-          //     if (_formKey.currentState!.validate()) {
-          //       _formKey.currentState!.save();
-          //       // Do something with _maxUsers
-          //       Navigator.pop(context);
-          //     }
-          //   },
-          //   child: Text('Save'),
-          // ),
-        ],
-      ),
+            );
+          },
+        ),
+        // ElevatedButton(
+        //   onPressed: () {
+        //     if (_formKey.currentState!.validate()) {
+        //       _formKey.currentState!.save();
+        //       // Do something with _maxUsers
+        //       Navigator.pop(context);
+        //     }
+        //   },
+        //   child: Text('Save'),
+        // ),
+      ],
     );
   }
 }
@@ -2455,44 +1842,47 @@ class InfoScreen extends StatelessWidget {
         return SingleChildScrollView(
           // physics: BouncingScrollPhysics(),
           child: Padding(
-            padding:  EdgeInsets.only(bottom: 28.0.h),
+            padding: EdgeInsets.only(bottom: 28.0.h),
             child: Column(
               children: [
                 state.selectedCoaches.isNotEmpty
                     ? Column(
-                        children: [
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional.topEnd,
-                            child: Text(
-                              ':المدربين',
-                              style: TextStyle(
-                                color: Color(0xFF333333),
-                                fontSize: 14.sp,
-                                fontFamily: 'IBM Plex Sans Arabic',
-                                fontWeight: FontWeight.w400,
-                                height: 0,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
+                  children: [
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional.topEnd,
+                      child: Text(
+                        ':المدربين',
+                        style: TextStyle(
+                          color: Color(0xFF333333),
+                          fontSize: 14.sp,
+                          fontFamily: 'IBM Plex Sans Arabic',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+                    ),
+                  ],
+                )
                     : SizedBox(),
-          
+
                 // SizedBox(
                 //   height: 10.h,
                 // ),
                 ListView.separated(
                   physics: NeverScrollableScrollPhysics(),
                   separatorBuilder: (context, index) => //5
-                      SizedBox(
+                  SizedBox(
                     height: 10.h,
                   ),
                   shrinkWrap: true,
-                  itemCount:
-                      context.read<AddGroupCubit>().state.selectedCoaches.length,
+                  itemCount: context
+                      .read<AddGroupCubit>()
+                      .state
+                      .selectedCoaches
+                      .length,
                   itemBuilder: (context, index) {
                     final user = context
                         .read<AddGroupCubit>()
@@ -2543,7 +1933,7 @@ class InfoScreen extends StatelessWidget {
                                   Text(
                                     '${index + 1}-${user.name}',
                                     //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                    // textDirection: TextDirection.rtl,
+                                    textDirection: TextDirection.rtl,
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                       color: Colors.black,
@@ -2564,42 +1954,44 @@ class InfoScreen extends StatelessWidget {
                 ),
                 state.selectedUsers.isNotEmpty
                     ? Column(
-                        children: [
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional.topEnd,
-                            child: Text(
-                              ':الطلاب',
-                              style: TextStyle(
-                                color: Color(0xFF333333),
-                                fontSize: 14.sp,
-                                fontFamily: 'IBM Plex Sans Arabic',
-                                fontWeight: FontWeight.w400,
-                                height: 0,
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                        ],
-                      )
+                  children: [
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional.topEnd,
+                      child: Text(
+                        ':الطلاب',
+                        style: TextStyle(
+                          color: Color(0xFF333333),
+                          fontSize: 14.sp,
+                          fontFamily: 'IBM Plex Sans Arabic',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                  ],
+                )
                     : SizedBox(),
-          
+
                 ListView.separated(
                   physics: NeverScrollableScrollPhysics(),
                   separatorBuilder: (context, index) => //5
-                      SizedBox(
+                  SizedBox(
                     height: 10.h,
                   ),
                   shrinkWrap: true,
                   itemCount:
-                      context.read<AddGroupCubit>().state.selectedUsers.length,
+                  context.read<AddGroupCubit>().state.selectedUsers.length,
                   itemBuilder: (context, index) {
-                    final user =
-                        context.read<AddGroupCubit>().state.selectedUsers[index];
+                    final user = context
+                        .read<AddGroupCubit>()
+                        .state
+                        .selectedUsers[index];
                     return Container(
                       width: 360.w,
                       height: 25.h,
@@ -2644,7 +2036,7 @@ class InfoScreen extends StatelessWidget {
                                   Text(
                                     '${index + 1}-${user.name}',
                                     //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                    // textDirection: TextDirection.rtl,
+                                    textDirection: TextDirection.rtl,
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                       color: Colors.black,
@@ -2689,112 +2081,112 @@ class InfoScreen extends StatelessWidget {
                 // ),
                 state.maxUsers != null
                     ? Column(
+                  children: [
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    Align(
+                      alignment: AlignmentDirectional.topEnd,
+                      child: Text(
+                        ':اقصى عدد للمتدربين',
+                        style: TextStyle(
+                          color: Color(0xFF333333),
+                          fontSize: 14.sp,
+                          fontFamily: 'IBM Plex Sans Arabic',
+                          fontWeight: FontWeight.w400,
+                          height: 0,
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    Padding(
+                      padding:
+                      const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          Align(
-                            alignment: AlignmentDirectional.topEnd,
-                            child: Text(
-                              ':اقصى عدد للمتدربين',
-                              style: TextStyle(
-                                color: Color(0xFF333333),
-                                fontSize: 14.sp,
-                                fontFamily: 'IBM Plex Sans Arabic',
-                                fontWeight: FontWeight.w400,
-                                height: 0,
-                              ),
+                          Text(
+                            '${state.maxUsers} اقصى عدد للمتدربين',
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 14.sp,
+                              fontFamily: 'Montserrat-Arabic',
+                              fontWeight: FontWeight.w400,
+                              height: 0,
                             ),
-                          ),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Text(
-                                  '${state.maxUsers} اقصى عدد للمتدربين',
-                                  textAlign: TextAlign.right,
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 14.sp,
-                                    fontFamily: 'Montserrat-Arabic',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(
-                            height: 20.h,
                           ),
                         ],
-                      )
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                  ],
+                )
                     : SizedBox(),
-          
+
                 //
                 //
                 //                         '${ManageAttendenceCubit.get(context).selectedBranch}',
-          
+
                 BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
                   builder: (context, state) {
-                    return ManageAttendenceCubit.get(context).selectedBranch ==
-                            null
+                    return ManageAttendenceCubit.get(context).selectedBranch == null
                         ? SizedBox()
                         : Column(
+                      children: [
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                        Align(
+                          alignment: AlignmentDirectional.topEnd,
+                          child: Text(
+                            //:مكان التدريب'
+                            ':مكان التدريب',
+                            style: TextStyle(
+                              color: Color(0xFF333333),
+                              fontSize: 14.sp,
+                              fontFamily: 'IBM Plex Sans Arabic',
+                              fontWeight: FontWeight.w400,
+                              height: 0,
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          height: 10.h,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
                             children: [
-                              SizedBox(
-                                height: 20.h,
-                              ),
-                              Align(
-                                alignment: AlignmentDirectional.topEnd,
-                                child: Text(
-                                  //:مكان التدريب'
-                                  ':مكان التدريب',
-                                  style: TextStyle(
-                                    color: Color(0xFF333333),
-                                    fontSize: 14.sp,
-                                    fontFamily: 'IBM Plex Sans Arabic',
-                                    fontWeight: FontWeight.w400,
-                                    height: 0,
-                                  ),
+                              Text(
+                                ' ${ManageAttendenceCubit.get(context).selectedBranch} ',
+                                textAlign: TextAlign.right,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 14.sp,
+                                  fontFamily: 'Montserrat-Arabic',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0,
                                 ),
-                              ),
-                              SizedBox(
-                                height: 10.h,
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 16.0),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      ' ${ManageAttendenceCubit.get(context).selectedBranch} ',
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontSize: 14.sp,
-                                        fontFamily: 'Montserrat-Arabic',
-                                        fontWeight: FontWeight.w400,
-                                        height: 0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20.h,
                               ),
                             ],
-                          );
+                          ),
+                        ),
+                        SizedBox(
+                          height: 20.h,
+                        ),
+                      ],
+                    );
                   },
                 ),
                 //${ManageAttendenceCubit.get(context).selectedBranch}
-          
+
                 //Text(
                 // 'التوقيات:',
                 // style: TextStyle(
@@ -2846,107 +2238,113 @@ class InfoScreen extends StatelessWidget {
                 //check if start is null or not for all keys not first element only if null return empty container
                 //if not null return text
                 context
-                        .read<AddGroupCubit>()
-                        .times
-                        .values
-                        .every((time) => time['start'] == null)
+                    .read<AddGroupCubit>()
+                    .times
+                    .values
+                    .every((time) => time['start'] == null)
                     ? SizedBox()
                     : Column(
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                ':التوقيات',
-                                textAlign: TextAlign.right,
-                                style: TextStyle(
-                                  color: Color(0xFF333333),
-                                  fontSize: 14.sp,
-                                  fontFamily: 'IBM Plex Sans Arabic',
-                                  fontWeight: FontWeight.w400,
-                                  height: 0,
-                                ),
-                              ),
-                            ],
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        Text(
+                          ':التوقيات',
+                          textAlign: TextAlign.right,
+                          style: TextStyle(
+                            color: Color(0xFF333333),
+                            fontSize: 14.sp,
+                            fontFamily: 'IBM Plex Sans Arabic',
+                            fontWeight: FontWeight.w400,
+                            height: 0,
                           ),
-                          ListView.separated(
-                            physics: NeverScrollableScrollPhysics(),
-                            separatorBuilder: (context, index) => //5
-                                SizedBox(
-                              height: 5.h,
-                            ),
-                            shrinkWrap: true,
-                            itemCount: context.read<AddGroupCubit>().times.length,
-                            itemBuilder: (context, index) {
-                              final day = context
-                                  .read<AddGroupCubit>()
-                                  .times
-                                  .keys
-                                  .toList()[index];
-                              final time =
-                                  context.read<AddGroupCubit>().times[day];
-                              return
-                                  //if day is null return empty container
-                                  time?['start'] == null
-                                      ? Container()
-                                      : Container(
-                                          width: 360.w,
-                                          height: 50.h,
-                                          padding: const EdgeInsets.symmetric(
-                                              horizontal: 15),
-                                          child: Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                '$day',
-                                                //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                                // textDirection: TextDirection.rtl,
-                                                textAlign: TextAlign.right,
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontSize: 14.sp,
-                                                  fontFamily: 'Montserrat-Arabic',
-                                                  fontWeight: FontWeight.w400,
-                                                  height: 0,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: 10.h,
-                                              ),
-                                              Expanded(
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.min,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      '${time?['start']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')} - ${time?['end']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')}',
-                                                      //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                                      // textDirection: TextDirection.rtl,
-                                                      textAlign: TextAlign.right,
-                                                      style: TextStyle(
-                                                        color: Colors.black,
-                                                        fontSize: 14.sp,
-                                                        fontFamily:
-                                                            'Montserrat-Arabic',
-                                                        fontWeight:
-                                                            FontWeight.w400,
-                                                        height: 0,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                            },
-                          ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    ListView.separated(
+                      physics: NeverScrollableScrollPhysics(),
+                      separatorBuilder: (context, index) => //5
+                      SizedBox(
+                        height: 5.h,
                       ),
+                      shrinkWrap: true,
+                      itemCount:
+                      context.read<AddGroupCubit>().times.length,
+                      itemBuilder: (context, index) {
+                        final day = context
+                            .read<AddGroupCubit>()
+                            .times
+                            .keys
+                            .toList()[index];
+                        final time =
+                        context.read<AddGroupCubit>().times[day];
+                        return
+                          //if day is null return empty container
+                          time?['start'] == null
+                              ? Container()
+                              : Container(
+                            width: 360.w,
+                            height: 50.h,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 15),
+                            child: Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '$day',
+                                  //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                                  textDirection:
+                                  TextDirection.rtl,
+                                  textAlign: TextAlign.right,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 14.sp,
+                                    fontFamily:
+                                    'Montserrat-Arabic',
+                                    fontWeight: FontWeight.w400,
+                                    height: 0,
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 10.h,
+                                ),
+                                Expanded(
+                                  child: Row(
+                                    mainAxisSize:
+                                    MainAxisSize.min,
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.end,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        '${time?['start']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')} - ${time?['end']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')}',
+                                        //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                                        textDirection:
+                                        TextDirection.rtl,
+                                        textAlign:
+                                        TextAlign.right,
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontSize: 14.sp,
+                                          fontFamily:
+                                          'Montserrat-Arabic',
+                                          fontWeight:
+                                          FontWeight.w400,
+                                          height: 0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                      },
+                    ),
+                  ],
+                ),
               ],
             ),
           ),
