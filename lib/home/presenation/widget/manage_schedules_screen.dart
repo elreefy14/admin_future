@@ -15,6 +15,7 @@ import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../../add_grouup_of_schedules/presentation/onboarding_screen.dart';
 import '../../../core/constants/routes_manager.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
@@ -539,6 +540,9 @@ SizedBox(height: 0.h),
                                                                                                                                                                    bool? isTimeExceed;
                                                                                                                                              // Duration difference = DateTime.now().difference(nearestDay);
                                                                                                                                        Map<String, dynamic> user = snapshot.data();
+
+
+
                                                                                                                                            if (differenceInDays > 5) {
                                                                                                                                                   FirebaseFirestore.instance
                                                                                                                                                       .collection('admins')
@@ -585,6 +589,7 @@ SizedBox(height: 0.h),
                                                                                                                                                  totalHours += const Duration(minutes: 2).inHours;
 
                                                                                                                                                  if (value == true) {
+                                                                                                                                                   
                                                                                                                                                    firestore
                                                                                                                                                        .collection('admins')
                                                                                                                                                        .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -598,12 +603,30 @@ SizedBox(height: 0.h),
                                                                                                                                                        .collection('users')
                                                                                                                                                        .doc(user['uid'])
                                                                                                                                                        .update({'finished': value,});
-                                                                                                                                                   firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(totalHours)});
-                                                                                                                                                   //send notification to users model contain 2 fields message and timestamp
-                                                                                                                                                   firestore.collection('users').doc(user['uid']).collection('notifications').add({
-                                                                                                                                                     'message': 'تم اضافة ${totalHours} ساعات لحسابك',
-                                                                                                                                                     'timestamp': Timestamp.now(),
+                                                                                                                                                       
+
+                                                                                                                                                   //get user number of sessions from user collection first check if it is less than 2 then subtract 1 from it and 
+                                                                                                                                                   //send whatup message from user['phone'] to admin['phone'] with message 'تم اضافة ${totalHours} ساعات لحسابك'
+                                                                                                                                                   firestore.collection('users').doc(user['uid']).get().then((value) {
+                                                                                                                                                     int numberOfSessions = value.data()?['numberOfSessions'] ?? 0;
+                                                                                                                                                     String phone = value.data()?['phone'] ?? '';
+                                                                                                                                                     if (numberOfSessions < 2) {
+                                                                                                                                                       //send whatup message from user['phone'] to admin['phone'] with message 'we are rememberring you that you have only 1 sessions left'
+                                                                                                                                                    //   String url = 'https://api.whatsapp.com/send?phone=${phone}&text=we are rememberring you that you have only 1 sessions left
+                                                                                                                                                       //translate text to arabic
+                                                                                                                                                       String url = 'https://api.whatsapp.com/send?phone=+20${phone}&text=نذكركم بتجديد الاشتراك ';
+                                                                                                                                                       launch(url);
+                                                                                                                                                     }
+                                                                                                                                                     //subtract 1 from numberOfSessions
+
+                                                                                                                                                      firestore.collection('users').doc(user['uid']).update({'numberOfSessions': FieldValue.increment(-1)});
                                                                                                                                                    });
+                                                                                                                                                   //todo add this to cubit
+                                                                                                                                                   //send notification to users model contain 2 fields message and timestamp
+                                                                                                                                                   // firestore.collection('users').doc(user['uid']).collection('notifications').add({
+                                                                                                                                                   //   'message': 'تم اضافة ${totalHours} ساعات لحسابك',
+                                                                                                                                                   //   'timestamp': Timestamp.now(),
+                                                                                                                                                   // });
                                                                                                                                                  } else {
                                                                                                                                                    firestore
                                                                                                                                                        .collection('admins')
@@ -618,12 +641,13 @@ SizedBox(height: 0.h),
                                                                                                                                                        .collection('users')
                                                                                                                                                        .doc(user['uid'])
                                                                                                                                                        .update({'finished': value,});
-                                                                                                                                                   firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(-totalHours)});
+                                                                                                                                                  // firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(-totalHours)});
                                                                                                                                                    //send notification to users model contain 2 fields message and timestamp
-                                                                                                                                                   firestore.collection('users').doc(user['uid']).collection('notifications').add({
-                                                                                                                                                     'message': 'تم خصم ${totalHours} ساعات من حسابك',
-                                                                                                                                                     'timestamp': Timestamp.now(),
-                                                                                                                                                   });
+                                                                                                                                                   // firestore.collection('users').doc(user['uid']).collection('notifications').add({
+                                                                                                                                                   //   'message': 'تم خصم ${totalHours} ساعات من حسابك',
+                                                                                                                                                   //   'timestamp': Timestamp.now(),
+                                                                                                                                                   // });
+                                                                                                                                                   firestore.collection('users').doc(user['uid']).update({'numberOfSessions': FieldValue.increment(1)});
                                                                                                                                                  }
                                                                                                                                                },
                                                                                                                                              ),
