@@ -85,7 +85,9 @@ class AddCoachScreen extends StatelessWidget {
                     children: [
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35.0.w),
-                        child: BuildTextFormField2('الاسم الاول',
+                        child: BuildTextFormField2(context: context,
+
+                        'الاسم الاول',
                             SignUpCubit
                                 .get(context)
                                 .firstNameController,

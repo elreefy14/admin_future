@@ -59,3 +59,10 @@ class GetBranchesErrorState extends SignUpState {
   final String? error;
   GetBranchesErrorState({this.error});
 }
+//UpdateControllersState
+class UpdateControllersState extends SignUpState {
+  final String? firstName;
+  final String? lastName;
+  final String? phone;
+  UpdateControllersState({this.firstName, this.lastName, this.phone});
+}

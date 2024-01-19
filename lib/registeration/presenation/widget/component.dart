@@ -1,12 +1,16 @@
 import 'dart:convert';
+
 import 'dart:math';
+import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../business_logic/auth_cubit/sign_up_cubit.dart';
 
 Widget BuildTextFormField2(
+
     String labelText,
     TextEditingController controller,
     TextInputType input,
@@ -90,7 +94,39 @@ Widget BuildTextFormField2(
               color: Colors.blue,
             ),),
           ),)
+              : //if label text is الاسم الاول //show icon button
+          labelText == 'الاسم الاول' ?
+          IconButton(
+            icon: Icon(Icons.contacts),
+            onPressed: ()  async {
+              print('Pressed');
+              final Contact? selectedContact = await ContactsService.openDeviceContactPicker();
+              if (selectedContact != null) {
+                final String? firstName = selectedContact.givenName ?? '';
+                final String? lastName = selectedContact.familyName ?? '';
+                final String? phoneNumber = selectedContact.phones?.first.value ?? '';
+                   //function update Controllers in cubit
+               // SignUpCubit.get(context!).firstNameController.text = firstName??'';
+                //SignUpCubit.get(context).lastNameController.text = lastName??'d';
+              //  SignUpCubit.get(context).phoneController.text = phoneNumber??'';
+                SignUpCubit.get(context).updateControllers(
+                    firstName: firstName??'',
+                    lastName: lastName??'',
+                    phone: phoneNumber??'',
+                );
+
+                // Save the first name, last name, and phone number of the selected contact
+                // to the device or perform any other desired actions
+                // ...
+
+              //  print('Selected Contact: $firstName $lastName, Phone: $phoneNumber');
+              }
+            },
+            iconSize: 20,
+            color: Colors.grey,
+          )
               : null,
+
           // IconButton(
           //   icon: Icon(Icons.vpn_key),
           //   onPressed: () {

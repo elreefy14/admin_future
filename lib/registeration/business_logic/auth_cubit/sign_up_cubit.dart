@@ -560,6 +560,15 @@ void changePasswordVisibility(){
     }
   }
 
+  void updateControllers({required String firstName,
+   required String lastName,
+   required String phone
+  }) {
+    firstNameController.text = firstName;
+    lastNameController.text = lastName;
+    phoneController.text = phone;
+    emit(UpdateControllersState());
+  }
   
 }
 
