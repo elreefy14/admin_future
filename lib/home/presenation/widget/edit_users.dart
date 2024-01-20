@@ -1,15 +1,13 @@
 import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
 import 'package:admin_future/manage_users_coaches/business_logic/manage_users_cubit.dart';
 import 'package:admin_future/home/presenation/widget/widget/custom_app_bar.dart';
-import 'package:admin_future/registeration/data/userModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
-
+import 'package:url_launcher/url_launcher.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
-import '../../../core/flutter_flow/flutter_flow_widgets.dart';
 
 class EditUsers extends StatelessWidget {
   //const ({super.key});
@@ -47,11 +45,28 @@ class EditUsers extends StatelessWidget {
                       children: [
                         ClipRRect(
                           borderRadius: BorderRadius.circular(100),
-                          child: Image.network(
-                            user.image??'https://picsum.photos/seed/1/600',
+                          child: //user.image.isNull
+                          user.image!=null?
+                               Image.network(
+                            user.image,
+                                //??
+                                //'https://picsum.photos/seed/1/600',
                             width: 130.h,
                             height: 130.w,
                             fit: BoxFit.cover,
+                          ):
+                          // SvgPicture.asset(
+                          //   //svg
+                          //   'assets/images/Ellipse 1.jpg',
+                          //   width: 130.h,
+                          //   height: 130.w,
+                          //   fit: BoxFit.cover,
+                          // ),
+                          Image.asset(
+                              'assets/images/Ellipse 1.jpg',
+                              width: 130.h,
+                              height: 130.w,
+                              fit: BoxFit.cover,
                           ),
                         ),
                       ],
@@ -439,224 +454,233 @@ class EditUsers extends StatelessWidget {
                                             InkWell(
                                             onTap: () async {
                                       String? uid =user.uId;
-                                     // show dialog
-                                      await showDialog(
-                                      useSafeArea: true,
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                      return Dialog(
-                                      shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(8),
-                                      ),
-                                      child: Container(
-                                      //height: 500,
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.end,
-                                                children: [
-                                                  ClipRRect(
-                                                    borderRadius: BorderRadius.circular(8),
-                                                    child: SvgPicture.asset(
-                                                      'assets/images/frame23420.svg',
-                                                      width: 50,
-                                                      height: 50,
-                                                      fit: BoxFit.none,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              Text(
-                                                'ارسال رسالة',
-                                                style: FlutterFlowTheme.of(context).bodyMedium.override(
-                                                  fontFamily: 'Readex Pro',
-                                                  fontSize: 24,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          Column(
-                                            mainAxisSize: MainAxisSize.max,
-                                            children: [
-                                              Align(
-                                                alignment: AlignmentDirectional(0, 0),
-                                                child: Row(
-                                                  mainAxisSize: MainAxisSize.max,
-                                                  mainAxisAlignment: MainAxisAlignment.end,
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    Container(
-                                                      width: 225,
-                                                      height: 100,
-                                                      decoration: BoxDecoration(
-                                                        color: FlutterFlowTheme.of(context)
-                                                            .secondaryBackground,
-                                                      ),
-                                                      child: Align(
-                                                        alignment: AlignmentDirectional(1, 0),
-                                                        child: Container(
-                                                          width: 225,
-                                                          child: TextFormField(
-                                                            controller: ManageUsersCubit.get(context).messageController,
-                                                            autofocus: true,
-                                                            obscureText: false,
-                                                            decoration: InputDecoration(
-                                                              labelStyle: FlutterFlowTheme.of(context)
-                                                                  .labelMedium
-                                                                  .override(
-                                                                fontFamily: 'Readex Pro',
-                                                                fontSize: 14,
-                                                              ),
-                                                              hintText: 'اكتب رقم',
-                                                              hintStyle: FlutterFlowTheme.of(context)
-                                                                  .labelMedium
-                                                                  .override(
-                                                                fontFamily: 'Readex Pro',
-                                                                fontSize: 12,
-                                                              ),
-                                                              enabledBorder: OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                  color: Color(0xFFF4F4F4),
-                                                                  width: 2,
-                                                                ),
-                                                                borderRadius: BorderRadius.circular(8),
-                                                              ),
-                                                              focusedBorder: OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                  color: Colors.blue,
-                                                                  width: 2,
-                                                                ),
-                                                                borderRadius: BorderRadius.circular(8),
-                                                              ),
-                                                              errorBorder: OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                  color: FlutterFlowTheme.of(context).error,
-                                                                  width: 2,
-                                                                ),
-                                                                borderRadius: BorderRadius.circular(8),
-                                                              ),
-                                                              focusedErrorBorder: OutlineInputBorder(
-                                                                borderSide: BorderSide(
-                                                                  color: FlutterFlowTheme.of(context).error,
-                                                                  width: 2,
-                                                                ),
-                                                                borderRadius: BorderRadius.circular(8),
-                                                              ),
-                                                            ),
-                                                            style: FlutterFlowTheme.of(context)
-                                                                .bodyMedium
-                                                                .override(
-                                                              fontFamily: 'Readex Pro',
-                                                              fontSize: 14,
-                                                            ),
-                                                            textAlign: TextAlign.end,
-                                                            maxLines: 9,
-                                                            keyboardType: TextInputType.multiline,
-                                                            cursorColor: Color(0xFF333333),
-                                                          //  validator: _model.textControllerValidator
-                                                         //       .asValidator(context),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    // Text(
-                                                    //   ':الدفع الجزئي',
-                                                    //   style:
-                                                    //   FlutterFlowTheme.of(context).bodyMedium.override(
-                                                    //     fontFamily: 'Readex Pro',
-                                                    //     fontSize: 12,
-                                                    //   ),
-                                                    // ),
-                                                  ]
-                                                      .divide(SizedBox(width: 10))
-                                                      .addToEnd(SizedBox(width: 15)),
-                                                ),
-                                              ),
-                                              Row(
-                                                mainAxisSize: MainAxisSize.max,
-                                                mainAxisAlignment: MainAxisAlignment.center,
-                                                children: [
-                                                  // FFButtonWidget(
-                                                  //   onPressed: () {
-                                                  //     print('Button pressed ...');
-                                                  //   },
-                                                  //   text: 'ارسال الرسالة',
-                                                  //   options: FFButtonOptions(
-                                                  //   //  width: 150,
-                                                  //  //   height: 50,
-                                                  //     padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                                                  //     iconPadding:
-                                                  //     EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
-                                                  //     color: Colors.blue,
-                                                  //     textStyle:
-                                                  //     FlutterFlowTheme.of(context).titleSmall.override(
-                                                  //       fontFamily: 'Readex Pro',
-                                                  //       color: Colors.white,
-                                                  //       fontSize: 12,
-                                                  //     ),
-                                                  //     elevation: 3,
-                                                  //     borderSide: BorderSide(
-                                                  //       color: Colors.transparent,
-                                                  //       width: 1,
-                                                  //     ),
-                                                  //     borderRadius: BorderRadius.circular(8),
-                                                  //   ),
-                                                  // ),
-                                                  BlocBuilder<ManageUsersCubit,ManageUsersState>(
-  builder: (context, state) {
-    return InkWell(
-      onTap: () {
-
-        ManageUsersCubit.get(context).sendMessage(
-          //uid
-            uid: uid,
-          context: context,
-          message: ManageUsersCubit.get(context).messageController.text,
-        );
-      },
-      child: Container(
-                                                      height: 50,
-                                                      width: 150,
-                                                      decoration: BoxDecoration(
-                                                        color: Colors.blue,
-                                                        borderRadius: BorderRadius.circular(8),
-                                                      ),
-                                                      child: Align(
-                                                        alignment: AlignmentDirectional(0, 0),
-                                                        child: Text(
-                                                          'ارسال',
-                                                          textAlign: TextAlign.center,
-                                                          style: FlutterFlowTheme.of(context)
-                                                              .titleSmall
-                                                              .override(
-                                                            fontFamily: 'Readex Pro',
-                                                            color: Colors.white,
-                                                            fontSize: 14,
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ),
-    );
-  },
-),
-                                                  //15.h
-
-                                                ].divide(SizedBox(width: 10)),
-                                              ),
-                                              //SizedBox(height: 45),
-                                            ].divide(SizedBox(height: 20)).addToStart(SizedBox(height: 50)),
-                                          ),
-                                        ].divide(SizedBox(height: 0)),
-                                      ),
-                                      ),
-                                      );
-                                      },
-                                      );
+                                      String? phone =user.phone;
+                                      //open whatsapp on number user phone
+                                     //  String url = "whatsapp://send?phone=$phone";
+                                      //+2 before phone number
+                                      String url = 'https://api.whatsapp.com/send?phone=+20${phone}&text= ';
+                                       await canLaunch(url)? launch(url):print('can not open whatsapp');
+                                      //open whatsapp on number user phone
+                                     // Todo: send message to user if made usr app
+//                                       await showDialog(
+//                                       useSafeArea: true,
+//                                       context: context,
+//                                       builder: (BuildContext context) {
+//                                       return Dialog(
+//                                       shape: RoundedRectangleBorder(
+//                                       borderRadius: BorderRadius.circular(8),
+//                                       ),
+//                                       child: Container(
+//                                       //height: 500,
+//                                       child: Column(
+//                                         mainAxisSize: MainAxisSize.min,
+//                                         children: [
+//                                           Column(
+//                                             mainAxisSize: MainAxisSize.max,
+//                                             children: [
+//                                               Row(
+//                                                 mainAxisSize: MainAxisSize.max,
+//                                                 mainAxisAlignment: MainAxisAlignment.end,
+//                                                 children: [
+//                                                   ClipRRect(
+//                                                     borderRadius: BorderRadius.circular(8),
+//                                                     child: SvgPicture.asset(
+//                                                       'assets/images/frame23420.svg',
+//                                                       width: 50,
+//                                                       height: 50,
+//                                                       fit: BoxFit.none,
+//                                                     ),
+//                                                   ),
+//                                                 ],
+//                                               ),
+//                                               Text(
+//                                                 'ارسال رسالة',
+//                                                 style: FlutterFlowTheme.of(context).bodyMedium.override(
+//                                                   fontFamily: 'Readex Pro',
+//                                                   fontSize: 24,
+//                                                 ),
+//                                               ),
+//                                             ],
+//                                           ),
+//                                           Column(
+//                                             mainAxisSize: MainAxisSize.max,
+//                                             children: [
+//                                               Align(
+//                                                 alignment: AlignmentDirectional(0, 0),
+//                                                 child: Row(
+//                                                   mainAxisSize: MainAxisSize.max,
+//                                                   mainAxisAlignment: MainAxisAlignment.end,
+//                                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                                   children: [
+//                                                     Container(
+//                                                       width: 225,
+//                                                       height: 100,
+//                                                       decoration: BoxDecoration(
+//                                                         color: FlutterFlowTheme.of(context)
+//                                                             .secondaryBackground,
+//                                                       ),
+//                                                       child: Align(
+//                                                         alignment: AlignmentDirectional(1, 0),
+//                                                         child: Container(
+//                                                           width: 225,
+//                                                           child: TextFormField(
+//                                                             controller: ManageUsersCubit.get(context).messageController,
+//                                                             autofocus: true,
+//                                                             obscureText: false,
+//                                                             decoration: InputDecoration(
+//                                                               labelStyle: FlutterFlowTheme.of(context)
+//                                                                   .labelMedium
+//                                                                   .override(
+//                                                                 fontFamily: 'Readex Pro',
+//                                                                 fontSize: 14,
+//                                                               ),
+//                                                               hintText: 'اكتب رقم',
+//                                                               hintStyle: FlutterFlowTheme.of(context)
+//                                                                   .labelMedium
+//                                                                   .override(
+//                                                                 fontFamily: 'Readex Pro',
+//                                                                 fontSize: 12,
+//                                                               ),
+//                                                               enabledBorder: OutlineInputBorder(
+//                                                                 borderSide: BorderSide(
+//                                                                   color: Color(0xFFF4F4F4),
+//                                                                   width: 2,
+//                                                                 ),
+//                                                                 borderRadius: BorderRadius.circular(8),
+//                                                               ),
+//                                                               focusedBorder: OutlineInputBorder(
+//                                                                 borderSide: BorderSide(
+//                                                                   color: Colors.blue,
+//                                                                   width: 2,
+//                                                                 ),
+//                                                                 borderRadius: BorderRadius.circular(8),
+//                                                               ),
+//                                                               errorBorder: OutlineInputBorder(
+//                                                                 borderSide: BorderSide(
+//                                                                   color: FlutterFlowTheme.of(context).error,
+//                                                                   width: 2,
+//                                                                 ),
+//                                                                 borderRadius: BorderRadius.circular(8),
+//                                                               ),
+//                                                               focusedErrorBorder: OutlineInputBorder(
+//                                                                 borderSide: BorderSide(
+//                                                                   color: FlutterFlowTheme.of(context).error,
+//                                                                   width: 2,
+//                                                                 ),
+//                                                                 borderRadius: BorderRadius.circular(8),
+//                                                               ),
+//                                                             ),
+//                                                             style: FlutterFlowTheme.of(context)
+//                                                                 .bodyMedium
+//                                                                 .override(
+//                                                               fontFamily: 'Readex Pro',
+//                                                               fontSize: 14,
+//                                                             ),
+//                                                             textAlign: TextAlign.end,
+//                                                             maxLines: 9,
+//                                                             keyboardType: TextInputType.multiline,
+//                                                             cursorColor: Color(0xFF333333),
+//                                                           //  validator: _model.textControllerValidator
+//                                                          //       .asValidator(context),
+//                                                           ),
+//                                                         ),
+//                                                       ),
+//                                                     ),
+//                                                     // Text(
+//                                                     //   ':الدفع الجزئي',
+//                                                     //   style:
+//                                                     //   FlutterFlowTheme.of(context).bodyMedium.override(
+//                                                     //     fontFamily: 'Readex Pro',
+//                                                     //     fontSize: 12,
+//                                                     //   ),
+//                                                     // ),
+//                                                   ]
+//                                                       .divide(SizedBox(width: 10))
+//                                                       .addToEnd(SizedBox(width: 15)),
+//                                                 ),
+//                                               ),
+//                                               Row(
+//                                                 mainAxisSize: MainAxisSize.max,
+//                                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                                 children: [
+//                                                   // FFButtonWidget(
+//                                                   //   onPressed: () {
+//                                                   //     print('Button pressed ...');
+//                                                   //   },
+//                                                   //   text: 'ارسال الرسالة',
+//                                                   //   options: FFButtonOptions(
+//                                                   //   //  width: 150,
+//                                                   //  //   height: 50,
+//                                                   //     padding: EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+//                                                   //     iconPadding:
+//                                                   //     EdgeInsetsDirectional.fromSTEB(0, 0, 0, 0),
+//                                                   //     color: Colors.blue,
+//                                                   //     textStyle:
+//                                                   //     FlutterFlowTheme.of(context).titleSmall.override(
+//                                                   //       fontFamily: 'Readex Pro',
+//                                                   //       color: Colors.white,
+//                                                   //       fontSize: 12,
+//                                                   //     ),
+//                                                   //     elevation: 3,
+//                                                   //     borderSide: BorderSide(
+//                                                   //       color: Colors.transparent,
+//                                                   //       width: 1,
+//                                                   //     ),
+//                                                   //     borderRadius: BorderRadius.circular(8),
+//                                                   //   ),
+//                                                   // ),
+//                                                   BlocBuilder<ManageUsersCubit,ManageUsersState>(
+//   builder: (context, state) {
+//     return InkWell(
+//       onTap: () {
+//         //open whatsapp on number user phone
+//
+//
+//         ManageUsersCubit.get(context).sendMessage(
+//           //uid
+//             uid: uid,
+//           context: context,
+//           message: ManageUsersCubit.get(context).messageController.text,
+//         );
+//       },
+//       child: Container(
+//                                                       height: 50,
+//                                                       width: 150,
+//                                                       decoration: BoxDecoration(
+//                                                         color: Colors.blue,
+//                                                         borderRadius: BorderRadius.circular(8),
+//                                                       ),
+//                                                       child: Align(
+//                                                         alignment: AlignmentDirectional(0, 0),
+//                                                         child: Text(
+//                                                           'ارسال',
+//                                                           textAlign: TextAlign.center,
+//                                                           style: FlutterFlowTheme.of(context)
+//                                                               .titleSmall
+//                                                               .override(
+//                                                             fontFamily: 'Readex Pro',
+//                                                             color: Colors.white,
+//                                                             fontSize: 14,
+//                                                           ),
+//                                                         ),
+//                                                       ),
+//                                                     ),
+//     );
+//   },
+// ),
+//                                                   //15.h
+//
+//                                                 ].divide(SizedBox(width: 10)),
+//                                               ),
+//                                               //SizedBox(height: 45),
+//                                             ].divide(SizedBox(height: 20)).addToStart(SizedBox(height: 50)),
+//                                           ),
+//                                         ].divide(SizedBox(height: 0)),
+//                                       ),
+//                                       ),
+//                                       );
+//                                       },
+//                                       );
                                       },
                                               child: Container(
                                                 height: 50,
@@ -898,25 +922,55 @@ class EditUsers extends StatelessWidget {
 
                                   ],
                                 ),
+                                SizedBox(height: 29.h),
                                 InkWell(
                                   onTap: () async {
-                                    await ManageUsersCubit.get(context)
-                                        .deleteUser(
-                                      uid: user.uId,
-                                    );
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          //all text from here arabic
+                                          title: Text('تأكيد الحذف'),
+                                          content: Text('هل تريد حذف الحساب؟'),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context).pop(false); // Close the dialog and pass false
+                                              },                                          //all text from here arabic
+                                          //all text from here arabic
+                                              child: Text('لا'),
+                                            ),
+                                            TextButton(
+                                              onPressed: () async {
+                                                Navigator.of(context).pop(true);
+                                                // Close the dialog and pass true
+                                              },
+                                              child: Text('نعم'),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ).then((confirmed) async {
+                                      if (confirmed == true) {
+                                        await ManageUsersCubit.get(context).deleteUser(uid: user.uId);
+                                     //pop
+                                        Navigator.of(context).pop();
+                                      }
+                                    });
                                   },
                                   child: Text(
-                                    'حذف الحساب',
-                                    style: FlutterFlowTheme.of(context)
-                                        .bodyMedium
-                                        .override(
-                                      fontFamily: 'Readex Pro',
-                                      color: Color(0xFFD92D20),
-                                      fontSize: 12,
-                                      decoration: TextDecoration.underline,
-                                    ),
+                                          'حذف الحساب',
+                                          style: FlutterFlowTheme.of(context).bodyMedium.override(
+                                            fontFamily: 'Readex Pro',
+                                            color: Color(0xFFD92D20),
+                                            fontSize: 12,
+                                            decoration: TextDecoration.underline,
+                                          ),
                                   ),
+
+
                                 ),
+
                               ].divide(SizedBox(height: 5)),
                             ),
                           ]

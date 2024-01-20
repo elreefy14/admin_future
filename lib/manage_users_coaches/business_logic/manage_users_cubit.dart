@@ -1,29 +1,22 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
-    import 'package:http/http.dart' as http;
-
+import 'package:http/http.dart' as http;
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../core/flutter_flow/flutter_flow_util.dart';
 import '../../registeration/data/userModel.dart';
 import '../../registeration/presenation/widget/widget.dart';
 import '../../home/data/Notification.dart';
 import '../../home/data/day_model.dart';
 import '../../home/data/schedules.dart';
 import '../../home/presenation/widget/manage_groups_screen.dart';
-
 part 'manage_users_state.dart';
-
 class ManageUsersCubit extends Cubit<ManageUsersState> {
 
   //final UserModel userModel;
@@ -437,24 +430,25 @@ class ManageUsersCubit extends Cubit<ManageUsersState> {
     emit(UpdateUserInfoLoadingState());
     // Inside your function
 bool isConnected = await checkInternetConnection();
-if (!isConnected) {
- 
-  // Show error message to the user
-  //show toast message
-  showToast(
-    state: ToastStates.ERROR,
-    msg: ' فشل تحديث معلومات الحساب الشخصية'
-    'تأكد من اتصالك بالإنترنت'
-  );
-  emit(UpdateUserInfoErrorState('تأكد من اتصالك بالإنترنت'));
-} 
+// if (!isConnected) {
+//
+//   // Show error message to the user
+//   //show toast message
+//   showToast(
+//     state: ToastStates.ERROR,
+//     msg: ' فشل تحديث معلومات الحساب الشخصية'
+//     'تأكد من اتصالك بالإنترنت'
+//   );
+//   emit(UpdateUserInfoErrorState('تأكد من اتصالك بالإنترنت'));
+// }
     final updateData = <String, Object?>{};
     print('hourlyRate: $hourlyRate');
     print('fname: $fname');
     print('lname: $lname');
     print('phone: $phone');
-  
-    
+    print('numberOfSessions: $numberOfSessions');
+
+
     final notificationData = <String, dynamic>{};
     if (hourlyRate != null && hourlyRate != '' && hourlyRate != 'null') {
       print('hourlyRate: a7a $hourlyRate');
@@ -497,49 +491,38 @@ if (!isConnected) {
     print('updateData: $updateData');
 
     notificationData['timestamp'] = DateTime.now();
-    await FirebaseFirestore.instance
+    // await FirebaseFirestore.instance
+    //     .collection('users')
+    //     .doc(uid)
+    //     .collection('notifications')
+    //     .add(notificationData);
+     FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
-        .collection('notifications')
-        .add(notificationData);
-    await FirebaseFirestore.instance
-        .collection('users')
-        .doc(uid)
-        .update(updateData)
-        .then((value) async {
-      DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .get(GetOptions(source: Source.serverAndCache));
-
-      //Map<String, dynamic>? userData =
-      //    userSnapshot.data() as Map<String, dynamic>?;
-    //  UserModel user = UserModel.fromJson(userData!);
-      // if (updateData != null) {
-      //   int userIndex = coaches.indexWhere((user) => user.uId == uid);
-      //   if (userIndex != -1) {
-      //     coaches[userIndex] = user;
-      //   }
-      //   //   emit(PaySalarySuccessStateWithoutInternet());
-      //   return;
-      // }
-      emit(UpdateUserInfoSuccessState());
+        .update(updateData);
+  //if internet is not available show toast message
+  //and emit state
+    if (!isConnected) {
+      // Show message user updated successfully
+      //but data will be synced when internet is available
       //show toast message
       showToast(
         state: ToastStates.SUCCESS,
-        msg: 'تم تحديث معلومات الحساب الشخصية',
+        msg: 'تم تحديث معلومات الحساب الشخصية'
+        'سيتم مزامنة البيانات عند توفر الإنترنت',
       );
-    }).catchError((error) {
-      emit(UpdateUserInfoErrorState(error.toString()));
-  //show toast message
-  showToast(
-    state: ToastStates.ERROR,
-    msg: 'فشل تحديث معلومات الحساب الشخصية',
-  );
-      print(error.toString());
-      //emit(PaySalaryErrorStateWithoutInternet(error.toString()));
-    });
+      emit(UpdateUserInfoSuccessState());
+    }
+    else {
+      showToast(
+      state: ToastStates.SUCCESS,
+      msg: 'تم تحديث معلومات الحساب الشخصية',
+    );
+      emit(UpdateUserInfoSuccessState());
+
+    }
   }
+
 
   Future<void> updatePassword(String password, String? uid) async {
     try {
@@ -709,23 +692,48 @@ if (!isConnected) {
   //   ));
   // }
 
-  deleteUser({required uid}) {
+
+   deleteUser({required String uid}) {
     emit(DeleteUserLoadingState());
+
+    // Delete the user document
     FirebaseFirestore.instance
         .collection('users')
         .doc(uid)
         .delete()
         .then((value) {
       print('User deleted');
-      //show toast message
-      showToast(
-        state: ToastStates.SUCCESS,
-        msg: 'تم حذف المستخدم',
-      );
-      emit(DeleteUserSuccessState());
+
+      // Delete the user's subcollection "schedules"
+      CollectionReference schedulesCollection =
+      FirebaseFirestore.instance.collection('users').doc(uid).collection('schedules');
+      schedulesCollection.get().then((schedulesSnapshot) {
+        WriteBatch batch = FirebaseFirestore.instance.batch();
+        schedulesSnapshot.docs.forEach((doc) {
+          batch.delete(doc.reference);
+        });
+        batch.commit().then((_) {
+          // Show toast message
+          showToast(
+            state: ToastStates.SUCCESS,
+            msg: 'تم حذف المستخدم والجداول الفرعية',
+          );
+          emit(DeleteUserSuccessState());
+        }).catchError((error) {
+          print('Failed to delete user schedules: $error');
+          showToast(
+            msg: 'فشل حذف الجداول الفرعية',
+            state: ToastStates.ERROR,
+          );
+          emit(DeleteUserErrorState(error.toString()));
+        });
+      });
     }).catchError((error) {
       print('Failed to delete user: $error');
-      showToast(msg: 'فشل حذف المستخدم', state: ToastStates.ERROR);
+      showToast(
+        msg: 'فشل حذف المستخدم',
+        state: ToastStates.ERROR,
+      );
       emit(DeleteUserErrorState(error.toString()));
     });
   }
