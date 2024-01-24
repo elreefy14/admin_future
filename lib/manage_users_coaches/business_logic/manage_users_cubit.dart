@@ -823,10 +823,12 @@ bool isConnected = await checkInternetConnection();
         print('Sessions added');
       showRollbackButton = true;
       //5 seconds
-      Future.delayed(Duration(seconds: 5), () {
+      Future.delayed(Duration(seconds: 4), () {
         showRollbackButton = false;
       //  emit(AddSessionsSuccessState());
       });
+      //debug showRollbackButton
+      print('\n\n\n\nshowRollbackButton: $showRollbackButton');
 
       //show toast message
 
@@ -866,6 +868,7 @@ bool isConnected = await checkInternetConnection();
           showRollbackButton = false;
          // emit(ReduceSessionsSuccessState());
         });
+        print('showRollbackButton: $showRollbackButton');
         salaryController.clear();
         emit(ReduceSessionsSuccessState());
      //   Navigator.pop(context);
@@ -904,6 +907,8 @@ bool isConnected = await checkInternetConnection();
         //5 seconds
         Future.delayed(Duration(seconds: 5), () {
           showRollbackButton = false;
+          print('\n\n\nshowRollbackButton: $showRollbackButton');
+
           //emit(ReduceSessionsSuccessState());
         });
         emit(ReduceSessionsSuccessState());

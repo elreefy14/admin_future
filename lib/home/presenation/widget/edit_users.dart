@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../../core/flutter_flow/flutter_flow_theme.dart';
 
@@ -722,7 +721,7 @@ class EditUsers extends StatelessWidget {
                                         crossAxisAlignment: CrossAxisAlignment.end,
                                         children: [
                                           Text(
-                                            isCoach ? 'المرتب/الشهر' :
+                                            isCoach ? 'الراتب بالساعة' : 
                                           //'number of sessions',
                                           //translate(context, 'number of sessions'),
                                           'عدد الحصص',

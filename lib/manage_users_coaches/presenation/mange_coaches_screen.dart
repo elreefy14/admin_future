@@ -15,7 +15,7 @@ class ManageCoaches extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-          floatingActionButtonLocation: FloatingActionButtonLocation.miniStartFloat,
+          floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
           floatingActionButton:  BlocBuilder<ManageUsersCubit, ManageUsersState>(
             builder: (context, state) {
               return
@@ -113,6 +113,10 @@ InkWell(
                                                 ) ;
                                               },
                                         child: Container(
+                                          margin: EdgeInsets.only(
+                                          top: 30.h,
+                                          ),
+
                                                 height: 50.h,
                                                 width: 180.w,
                                                 decoration: BoxDecoration(
@@ -135,43 +139,44 @@ InkWell(
                                                 ),
                                               ),
                                             ),
-                                            const SizedBox(height: 5),
-                                            const Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              mainAxisAlignment: MainAxisAlignment.center,
-                                              crossAxisAlignment: CrossAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  'مجموع مرتب كل المدربين',
-                                                  textAlign: TextAlign.center,
-                                                  style: TextStyle(
-                                                    color: Color(0xFF333333),
-                                                    fontSize: 16,
-                                                    fontFamily: 'Montserrat-Arabic',
-                                                    fontWeight: FontWeight.w400,
-                                                    height: 1.62,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(
-                                              width: 48,
-                                              child: BlocBuilder<ManageUsersCubit, ManageUsersState>(
-        builder: (context, state) {
-          return Text(
-                                                ManageUsersCubit.get(context).globalTotalSalary.toString(),
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                  color: Color(0xFF2196F3),
-                                                  fontSize: 14,
-                                                  fontFamily: 'Montserrat-Arabic',
-                                                  fontWeight: FontWeight.w400,
-                                                  height: 1.30,
-                                                ),
-                                              );
-        },
-),
-                                            ),
+                                           // const SizedBox(height: 5),
+                                            // const Row(
+                                            //   mainAxisSize: MainAxisSize.min,
+                                            //   mainAxisAlignment: MainAxisAlignment.center,
+                                            //   crossAxisAlignment: CrossAxisAlignment.center,
+                                            //   children: [
+                                            //     Text(
+                                            //       'مجموع مرتب كل المدربين',
+                                            //       textAlign: TextAlign.center,
+                                            //       style: TextStyle(
+                                            //         color: Color(0xFF333333),
+                                            //         fontSize: 16,
+                                            //         fontFamily: 'Montserrat-Arabic',
+                                            //         fontWeight: FontWeight.w400,
+                                            //         height: 1.62,
+                                            //       ),
+                                            //     ),
+                                            //   ],
+                                            // ),
+                                            //todo: add total salary
+//                                             SizedBox(
+//                                               width: 48,
+//                                               child: BlocBuilder<ManageUsersCubit, ManageUsersState>(
+//         builder: (context, state) {
+//           return Text(
+//                                                 ManageUsersCubit.get(context).globalTotalSalary.toString(),
+//                                                 textAlign: TextAlign.center,
+//                                                 style: const TextStyle(
+//                                                   color: Color(0xFF2196F3),
+//                                                   fontSize: 14,
+//                                                   fontFamily: 'Montserrat-Arabic',
+//                                                   fontWeight: FontWeight.w400,
+//                                                   height: 1.30,
+//                                                 ),
+//                                               );
+//         },
+// ),
+//                                             ),
 
                                           ],
                                         ),

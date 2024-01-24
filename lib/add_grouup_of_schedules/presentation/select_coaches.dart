@@ -1,5 +1,6 @@
 import 'package:admin_future/core/flutter_flow/flutter_flow_util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -170,7 +171,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                       alignment: const AlignmentDirectional(0, 0),
                       child: Text(
                         //reduce sessions
-                        'خصم حصص',
+                       'دفع الراتب',
                         textAlign: TextAlign.end,
                         style: FlutterFlowTheme.of(context)
                             .bodyMedium
@@ -199,8 +200,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                       child: Text(
 
                         //'add sessions',
-                        'اضافة حصص',
-
+                      //  مكافاه
+                     'المكافأة',
                         textAlign: TextAlign.end,
                         style: FlutterFlowTheme.of(context)
                             .bodyMedium
@@ -228,7 +229,7 @@ class ShowCoachesInDialog extends StatelessWidget {
                       alignment: const AlignmentDirectional(0, 0),
                       child: Text(
                         //number of sessions
-                        'عدد الحصص',
+                        'اجمالي المرتب',
                         textAlign: TextAlign.end,
                         style: FlutterFlowTheme.of(context)
                             .bodyMedium
@@ -278,7 +279,9 @@ class ShowCoachesInDialog extends StatelessWidget {
                   cacheExtent: 500,
                   pageSize: 5,
                   query: query ??FirebaseFirestore.instance.collection('users').where(
-                      'role', isEqualTo: isCoachInfoList??false ? 'coach' : 'user'),
+                      'role', isEqualTo: isCoachInfoList??false ? 'coach' : 'user')
+                    //  .where('pid',isEqualTo: FirebaseAuth.instance.currentUser!.uid),
+,
                   itemBuilder: (context, document) {
                     final data = document.data() as Map<String, dynamic>;
                     final user = UserModel.fromJson(data);
@@ -1190,7 +1193,8 @@ class ShowCoachesInDialog extends StatelessWidget {
                   cacheExtent: 500,
                   pageSize: 8,
                   query: query ??FirebaseFirestore.instance.collection('users').where(
-                      'role', isEqualTo: isCoachInfoList??false ? 'coach' : 'user'),
+                      'role', isEqualTo: isCoachInfoList??false ? 'coach' : 'user')
+                  .where('pid',isEqualTo: FirebaseAuth.instance.currentUser!.uid),
                   itemBuilder: (context, document) {
                     final data = document.data() as Map<String, dynamic>;
                     final user = UserModel.fromJson(data);
@@ -2726,7 +2730,9 @@ class ShowCoachesInDialog extends StatelessWidget {
                     shrinkWrap: true,
                     cacheExtent: 500,
                     pageSize: 5,
-                    query: query ??FirebaseFirestore.instance.collection('users') ,
+                    query: query ??FirebaseFirestore.instance.collection('users').where(
+        'role', isEqualTo: isCoachInfoList??false ? 'coach' : 'user')
+            .where('pid',isEqualTo: FirebaseAuth.instance.currentUser!.uid),
                     itemBuilder: (context, document) {
                       final data = document.data() as Map<String, dynamic>;
                       final user = UserModel.fromJson(data);
