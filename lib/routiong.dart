@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 
+import 'Notification/presenation/notification_screen.dart';
 import 'add_grouup_of_schedules/presentation/onboarding_screen.dart';
 import 'core/constants/routes_manager.dart';
 import 'core/constants/strings.dart';
@@ -112,7 +113,9 @@ class RouteGenerator {
           maxUsers: (args as Map<String, dynamic>)?['maxUsers'],
 
         ));
-      //AddSchedule
+      //NotificationScreen
+      case AppRoutes.notification:
+        return MaterialPageRoute(builder: (_) => const NotificationScreen());
 //AddCoachScreen
 case AppRoutes.addCoach:
   args = settings.arguments as Map<String, dynamic>;

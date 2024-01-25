@@ -215,7 +215,7 @@ class HomeLayout extends StatelessWidget {
                                 focusColor: Colors.transparent,
                                 hoverColor: Colors.transparent,
                                 highlightColor: Colors.transparent,
-                                onTap: () async {
+                                onTap: () {
                                //   await ManageSalaryCubit.get(context).getUsers();
                               //    ManageSalaryCubit.get(context).syncData();
                                   Navigator.pushNamed(
@@ -272,7 +272,7 @@ class HomeLayout extends StatelessWidget {
                                 onTap: () {
                                   //push named to the page manage attendees
                                   Navigator.pushNamed(
-                                      context, AppRoutes.manageAttendence);
+                                      context, AppRoutes.notification);
                                 },
                                 child: Container(
                                   width: 155.w,

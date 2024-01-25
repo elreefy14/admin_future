@@ -29,8 +29,9 @@ class ManageUsersScreen extends StatelessWidget {
                     {
                       //todo: add rollback salary
                       //await
-                       ManageUsersCubit.get(context).rollbackSession();
-                      ManageUsersCubit.get(context).updateShowRollbackButtonSession();
+                       ManageUsersCubit.get(context).rollbackSession().then((value) =>
+                           ManageUsersCubit.get(context).updateShowRollbackButtonSession()
+                       );
                     },
                     child: // circle button for rollback show for 5 seconds
                     Container(

@@ -21,12 +21,12 @@ class ManageCoaches extends StatelessWidget {
               return
 
                 ManageUsersCubit.get(context).showRollbackButton
-               //     true
                         ?
                 InkWell(
-                onTap: () async {
-                  await ManageUsersCubit.get(context).rollbackSalary();
-                  ManageUsersCubit.get(context).updateShowRollbackButton();
+                onTap: ()  {
+                  //todo zbat il sync
+                  ManageUsersCubit.get(context).rollbackSalary().then((value)
+                  =>  ManageUsersCubit.get(context).updateShowRollbackButton());
                 },
                 child: // circle button for rollback show for 5 seconds
                 Container(
@@ -103,8 +103,8 @@ class ManageCoaches extends StatelessWidget {
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
 InkWell(
-                                              onTap: () async {
-                                                await Navigator.pushNamed(context,
+                                              onTap: ()  {
+                                                 Navigator.pushNamed(context,
                                                     AppRoutes.addCoach,
                                                    arguments: {
                                                   'isCoach':true,

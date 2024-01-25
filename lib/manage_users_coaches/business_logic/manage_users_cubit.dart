@@ -749,7 +749,9 @@ bool isConnected = await checkInternetConnection();
   int? currentTotalSalary ;
   int? currentNumberOfSessions ;
   String? latestUserId;
-  addSessions(context, {String? userId, required String sessions,
+  addSessions(context, {String? userId,
+    String? userName,
+    required String sessions,
    required int NumberOfSessions
   }) async {
     emit(AddSessionsLoadingState());
@@ -765,6 +767,17 @@ bool isConnected = await checkInternetConnection();
           .then((value) {
         print('Sessions added');
         //show toast message
+        //add notification to admin
+        NotificationModel notification = NotificationModel(
+          //message indicate that admin add sessions to user name  with number of sessions
+          message: 'تم زيادة عدد الجلسات للمستخدم $userName بعدد $sessions جلسة',
+          timestamp: DateTime.now(),
+        );
+        FirebaseFirestore.instance
+            .collection('admins')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('notifications')
+            .add(notification.toMap());
 
         salaryController.clear();
         emit(AddSessionsSuccessState());
@@ -823,7 +836,7 @@ bool isConnected = await checkInternetConnection();
         print('Sessions added');
       showRollbackButton = true;
       //5 seconds
-      Future.delayed(Duration(seconds: 4), () {
+      Future.delayed(Duration(seconds: 5), () {
         showRollbackButton = false;
       //  emit(AddSessionsSuccessState());
       });
@@ -831,7 +844,16 @@ bool isConnected = await checkInternetConnection();
       print('\n\n\n\nshowRollbackButton: $showRollbackButton');
 
       //show toast message
-
+      NotificationModel notification = NotificationModel(
+        //message indicate that admin add sessions to user name  with number of sessions
+        message: 'تم زيادة عدد الجلسات للمستخدم $userName بعدد $sessions جلسة',
+        timestamp: DateTime.now(),
+      );
+      FirebaseFirestore.instance
+          .collection('admins')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('notifications')
+          .add(notification.toMap());
         salaryController.clear();
         emit(AddSessionsSuccessState());
       //  Navigator.pop(context);
@@ -839,7 +861,9 @@ bool isConnected = await checkInternetConnection();
     }
   }
 
-  reduceSessions(   context,{String? userId, required String sessions,
+  reduceSessions(   context,{String? userId,
+    String? userName,
+    required String sessions,
     required int NumberOfSessions
   }
 
@@ -869,6 +893,15 @@ bool isConnected = await checkInternetConnection();
          // emit(ReduceSessionsSuccessState());
         });
         print('showRollbackButton: $showRollbackButton');
+        NotificationModel notification = NotificationModel(
+          message: 'تم تخفيض عدد الجلسات للمستخدم $userName بعدد $sessions جلسة',
+          timestamp: DateTime.now(),
+        );
+        FirebaseFirestore.instance
+            .collection('admins')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('notifications')
+            .add(notification.toMap());
         salaryController.clear();
         emit(ReduceSessionsSuccessState());
      //   Navigator.pop(context);
@@ -901,6 +934,15 @@ bool isConnected = await checkInternetConnection();
       //    msg: 'تم تخفيض عدد الجلسات '
       //        'سيتم تحديث البيانات عند توفر الإنترنت',
        // );
+      NotificationModel notification = NotificationModel(
+        message: 'تم تخفيض عدد الجلسات للمستخدم $userName بعدد $sessions جلسة',
+        timestamp: DateTime.now(),
+      );
+      FirebaseFirestore.instance
+          .collection('admins')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('notifications')
+          .add(notification.toMap());
         salaryController.clear();
         //
         showRollbackButton = true;
@@ -928,7 +970,12 @@ bool isConnected = await checkInternetConnection();
   //for user with this uid userId
   //use catch error
 
-  Future<void> paySalary({String? userId}) async {
+  Future<void> paySalary({
+    String? userId,
+    String? userName,
+
+
+  }) async {
     try {
       latestUserId = userId;
 
@@ -986,7 +1033,15 @@ bool isConnected = await checkInternetConnection();
           showRollbackButton = false;
           emit(ShowRollbackButtonState());
         });
-
+        NotificationModel notification = NotificationModel(
+          message: 'تم صرف المرتب كامل للمستخدم ${user.name} بمبلغ ${user.totalSalary} جنيه',
+          timestamp: DateTime.now(),
+        );
+        FirebaseFirestore.instance
+            .collection('admins')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('notifications')
+            .add(notification.toMap());
         salaryController.clear();
           emit(PaySalarySuccessStateWithoutInternet());
           return;
@@ -1035,6 +1090,16 @@ bool isConnected = await checkInternetConnection();
           //   msg: //pay salary success
           //   'تم صرف المرتب بنجاح',
           // );
+          NotificationModel notification = NotificationModel(
+            message: 'تم صرف كامل المرتب للمستخدم ${userName}',
+            timestamp: DateTime.now(),
+          );
+          FirebaseFirestore.instance
+              .collection('admins')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection('notifications')
+              .add(notification.toMap());
+          salaryController.clear();
           emit(PaySalarySuccessState());
         } else {
           //emit(PaySalarySuccessStateWithoutUpdate());
@@ -1175,6 +1240,7 @@ bool isConnected = await checkInternetConnection();
 
   //
   Future<void> payPartialSalary({String? userId, String? salaryPaid,
+     String? userName,
   required int currentTotalSalary
   }) async {
     try {
@@ -1199,7 +1265,7 @@ bool isConnected = await checkInternetConnection();
         FirebaseFirestore.instance
             .collection('users')
             .doc(userId)
-            .update({'totalSalary': 0});
+            .update({'totalSalary': currentTotalSalary- int.parse(salaryPaid!)});
         print('Total salary of all users: $globalTotalSalary');
         //  showToast(
         //      state: ToastStates.SUCCESS,
@@ -1212,7 +1278,15 @@ bool isConnected = await checkInternetConnection();
           showRollbackButton = false;
           emit(ShowRollbackButtonState());
         });
-
+        NotificationModel notification = NotificationModel(
+          message: 'تم صرف المرتب للمستخدم ${user.name} بمبلغ ${salaryPaid} جنيه',
+          timestamp: DateTime.now(),
+        );
+        FirebaseFirestore.instance
+            .collection('admins')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('notifications')
+            .add(notification.toMap());
         salaryController.clear();
         emit(PaySalarySuccessStateWithoutInternet());
         return;
@@ -1255,6 +1329,16 @@ bool isConnected = await checkInternetConnection();
             showRollbackButton = false;
             emit(ShowRollbackButtonState());
           });
+          NotificationModel notification = NotificationModel(
+            message: 'تم صرف المرتب للمستخدم $userName بمبلغ $salaryPaid جنيه',
+            timestamp: DateTime.now(),
+          );
+          FirebaseFirestore.instance
+              .collection('admins')
+              .doc(FirebaseAuth.instance.currentUser!.uid)
+              .collection('notifications')
+              .add(notification.toMap());
+          salaryController.clear();
 
           // showToast(
           //   state: ToastStates.SUCCESS,
@@ -1304,6 +1388,15 @@ bool isConnected = await checkInternetConnection();
             .update({'totalSalary': user.totalSalary});
 
         print('Total salary of all users: $globalTotalSalary');
+        NotificationModel notification = NotificationModel(
+          message: 'تم صرف المكافأة للمستخدم ${user.name} بمبلغ ${salaryPaid} جنيه',
+          timestamp: DateTime.now(),
+        );
+        FirebaseFirestore.instance
+            .collection('admins')
+            .doc(FirebaseAuth.instance.currentUser!.uid)
+            .collection('notifications')
+            .add(notification.toMap());
         salaryController.clear();
       //  showToast(
       //    state: ToastStates.SUCCESS,
@@ -1346,6 +1439,15 @@ bool isConnected = await checkInternetConnection();
     //  if (userIndex != -1) {
     //    coaches[userIndex].totalSalary = newTotalSalary;
     //  }
+      NotificationModel notification = NotificationModel(
+        message: 'تم صرف المكافأة للمستخدم ${userData!['name']} بمبلغ $salaryPaid جنيه',
+        timestamp: DateTime.now(),
+      );
+      FirebaseFirestore.instance
+          .collection('admins')
+          .doc(FirebaseAuth.instance.currentUser!.uid)
+          .collection('notifications')
+          .add(notification.toMap());
       salaryController.clear();
       //show toast message
      // showToast(
