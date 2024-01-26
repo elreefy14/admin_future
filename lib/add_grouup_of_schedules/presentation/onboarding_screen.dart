@@ -15,6 +15,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 import '../../home/business_logic/Home/manage_attendence_state.dart';
 import '../../home/presenation/widget/add_schedule.dart';
+import '../../manage_users_coaches/business_logic/manage_users_cubit.dart';
 
 // BEGIN: ed8c6549bwf9 (already existing code)
 
@@ -1742,7 +1743,15 @@ class OnboardingScreen extends StatelessWidget {
               ),
               SizedBox(height: 25,),
               InkWell(
-                onTap: (){},
+                onTap: (){
+                  ManageUsersCubit.get(context).deleteGroup(
+                    groupId: groupId??'',
+                    schedulesDays: scheduleDays??[],
+                    schedulesIds: scheduleId??[],
+                    context: context,
+                    branchId: branchId??''
+                  );
+                },
                 child: Text("حذف" , style: TextStyle(
                   color: Colors.red,
                   decoration: TextDecoration.underline,
