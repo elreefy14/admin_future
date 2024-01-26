@@ -6,30 +6,18 @@ import 'package:admin_future/registeration/data/userModel.dart';
 
 import 'package:admin_future/home/presenation/widget/widget/custom_app_bar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_ui_firestore/firebase_ui_firestore.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
 
-import '../../core/flutter_flow/flutter_flow_util.dart';
 import '../../home/business_logic/Home/manage_attendence_state.dart';
-import '../../manage_users_coaches/business_logic/manage_users_cubit.dart';
-import '../../home/data/schedules.dart';
 import '../../home/presenation/widget/add_schedule.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 // BEGIN: ed8c6549bwf9 (already existing code)
 
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:admin_future/add_grouup_of_schedules/presentation/select_coaches.dart';
 
 class AddGroupCubit extends Cubit<AddGroupState> {
   var _searchController;
@@ -1448,7 +1436,7 @@ class OnboardingScreen extends StatelessWidget {
                 //      color: Colors.white,
                 //    ),
                 //  ),
-                height: 650.h,
+                height: 615.h,
                 width: double.infinity,
                 child: Container(
                   //delete borders
@@ -1480,8 +1468,7 @@ class OnboardingScreen extends StatelessWidget {
                         onStepTapped: (index) {
                           context.read<AddGroupCubit>().setCurrentIndex(index);
                         },
-                        //handle navigation with swiping
-                        physics: ClampingScrollPhysics(),
+                        physics: NeverScrollableScrollPhysics(),
                         stepIconBuilder: (stepIndex, stepState) {
                           //change the icon of the step
                           if (stepState == StepState.complete) {
@@ -1750,7 +1737,18 @@ class OnboardingScreen extends StatelessWidget {
                         ),
                       ),
                     ),
+
                 ],
+              ),
+              SizedBox(height: 25,),
+              InkWell(
+                onTap: (){},
+                child: Text("حذف" , style: TextStyle(
+                  color: Colors.red,
+                  decoration: TextDecoration.underline,
+                  decorationColor: Colors.red,
+                  fontSize: 18,
+                )),
               ),
               //  SizedBox(
               //    height: 30,
@@ -1779,146 +1777,71 @@ class TimeSelectionScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     dynamic _times = context.watch<AddGroupCubit>().times;
-    return ListView(
-      children: context.read<AddGroupCubit>().times.keys.map((day) {
-        return ListTile(
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Text(
-                '/$day',
-                textAlign: TextAlign.left,
-                style: TextStyle(
-                  color: Colors.black,
-                  fontSize: 14.sp,
-                  fontFamily: 'IBM Plex Sans Arabic',
-                  fontWeight: FontWeight.w400,
-                  height: 0,
-                ),
-              ),
-            ],
-          ),
-          subtitle: Column(
-            children: [
-              //10
-              SizedBox(
-                height: 8.h,
-              ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
+    return Padding(
+        padding: EdgeInsets.only(bottom: 100.0),
+        child:  ListView(
+          children: context.read<AddGroupCubit>().times.keys.map((day) {
+            return ListTile(
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  InkWell(
-                    onTap: () async {
-                      TimeOfDay? endTime = await showTimePicker(
-                        context: context,
-                        initialTime: _times[day]?['end'] ?? TimeOfDay.now(),
-                      );
-                      if (endTime != null) {
-                        // setState(() {
-                        //   //
-                        //   _times[day]?['end'] = endTime;
-                        //   //start time equal hour minus end time
-                        //   _times[day]?['start'] =
-                        //       endTime.replacing(hour: endTime.hour - 1);
-                        // });
-                        context.read<AddGroupCubit>().updateTime(day, endTime);
-                      }
-                    },
-                    child: Container(
-                      width: 125.w,
-                      height: 35.h,
-                      clipBehavior: Clip.antiAlias,
-                      decoration: ShapeDecoration(
-                        color: Color(0xFFF6F6F6),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4)),
-                      ),
-                      child: Text(
-                        // _times[day]?['end']?.format(context) ?? 'نهاية التدريب',
-                        //make it in arabic like that 11 ص
-                        _times[day]?['end']
-                            ?.format(context)
-                            .toString()
-                            .replaceAll('PM', 'م')
-                            .replaceAll('AM', 'ص') ??
-                            'نهاية التدريب',
-
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Color(0xFF666666),
-                          fontSize: 16.sp,
-                          fontFamily: 'IBM Plex Sans Arabic',
-                          fontWeight: FontWeight.w400,
-                          height: 0,
-                        ),
-                      ),
+                  Text(
+                    '/$day',
+                    textAlign: TextAlign.left,
+                    style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 14.sp,
+                      fontFamily: 'IBM Plex Sans Arabic',
+                      fontWeight: FontWeight.w400,
+                      height: 0,
                     ),
                   ),
+                ],
+              ),
+              subtitle: Column(
+                children: [
+                  //10
+                  SizedBox(
+                    height: 8.h,
+                  ),
                   Row(
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      SizedBox(width: 8.0),
-                      Text(
-                        '-',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 18.sp,
-                          fontFamily: 'IBM Plex Sans Arabic',
-                          fontWeight: FontWeight.w400,
-                          height: 0,
-                        ),
-                      ),
-                      SizedBox(width: 8.0.w),
                       InkWell(
                         onTap: () async {
-                          TimeOfDay? startTime = await showTimePicker(
+                          TimeOfDay? endTime = await showTimePicker(
+                            builder: (context, child) {
+                              return Theme(
+                                data: Theme.of(context).copyWith(
+                                  colorScheme: ColorScheme.light(
+                                    primary: Color(0xf767676), // header background color
+                                    onPrimary: Colors.black, // header text color
+                                    onSurface: Colors.black, // body text color
+                                    surface: Colors.white,
+                                    secondary: Colors.blue,
+                                    onSecondary: Colors.white,
+                                  ),
+                                  textButtonTheme: TextButtonThemeData(
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: Colors.blue, // button text color
+                                    ),
+                                  ),
+                                ),
+                                child: child!,
+                              );
+                            },
                             context: context,
-                            initialTime:
-                            _times[day]?['start'] ?? TimeOfDay.now(),
+                            initialTime: _times[day]?['end'] ?? TimeOfDay.now(),
                           );
-                          if (startTime != null) {
+                          if (endTime != null) {
                             // setState(() {
-                            //   //convert start time to time stamp
-
-                            //   _times[day]?['start'] = startTime;
-                            //   //end time equal hour plus start time
-                            //   TimeOfDay endTime =
-                            //       startTime.replacing(hour: startTime.hour + 1);
+                            //   //
                             //   _times[day]?['end'] = endTime;
-                            //   //save the start time as timeStamp get
-
-                            //   //  DateTime getNearestDayOfWeek(String dayOfWeek) {
-                            //   // Get the current date
-                            //   //   DateTime now = DateTime.now();
-
-                            //   //   // Get the integer value of the selected day of the week
-                            //   //   int selectedDayOfWeek = [
-                            //   //     'الأحد',
-                            //   //     'الاثنين',
-                            //   //     'الثلاثاء',
-                            //   //     'الأربعاء',
-                            //   //     'الخميس',
-                            //   //     'الجمعة',
-                            //   //     'السبت'
-                            //   //   ].indexOf(dayOfWeek);
-
-                            //   //   // Calculate the difference between the selected day of the week and the current day of the week
-                            //   //   int difference = selectedDayOfWeek - now.weekday;
-
-                            //   //   // If the difference is negative, add 7 to get the nearest day of the week
-                            //   //   if (difference < 0) {
-                            //   //     difference += 7;
-                            //   //   }
-
-                            //   //   // Add the difference to the current date to get the nearest day of the week
-                            //   //   DateTime nearestDay = now.add(Duration(days: difference));
-
-                            //   //   return nearestDay;
-                            //   // }
+                            //   //start time equal hour minus end time
+                            //   _times[day]?['start'] =
+                            //       endTime.replacing(hour: endTime.hour - 1);
                             // });
-                            context
-                                .read<AddGroupCubit>()
-                                .updateTime2(day, startTime);
+                            context.read<AddGroupCubit>().updateTime(day, endTime);
                           }
                         },
                         child: Container(
@@ -1931,14 +1854,15 @@ class TimeSelectionScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(4)),
                           ),
                           child: Text(
-                            // _times[day]?['start']?.format(context) ?? 'بداية التدريب',
+                            // _times[day]?['end']?.format(context) ?? 'نهاية التدريب',
                             //make it in arabic like that 11 ص
-                            _times[day]?['start']
+                            _times[day]?['end']
                                 ?.format(context)
                                 .toString()
                                 .replaceAll('PM', 'م')
                                 .replaceAll('AM', 'ص') ??
-                                'بداية التدريب',
+                                'نهاية التدريب',
+
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Color(0xFF666666),
@@ -1950,33 +1874,149 @@ class TimeSelectionScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+                      Row(
+                        children: [
+                          SizedBox(width: 8.0),
+                          Text(
+                            '-',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 18.sp,
+                              fontFamily: 'IBM Plex Sans Arabic',
+                              fontWeight: FontWeight.w400,
+                              height: 0,
+                            ),
+                          ),
+                          SizedBox(width: 8.0.w),
+                          InkWell(
+                            onTap: () async {
+                              TimeOfDay? startTime = await showTimePicker(
+                                builder: (context, child) {
+                                  return Theme(
+                                    data: Theme.of(context).copyWith(
+                                      colorScheme: ColorScheme.light(
+                                        primary: Color(0xf767676), // header background color
+                                        onPrimary: Colors.black, // header text color
+                                        onSurface: Colors.black, // body text color
+                                        surface: Colors.white,
+                                        secondary: Colors.blue,
+                                        onSecondary: Colors.white,
+                                      ),
+                                      textButtonTheme: TextButtonThemeData(
+                                        style: TextButton.styleFrom(
+                                          foregroundColor: Colors.blue, // button text color
+                                        ),
+                                      ),
+                                    ),
+                                    child: child!,
+                                  );
+                                },
+                                context: context,
+                                initialTime:
+                                _times[day]?['start'] ?? TimeOfDay.now(),
+                              );
+                              if (startTime != null) {
+                                // setState(() {
+                                //   //convert start time to time stamp
+
+                                //   _times[day]?['start'] = startTime;
+                                //   //end time equal hour plus start time
+                                //   TimeOfDay endTime =
+                                //       startTime.replacing(hour: startTime.hour + 1);
+                                //   _times[day]?['end'] = endTime;
+                                //   //save the start time as timeStamp get
+
+                                //   //  DateTime getNearestDayOfWeek(String dayOfWeek) {
+                                //   // Get the current date
+                                //   //   DateTime now = DateTime.now();
+
+                                //   //   // Get the integer value of the selected day of the week
+                                //   //   int selectedDayOfWeek = [
+                                //   //     'الأحد',
+                                //   //     'الاثنين',
+                                //   //     'الثلاثاء',
+                                //   //     'الأربعاء',
+                                //   //     'الخميس',
+                                //   //     'الجمعة',
+                                //   //     'السبت'
+                                //   //   ].indexOf(dayOfWeek);
+
+                                //   //   // Calculate the difference between the selected day of the week and the current day of the week
+                                //   //   int difference = selectedDayOfWeek - now.weekday;
+
+                                //   //   // If the difference is negative, add 7 to get the nearest day of the week
+                                //   //   if (difference < 0) {
+                                //   //     difference += 7;
+                                //   //   }
+
+                                //   //   // Add the difference to the current date to get the nearest day of the week
+                                //   //   DateTime nearestDay = now.add(Duration(days: difference));
+
+                                //   //   return nearestDay;
+                                //   // }
+                                // });
+                                context
+                                    .read<AddGroupCubit>()
+                                    .updateTime2(day, startTime);
+                              }
+                            },
+                            child: Container(
+                              width: 125.w,
+                              height: 35.h,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: ShapeDecoration(
+                                color: Color(0xFFF6F6F6),
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(4)),
+                              ),
+                              child: Text(
+                                // _times[day]?['start']?.format(context) ?? 'بداية التدريب',
+                                //make it in arabic like that 11 ص
+                                _times[day]?['start']
+                                    ?.format(context)
+                                    .toString()
+                                    .replaceAll('PM', 'م')
+                                    .replaceAll('AM', 'ص') ??
+                                    'بداية التدريب',
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  color: Color(0xFF666666),
+                                  fontSize: 16.sp,
+                                  fontFamily: 'IBM Plex Sans Arabic',
+                                  fontWeight: FontWeight.w400,
+                                  height: 0,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ],
               ),
-            ],
-          ),
-          // onTap: () async {
-          //   TimeOfDay? startTime = await showTimePicker(
-          //     context: context,
-          //     initialTime: _times[day]?['start'] ?? TimeOfDay.now(),
-          //   );
-          //   if (startTime != null) {
-          //     TimeOfDay? endTime = await showTimePicker(
-          //       context: context,
-          //       initialTime: _times[day]?['end'] ?? TimeOfDay.now(),
-          //     );
-          //     setState(() {
-          //       _times[day]?['start'] = startTime;
-          //       if (endTime != null) {
-          //         _times[day]?['end'] = endTime;
-          //       }
-          //     });
-          //   }
-          // },
-        );
-      }).toList(),
-    );
+              // onTap: () async {
+              //   TimeOfDay? startTime = await showTimePicker(
+              //     context: context,
+              //     initialTime: _times[day]?['start'] ?? TimeOfDay.now(),
+              //   );
+              //   if (startTime != null) {
+              //     TimeOfDay? endTime = await showTimePicker(
+              //       context: context,
+              //       initialTime: _times[day]?['end'] ?? TimeOfDay.now(),
+              //     );
+              //     setState(() {
+              //       _times[day]?['start'] = startTime;
+              //       if (endTime != null) {
+              //         _times[day]?['end'] = endTime;
+              //       }
+              //     });
+              //   }
+              // },
+            );
+          }).toList(),
+        ));
   }
 }
 
@@ -2062,8 +2102,15 @@ class SelectCoachesScreen extends StatelessWidget {
                 showDialog(
                   context: context,
                   builder: (context) => Theme(
-                    data: Theme.of(context)
-                        .copyWith(canvasColor: Colors.white,dialogBackgroundColor: Colors.white),
+                    data: Theme.of(context).copyWith(
+                      colorScheme: ColorScheme.light(
+                        primary: Colors.blue,
+                        onPrimary: Colors.white,
+                        onSurface: Colors.black,
+                        surfaceTint: Colors.white,
+
+                      ),
+                    ),
                     child: ShowCoachesInDialog(
                       isCoach: isCoach ?? true,
                       selectedUsers: isCoach
@@ -2145,100 +2192,111 @@ class SelectCoachesScreen extends StatelessWidget {
             SingleChildScrollView(
               //  physics: BouncingScrollPhysics(),
               child: SizedBox(
-                height: 380.h,
-                child: ListView.separated(
-                  //    physics:  NeverScrollableScrollPhysics(),
-                  separatorBuilder: (context, index) => //5
-                  SizedBox(
-                    height: 15.h,
-                  ),
-                  shrinkWrap: true,
-                  itemCount: isCoach
-                      ? state.selectedCoaches.length
-                      : state.selectedUsers.length,
-                  //     _selectedCoaches.length,
-                  itemBuilder: (context, index) {
-                    late UserModel user;
-                    if (isCoach == true)
-                      user = state.selectedCoaches[index];
-                    else
-                      user = state.selectedUsers[index];
-                    return Container(
-                      width: 360.w,
-                      height: 25.h,
-                      padding: EdgeInsets.symmetric(horizontal: 15.w),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Container(
-                            width: 25.w,
-                            height: 25.h,
-                            clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(),
-                            child: Stack(
-                              children: [
-                                //svg image delete which is svg image images/delete-2_svgrepo.com.svg
-                                InkWell(
-                                    onTap: () {
-                                      if (isCoach) {
-                                        // setState(() {
-                                        //   _selectedCoaches.remove(user);
-                                        //   _selectedCoachesUids.remove(user.uId!);
-                                        // });
-                                        context
-                                            .read<AddGroupCubit>()
-                                            .deselectCoach(user);
-                                      } else {
-                                        // setState(() {
-                                        //   _selectedUsers.remove(user);
-                                        //   _selectedUsersUids.remove(user.uId!);
-                                        // });
-                                        context
-                                            .read<AddGroupCubit>()
-                                            .deselectUser(user);
-                                      }
-                                    },
-                                    child: SvgPicture.asset(
-                                        'assets/images/delete-2_svgrepo.com.svg')),
-                              ],
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              height: double.infinity,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                crossAxisAlignment: CrossAxisAlignment.center,
+                height: 300.h,
+
+                child: Padding(padding: EdgeInsets.all(10.0),child: ShaderMask(
+                  shaderCallback: (Rect rect) {
+                    return LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
+                      stops: [0.0, 0.0, 0.95, 1.0], // 10% purple, 80% transparent, 10% purple
+                    ).createShader(rect);
+                  },
+                  blendMode: BlendMode.dstOut,
+                  child: ListView.separated(
+                    //    physics:  NeverScrollableScrollPhysics(),
+                    separatorBuilder: (context, index) => //5
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    shrinkWrap: true,
+                    itemCount: isCoach
+                        ? state.selectedCoaches.length
+                        : state.selectedUsers.length,
+                    //     _selectedCoaches.length,
+                    itemBuilder: (context, index) {
+                      late UserModel user;
+                      if (isCoach == true)
+                        user = state.selectedCoaches[index];
+                      else
+                        user = state.selectedUsers[index];
+                      return Container(
+                        width: 360.w,
+                        height: 25.h,
+                        padding: EdgeInsets.symmetric(horizontal: 15.w),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Container(
+                              width: 25.w,
+                              height: 25.h,
+                              clipBehavior: Clip.antiAlias,
+                              decoration: BoxDecoration(),
+                              child: Stack(
                                 children: [
-                                  Text(
-                                    //   '${user.name}-${index + 1}',
-                                    //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                    '${index + 1}-${user.name}',
-                                    //textDirection: TextDirection.rtl,
-                                    textAlign: TextAlign.right,
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontSize: 14.sp,
-                                      fontFamily: 'Montserrat-Arabic',
-                                      fontWeight: FontWeight.w400,
-                                      height: 0,
-                                    ),
-                                  ),
+                                  //svg image delete which is svg image images/delete-2_svgrepo.com.svg
+                                  InkWell(
+                                      onTap: () {
+                                        if (isCoach) {
+                                          // setState(() {
+                                          //   _selectedCoaches.remove(user);
+                                          //   _selectedCoachesUids.remove(user.uId!);
+                                          // });
+                                          context
+                                              .read<AddGroupCubit>()
+                                              .deselectCoach(user);
+                                        } else {
+                                          // setState(() {
+                                          //   _selectedUsers.remove(user);
+                                          //   _selectedUsersUids.remove(user.uId!);
+                                          // });
+                                          context
+                                              .read<AddGroupCubit>()
+                                              .deselectUser(user);
+                                        }
+                                      },
+                                      child: SvgPicture.asset(
+                                          'assets/images/delete-2_svgrepo.com.svg')),
                                 ],
                               ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
-                  },
+                            Expanded(
+                              child: Container(
+                                height: double.infinity,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Text(
+                                      //   '${user.name}-${index + 1}',
+                                      //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
+                                      '${index + 1}-${user.name}',
+                                      //textDirection: TextDirection.rtl,
+                                      textAlign: TextAlign.right,
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontSize: 14.sp,
+                                        fontFamily: 'Montserrat-Arabic',
+                                        fontWeight: FontWeight.w400,
+                                        height: 0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),)
                 ),
               ),
-            ),
-          ],
+            )],
         );
       },
     );
@@ -2316,9 +2374,19 @@ class SelectBranchScreen extends StatelessWidget {
                           .read<AddGroupCubit>()
                           .updateMaxUsers(int.parse(value));
                     },
-                    decoration: InputDecoration(
-                      hintText: ':اقصى عدد',
+                    decoration:  InputDecoration(
+                      contentPadding: const EdgeInsets.only(right: 15),
+                      alignLabelWithHint: true,
+                      hintText: 'اقصى عدد',
                       border: OutlineInputBorder(),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Colors.blue,
+                          width: 2.0,
+
+                        ),
+                      ),
+
                     ),
                   ),
                 ),
@@ -2393,7 +2461,7 @@ class InfoScreen extends StatelessWidget {
         return SingleChildScrollView(
           // physics: BouncingScrollPhysics(),
           child: Padding(
-            padding: EdgeInsets.only(bottom: 28.0.h),
+            padding: EdgeInsets.only(bottom: 100.0.h),
             child: Column(
               children: [
                 state.selectedCoaches.isNotEmpty
@@ -2484,7 +2552,7 @@ class InfoScreen extends StatelessWidget {
                                   Text(
                                     '${index + 1}-${user.name}',
                                     //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                  //  textDirection: TextDirection.rtl,
+                                    //  textDirection: TextDirection.rtl,
                                     textAlign: TextAlign.right,
                                     style: TextStyle(
                                       color: Colors.black,
@@ -2845,8 +2913,8 @@ class InfoScreen extends StatelessWidget {
                                 Text(
                                   '$day',
                                   //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                 // textDirection:
-                                //  TextDirection.rtl,
+                                  // textDirection:
+                                  //  TextDirection.rtl,
                                   textAlign: TextAlign.right,
                                   style: TextStyle(
                                     color: Colors.black,
@@ -2872,8 +2940,8 @@ class InfoScreen extends StatelessWidget {
                                       Text(
                                         '${time?['start']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')} - ${time?['end']?.format(context).toString().replaceAll('PM', 'م').replaceAll('AM', 'ص')}',
                                         //make the text from right to left to handl arabic and make 1 2 3 4 5 6 7 8 9 10
-                                      //  textDirection:
-                                    //    TextDirection.rtl,
+                                        //  textDirection:
+                                        //    TextDirection.rtl,
                                         textAlign:
                                         TextAlign.right,
                                         style: TextStyle(
