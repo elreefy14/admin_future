@@ -1260,40 +1260,11 @@ Future<void> addGroup(
         .doc(branchId)
         .collection('groups')
     //todo change this to group id
-        .doc('VS5fM494CADhugpUQUW9')
+        .doc(groupId)
         .get()
         .then((docSnapshot) {
       if (docSnapshot.exists) {
         //that is group model
-//       class GroupModel {
-//       final Map<String, Map<String, Timestamp>> days;
-//       final String groupId;
-//       final String maxUsers;
-//       final String name;
-//       final int numberOfCoaches;
-//       final int numberOfUsers;
-//       final String pid;
-//
-//       //schedule_ids
-//       final List<String> schedulesIds;
-//
-// //schedule_days
-//       final List<String> schedulesDays;
-//
-//       // 'usersList': FieldValue.arrayUnion([user.name]),
-//       //                 'userIds': FieldValue.arrayUnion([user.uId]),
-//       //         'schedule_ids': FieldValue.arrayUnion([scheduleRef.id]),
-//       //               'schedule_days': FieldValue.arrayUnion([day]),
-// //  'coachList': FieldValue.arrayUnion([coach.name]),
-// //  'coachIds': FieldValue.arrayUnion([coach.uId]),
-//       final List<String> coachIds;
-//       final List<String> coachList;
-//       final List<String> userIds;
-//       final List<String> usersList;
-//       final List<UserModel> users;
-//       final List<UserModel> coaches;
-//use group Model to get data from firebase 
-//use fromJson to convert data from firebase to group model
       GroupModel group = GroupModel.fromJson(docSnapshot.data() as Map<String, dynamic>);
       //  Map<String, dynamic> groupData = docSnapshot.data() as Map<String, dynamic>;
         context.read<AddGroupCubit>().updateSelectedUsersAndCoachesAndTimesAndBranchAndMaxUsers(

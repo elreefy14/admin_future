@@ -338,47 +338,15 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                   SizedBox(width: 10.w),
                                                   FFButtonWidget(
                                                     onPressed: () {
-                                                      // ManageAttendenceCubit.get(context).selectedCoaches = usersList?.cast<String>() ?? [];
-                                                      // ManageAttendenceCubit.get(context).selectedDays = [day];
-                                                      // ManageAttendenceCubit.get(context).startTime = statrTime;
-                                                      // ManageAttendenceCubit.get(context).endTime = endTime;
-                                                      // //selectedBranch
-                                                      // ManageAttendenceCubit.get(context).selectedBranch = schedule.branchId ?? '';
-                                                      // //selectedBranch
-                                                      //print('${ManageSalaryCubit.get(context).schedules?[index].branchId}');
                                                       ManageAttendenceCubit
                                                           .get(
                                                           context)
                                                           .getAdminData();
-//void navigateToGroupData(String groupId) {
-//                         FirebaseFirestore.instance
-//                             .collection('branches')
-//                             .doc(branchId)
-//                             .collection('groups')
-//                             .doc(groupId)
-//                             .get()
-//                             .then((docSnapshot) {
-//                           if (docSnapshot.exists) {
-//                             Map<String, dynamic> groupData = docSnapshot.data();
-//                             Navigator.pushNamed(
-//                               context,
-//                               AppRoutes.onboarding,
-//                               arguments: {
-//                                 'isAdd': false,
-//                                 'branchId': '',
-//                                 'maxUsers': '0',
-//                                 // Pass the retrieved group data
-//                                 'groupData': groupData,
-//                               },
-//                             );
-//                           }
-//                         });
-//                       }
                                                       ManageAttendenceCubit
                                                           .get(
                                                           context)
                                                           .navigateToGroupData(
-                                                          schedule.groupId ??
+                                                          schedule.group_id ??
                                                               '',
                                                           schedule.branchId ??
                                                               '',
