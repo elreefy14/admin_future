@@ -16,10 +16,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'core/bloc_observer.dart';
 import 'core/constants/routes_manager.dart';
-
-Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
-  print('Handling a background message:\n\n\n ${message.messageId}');
-}
+//todo if notificaiton is not working
+// Future<void> firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+//   print('Handling a background message:\n\n\n ${message.messageId}');
+// }
 
 late String mainRoute;
 final remoteConfig = //firabase remote config
@@ -63,29 +63,29 @@ Future<void> main() async {
     mainRoute = AppRoutes.home;
   }
   //await DioHelper.init();
-  FirebaseMessaging.onMessage.listen((event) {
-    print('onMessage\n\n\n');
-    print(event.notification!.title);
-    print(event.notification!.body);
-  });
-  // when click on notification to open app
-  FirebaseMessaging.onMessageOpenedApp.listen((event) {
-    print('onMessageOpenedApp\n\n\n\n\n\n\n');
-    print(event.notification!.title);
-    print(event.notification!.body);
-  });
+  // FirebaseMessaging.onMessage.listen((event) {
+  //   print('onMessage\n\n\n');
+  //   print(event.notification!.title);
+  //   print(event.notification!.body);
+  // });
+  // // when click on notification to open app
+  // FirebaseMessaging.onMessageOpenedApp.listen((event) {
+  //   print('onMessageOpenedApp\n\n\n\n\n\n\n');
+  //   print(event.notification!.title);
+  //   print(event.notification!.body);
+  // });
   // background notification
-  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
+ // FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackgroundHandler);
   //firebase messaging PERMISSION
-  await FirebaseMessaging.instance.requestPermission(
-    alert: true,
-    announcement: false,
-    badge: true,
-    carPlay: false,
-    criticalAlert: false,
-    provisional: false,
-    sound: true,
-  );
+  // await FirebaseMessaging.instance.requestPermission(
+  //   alert: true,
+  //   announcement: false,
+  //   badge: true,
+  //   carPlay: false,
+  //   criticalAlert: false,
+  //   provisional: false,
+  //   sound: true,
+  // );
   BlocOverrides.runZoned(() => runApp(const MyApp()),
       blocObserver: MyBlocObserver());
 }
@@ -135,15 +135,15 @@ class MyApp extends StatelessWidget {
             navigatorObservers: [BotToastNavigatorObserver()],
             debugShowCheckedModeBanner: false,
             theme: ThemeData(
-              timePickerTheme: TimePickerThemeData(
+              timePickerTheme: const TimePickerThemeData(
                 elevation: 10,
                 entryModeIconColor: Colors.black,
-                hourMinuteShape: const RoundedRectangleBorder(
+                hourMinuteShape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.all(Radius.circular(8)),
                 ),
                 backgroundColor: Colors.white,
               ),
-              textSelectionTheme: TextSelectionThemeData(
+              textSelectionTheme: const TextSelectionThemeData(
                 cursorColor: Colors.blue,
                 selectionColor: Colors.blue,
                 selectionHandleColor: Colors.blue,
