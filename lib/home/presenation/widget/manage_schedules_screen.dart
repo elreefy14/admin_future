@@ -276,66 +276,66 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                 mainAxisSize:
                                                 MainAxisSize.min,
                                                 children: [
-                                                  FFButtonWidget(
-                                                    onPressed: () {
-                                                      ManageUsersCubit
-                                                          .get(
-                                                          context)
-                                                          .deleteSchedule(
-                                                        coachesIds:
-                                                        coachesIds?.cast<
-                                                            String>() ??
-                                                            [],
-                                                        usersIds: usersIds
-                                                            ?.cast<
-                                                            String>() ??
-                                                            [],
-                                                        scheduleId:
-                                                        scheduleId,
-                                                        day: day,
-                                                      );
-                                                    },
-                                                    text: 'حذف',
-                                                    options:
-                                                    FFButtonOptions(
-                                                      width: 50.w,
-                                                      height: 40.h,
-                                                      padding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          5, 0, 5, 0),
-                                                      iconPadding:
-                                                      const EdgeInsetsDirectional
-                                                          .fromSTEB(
-                                                          0, 0, 0, 0),
-                                                      color: Colors.red,
-                                                      textStyle:
-                                                      FlutterFlowTheme
-                                                          .of(
-                                                          context)
-                                                          .titleSmall
-                                                          .override(
-                                                        fontFamily:
-                                                        'Readex Pro',
-                                                        color: Colors
-                                                            .white,
-                                                        fontSize:
-                                                        12.sp,
-                                                      ),
-                                                      elevation: 3,
-                                                      borderSide:
-                                                      const BorderSide(
-                                                        color: Colors
-                                                            .transparent,
-                                                        width: 1,
-                                                      ),
-                                                      borderRadius:
-                                                      BorderRadius
-                                                          .circular(
-                                                          8),
-                                                    ),
-                                                  ),
-                                                  SizedBox(width: 10.w),
+                                                  // FFButtonWidget(
+                                                  //   onPressed: () {
+                                                  //     ManageUsersCubit
+                                                  //         .get(
+                                                  //         context)
+                                                  //         .deleteSchedule(
+                                                  //       coachesIds:
+                                                  //       coachesIds?.cast<
+                                                  //           String>() ??
+                                                  //           [],
+                                                  //       usersIds: usersIds
+                                                  //           ?.cast<
+                                                  //           String>() ??
+                                                  //           [],
+                                                  //       scheduleId:
+                                                  //       scheduleId,
+                                                  //       day: day,
+                                                  //     );
+                                                  //   },
+                                                  //   text: 'حذف',
+                                                  //   options:
+                                                  //   FFButtonOptions(
+                                                  //     width: 50.w,
+                                                  //     height: 40.h,
+                                                  //     padding:
+                                                  //     const EdgeInsetsDirectional
+                                                  //         .fromSTEB(
+                                                  //         5, 0, 5, 0),
+                                                  //     iconPadding:
+                                                  //     const EdgeInsetsDirectional
+                                                  //         .fromSTEB(
+                                                  //         0, 0, 0, 0),
+                                                  //     color: Colors.red,
+                                                  //     textStyle:
+                                                  //     FlutterFlowTheme
+                                                  //         .of(
+                                                  //         context)
+                                                  //         .titleSmall
+                                                  //         .override(
+                                                  //       fontFamily:
+                                                  //       'Readex Pro',
+                                                  //       color: Colors
+                                                  //           .white,
+                                                  //       fontSize:
+                                                  //       12.sp,
+                                                  //     ),
+                                                  //     elevation: 3,
+                                                  //     borderSide:
+                                                  //     const BorderSide(
+                                                  //       color: Colors
+                                                  //           .transparent,
+                                                  //       width: 1,
+                                                  //     ),
+                                                  //     borderRadius:
+                                                  //     BorderRadius
+                                                  //         .circular(
+                                                  //         8),
+                                                  //   ),
+                                                  // ),
+                                                  // SizedBox(width: 10.w),
                                                   FFButtonWidget(
                                                     onPressed: () {
                                                       ManageAttendenceCubit
@@ -1150,6 +1150,9 @@ class ManageSchedulesScreen extends StatelessWidget {
                       final addGroupCubit = context.read<AddGroupCubit>();
                       addGroupCubit.initState(context);
                       ManageAttendenceCubit.get(context).getAdminData();
+                    //  context.watch<AddGroupCubit>().changeMaxUsers('0');
+                     // context.read<AddGroupCubit>().state.copyWith(maxUsers: '0');
+                     // context.read<AddGroupCubit>().maxUsers = '0';
 
                       Navigator.pushNamed(
                         context,

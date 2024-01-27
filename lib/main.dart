@@ -8,7 +8,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -100,16 +99,17 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider(create: (context) => AddGroupCubit(
         ),
-          lazy: false,
+        //  lazy: false,
         ),
         BlocProvider(create: (context) => SignUpCubit()
         // ..addBranches()
           ..getBranches()
         ),
         BlocProvider(create: (context) => ManageUsersCubit()
-            ,lazy: false
+        //    ,lazy: false
         ),
-        BlocProvider(create: (context) => ManageAttendenceCubit()
+        BlocProvider(create: (context) => ManageAttendenceCubit(),
+         // lazy: false,
           //    ..addToWhatsAppGroup('https://chat.whatsapp.com/FV27zAcLJocKycZDScif1S', '+2001020684123 ')
 
           //    ..getNearestScedule(

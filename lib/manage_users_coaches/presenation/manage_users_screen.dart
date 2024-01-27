@@ -22,7 +22,6 @@ class ManageUsersScreen extends StatelessWidget {
                 return
 
                   ManageUsersCubit.get(context).showRollbackButton
-                  //     true
                       ?
                   InkWell(
                     onTap: ()// async

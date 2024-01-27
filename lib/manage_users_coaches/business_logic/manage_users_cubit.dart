@@ -1689,27 +1689,29 @@ bool isConnected = await checkInternetConnection();
 
     batch.delete(groupRef);
 
-    try {
+ //   try {
       // Commit the batch operation
-      await batch.commit();
+       batch.commit();
 
       print('Group deleted');
 
       // Show toast message
-      showToast(
-        state: ToastStates.SUCCESS,
-        msg: 'Group deleted',
-      );
+     // showToast(
+    //    state: ToastStates.SUCCESS,
+   //     msg: //'Group deleted', in arabic
+   //     'تم حذف المجموعة',
+   //   );
       //pop
       Navigator.pop(context);
 
 
       emit(DeleteGroupSuccessState());
-    } catch (error) {
-      print('Failed to delete group: $error');
-      showToast(msg: 'Failed to delete group', state: ToastStates.ERROR);
-      emit(DeleteGroupErrorState(error.toString()));
-    }
+    //}
+    // catch (error) {
+    //   print('Failed to delete group: $error');
+    //   showToast(msg: 'Failed to delete group', state: ToastStates.ERROR);
+    //   emit(DeleteGroupErrorState(error.toString()));
+    // }
   }
 
 //                     ManageSalaryCubit.get(context).deleteSchedule(

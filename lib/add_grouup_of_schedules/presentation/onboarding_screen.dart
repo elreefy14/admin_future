@@ -74,40 +74,11 @@ class AddGroupCubit extends Cubit<AddGroupState> {
 
   @override
   void initState(context) {
-    //clear all these fields
-    //            selectedUsers: context
-    //     .read<AddGroupCubit>()
-    //     .state
-    //     .selectedUsers,
-    // selectedCoaches: context
-    //     .read<AddGroupCubit>()
-    //     .state
-    //     .selectedCoaches,
-    // startTrainingTime: //random time
-    //     Timestamp.now(),
-    // endTrainingTime: //random time
-    //     Timestamp.now(),
-    // branch:
-    // ManageAttendenceCubit.get(context)
-    // .selectedBranch??'',
-    // // 'error',
-    // times: //call the times map from screen 2
-    //     context.read<AddGroupCubit>().state.times,
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-
     selectedCoaches = [];
     selectedUsers = [];
     selectedCoachesUids = [];
     selectedUsersUids = [];
-
+    maxUsers = null;
     // maxUsers = null;
     _times['السبت'] = {'start': null, 'end': null};
     _times['الأحد'] = {'start': null, 'end': null};
@@ -119,7 +90,8 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     ManageAttendenceCubit.get(context).updateSelectedBranch('');
     emit(
       state.copyWith(
-        maxUsers: null,
+
+        maxUsers: '0',
         selectedUsers: List.empty(),
         selectedUsersUids: List.empty(),
         selectedCoaches: List.empty(),
@@ -1251,6 +1223,8 @@ class AddGroupCubit extends Cubit<AddGroupState> {
 
     ));
   }
+
+  //void changeMaxUsers(String s) {}
 }
 
 class AddGroupState {
@@ -1376,7 +1350,10 @@ class OnboardingScreen extends StatelessWidget {
     // Map<String, Map<dynamic, dynamic>>? days = this.days;
     // bool? isAdd = this.isAdd;
     //
-
+        //if is add is false make state.maxUsers =0 in add group cubit
+    if (isAdd == false) {
+      context.read<AddGroupCubit>().state.copyWith(maxUsers: '0');
+    }
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
@@ -1639,6 +1616,7 @@ class OnboardingScreen extends StatelessWidget {
                             branch: ManageAttendenceCubit.get(context)
                                 .selectedBranch ??
                                 '',
+                            //
                             // 'error',
                             times: //call the times map from screen 2
                             context.read<AddGroupCubit>().state.times,
@@ -1714,7 +1692,14 @@ class OnboardingScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 25,),
-              InkWell(
+              if (isAdd == false && groupId != null)
+              BlocBuilder<ManageUsersCubit, ManageUsersState>(
+                   builder: (context, state) {
+    return
+    //DeleteGroupLoadingState
+      state is DeleteGroupLoadingState
+          ? CircularProgressIndicator():
+      InkWell(
                 onTap: (){
                   ManageUsersCubit.get(context).deleteGroup(
                     groupId: groupId??'',
@@ -1730,7 +1715,9 @@ class OnboardingScreen extends StatelessWidget {
                   decorationColor: Colors.red,
                   fontSize: 18,
                 )),
-              ),
+              );
+  },
+),
               //  SizedBox(
               //    height: 30,
               // )
@@ -2337,6 +2324,7 @@ class SelectBranchScreen extends StatelessWidget {
                 // ),
                 Flexible(
                   child: TextFormField(
+
                     onEditingComplete: () {
                       // Unfocus the text field when editing is complete
                       FocusScope.of(context).unfocus();
@@ -2358,7 +2346,16 @@ class SelectBranchScreen extends StatelessWidget {
                     decoration:  InputDecoration(
                       contentPadding: const EdgeInsets.only(right: 15),
                       alignLabelWithHint: true,
-                      hintText: 'اقصى عدد',
+                      hintText:
+                      //maxUser from cubit
+                      // if (context.watch<AddGroupCubit>().state.maxUsers == 0)
+                      //   'اقصى عدد'
+                      context.watch<AddGroupCubit>().state.maxUsers == 0 ||
+                          context.watch<AddGroupCubit>().state.maxUsers == null
+                     // || context.watch<AddGroupCubit>().state.selectedUsers.length == 0
+                          ? 'اقصى عدد'
+                          : '${context.watch<AddGroupCubit>().state.maxUsers}',
+
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(

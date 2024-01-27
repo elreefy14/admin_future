@@ -38,8 +38,6 @@ class ShowCoachesInDialog extends StatelessWidget {
         final addGroupCubit = context.read<AddGroupCubit>();
         final query = addGroupCubit.usersQuery;
         bool isSearch = addGroupCubit.isSearch;
-
-
         return
           //if isCoachInfoList is true then dont show parent diakog
           //instead show the child column of the dialog
