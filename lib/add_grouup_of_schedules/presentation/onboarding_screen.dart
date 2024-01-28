@@ -561,7 +561,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
       }
 
 
-      await batch.commit();
+       batch.commit();
 
       emit(state.copyWith(loading: false));
 
@@ -1588,7 +1588,11 @@ class OnboardingScreen extends StatelessWidget {
                           //and then add the group and schedules and users and coaches
 
                          //todo delete comments
-                          if(isAdd==false){
+                          if(isAdd==false
+                          ){
+                            print('\n\n\n');
+                            print(isAdd);
+                            print('\n\n\n');
                             //delete the group and schedules and users and coaches
                             ManageUsersCubit.get(context).deleteGroup(
                                 groupId: groupId??'',

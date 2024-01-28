@@ -29,7 +29,7 @@ class NotificationScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
+                  SizedBox(
                     width: double.infinity,
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
@@ -43,24 +43,22 @@ class NotificationScreen extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.start,
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
-                              Container(
-                                child: const Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    Text(
-                                      'اليوم',
-                                      textAlign: TextAlign.right,
-                                      style: TextStyle(
-                                        color: Color(0xFF333333),
-                                        fontSize: 20,
-                                        fontFamily: 'Montserrat-Arabic',
-                                        fontWeight: FontWeight.w300,
-                                      ),
+                              const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Text(
+                                    'اليوم',
+                                    textAlign: TextAlign.right,
+                                    style: TextStyle(
+                                      color: Color(0xFF333333),
+                                      fontSize: 20,
+                                      fontFamily: 'Montserrat-Arabic',
+                                      fontWeight: FontWeight.w300,
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                ],
                               ),
                               SizedBox(height: 15.h),
                               // BlocConsumer<HomeCubit, HomeState>(
@@ -170,7 +168,9 @@ class NotificationScreen extends StatelessWidget {
                               FirebaseFirestore.instance.collection('admins').
                               doc(FirebaseAuth.instance.currentUser?.uid).
                               collection('notifications').
-                              where('timestamp',isGreaterThan: DateTime.now().subtract(const Duration(days: 1))),
+                              where('timestamp',isGreaterThan: DateTime.now().subtract(const Duration(days: 1)))
+                                  .orderBy('timestamp',descending: true)
+                                  ,
                                emptyBuilder: (context) => Container(
                                  // padding:EdgeInsets.only(top: 6, left: 8, bottom: 6),
                                   padding: EdgeInsets.only(
@@ -226,7 +226,7 @@ class NotificationScreen extends StatelessWidget {
                                                  //then use toIso8601String() to convert it to string
                                                  '${doc['timestamp']?.toDate().toIso8601String().substring(0,10)}',
                                                 textAlign: TextAlign.right,
-                                                style: TextStyle(
+                                                style: const TextStyle(
                                                   color: Color(0xFFB9B9B9),
                                                   fontSize: 10,
                                                   fontFamily: 'IBM Plex Sans Arabic',
@@ -251,58 +251,52 @@ class NotificationScreen extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 23.h),
-                        Container(
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Transform(
+                              transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(3.14),
+                              child: Container(
 
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Transform(
-                                transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(3.14),
-                                child: Container(
-
-                                  decoration: const ShapeDecoration(
-                                    color: Color(0xFFB9B9B9),
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 0.50,
-                                        strokeAlign: BorderSide.strokeAlignCenter,
-                                        color: Color(0xFFF3F3F3),
-                                      ),
+                                decoration: const ShapeDecoration(
+                                  color: Color(0xFFB9B9B9),
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 0.50,
+                                      strokeAlign: BorderSide.strokeAlignCenter,
+                                      color: Color(0xFFF3F3F3),
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 10.h),
-                        Container(
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: [
+                            Transform(
+                              transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(3.14),
+                              child: Container(
 
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Transform(
-                                transform: Matrix4.identity()..translate(0.0, 0.0)..rotateZ(3.14),
-                                child: Container(
-
-                                  decoration: const ShapeDecoration(
-                                    color: Color(0xFFB9B9B9),
-                                    shape: RoundedRectangleBorder(
-                                      side: BorderSide(
-                                        width: 0.50,
-                                        strokeAlign: BorderSide.strokeAlignCenter,
-                                        color: Color(0xFFF3F3F3),
-                                      ),
+                                decoration: const ShapeDecoration(
+                                  color: Color(0xFFB9B9B9),
+                                  shape: RoundedRectangleBorder(
+                                    side: BorderSide(
+                                      width: 0.50,
+                                      strokeAlign: BorderSide.strokeAlignCenter,
+                                      color: Color(0xFFF3F3F3),
                                     ),
                                   ),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                         SizedBox(height: 23.h),
                         Padding(
@@ -310,16 +304,14 @@ class NotificationScreen extends StatelessWidget {
                             left: 30.w,
                             right: 30.w,
                           ),
-                          child: Container(
-                            child: const Text(
-                              'سابقا',
-                              textAlign: TextAlign.right,
-                              style: TextStyle(
-                                color: Color(0xFF333333),
-                                fontSize: 20,
-                                fontFamily: 'Montserrat-Arabic',
-                                fontWeight: FontWeight.w300,
-                              ),
+                          child: const Text(
+                            'سابقا',
+                            textAlign: TextAlign.right,
+                            style: TextStyle(
+                              color: Color(0xFF333333),
+                              fontSize: 20,
+                              fontFamily: 'Montserrat-Arabic',
+                              fontWeight: FontWeight.w300,
                             ),
                           ),
                         ),
@@ -431,8 +423,11 @@ class NotificationScreen extends StatelessWidget {
                             query:
                         FirebaseFirestore.instance.collection('admins').
                         doc(FirebaseAuth.instance.currentUser?.uid).
-                        collection('notifications').
-                        where('timestamp',isLessThan: DateTime.now().subtract(const Duration(days: 1))),
+                        collection('notifications')
+                         //i want to query notification which day is not today
+                            .where('timestamp',isLessThan: DateTime.now().subtract(const Duration(days: 1)))
+                            .orderBy('timestamp',descending: true)
+                            ,
                             emptyBuilder: (context) => Container(
                               // padding:EdgeInsets.only(top: 6, left: 8, bottom: 6),
                               padding: EdgeInsets.only(
@@ -471,7 +466,7 @@ class NotificationScreen extends StatelessWidget {
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
 
-                                    Container(
+                                    SizedBox(
                                       width: 300.w,
                                       child: Column(
                                         crossAxisAlignment: CrossAxisAlignment.end,
@@ -515,6 +510,8 @@ class NotificationScreen extends StatelessWidget {
                               );
                             }
                         ),
+                        //15
+                        SizedBox(height: 30.h),
                       ],
                     ),
                   ),

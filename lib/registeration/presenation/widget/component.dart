@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'dart:math';
 import 'package:contacts_service/contacts_service.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,7 +24,7 @@ Widget BuildTextFormField2(
       Text(
         labelText,
         style: TextStyle(
-          color: Color(0xFF333333),
+          color: const Color(0xFF333333),
           fontSize: 14.sp,
           fontFamily: 'IBM Plex Sans Arabic',
           fontWeight: FontWeight.w400,
@@ -33,7 +32,7 @@ Widget BuildTextFormField2(
         ),
         textAlign: TextAlign.right,
       ),
-      SizedBox(height: 8),
+      const SizedBox(height: 8),
       TextFormField(
         textAlign: TextAlign.right,
         controller: controller,
@@ -42,13 +41,13 @@ Widget BuildTextFormField2(
           prefixIcon: icon != null ? Icon(icon, color: Colors.grey) : null,
           hintText: hintText,
           hintStyle: TextStyle(
-            color: Color(0xFF333333),
+            color: const Color(0xFF333333),
             fontSize: 16.sp,
             fontFamily: 'IBM Plex Sans Arabic',
             fontWeight: FontWeight.w400,
             height: 0,
           ),
-          errorStyle: TextStyle(
+          errorStyle: const TextStyle(
             fontFamily: 'Inter',
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.w400,
@@ -57,14 +56,14 @@ Widget BuildTextFormField2(
             color: Color(0xFFD92D20),
           ),
           filled: true,
-          fillColor: Color(0xFFF4F4F4),
+          fillColor: const Color(0xFFF4F4F4),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(4.0),
             borderSide: BorderSide.none,
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(4.0),
-            borderSide: BorderSide(color: Color(0xFF2196F3), width: 1.5.w),
+            borderSide: BorderSide(color: const Color(0xFF2196F3), width: 1.5.w),
           ),
           contentPadding: EdgeInsets.symmetric(horizontal: 16.0.w),
           // Add the random password button
@@ -81,7 +80,7 @@ Widget BuildTextFormField2(
                   randomPassword;
               //context.read<AddGroupCubit>().searchController.text = randomPassword;
               ScaffoldMessenger.of(context!).showSnackBar(
-                SnackBar(content: Text('تم نسخ كلمة المرور إلى الحافظة')),
+                const SnackBar(content: Text('تم نسخ كلمة المرور إلى الحافظة')),
               );
             },
             style: ButtonStyle(
@@ -90,30 +89,41 @@ Widget BuildTextFormField2(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(4.0),
                     ))),
-            child: Text('إنشاء كلمة المرور',  style: TextStyle(
+            child: const Text('إنشاء كلمة المرور',  style: TextStyle(
               color: Colors.blue,
             ),),
           ),)
               : //if label text is الاسم الاول //show icon button
           labelText == 'الاسم الاول' ?
           IconButton(
-            icon: Icon(Icons.contacts),
+            icon: const Icon(Icons.contacts),
             onPressed: ()  async {
-              print('Pressed');
-              final Contact? selectedContact = await ContactsService.openDeviceContactPicker();
-              if (selectedContact != null) {
-                final String? firstName = selectedContact.givenName ?? '';
-                final String? lastName = selectedContact.familyName ?? '';
-                final String? phoneNumber = selectedContact.phones?.first.value ?? '';
-                   //function update Controllers in cubit
-               // SignUpCubit.get(context!).firstNameController.text = firstName??'';
-                //SignUpCubit.get(context).lastNameController.text = lastName??'d';
-              //  SignUpCubit.get(context).phoneController.text = phoneNumber??'';
-                SignUpCubit.get(context).updateControllers(
+              //check if permission is granted
+              if (await Permission.contacts.request().isGranted) {
+                // Either the permission was already granted before or the user just granted it.
+                print('Permission granted');
+               // print('Pressed');
+                final Contact? selectedContact = await ContactsService.openDeviceContactPicker();
+                if (selectedContact != null) {
+                  final String? firstName = selectedContact.givenName ?? '';
+                  final String? lastName = selectedContact.familyName ?? '';
+                  final String? phoneNumber = selectedContact.phones?.first.value ?? '';
+                  //function update Controllers in cubit
+                  // SignUpCubit.get(context!).firstNameController.text = firstName??'';
+                  //SignUpCubit.get(context).lastNameController.text = lastName??'d';
+                  //  SignUpCubit.get(context).phoneController.text = phoneNumber??'';
+                  SignUpCubit.get(context).updateControllers(
                     firstName: firstName??'',
                     lastName: lastName??'',
                     phone: phoneNumber??'',
-                );
+                  );
+              }
+              else{
+                //if permission is not granted
+                //ask for permission
+                await Permission.contacts.request();
+              }
+
 
                 // Save the first name, last name, and phone number of the selected contact
                 // to the device or perform any other desired actions
@@ -170,35 +180,39 @@ Widget BuildTextFormField(
     children: [
       Text(
         labelText,
-        style: TextStyle(
+        style: const TextStyle(
           fontSize: 14.0,
           color: Color(0xFF333333),
           fontFamily: 'IBM Plex Sans Arabic',
         ),
         textAlign: TextAlign.right,
       ),
-      SizedBox(height: 8),
+      const SizedBox(height: 8),
       TextFormField(
+        //rtl
+        textAlign: TextAlign.right,
+       //text direction
+        textDirection: TextDirection.rtl,
         //  scrollPadding: //50 from bottom of screen
         //   EdgeInsets.only(bottom: 50.h),
         controller: controller,
         keyboardType: input,
-        obscureText: labelText == 'كلمة المرور' ? true : false,
+       // obscureText: labelText == 'كلمة المرور' ? true : false,
         decoration: InputDecoration(
           prefixIcon: prefixIconPath != null
               ? ImageIcon(
             AssetImage(prefixIconPath),
-            color: Color(0xFF333333),
+            color: const Color(0xFF333333),
           )
               : null,
           suffixIcon: suffixIconPath != null
               ? ImageIcon(
             AssetImage(suffixIconPath),
-            color: Color(0xFF333333),
+            color: const Color(0xFF333333),
           )
               : null,
           hintText: hintText,
-          hintStyle: TextStyle(
+          hintStyle: const TextStyle(
             fontFamily: 'IBM Plex Sans Arabic',
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.w400,
@@ -206,7 +220,7 @@ Widget BuildTextFormField(
             height: 24.0 / 16.0,
             color: Color(0xFF666666),
           ),
-          errorStyle: TextStyle(
+          errorStyle: const TextStyle(
             fontFamily: 'Inter',
             fontStyle: FontStyle.normal,
             fontWeight: FontWeight.w400,
@@ -215,16 +229,16 @@ Widget BuildTextFormField(
             color: Color(0xFFD92D20),
           ),
           filled: true,
-          fillColor: Color(0xFFF4F4F4),
+          fillColor: const Color(0xFFF4F4F4),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(4.0),
             borderSide: BorderSide.none,
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(4.0),
-            borderSide: BorderSide(color: Color(0xFF2196F3), width: 1.5),
+            borderSide: const BorderSide(color: Color(0xFF2196F3), width: 1.5),
           ),
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
         ),
         validator: validator,
       ),

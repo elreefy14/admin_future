@@ -1702,10 +1702,10 @@ bool isConnected = await checkInternetConnection();
    //     'تم حذف المجموعة',
    //   );
       //pop
-      Navigator.pop(context);
+    emit(DeleteGroupSuccessState());
+    Navigator.pop(context);
 
 
-      emit(DeleteGroupSuccessState());
     //}
     // catch (error) {
     //   print('Failed to delete group: $error');
