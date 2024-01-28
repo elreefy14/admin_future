@@ -14,6 +14,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/cashe_helper.dart';
 import '../../data/userModel.dart';
 import '../../data/user_cache_model.dart';
+import '../../presenation/widget/widget.dart';
 
 part 'login_state.dart';
 
@@ -194,6 +195,14 @@ static LoginCubit get(context) => BlocProvider.of(context);
   //   });
   // }
  // UserCacheModel? userData ;
+ //  checkInternetConnectivity() async {
+ //    try {
+ //      final result = await InternetAddress.lookup('google.com');
+ //      return result.isNotEmpty && result[0].rawAddress.isNotEmpty;
+ //    } catch (_) {
+ //      return false;
+ //    }
+ //  }
   void userLogin({
     required String phone,
     required String password,
@@ -203,7 +212,17 @@ static LoginCubit get(context) => BlocProvider.of(context);
     print('email\n\n\n');
     print(phone+'@placeholder.com');
     print(password);
-    //
+    //if no internet connection emit error state and return
+    //check internet connection by calling to open url
+    //if no internet connection it will throw an error
+    //if there is internet connection it will open the url
+    //and we will catch the error and emit error state
+    //and return
+   // if (checkInternetConnectivity() == false) {
+   //   showToast(msg: 'لا يوجد اتصال بالانترنت', state: ToastStates.ERROR);
+   //   emit(LoginErrorState('لا يوجد اتصال بالانترنت'));
+   //   return;
+  //  }
     FirebaseAuth.instance.signInWithEmailAndPassword(
         email: '$phone@placeholder.com',
         password: password
@@ -245,7 +264,8 @@ static LoginCubit get(context) => BlocProvider.of(context);
         //network error
         case "network-request-failed":
           if (kDebugMode) {
-            errorMessage = 'Please check your internet connection';
+            errorMessage = //'Please check your internet connection';
+            'الرجاء التحقق من اتصالك بالانترنت';
           }
           break;
         case "invalid-email":
@@ -269,8 +289,8 @@ static LoginCubit get(context) => BlocProvider.of(context);
           break;
         default:
           if (kDebugMode) {
-           errorMessage = 'The error is $error';
-          //  errorMessage = 'حدث خطأ ما';
+          // errorMessage = 'The error is $error';
+            errorMessage = '$error حدث خطأ ما';
           }
       }
       print('error firebase:\n\n\n\n\n\n\n');

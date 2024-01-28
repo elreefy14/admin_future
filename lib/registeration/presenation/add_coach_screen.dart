@@ -19,7 +19,7 @@ class AddCoachScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //clr text fields
+    //clr text fieldsغ
     // SignUpCubit.get(context).firstNameController.clear();
     // SignUpCubit.get(context).lastNameController.clear();
     // SignUpCubit.get(context).phoneController.clear();
@@ -31,7 +31,7 @@ class AddCoachScreen extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: Colors.white,
-          appBar: CustomAppBar(
+          appBar: const CustomAppBar(
             text: '',
           ),
           body: ListView(
@@ -53,7 +53,7 @@ class AddCoachScreen extends StatelessWidget {
                       'اضافة مدرب',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color(0xFF333333),
+                        color: const Color(0xFF333333),
                         fontSize: 32.sp,
                         fontFamily: 'Montserrat-Arabic',
                         fontWeight: FontWeight.w400,
@@ -63,7 +63,7 @@ class AddCoachScreen extends StatelessWidget {
                       'اضافة متدرب',
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: Color(0xFF333333),
+                        color: const Color(0xFF333333),
                         fontSize: 32.sp,
                         fontFamily: 'Montserrat-Arabic',
                         fontWeight: FontWeight.w400,
@@ -112,7 +112,7 @@ class AddCoachScreen extends StatelessWidget {
                               return null;
                             }, Icons.person),
                       ),
-                      SizedBox(height: 20.0),
+                      const SizedBox(height: 20.0),
                       Padding(
                         padding: EdgeInsets.symmetric(horizontal: 35.0.w),
                         child: BuildTextFormField2('رقم الهاتف',
@@ -146,7 +146,7 @@ class AddCoachScreen extends StatelessWidget {
                         ),
                       ),
                       if(isCoach ==true)
-                        SizedBox(height: 20.0),
+                        const SizedBox(height: 20.0),
                       if(isCoach ==true)
                         Padding(
                           padding: EdgeInsets.symmetric(horizontal: 35.0.w),
@@ -350,7 +350,7 @@ class AddCoachScreen extends StatelessWidget {
                                               .text,
                                         );
                                       }
-                                      else
+                                      else {
                                         //signUp
                                         SignUpCubit.get(context).addUser(
                                           role: 'user',
@@ -371,10 +371,23 @@ class AddCoachScreen extends StatelessWidget {
                                               .passwordController
                                               .text,
                                         );
+                                      }
                                       // OtpCubit.get(context).phoneNumberSubmitted(phoneController.text);
                                     }
                                   },
-                                  child: Text(
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: const Color(0xFF2196F3),
+                                    // Background color
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 16, vertical: 9),
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12),
+                                    ),
+                                    textStyle: const TextStyle(
+                                      fontSize: 18, // Adjust the font size if needed
+                                    ),
+                                  ),
+                                  child: const Text(
                                     'تسجيل حساب جديد',
                                     style: TextStyle(
                                       fontFamily: 'Montserrat-Arabic',
@@ -386,24 +399,12 @@ class AddCoachScreen extends StatelessWidget {
                                     ),
                                     textAlign: TextAlign.center,
                                   ),
-                                  style: ElevatedButton.styleFrom(
-                                    primary: Color(0xFF2196F3),
-                                    // Background color
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 16, vertical: 9),
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(12),
-                                    ),
-                                    textStyle: TextStyle(
-                                      fontSize: 18, // Adjust the font size if needed
-                                    ),
-                                  ),
                                 ),
 
                               );
                             },
                             fallback: (context) {
-                              return Center(
+                              return const Center(
                                 child: CircularProgressIndicator(),
                               );
                             },

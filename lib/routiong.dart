@@ -1,5 +1,3 @@
-
-import 'package:admin_future/manage_users_coaches/business_logic/manage_users_cubit.dart';
 import 'package:admin_future/registeration/data/userModel.dart';
 import 'package:admin_future/registeration/business_logic/auth_cubit/login_cubit.dart';
 import 'package:admin_future/registeration/presenation/SignUpScreen.dart';
@@ -8,9 +6,7 @@ import 'package:admin_future/registeration/presenation/login_screen.dart';
 import 'package:admin_future/registeration/presenation/welcome_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-
-import 'Notification/presenation/notification_screen.dart';
+import 'Notification/presentation/notification_screen.dart';
 import 'add_grouup_of_schedules/presentation/onboarding_screen.dart';
 import 'core/constants/routes_manager.dart';
 import 'core/constants/strings.dart';

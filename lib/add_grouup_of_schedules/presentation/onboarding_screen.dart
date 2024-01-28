@@ -74,40 +74,11 @@ class AddGroupCubit extends Cubit<AddGroupState> {
 
   @override
   void initState(context) {
-    //clear all these fields
-    //            selectedUsers: context
-    //     .read<AddGroupCubit>()
-    //     .state
-    //     .selectedUsers,
-    // selectedCoaches: context
-    //     .read<AddGroupCubit>()
-    //     .state
-    //     .selectedCoaches,
-    // startTrainingTime: //random time
-    //     Timestamp.now(),
-    // endTrainingTime: //random time
-    //     Timestamp.now(),
-    // branch:
-    // ManageAttendenceCubit.get(context)
-    // .selectedBranch??'',
-    // // 'error',
-    // times: //call the times map from screen 2
-    //     context.read<AddGroupCubit>().state.times,
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-    // //TODO : delete
-
     selectedCoaches = [];
     selectedUsers = [];
     selectedCoachesUids = [];
     selectedUsersUids = [];
-
+    maxUsers = null;
     // maxUsers = null;
     _times['السبت'] = {'start': null, 'end': null};
     _times['الأحد'] = {'start': null, 'end': null};
@@ -119,7 +90,8 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     ManageAttendenceCubit.get(context).updateSelectedBranch('');
     emit(
       state.copyWith(
-        maxUsers: null,
+
+        maxUsers: '0',
         selectedUsers: List.empty(),
         selectedUsersUids: List.empty(),
         selectedCoaches: List.empty(),
@@ -347,8 +319,15 @@ class AddGroupCubit extends Cubit<AddGroupState> {
         maxUsers == null ||
         branch == '') {
       emit(state.copyWith(loading: false));
-
+        //print to know what is empty
+      print('days.isEmpty ${days.isEmpty}');
+      print('selectedUsers.isEmpty ${selectedUsers.isEmpty}');
+      print('selectedCoaches.isEmpty ${selectedCoaches.isEmpty}');
+      print('maxUsers == null ${maxUsers }');
+      //brancd
+      print('branch == \'\' ${branch}\n\n');
       Fluttertoast.showToast(
+        //print what is empty
         msg: 'يجب إدخال جميع البيانات المطلوبة',
         toastLength: Toast.LENGTH_LONG,
         gravity: ToastGravity.BOTTOM,
@@ -582,7 +561,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
       }
 
 
-      await batch.commit();
+       batch.commit();
 
       emit(state.copyWith(loading: false));
 
@@ -1208,6 +1187,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     emit(state.copyWith(isSearch: bool));
   }
   //function to update sekected user and selected coach and selected times and selected branch and max users
+  //call this function
   void updateSelectedUsersAndCoachesAndTimesAndBranchAndMaxUsers(
       {List<UserModel>? selectedUsers,
         List<UserModel>? selectedCoaches,
@@ -1216,18 +1196,6 @@ class AddGroupCubit extends Cubit<AddGroupState> {
         String? selectedOption,
         String? maxUsers,context, required Map<String, Map<String, Timestamp>> selectedDays}) {
     maxUsers = maxUsers;
-    //update times variable whish is Map<String, Map<dynamic, dynamic>>
-    //it looks like that
-    //static final Map<String, Map<dynamic, dynamic>> _times = {
-    //     'السبت': {'start': null, 'end': null},
-    //     'الأحد': {'start': null, 'end': null},
-    //     'الاثنين': {'start': null, 'end': null},
-    //     'الثلاثاء': {'start': null, 'end': null},
-    //     'الأربعاء': {'start': null, 'end': null},
-    //     'الخميس': {'start': null, 'end': null},
-    //     'الجمعة': {'start': null, 'end': null},
-    //   };
-    //loop on selected days and update the start and end time of the day
     for (var day in selectedDays.keys) {
       //selectedDays[day]!['start'];
       //selectedDays[day]!['end'];
@@ -1243,55 +1211,20 @@ class AddGroupCubit extends Cubit<AddGroupState> {
     //this.selectedTimes = selectedTimes ?? this.selectedTimes;
     ManageAttendenceCubit.get(context)
         .updateSelectedBranch(selectedBranch!);
-    ///if isAdd is false update data in the cubit
-    //         //  if (isAdd == true) {
-    //         //loop on users and convert it to UserModel
-    //         // List<UserModel> usersList = [];
-    //         // for (var user in users!) {
-    //         //   context.read<AddGroupCubit>().selectUser(user);
-    //         //   //use this to se
-    //         //   //usersList.add(UserModel.fromJson(user));
-    //         // }
-    //         //
-    //         //  List<UserModel> coachesList = [];
-    //         // for (var coach in coaches!) {
-    //         //   coachesList.add(UserModel.fromJson(coach));
-    //         //   }
-    //         //update data in the cubit using selectedUsers and selectedCoaches
-    //         // context.read<AddGroupCubit>().selectUser(usersList);
-    //         //  context.read<AddGroupCubit>().selectCoach(coachesList);
-    //         //  context.read<AddGroupCubit>().updateTime3(days!);
-    //
-    //         //  context.read<AddGroupCubit>().setSelectedUsers(users??[]);
-    //         // context.read<AddGroupCubit>().setSelectedUsers(coaches??[]);
-    //        // print('isAdd in onboarding screen $isAdd');
-    //         //users
-    //         // print('users in onboarding screen $users');
-    //         // print('users in onboarding screen ${users?.length}');
-    //
-    //
-    //         // print('days in onboarding screen $days');
-    //         // print('branchId in onboarding screen $branchId');
-    //         // print('groupId in onboarding screen $groupId');
-    //         // print('schedule_days in onboarding screen $schedule_days');
-    //         // print('userIds in onboarding screen $userIds');
-    //         // print('scheduleId in onboarding screen $scheduleId');
-    //         // print('coachIds in onboarding screen $coachIds');
-    //         // print('coachList in onboarding screen $coachList');
-    //         // print('usersList in onboarding screen $usersList');
-    //         // print('maxUsers in onboarding screen $maxUsers');
-    //         //context.read<AddGroupCubit>().updateMaxUsers(int.parse(maxUsers!));
-    //         //ManageAttendenceCubit.get(context)
-    //         //    .updateSelectedBranch(branchId!);
-    //         //}
     emit(state.copyWith(
         selectedUsers: selectedUsers,
         selectedCoaches: selectedCoaches,
         selectedTimes: selectedTimes,
         selectedBranch: selectedBranch,
         selectedOption: selectedOption,
-        maxUsers: maxUsers));
+        maxUsers: maxUsers,
+      //times
+        times: _times,
+
+    ));
   }
+
+  //void changeMaxUsers(String s) {}
 }
 
 class AddGroupState {
@@ -1417,7 +1350,10 @@ class OnboardingScreen extends StatelessWidget {
     // Map<String, Map<dynamic, dynamic>>? days = this.days;
     // bool? isAdd = this.isAdd;
     //
-
+        //if is add is false make state.maxUsers =0 in add group cubit
+    if (isAdd == false) {
+      context.read<AddGroupCubit>().state.copyWith(maxUsers: '0');
+    }
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: CustomAppBar(
@@ -1635,7 +1571,6 @@ class OnboardingScreen extends StatelessWidget {
                       ),
                     ),
                   //if current index is last index 'حفظ',
-
                   if (context.watch<AddGroupCubit>().state.currentIndex ==
                       context.watch<AddGroupCubit>().state.screens.length - 1)
                     Padding(
@@ -1648,7 +1583,25 @@ class OnboardingScreen extends StatelessWidget {
                           //print all   context.watch<AddGroupCubit>().state.times,
                           print(
                               'Selected Times: ${context.read<AddGroupCubit>().state.times}');
+                         //if isAdd is false
+                          //delete the group and schedules and users and coaches
+                          //and then add the group and schedules and users and coaches
 
+                         //todo delete comments
+                          if(isAdd==false
+                          ){
+                            print('\n\n\n');
+                            print(isAdd);
+                            print('\n\n\n');
+                            //delete the group and schedules and users and coaches
+                            ManageUsersCubit.get(context).deleteGroup(
+                                groupId: groupId??'',
+                                schedulesDays: scheduleDays??[],
+                                schedulesIds: scheduleId??[],
+                                context: context,
+                                branchId: branchId??''
+                            );
+                          }
                           context.read<AddGroupCubit>().addGroup(
                             true,
                             context,
@@ -1667,6 +1620,7 @@ class OnboardingScreen extends StatelessWidget {
                             branch: ManageAttendenceCubit.get(context)
                                 .selectedBranch ??
                                 '',
+                            //
                             // 'error',
                             times: //call the times map from screen 2
                             context.read<AddGroupCubit>().state.times,
@@ -1675,7 +1629,7 @@ class OnboardingScreen extends StatelessWidget {
                             //   'السبت': {'start': TimeOfDay.now(), 'end': TimeOfDay.now()},
                             //  },
                             maxUsers:
-                            context.read<AddGroupCubit>().maxUsers,
+                            context.read<AddGroupCubit>().state.maxUsers,
                           );
                           //clr   context.read<AddGroupCubit>().state.times,
                           context.read<AddGroupCubit>().state.times.clear();
@@ -1742,7 +1696,14 @@ class OnboardingScreen extends StatelessWidget {
                 ],
               ),
               SizedBox(height: 25,),
-              InkWell(
+              if (isAdd == false && groupId != null)
+              BlocBuilder<ManageUsersCubit, ManageUsersState>(
+                   builder: (context, state) {
+    return
+    //DeleteGroupLoadingState
+      state is DeleteGroupLoadingState
+          ? CircularProgressIndicator():
+      InkWell(
                 onTap: (){
                   ManageUsersCubit.get(context).deleteGroup(
                     groupId: groupId??'',
@@ -1758,7 +1719,9 @@ class OnboardingScreen extends StatelessWidget {
                   decorationColor: Colors.red,
                   fontSize: 18,
                 )),
-              ),
+              );
+  },
+),
               //  SizedBox(
               //    height: 30,
               // )
@@ -2365,6 +2328,7 @@ class SelectBranchScreen extends StatelessWidget {
                 // ),
                 Flexible(
                   child: TextFormField(
+
                     onEditingComplete: () {
                       // Unfocus the text field when editing is complete
                       FocusScope.of(context).unfocus();
@@ -2386,7 +2350,16 @@ class SelectBranchScreen extends StatelessWidget {
                     decoration:  InputDecoration(
                       contentPadding: const EdgeInsets.only(right: 15),
                       alignLabelWithHint: true,
-                      hintText: 'اقصى عدد',
+                      hintText:
+                      //maxUser from cubit
+                      // if (context.watch<AddGroupCubit>().state.maxUsers == 0)
+                      //   'اقصى عدد'
+                      context.watch<AddGroupCubit>().state.maxUsers == 0 ||
+                          context.watch<AddGroupCubit>().state.maxUsers == null
+                     // || context.watch<AddGroupCubit>().state.selectedUsers.length == 0
+                          ? 'اقصى عدد'
+                          : '${context.watch<AddGroupCubit>().state.maxUsers}',
+
                       border: OutlineInputBorder(),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(

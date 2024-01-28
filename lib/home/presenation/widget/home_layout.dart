@@ -253,7 +253,7 @@ class HomeLayout extends StatelessWidget {
                                         ),
                                         //10 sized box
                                         const Text(
-                                          'ادارة المدربين',
+                                          'ادارة المتدربين',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: Color(0xFF2196F3),
@@ -309,7 +309,7 @@ class HomeLayout extends StatelessWidget {
                                           height: 10.h,
                                         ),
                                        const Text(
-    'ادارة الحضور',
+    'الاشعارات',
     textAlign: TextAlign.center,
     style: TextStyle(
         color: Color(0xFF00D1FF),
@@ -434,7 +434,7 @@ class HomeLayout extends StatelessWidget {
                                           height: 10.h,
                                         ),
                                         const Text(
-                                          'ادارة المرتب',
+                                          'ادارة المدربين',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: Color(0xFFD92C20),
