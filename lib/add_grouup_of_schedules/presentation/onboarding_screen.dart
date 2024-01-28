@@ -385,6 +385,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
             'end_time': nonNullableDays[day]!['end'],
             'date': day,
             'nearest_day': nearestDayTimestamp,
+            'nearest_day_user': nearestDayTimestamp,
             'branch_id': branch,
             'group_id': groupId,
             'usersList': [],
@@ -406,6 +407,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'end_time': nonNullableDays[day]!['end'],
                 'date': day,
                 'nearest_day': nearestDayTimestamp,
+                'nearest_day_user': nearestDayTimestamp,
                 'branch_id': branch,
                 'pId': FirebaseAuth.instance.currentUser!.uid,
                 'max_users': maxUsers,
@@ -458,6 +460,8 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'end_time': nonNullableDays[day]!['end'],
                 'date': day,
                 'nearest_day': nearestDayTimestamp,
+                'nearest_day_user': nearestDayTimestamp,
+
                 'branch_id': branch,
                 'pId': FirebaseAuth.instance.currentUser!.uid,
                 'max_users': maxUsers,
@@ -480,6 +484,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'end_time': nonNullableDays[day]!['end'],
                 'date': day,
                 'nearest_day': nearestDayTimestamp,
+                'nearest_day_user': nearestDayTimestamp,
                 'branch_id': branch,
                 'pId': FirebaseAuth.instance.currentUser!.uid,
                 'max_users': maxUsers,
@@ -520,6 +525,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'end_time': nonNullableDays[day]!['end'],
                 'date': day,
                 'nearest_day': nearestDayTimestamp,
+                'nearest_day_user': nearestDayTimestamp,
                 'branch_id': branch,
                 'pId': FirebaseAuth.instance.currentUser!.uid,
                 'schedule_id': scheduleRef.id ?? '',
@@ -1179,6 +1185,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
 
   void updateUsersQuery(param0) {
     usersQuery = param0;
+    emit(state.copyWith(query: param0));
     emit(state.copyWith(query: param0));
   }
 

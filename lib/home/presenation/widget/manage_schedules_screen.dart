@@ -755,7 +755,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                                   snapshot) {
                                                                 DateTime
                                                                 nearestDay =
-                                                                    schedule.nearestDay
+                                                                    schedule.nearestDayUser
                                                                         ?.toDate() ??
                                                                         DateTime
                                                                             .now();
@@ -793,7 +793,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                                       '${schedule.scheduleId}')
                                                                   //update nearest_day to today
                                                                       .update({
-                                                                    'nearest_day':
+                                                                    'nearest_day_user':
                                                                     Timestamp.now(),
                                                                   });
                                                                   FirebaseFirestore

@@ -7,6 +7,7 @@ class ScheduleModel {
   Timestamp? startTime;
   Timestamp? endTime;
   Timestamp? nearestDay;
+  Timestamp? nearestDayUser;
   String? date;
 
   bool? finished;
@@ -37,9 +38,12 @@ class ScheduleModel {
     this.userIds, // new field
     this.scheduleId,
     this.date, 
-    required this.nearestDay, 
+    required this.nearestDay,
+     this.nearestDayUser,
+
     List<UserModel>? users, this.maxUsers
     , this.group_id
+
 
   });
 
@@ -56,6 +60,7 @@ class ScheduleModel {
 'coachList': coachList,
 'coachIds': coachIds,
       'nearest_day': nearestDay,
+      'nearest_day_user': nearestDay,
       'schedule_id': scheduleId,
       'date': date,
       'pId': pId,
@@ -76,6 +81,7 @@ class ScheduleModel {
       'schedule_id': scheduleId,
       'date': date,
       'nearest_day': nearestDay,
+      'nearest_day_user': nearestDay,
       'users': users,
       'maxUsers': maxUsers,
       'coachList': coachList,
@@ -94,6 +100,7 @@ class ScheduleModel {
       usersList: json['usersList'] != null ? List<String>.from(json['usersList']) : null,
       userIds: json['userIds'] != null ? List<String>.from(json['userIds']) : null, // new field
       nearestDay: json['nearest_day'],
+      nearestDayUser: json['nearest_day_user'],
       scheduleId: json['schedule_id'],
       date: json['date'],
       //group_id
@@ -112,6 +119,7 @@ class ScheduleModel {
       pId: json['pId'],
       branchId: json['branch_id'],
       nearestDay: json['nearest_day'] != null ? Timestamp.fromMillisecondsSinceEpoch((json['nearestDay'] as Timestamp).millisecondsSinceEpoch) : null,
+      nearestDayUser: json['nearest_day_user'] != null ? Timestamp.fromMillisecondsSinceEpoch((json['nearestDay'] as Timestamp).millisecondsSinceEpoch) : null,
       startTime: json['start_time'] != null ? Timestamp.fromMillisecondsSinceEpoch(DateTime.parse(json['start_time']).millisecondsSinceEpoch) : null,
       endTime: json['end_time'] != null ? Timestamp.fromMillisecondsSinceEpoch(DateTime.parse(json['end_time']).millisecondsSinceEpoch) : null,
       finished: json['finished'],
