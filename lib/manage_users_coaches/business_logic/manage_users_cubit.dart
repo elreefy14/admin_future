@@ -800,8 +800,6 @@ bool isConnected = await checkInternetConnection();
         emit(AddSessionsErrorState(error.toString()));
       });
     } else {
-
-
       DocumentSnapshot userSnapshot = await FirebaseFirestore.instance
           .collection('users')
           .doc(userId)

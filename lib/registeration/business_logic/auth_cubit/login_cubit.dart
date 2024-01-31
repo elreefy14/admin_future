@@ -6,7 +6,6 @@ import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -230,14 +229,8 @@ static LoginCubit get(context) => BlocProvider.of(context);
       var user = userCredential.user!;
 
 
-      FirebaseMessaging.instance.getToken().then((token) {
-        FirebaseFirestore.instance.collection('admins')
-            .doc(user.uid)
-            .update(
-          //string is the name of
-          //device token is string not array
-            {'token': token}
-        ).then((_) {
+
+
           FirebaseFirestore.instance
               .collection('admins')
               .doc(user.uid)
@@ -255,9 +248,7 @@ static LoginCubit get(context) => BlocProvider.of(context);
             // } else {
             //   emit(LoginErrorState('User data not found.'));
             // }
-          });
         });
-      });
     }).catchError((error) {
       String? errorMessage;
       switch (error.code) {

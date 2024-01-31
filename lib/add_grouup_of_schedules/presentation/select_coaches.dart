@@ -833,11 +833,10 @@ class ShowCoachesInDialog extends StatelessWidget {
                           child: Align(
                             alignment: const AlignmentDirectional(0, 0),
                             child: Text(
-                              //  ManageUsersCubit.get(context).coaches[index].totalSalary.toString(),
-                              user.totalSalary.toString(),
-
-
-
+                              //user.hourlyRate*user.totalHours??0,
+                              //'${user.hourlyRate??0*user.totalHours!.toInt()??0}',
+                              //multiply hourly rate by total hours
+                              '${user.totalSalary??0}',
                               textAlign: TextAlign.end,
                               style: FlutterFlowTheme.of(context)
                                   .bodyMedium

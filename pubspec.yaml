@@ -33,51 +33,50 @@ dependencies:
   permission_handler: ^11.0.0
   logger: ^2.0.2+1
   uuid: ^4.2.1
-  contained_tab_bar_view: ^0.8.0
+  #contained_tab_bar_view: ^0.8.0
   firebase_ui_firestore: ^1.5.11  
   multiselect: ^0.1.0
-  flutter_datetime_picker_plus: ^2.0.1
+  #flutter_datetime_picker_plus: ^2.0.1
   auto_size_text: ^3.0.0
   intl: ^0.18.0
   cloud_firestore: ^4.8.1
   cloud_firestore_platform_interface: ^5.15.1
   firebase_auth: ^4.6.3
   firebase_core: ^2.14.0
-  mobile_scanner: ^3.3.0
+  #mobile_scanner: ^3.3.0
   firebase_storage: ^11.2.3
-  flutter_animate: ^4.2.0
+  #flutter_animate: ^4.2.0
   contacts_service: ^0.6.3
   font_awesome_flutter: ^10.4.0
   from_css_color: 2.0.0
-  upgrader:
+  #upgrader:
   google_fonts: ^4.0.4
   json_path: ^0.6.0
-  shimmer: ^3.0.0
-  group_button: ^5.3.2
+  #shimmer: ^3.0.0
+  #group_button: ^5.3.2
   plugin_platform_interface: ^2.1.4
   provider: ^6.0.5
-  firebase_remote_config: ^4.2.3
-  firebase_analytics: ^10.4.3
+  #firebase_remote_config: ^4.2.3
+  #firebase_analytics: ^10.4.3
   shared_preferences: ^2.1.2
   shared_preferences_android: ^2.1.4
   shared_preferences_platform_interface: 2.2.0
   flutter_svg: ^1.0.0
-  visibility_detector: ^0.2.0
-  sqflite: ^2.2.8+4
+  #visibility_detector: ^0.2.0
+  #sqflite: ^2.2.8+4
   timeago: ^3.4.0
   bloc: ^8.1.1
   flutter_bloc: ^8.1.2
-  firebase_messaging: ^14.2.1
+  #firebase_messaging: ^14.2.1
   flutter_screenutil: ^5.8.4
-
   url_launcher: ^6.1.12
   fluttertoast: ^8.0.8
-  toast:
+  #toast:
   conditional_builder_null_safety:
   bot_toast:
-  json_annotation: ^4.8.0
-  qr_flutter: ^4.0.0
-  flutter_launcher_icons: ^0.13.1
+  #json_annotation: ^4.8.0
+  #qr_flutter: ^4.0.0
+  #flutter_launcher_icons: ^0.13.1
   change_app_package_name: ^1.1.0
 
   # The following adds the Cupertino Icons font to your application.

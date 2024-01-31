@@ -137,11 +137,12 @@ class HomeLayout extends StatelessWidget {
                                // ManageAttendenceCubit.get(context).nearestSchedule == null
                                //     ?
                                 Text(
-                                        'لا يوجد جدول حالياً، يرجى التحقق من الاتصال',
+                                     //   'لا يوجد جدول حالياً، يرجى التحقق من الاتصال',
+                                       'WELCOME BACK!!',
                                         style: TextStyle(
                                           color: const Color(0xFFB9B9B9),
                                           fontSize: 16.sp,
-                                          fontFamily: 'Montserrat-Arabic',
+                                        //  fontFamily: 'Montserrat-Arabic',
                                           fontWeight: FontWeight.w400,
                                           height: 0.6.h,
                                         ),

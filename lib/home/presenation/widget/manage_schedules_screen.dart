@@ -214,6 +214,8 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                       .name ??
                                                   '')
                                               .collection('schedules')
+                                      //order asc
+                                      .orderBy('start_time',descending: false)
                                           // .get(const GetOptions(source: Source.serverAndCache)),
                                           ,
                                           pageSize: 8,
@@ -226,16 +228,15 @@ class ManageSchedulesScreen extends StatelessWidget {
                                             final data = doc.data();
                                             final schedule =
                                                 ScheduleModel.fromJson2(data);
-
-                                            List<String?>? coachesIds =
-                                                schedule.coachIds ?? [];
-                                            List<String?>? usersIds =
-                                                schedule.userIds ?? [];
-                                            //group_id
-
-                                            String scheduleId =
-                                                schedule.scheduleId ?? '';
-                                            String day = schedule.date ?? '';
+                                            // List<String?>? coachesIds =
+                                            //     schedule.coachIds ?? [];
+                                            // List<String?>? usersIds =
+                                            //     schedule.userIds ?? [];
+                                            // //group_id
+                                            //
+                                            // String scheduleId =
+                                            //     schedule.scheduleId ?? '';
+                                            // String day = schedule.date ?? '';
 
                                             return Column(
                                               children: [
@@ -266,7 +267,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                         //     ManageUsersCubit
                                                         //         .get(
                                                         //         context)
-                                                        //         .deleteSchedule(
+                                                        //        .deleteSchedule(
                                                         //       coachesIds:
                                                         //       coachesIds?.cast<
                                                         //           String>() ??
@@ -649,7 +650,8 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                                                   'uid'])
                                                                               .update({
                                                                             'totalHours':
-                                                                                FieldValue.increment(totalHours)
+                                                                                FieldValue.increment(totalHours),
+                                                                            'totalSalary':FieldValue.increment(totalHours*user['hourlyRate'])
                                                                           });
                                                                           //send notification to users model contain 2 fields message and timestamp
                                                                           // firestore
@@ -689,6 +691,7 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                                               .update({
                                                                             'totalHours':
                                                                                 FieldValue.increment(-totalHours)
+                                                                            ,'totalSalary':FieldValue.increment(-totalHours*user['hourlyRate'])
                                                                           });
                                                                           //send notification to users model contain 2 fields message and timestamp
                                                                           // firestore
@@ -709,13 +712,12 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                               },
                                                             ))
                                                       else
-                                                        SizedBox(
+                                                        Container(
                                                             height: 175,
-                                                            child:
-                                                            FirestoreListView<
+                                                            child: FirestoreListView<
                                                                 Map<String,
                                                                     dynamic>>(
-                                                              pageSize: 6,
+                                                              pageSize: 8,
                                                               shrinkWrap: true,
                                                               loadingBuilder:
                                                                   (context) =>
@@ -733,47 +735,59 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                                   ?.uid)
                                                                   .collection(
                                                                   'schedules')
-                                                                  .doc(ManageUsersCubit.get(
-                                                                  context)
-                                                                  .days?[
-                                                              //selectedDayIndex
-                                                              ManageUsersCubit.get(context)
-                                                                  .selectedDayIndex]
-                                                                  .name ??
-                                                                  '')
+                                                                  .doc(
+                                                                  ManageUsersCubit
+                                                                      .get(
+                                                                      context)
+                                                                      .days?[
+                                                                  //selectedDayIndex
+                                                                  ManageUsersCubit
+                                                                      .get(context)
+                                                                      .selectedDayIndex]
+                                                                      .name ??
+                                                                      '')
                                                                   .collection(
                                                                   'schedules')
                                                                   .doc(
-                                                                  '${schedule.scheduleId}')
+                                                                  '${schedule
+                                                                      .scheduleId}')
                                                                   .collection(
                                                                   'users')
                                                                   .where('role',
                                                                   isEqualTo:
                                                                   'user'),
-                                                              itemBuilder:
-                                                                  (context,
+                                                              itemBuilder: (context,
                                                                   snapshot) {
+                                                                //nearestDay 2023-10-11 15:35:13.858087
+                                                                //differenceInDays 0
+                                                                //DateTime.now()  DateTime.now() 2023-10-11 15:36:59.950
+                                                                print(
+                                                                    'DateTime.now() ${DateTime
+                                                                        .now()}');
                                                                 DateTime
                                                                 nearestDay =
-                                                                    schedule.nearestDayUser
+                                                                    schedule
+                                                                        .nearestDayUser
                                                                         ?.toDate() ??
                                                                         DateTime
                                                                             .now();
+                                                                print(
+                                                                    'nearestDay $nearestDay');
                                                                 // Calculate the difference between the nearest day and today's date
-                                                                int differenceInDays =  DateTime
-                                                                    .now()
-                                                                    .difference(
-                                                                    nearestDay)
-                                                                    .inDays;
-                                                                print('differenceInDays \n\n$differenceInDays');
+                                                                int differenceInDays =
+                                                                    DateTime
+                                                                        .now()
+                                                                        .difference(nearestDay
+                                                                      )
+                                                                        .inDays;
+                                                                print(
+                                                                    'differenceInDays $differenceInDays');
+                                                                bool? isTimeExceed;
                                                                 // Duration difference = DateTime.now().difference(nearestDay);
-                                                                bool?
-                                                                isTimeExceed;
-                                                                Map<String,
-                                                                    dynamic>
+                                                                Map<String, dynamic>
                                                                 user =
-                                                                snapshot
-                                                                    .data();
+                                                                snapshot.data();
+
                                                                 if (differenceInDays >
                                                                     5) {
                                                                   FirebaseFirestore
@@ -800,66 +814,67 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                                       .instance
                                                                       .collection(
                                                                       'admins')
-                                                                      .doc(FirebaseAuth
-                                                                      .instance
-                                                                      .currentUser
-                                                                      ?.uid)
-                                                                      .collection(
-                                                                      'schedules')
-                                                                      .doc(ManageUsersCubit.get(context).days?[ManageUsersCubit.get(context).selectedDayIndex].name ??
-                                                                      '')
+                                                                      .doc(
+                                                                      FirebaseAuth
+                                                                          .instance
+                                                                          .currentUser
+                                                                          ?.uid)
                                                                       .collection(
                                                                       'schedules')
                                                                       .doc(
-                                                                      '${schedule.scheduleId}')
+                                                                      ManageUsersCubit
+                                                                          .get(
+                                                                          context)
+                                                                          .days?[ManageUsersCubit
+                                                                          .get(
+                                                                          context)
+                                                                          .selectedDayIndex]
+                                                                          .name ??
+                                                                          '')
+                                                                      .collection(
+                                                                      'schedules')
+                                                                      .doc(
+                                                                      '${schedule
+                                                                          .scheduleId}')
                                                                       .collection(
                                                                       'users')
                                                                       .where(
                                                                       'finished',
                                                                       isEqualTo:
                                                                       true)
-                                                                      .where(
-                                                                      'role',
+                                                                      .where('role',
                                                                       isEqualTo:
                                                                       'user')
                                                                       .get()
                                                                       .then(
-                                                                          (querySnapshot) {
+                                                                          (
+                                                                          querySnapshot) {
                                                                         print(
-                                                                            'querySnapshot.docs.length ${querySnapshot.docs.length}');
+                                                                            'querySnapshot.docs.length ${querySnapshot
+                                                                                .docs
+                                                                                .length}');
                                                                         querySnapshot
                                                                             .docs
                                                                             .forEach(
-                                                                                (doc) {
-                                                                              doc.reference
-                                                                                  .update({
-                                                                                'finished':
-                                                                                false
-                                                                              });
+                                                                                (
+                                                                                doc) {
+                                                                              doc
+                                                                                  .reference
+                                                                                  .update(
+                                                                                  {
+                                                                                    'finished':
+                                                                                    false
+                                                                                  });
                                                                             });
                                                                       });
                                                                   isTimeExceed =
                                                                   false;
                                                                 }
-                                                                // else if(differenceInDays < 5 && differenceInDays != 0){
-                                                                //   //message cant add attendance because this date not reached yet
-                                                                //   //show toast
-                                                                //    showToast(
-                                                                //      state: ToastStates.ERROR,
-                                                                //        msg: 'لا يمكنك اضافة حضور لان هذا الموعد لم يصل بعد',
-                                                                //     );
-                                                                // }
-
-                                                                user = snapshot
-                                                                    .data();
                                                                 return //Text('Schedule id is ${user['name']}');
                                                                   Column(
                                                                     children: [
-                                                                      //  for (int i = 0; i < user.length; i++)
                                                                       CheckboxListTile(
-                                                                        activeColor:
-                                                                        Colors
-                                                                            .blue,
+                                                                        activeColor: Colors.blue,
                                                                         title: Text(
                                                                             user[
                                                                             'name']),
@@ -867,10 +882,12 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                                             user[
                                                                             'finished'],
                                                                         onChanged:
-                                                                            (value) async {
+                                                                            (
+                                                                            value) async {
                                                                           FirebaseFirestore
                                                                           firestore =
-                                                                              FirebaseFirestore.instance;
+                                                                              FirebaseFirestore
+                                                                                  .instance;
                                                                           // DocumentSnapshot scheduleSnapshot = await firestore
                                                                           //     .collection('admins')
                                                                           //     .doc(FirebaseAuth.instance.currentUser?.uid)
@@ -879,377 +896,181 @@ class ManageSchedulesScreen extends StatelessWidget {
                                                                           //     .collection('schedules')
                                                                           //     .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
                                                                           //     .get();
-                                                                          int startTime =
-                                                                              schedule.startTime?.toDate().hour ??
-                                                                                  0;
-                                                                          int endTime =
-                                                                              schedule.endTime?.toDate().hour ??
-                                                                                  0;
+                                                                          int startTime = schedule
+                                                                              .startTime
+                                                                              ?.toDate()
+                                                                              .hour ??
+                                                                              0;
+                                                                          int endTime = schedule
+                                                                              .endTime
+                                                                              ?.toDate()
+                                                                              .hour ??
+                                                                              0;
                                                                           int totalHours =
                                                                               endTime -
                                                                                   startTime;
                                                                           totalHours +=
-                                                                              const Duration(minutes: 2).inHours;
+                                                                              const Duration(
+                                                                                  minutes: 2)
+                                                                                  .inHours;
 
                                                                           if (value ==
                                                                               true) {
                                                                             firestore
-                                                                                .collection('admins')
-                                                                                .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                                                .collection('schedules')
-                                                                                .doc(ManageUsersCubit.get(context)
-                                                                                .days?[
-                                                                            //selectedDayIndex
-                                                                            ManageUsersCubit.get(context).selectedDayIndex]
-                                                                                .name ??
-                                                                                '')
-                                                                                .collection('schedules')
-                                                                                .doc('${schedule.scheduleId}')
-                                                                                .collection('users')
-                                                                                .doc(user['uid'])
-                                                                                .update({
-                                                                              'finished':
-                                                                              value,
-                                                                            });
+                                                                                .collection(
+                                                                                'admins')
+                                                                                .doc(
+                                                                                FirebaseAuth
+                                                                                    .instance
+                                                                                    .currentUser
+                                                                                    ?.uid)
+                                                                                .collection(
+                                                                                'schedules')
+                                                                                .doc(
+                                                                                ManageUsersCubit
+                                                                                    .get(
+                                                                                    context)
+                                                                                    .days?[
+                                                                                //selectedDayIndex
+                                                                                ManageUsersCubit
+                                                                                    .get(
+                                                                                    context)
+                                                                                    .selectedDayIndex]
+                                                                                    .name ??
+                                                                                    '')
+                                                                                .collection(
+                                                                                'schedules')
+                                                                                .doc(
+                                                                                '${schedule
+                                                                                    .scheduleId}')
+                                                                                .collection(
+                                                                                'users')
+                                                                                .doc(
+                                                                                user['uid'])
+                                                                                .update(
+                                                                                {
+                                                                                  'finished':
+                                                                                  value,
+                                                                                });
+
+                                                                            //get user number of sessions from user collection first check if it is less than 2 then subtract 1 from it and
+                                                                            //send whatup message from user['phone'] to admin['phone'] with message 'تم اضافة ${totalHours} ساعات لحسابك'
                                                                             firestore
                                                                                 .collection(
                                                                                 'users')
-                                                                                .doc(user[
-                                                                            'uid'])
-                                                                                .update({
-                                                                              'totalHours':
-                                                                              FieldValue.increment(totalHours)
-                                                                            });
+                                                                                .doc(
+                                                                                user[
+                                                                                'uid'])
+                                                                                .get()
+                                                                                .then(
+                                                                                    (
+                                                                                    value) {
+                                                                                  int numberOfSessions =
+                                                                                      value
+                                                                                          .data()?['numberOfSessions'] ??
+                                                                                          0;
+                                                                                  String
+                                                                                  phone =
+                                                                                      value
+                                                                                          .data()?['phone'] ??
+                                                                                          '';
+                                                                                  if (numberOfSessions <
+                                                                                      2) {
+                                                                                    //send whatup message from user['phone'] to admin['phone'] with message 'we are rememberring you that you have only 1 sessions left'
+                                                                                    //   String url = 'https://api.whatsapp.com/send?phone=${phone}&text=we are rememberring you that you have only 1 sessions left
+                                                                                    //translate text to arabic
+                                                                                    String
+                                                                                    url =
+                                                                                        'https://api.whatsapp.com/send?phone=+20${phone}&text=نذكركم بتجديد الاشتراك ';
+                                                                                    launch(
+                                                                                        url);
+                                                                                  }
+                                                                                  //subtract 1 from numberOfSessions
+
+                                                                                  firestore
+                                                                                      .collection(
+                                                                                      'users')
+                                                                                      .doc(
+                                                                                      user[
+                                                                                      'uid'])
+                                                                                      .update(
+                                                                                      {
+                                                                                        'numberOfSessions':
+                                                                                        FieldValue
+                                                                                            .increment(
+                                                                                            -1)
+                                                                                      });
+                                                                                });
+                                                                            //todo add this to cubit
                                                                             //send notification to users model contain 2 fields message and timestamp
-                                                                            // firestore
-                                                                            //     .collection('users')
-                                                                            //     .doc(user['uid'])
-                                                                            //     .collection('notifications')
-                                                                            //     .add({
-                                                                            //   'message':
-                                                                            //   'تم اضافة ${totalHours} ساعات لحسابك',
-                                                                            //   'timestamp':
-                                                                            //   Timestamp.now(),
+                                                                            // firestore.collection('users').doc(user['uid']).collection('notifications').add({
+                                                                            //   'message': 'تم اضافة ${totalHours} ساعات لحسابك',
+                                                                            //   'timestamp': Timestamp.now(),
                                                                             // });
                                                                           } else {
                                                                             firestore
-                                                                                .collection('admins')
-                                                                                .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                                                .collection('schedules')
-                                                                                .doc(ManageUsersCubit.get(context)
-                                                                                .days?[
-                                                                            //selectedDayIndex
-                                                                            ManageUsersCubit.get(context).selectedDayIndex]
-                                                                                .name ??
-                                                                                '')
-                                                                                .collection('schedules')
-                                                                                .doc('${schedule.scheduleId}')
-                                                                                .collection('users')
-                                                                                .doc(user['uid'])
-                                                                                .update({
-                                                                              'finished':
-                                                                              value,
-                                                                            });
+                                                                                .collection(
+                                                                                'admins')
+                                                                                .doc(
+                                                                                FirebaseAuth
+                                                                                    .instance
+                                                                                    .currentUser
+                                                                                    ?.uid)
+                                                                                .collection(
+                                                                                'schedules')
+                                                                                .doc(
+                                                                                ManageUsersCubit
+                                                                                    .get(
+                                                                                    context)
+                                                                                    .days?[
+                                                                                //selectedDayIndex
+                                                                                ManageUsersCubit
+                                                                                    .get(
+                                                                                    context)
+                                                                                    .selectedDayIndex]
+                                                                                    .name ??
+                                                                                    '')
+                                                                                .collection(
+                                                                                'schedules')
+                                                                                .doc(
+                                                                                '${schedule
+                                                                                    .scheduleId}')
+                                                                                .collection(
+                                                                                'users')
+                                                                                .doc(
+                                                                                user['uid'])
+                                                                                .update(
+                                                                                {
+                                                                                  'finished':
+                                                                                  value,
+                                                                                });
+                                                                            // firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(-totalHours)});
+                                                                            //send notification to users model contain 2 fields message and timestamp
+                                                                            // firestore.collection('users').doc(user['uid']).collection('notifications').add({
+                                                                            //   'message': 'تم خصم ${totalHours} ساعات من حسابك',
+                                                                            //   'timestamp': Timestamp.now(),
+                                                                            // });
                                                                             firestore
                                                                                 .collection(
                                                                                 'users')
-                                                                                .doc(user[
-                                                                            'uid'])
-                                                                                .update({
-                                                                              'totalHours':
-                                                                              FieldValue.increment(-totalHours)
-                                                                            });
-                                                                            //send notification to users model contain 2 fields message and timestamp
-                                                                            // firestore
-                                                                            //     .collection('users')
-                                                                            //     .doc(user['uid'])
-                                                                            //     .collection('notifications')
-                                                                            //     .add({
-                                                                            //   'message':
-                                                                            //   'تم خصم ${totalHours} ساعات من حسابك',
-                                                                            //   'timestamp':
-                                                                            //   Timestamp.now(),
-                                                                            // });
+                                                                                .doc(
+                                                                                user[
+                                                                                'uid'])
+                                                                                .update(
+                                                                                {
+                                                                                  'numberOfSessions':
+                                                                                  FieldValue
+                                                                                      .increment(
+                                                                                      1)
+                                                                                });
                                                                           }
                                                                         },
                                                                       ),
                                                                     ],
                                                                   );
                                                               },
-                                                            ))
-                                                        // SizedBox(
-                                                        //     height: 175,
-                                                        //     child:
-                                                        //         FirestoreListView<
-                                                        //             Map<String,
-                                                        //                 dynamic>>(
-                                                        //       pageSize: 8,
-                                                        //       shrinkWrap: true,
-                                                        //       loadingBuilder:
-                                                        //           (context) =>
-                                                        //               const Center(
-                                                        //                   child:
-                                                        //                       CircularProgressIndicator()),
-                                                        //       cacheExtent: 100,
-                                                        //       query: FirebaseFirestore
-                                                        //           .instance
-                                                        //           .collection(
-                                                        //               'admins')
-                                                        //           .doc(FirebaseAuth
-                                                        //               .instance
-                                                        //               .currentUser
-                                                        //               ?.uid)
-                                                        //           .collection(
-                                                        //               'schedules')
-                                                        //           .doc(ManageUsersCubit.get(
-                                                        //                       context)
-                                                        //                   .days?[
-                                                        //                       //selectedDayIndex
-                                                        //                       ManageUsersCubit.get(context)
-                                                        //                           .selectedDayIndex]
-                                                        //                   .name ??
-                                                        //               '')
-                                                        //           .collection(
-                                                        //               'schedules')
-                                                        //           .doc(
-                                                        //               '${schedule.scheduleId}')
-                                                        //           .collection(
-                                                        //               'users')
-                                                        //           .where('role',
-                                                        //               isEqualTo:
-                                                        //                   'user'),
-                                                        //       itemBuilder:
-                                                        //           (context,
-                                                        //               snapshot) {
-                                                        //         //nearestDay 2023-10-11 15:35:13.858087
-                                                        //         //differenceInDays 0
-                                                        //         //DateTime.now()  DateTime.now() 2023-10-11 15:36:59.950
-                                                        //         print(
-                                                        //             'DateTime.now() ${DateTime.now()}');
-                                                        //         DateTime
-                                                        //             nearestDay =
-                                                        //             schedule.nearestDay
-                                                        //                     ?.toDate() ??
-                                                        //                 DateTime
-                                                        //                     .now();
-                                                        //         print(
-                                                        //             'nearestDay $nearestDay');
-                                                        //         // Calculate the difference between the nearest day and today's date
-                                                        //         int differenceInDays = nearestDay
-                                                        //             .difference(
-                                                        //                 DateTime
-                                                        //                     .now())
-                                                        //             .inDays;
-                                                        //         print(
-                                                        //             'differenceInDays $differenceInDays');
-                                                        //         bool?
-                                                        //             isTimeExceed;
-                                                        //         // Duration difference = DateTime.now().difference(nearestDay);
-                                                        //         Map<String,
-                                                        //                 dynamic>
-                                                        //             user =
-                                                        //             snapshot
-                                                        //                 .data();
-                                                        //
-                                                        //         if (differenceInDays >
-                                                        //             5) {
-                                                        //           FirebaseFirestore
-                                                        //               .instance
-                                                        //               .collection(
-                                                        //               'admins')
-                                                        //               .doc(FirebaseAuth
-                                                        //               .instance
-                                                        //               .currentUser
-                                                        //               ?.uid)
-                                                        //               .collection(
-                                                        //               'schedules')
-                                                        //               .doc(ManageUsersCubit.get(context).days?[ManageUsersCubit.get(context).selectedDayIndex].name ??
-                                                        //               '')
-                                                        //               .collection(
-                                                        //               'schedules').doc(
-                                                        //               '${schedule.scheduleId}')
-                                                        //           //update nearest_day to today
-                                                        //               .update({
-                                                        //             'nearest_day':
-                                                        //             Timestamp.now(),
-                                                        //           });
-                                                        //           FirebaseFirestore
-                                                        //               .instance
-                                                        //               .collection(
-                                                        //                   'admins')
-                                                        //               .doc(FirebaseAuth
-                                                        //                   .instance
-                                                        //                   .currentUser
-                                                        //                   ?.uid)
-                                                        //               .collection(
-                                                        //                   'schedules')
-                                                        //               .doc(ManageUsersCubit.get(context).days?[ManageUsersCubit.get(context).selectedDayIndex].name ??
-                                                        //                   '')
-                                                        //               .collection(
-                                                        //                   'schedules')
-                                                        //               .doc(
-                                                        //                   '${schedule.scheduleId}')
-                                                        //               .collection(
-                                                        //                   'users')
-                                                        //               .where(
-                                                        //                   'finished',
-                                                        //                   isEqualTo:
-                                                        //                       true)
-                                                        //               .where(
-                                                        //                   'role',
-                                                        //                   isEqualTo:
-                                                        //                       'user')
-                                                        //               .get()
-                                                        //               .then(
-                                                        //                   (querySnapshot) {
-                                                        //             print(
-                                                        //                 'querySnapshot.docs.length ${querySnapshot.docs.length}');
-                                                        //             querySnapshot
-                                                        //                 .docs
-                                                        //                 .forEach(
-                                                        //                     (doc) {
-                                                        //               doc.reference
-                                                        //                   .update({
-                                                        //                 'finished':
-                                                        //                     false
-                                                        //               });
-                                                        //             });
-                                                        //           });
-                                                        //           isTimeExceed =
-                                                        //               false;
-                                                        //         }
-                                                        //         return //Text('Schedule id is ${user['name']}');
-                                                        //             Column(
-                                                        //           children: [
-                                                        //             CheckboxListTile(
-                                                        //               activeColor:
-                                                        //                   Colors
-                                                        //                       .blue,
-                                                        //               title: Text(
-                                                        //                   user[
-                                                        //                       'name']),
-                                                        //               value: isTimeExceed ??
-                                                        //                   user[
-                                                        //                       'finished'],
-                                                        //               onChanged:
-                                                        //                   (value) async {
-                                                        //                 FirebaseFirestore
-                                                        //                     firestore =
-                                                        //                     FirebaseFirestore.instance;
-                                                        //                 // DocumentSnapshot scheduleSnapshot = await firestore
-                                                        //                 //     .collection('admins')
-                                                        //                 //     .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                        //                 //     .collection('schedules')
-                                                        //                 //     .doc(ManageSalaryCubit.get(context).days?[index].name ?? '')
-                                                        //                 //     .collection('schedules')
-                                                        //                 //     .doc('${ManageSalaryCubit.get(context).schedules?[index].scheduleId}')
-                                                        //                 //     .get();
-                                                        //                 int startTime =
-                                                        //                     schedule.startTime?.toDate().hour ??
-                                                        //                         0;
-                                                        //                 int endTime =
-                                                        //                     schedule.endTime?.toDate().hour ??
-                                                        //                         0;
-                                                        //                 int totalHours =
-                                                        //                     endTime -
-                                                        //                         startTime;
-                                                        //                 totalHours +=
-                                                        //                     const Duration(minutes: 2).inHours;
-                                                        //
-                                                        //                 if (value ==
-                                                        //                     true) {
-                                                        //                   firestore
-                                                        //                       .collection('admins')
-                                                        //                       .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                        //                       .collection('schedules')
-                                                        //                       .doc(ManageUsersCubit.get(context)
-                                                        //                               .days?[
-                                                        //                                   //selectedDayIndex
-                                                        //                                   ManageUsersCubit.get(context).selectedDayIndex]
-                                                        //                               .name ??
-                                                        //                           '')
-                                                        //                       .collection('schedules')
-                                                        //                       .doc('${schedule.scheduleId}')
-                                                        //                       .collection('users')
-                                                        //                       .doc(user['uid'])
-                                                        //                       .update({
-                                                        //                     'finished':
-                                                        //                         value,
-                                                        //                   });
-                                                        //
-                                                        //                   //get user number of sessions from user collection first check if it is less than 2 then subtract 1 from it and
-                                                        //                   //send whatup message from user['phone'] to admin['phone'] with message 'تم اضافة ${totalHours} ساعات لحسابك'
-                                                        //                   firestore
-                                                        //                       .collection('users')
-                                                        //                       .doc(user['uid'])
-                                                        //                       .get()
-                                                        //                       .then((value) {
-                                                        //                     int numberOfSessions =
-                                                        //                         value.data()?['numberOfSessions'] ?? 0;
-                                                        //                     String
-                                                        //                         phone =
-                                                        //                         value.data()?['phone'] ?? '';
-                                                        //                     if (numberOfSessions <
-                                                        //                         2) {
-                                                        //                       //send whatup message from user['phone'] to admin['phone'] with message 'we are rememberring you that you have only 1 sessions left'
-                                                        //                       //   String url = 'https://api.whatsapp.com/send?phone=${phone}&text=we are rememberring you that you have only 1 sessions left
-                                                        //                       //translate text to arabic
-                                                        //                       String url = 'https://api.whatsapp.com/send?phone=+20${phone}&text=نذكركم بتجديد الاشتراك ';
-                                                        //                       launch(url);
-                                                        //                     }
-                                                        //                     //subtract 1 from numberOfSessions
-                                                        //
-                                                        //                     firestore.collection('users').doc(user['uid']).update({
-                                                        //                       'numberOfSessions': FieldValue.increment(-1)
-                                                        //                     });
-                                                        //                   });
-                                                        //                   //todo add this to cubit
-                                                        //                   //send notification to users model contain 2 fields message and timestamp
-                                                        //                   // firestore.collection('users').doc(user['uid']).collection('notifications').add({
-                                                        //                   //   'message': 'تم اضافة ${totalHours} ساعات لحسابك',
-                                                        //                   //   'timestamp': Timestamp.now(),
-                                                        //                   // });
-                                                        //                 } else {
-                                                        //                   firestore
-                                                        //                       .collection('admins')
-                                                        //                       .doc(FirebaseAuth.instance.currentUser?.uid)
-                                                        //                       .collection('schedules')
-                                                        //                       .doc(ManageUsersCubit.get(context)
-                                                        //                               .days?[
-                                                        //                                   //selectedDayIndex
-                                                        //                                   ManageUsersCubit.get(context).selectedDayIndex]
-                                                        //                               .name ??
-                                                        //                           '')
-                                                        //                       .collection('schedules')
-                                                        //                       .doc('${schedule.scheduleId}')
-                                                        //                       .collection('users')
-                                                        //                       .doc(user['uid'])
-                                                        //                       .update({
-                                                        //                     'finished':
-                                                        //                         value,
-                                                        //                   });
-                                                        //                   // firestore.collection('users').doc(user['uid']).update({'totalHours': FieldValue.increment(-totalHours)});
-                                                        //                   //send notification to users model contain 2 fields message and timestamp
-                                                        //                   // firestore.collection('users').doc(user['uid']).collection('notifications').add({
-                                                        //                   //   'message': 'تم خصم ${totalHours} ساعات من حسابك',
-                                                        //                   //   'timestamp': Timestamp.now(),
-                                                        //                   // });
-                                                        //                   firestore
-                                                        //                       .collection(
-                                                        //                           'users')
-                                                        //                       .doc(user[
-                                                        //                           'uid'])
-                                                        //                       .update({
-                                                        //                     'numberOfSessions':
-                                                        //                         FieldValue.increment(1)
-                                                        //                   });
-                                                        //                 }
-                                                        //               },
-                                                        //             ),
-                                                        //           ],
-                                                        //         );
-                                                        //       },
-                                                        //     ))
+                                                            )
+                                                        )
                                                     ],
                                                   ),
                                                 ),

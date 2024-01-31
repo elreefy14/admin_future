@@ -119,19 +119,19 @@ case AppRoutes.addCoach:
     isCoach: (args as Map<String, dynamic>)?['isCoach'],
   ));
 
-      case AppRoutes.addSchedule:
-        args = settings.arguments as Map<String, dynamic>;
-        return MaterialPageRoute(builder: (_) => AddSchedule(
-            toggle: (args as Map<String, dynamic>)?['toggle'],
-          startTime:(args as Map<String, dynamic>)?['startTime'],
-          endTime: (args as Map<String, dynamic>)?['endTime'],
-          date: (args as Map<String, dynamic>)?['date'],
-          usersList: (args as Map<String, dynamic>)?['usersList'],
-          //scheduleId
-          scheduleId: (args as Map<String, dynamic>)?['scheduleId'],
-          //usersIdsusersIds
-          usersIds: (args as Map<String, dynamic>)?['usersIds'],
-        ));
+      // case AppRoutes.addSchedule:
+      //   args = settings.arguments as Map<String, dynamic>;
+      //   return MaterialPageRoute(builder: (_) => AddSchedule(
+      //       toggle: (args as Map<String, dynamic>)?['toggle'],
+      //     startTime:(args as Map<String, dynamic>)?['startTime'],
+      //     endTime: (args as Map<String, dynamic>)?['endTime'],
+      //     date: (args as Map<String, dynamic>)?['date'],
+      //     usersList: (args as Map<String, dynamic>)?['usersList'],
+      //     //scheduleId
+      //     scheduleId: (args as Map<String, dynamic>)?['scheduleId'],
+      //     //usersIdsusersIds
+      //     usersIds: (args as Map<String, dynamic>)?['usersIds'],
+      //   ));
 
       //signUp
       case AppRoutes.signUp:
@@ -152,9 +152,9 @@ case AppRoutes.addCoach:
       case AppRoutes.home:
         return MaterialPageRoute(builder: (_) => const HomeLayout());
     // manage attendence
-      case AppRoutes.manageAttendence:
-        return MaterialPageRoute(builder: (_) =>
-             const ManageAttendence());
+     // case AppRoutes.manageAttendence:
+      //  return MaterialPageRoute(builder: (_) =>
+     //        const ManageAttendence());
     //ManageCoaches
       case AppRoutes.manageUseers:
         return MaterialPageRoute(builder: (_) =>  const ManageUsersScreen());

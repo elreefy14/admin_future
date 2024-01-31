@@ -136,6 +136,42 @@
           ]
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:977411301281:android:4a4616c70e3c038338f5e0",
+        "android_client_info": {
+          "package_name": "kaleo.chat.apps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "977411301281-1tid0gqfqdjgvv1totilqrrarh6qe55k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyChxV8dYAPCdufnw30pV73DlNzXCh1Qj7k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "977411301281-1tid0gqfqdjgvv1totilqrrarh6qe55k.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "977411301281-2rggqs2js660rs9ubpch6k5nub5pv7k0.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "kaleo.chat.app"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"

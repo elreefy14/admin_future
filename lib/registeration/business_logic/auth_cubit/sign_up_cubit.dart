@@ -58,7 +58,7 @@ class SignUpCubit extends Cubit<SignUpState> {
   final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   List<String>? checkboxGroupValues;
-  FormFieldController<List<String>>? checkboxGroupValueController;
+  //FormFieldController<List<String>>? checkboxGroupValueController;
 bool showPassword = true;
 void changePasswordVisibility(){
   showPassword = !showPassword;
@@ -130,10 +130,18 @@ void changePasswordVisibility(){
     required String role,  String? hourlyRate,
 
   }) async {
+
     emit(SignUpLoadingState());
+    print(phone);
+    if (phone.startsWith('+2')) {
+      phone = phone.substring(2);
+      //delete any spaces
+      phone = phone.replaceAll(' ', '');
+    }
+    print(phone);
     bool isConnect = await checkInternetConnectivity();
     //if there is no internet connection
-    if (!isConnect || isConnect ) {
+    if (!isConnect  ) {
    //if role is coach show error
       if (role == 'coach') {
         emit(SignUpErrorState(
@@ -174,6 +182,9 @@ void changePasswordVisibility(){
     }
     String? adminEmail = FirebaseAuth.instance.currentUser!.email;
     String? adminUid = FirebaseAuth.instance.currentUser!.uid;
+   //remove +2 from phone number
+    //so if phone number begin with +2 remove it
+
 
     FirebaseAuth.instance.createUserWithEmailAndPassword(
         email: '$phone@placeholder.com',

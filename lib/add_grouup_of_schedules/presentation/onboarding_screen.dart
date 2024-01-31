@@ -121,7 +121,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
           .limit(100);
 
     QuerySnapshot querySnapshot =
-    await newQuery.get(GetOptions(source: Source.serverAndCache));
+    await newQuery.get(const GetOptions(source: Source.serverAndCache));
     var numberOfQuery = querySnapshot.docs.length;
     print('number of query is $numberOfQuery');
     print(numberOfQuery);
@@ -430,6 +430,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'uid': coach.uId,
                 'finished': false,
                 'role': 'coach',
+                'hourlyRate': coach.hourlyRate??30,
               });
 
               batch.update(scheduleRef, {
@@ -507,6 +508,7 @@ class AddGroupCubit extends Cubit<AddGroupState> {
                 'uid': user.uId,
                 'finished': false,
                 'role': 'user',
+                'hourlyRate': user.hourlyRate??30,
               });
 
               batch.update(scheduleRef, {
@@ -1363,7 +1365,7 @@ class OnboardingScreen extends StatelessWidget {
     }
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: CustomAppBar(
+      appBar: const CustomAppBar(
         //         text: 'Add group of schedules',
         //traanslate the text to arabic
         text: 'اضافة مجموعة',
@@ -1412,7 +1414,7 @@ class OnboardingScreen extends StatelessWidget {
                         onStepTapped: (index) {
                           context.read<AddGroupCubit>().setCurrentIndex(index);
                         },
-                        physics: NeverScrollableScrollPhysics(),
+                        physics: const NeverScrollableScrollPhysics(),
                         stepIconBuilder: (stepIndex, stepState) {
                           //change the icon of the step
                           if (stepState == StepState.complete) {
@@ -1449,11 +1451,11 @@ class OnboardingScreen extends StatelessWidget {
                                 child: Container(
                                   width: 40.w,
                                   //shape circke to make the icon in circle
-                                  decoration: BoxDecoration(
+                                  decoration: const BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: Colors.white,
                                   ),
-                                  margin: EdgeInsets.all(1),
+                                  margin: const EdgeInsets.all(1),
                                   //padding: EdgeInsets.all(5),
                                   //shape circke to make the icon in circle
                                   //color: Colors.white,
@@ -1461,7 +1463,7 @@ class OnboardingScreen extends StatelessWidget {
                           } else if (stepState == StepState.editing) {
                             return Container(
                               //shape circke to make the icon in circle
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: Colors.white,
                               ),
@@ -1496,7 +1498,7 @@ class OnboardingScreen extends StatelessWidget {
                             .map((index, screen) => MapEntry(
                             index,
                             Step(
-                              title: Text(''),
+                              title: const Text(''),
                               isActive: context
                                   .watch<AddGroupCubit>()
                                   .state
@@ -1516,7 +1518,7 @@ class OnboardingScreen extends StatelessWidget {
                                   ? StepState.complete
                                   : StepState.indexed,
                               content: SingleChildScrollView(
-                                physics: AlwaysScrollableScrollPhysics(),
+                                physics: const AlwaysScrollableScrollPhysics(),
                                 child: SizedBox(
                                   height: 600.h,
                                   width: double.infinity,
@@ -1562,7 +1564,7 @@ class OnboardingScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Align(
-                              alignment: AlignmentDirectional(0, 0),
+                              alignment: const AlignmentDirectional(0, 0),
                               child: Text(
                                 'السابق',
                                 textAlign: TextAlign.right,
@@ -1644,7 +1646,7 @@ class OnboardingScreen extends StatelessWidget {
                         child: BlocBuilder<AddGroupCubit, AddGroupState>(
                           builder: (context, state) {
                             return state.loading
-                                ? CircularProgressIndicator()
+                                ? const CircularProgressIndicator()
                                 : Container(
                               height: 50.h,
                               width: 150.w,
@@ -1653,7 +1655,7 @@ class OnboardingScreen extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Align(
-                                  alignment: AlignmentDirectional(0, 0),
+                                  alignment: const AlignmentDirectional(0, 0),
                                   child: Text(
                                     'حفظ',
                                     textAlign: TextAlign.right,
@@ -1673,7 +1675,7 @@ class OnboardingScreen extends StatelessWidget {
                   if (context.watch<AddGroupCubit>().state.currentIndex <
                       context.watch<AddGroupCubit>().state.screens.length - 1)
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 8.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: InkWell(
                         onTap: () =>
                             context.read<AddGroupCubit>().nextScreen(context),
@@ -1685,7 +1687,7 @@ class OnboardingScreen extends StatelessWidget {
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Align(
-                              alignment: AlignmentDirectional(0, 0),
+                              alignment: const AlignmentDirectional(0, 0),
                               child: Text(
                                 'التالي',
                                 textAlign: TextAlign.right,
@@ -1702,14 +1704,14 @@ class OnboardingScreen extends StatelessWidget {
 
                 ],
               ),
-              SizedBox(height: 25,),
+              const SizedBox(height: 25,),
               if (isAdd == false && groupId != null)
               BlocBuilder<ManageUsersCubit, ManageUsersState>(
                    builder: (context, state) {
     return
     //DeleteGroupLoadingState
       state is DeleteGroupLoadingState
-          ? CircularProgressIndicator():
+          ? const CircularProgressIndicator():
       InkWell(
                 onTap: (){
                   ManageUsersCubit.get(context).deleteGroup(
@@ -1720,7 +1722,7 @@ class OnboardingScreen extends StatelessWidget {
                     branchId: branchId??''
                   );
                 },
-                child: Text("حذف" , style: TextStyle(
+                child: const Text("حذف" , style: TextStyle(
                   color: Colors.red,
                   decoration: TextDecoration.underline,
                   decorationColor: Colors.red,
@@ -1757,7 +1759,7 @@ class TimeSelectionScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     dynamic _times = context.watch<AddGroupCubit>().times;
     return Padding(
-        padding: EdgeInsets.only(bottom: 100.0),
+        padding: const EdgeInsets.only(bottom: 100.0),
         child:  ListView(
           children: context.read<AddGroupCubit>().times.keys.map((day) {
             return ListTile(
@@ -1792,7 +1794,7 @@ class TimeSelectionScreen extends StatelessWidget {
                             builder: (context, child) {
                               return Theme(
                                 data: Theme.of(context).copyWith(
-                                  colorScheme: ColorScheme.light(
+                                  colorScheme: const ColorScheme.light(
                                     primary: Color(0xf767676), // header background color
                                     onPrimary: Colors.black, // header text color
                                     onSurface: Colors.black, // body text color
@@ -1828,7 +1830,7 @@ class TimeSelectionScreen extends StatelessWidget {
                           height: 35.h,
                           clipBehavior: Clip.antiAlias,
                           decoration: ShapeDecoration(
-                            color: Color(0xFFF6F6F6),
+                            color: const Color(0xFFF6F6F6),
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(4)),
                           ),
@@ -1844,7 +1846,7 @@ class TimeSelectionScreen extends StatelessWidget {
 
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                              color: Color(0xFF666666),
+                              color: const Color(0xFF666666),
                               fontSize: 16.sp,
                               fontFamily: 'IBM Plex Sans Arabic',
                               fontWeight: FontWeight.w400,
@@ -1855,7 +1857,7 @@ class TimeSelectionScreen extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                          SizedBox(width: 8.0),
+                          const SizedBox(width: 8.0),
                           Text(
                             '-',
                             textAlign: TextAlign.center,
@@ -1874,7 +1876,7 @@ class TimeSelectionScreen extends StatelessWidget {
                                 builder: (context, child) {
                                   return Theme(
                                     data: Theme.of(context).copyWith(
-                                      colorScheme: ColorScheme.light(
+                                      colorScheme: const ColorScheme.light(
                                         primary: Color(0xf767676), // header background color
                                         onPrimary: Colors.black, // header text color
                                         onSurface: Colors.black, // body text color
@@ -1945,7 +1947,7 @@ class TimeSelectionScreen extends StatelessWidget {
                               height: 35.h,
                               clipBehavior: Clip.antiAlias,
                               decoration: ShapeDecoration(
-                                color: Color(0xFFF6F6F6),
+                                color: const Color(0xFFF6F6F6),
                                 shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(4)),
                               ),
@@ -1960,7 +1962,7 @@ class TimeSelectionScreen extends StatelessWidget {
                                     'بداية التدريب',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
-                                  color: Color(0xFF666666),
+                                  color: const Color(0xFF666666),
                                   fontSize: 16.sp,
                                   fontFamily: 'IBM Plex Sans Arabic',
                                   fontWeight: FontWeight.w400,
@@ -2047,7 +2049,7 @@ class SelectCoachesScreen extends StatelessWidget {
               child: Text(
                 isCoach ? 'المدربين' : 'الطلاب',
                 style: TextStyle(
-                  color: Color(0xFF333333),
+                  color: const Color(0xFF333333),
                   fontSize: 14.sp,
                   fontFamily: 'IBM Plex Sans Arabic',
                   fontWeight: FontWeight.w400,
@@ -2082,7 +2084,7 @@ class SelectCoachesScreen extends StatelessWidget {
                   context: context,
                   builder: (context) => Theme(
                     data: Theme.of(context).copyWith(
-                      colorScheme: ColorScheme.light(
+                      colorScheme: const ColorScheme.light(
                         primary: Colors.blue,
                         onPrimary: Colors.white,
                         onSurface: Colors.black,
@@ -2125,7 +2127,7 @@ class SelectCoachesScreen extends StatelessWidget {
                     EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
                     clipBehavior: Clip.antiAlias,
                     decoration: ShapeDecoration(
-                      color: Color(0xFFF6F6F6),
+                      color: const Color(0xFFF6F6F6),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(4)),
                     ),
@@ -2137,12 +2139,12 @@ class SelectCoachesScreen extends StatelessWidget {
                         Container(
                           width: 20.w,
                           height: 11.30.h,
-                          child: Icon(
+                          child: const Icon(
                             Icons.arrow_drop_down,
                             // size: 20.sp,
                           ),
                         ),
-                        Spacer(),
+                        const Spacer(),
                         Expanded(
                           child: SizedBox(
                             child: Text(
@@ -2150,7 +2152,7 @@ class SelectCoachesScreen extends StatelessWidget {
                               // 'اختر المدربين',
                               textAlign: TextAlign.right,
                               style: TextStyle(
-                                color: Color(0xFF666666),
+                                color: const Color(0xFF666666),
                                 fontSize: 16.sp,
                                 fontFamily: 'IBM Plex Sans Arabic',
                                 fontWeight: FontWeight.w400,
@@ -2173,9 +2175,9 @@ class SelectCoachesScreen extends StatelessWidget {
               child: SizedBox(
                 height: 300.h,
 
-                child: Padding(padding: EdgeInsets.all(10.0),child: ShaderMask(
+                child: Padding(padding: const EdgeInsets.all(10.0),child: ShaderMask(
                   shaderCallback: (Rect rect) {
-                    return LinearGradient(
+                    return const LinearGradient(
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                       colors: [Colors.purple, Colors.transparent, Colors.transparent, Colors.purple],
@@ -2213,7 +2215,7 @@ class SelectCoachesScreen extends StatelessWidget {
                               width: 25.w,
                               height: 25.h,
                               clipBehavior: Clip.antiAlias,
-                              decoration: BoxDecoration(),
+                              decoration: const BoxDecoration(),
                               child: Stack(
                                 children: [
                                   //svg image delete which is svg image images/delete-2_svgrepo.com.svg
@@ -2296,7 +2298,7 @@ class SelectBranchScreen extends StatelessWidget {
 
             textAlign: TextAlign.right,
             style: TextStyle(
-              color: Color(0xFF333333),
+              color: const Color(0xFF333333),
               fontSize: 14.sp,
               fontFamily: 'IBM Plex Sans Arabic',
               fontWeight: FontWeight.w400,
@@ -2304,7 +2306,7 @@ class SelectBranchScreen extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 10),
+        const SizedBox(height: 10),
         Align(
           alignment: AlignmentDirectional.topEnd,
           child: Container(
@@ -2313,7 +2315,7 @@ class SelectBranchScreen extends StatelessWidget {
             //padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             clipBehavior: Clip.antiAlias,
             decoration: ShapeDecoration(
-              color: Color(0xFFF6F6F6),
+              color: const Color(0xFFF6F6F6),
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(4)),
             ),
@@ -2367,8 +2369,8 @@ class SelectBranchScreen extends StatelessWidget {
                           ? 'اقصى عدد'
                           : '${context.watch<AddGroupCubit>().state.maxUsers}',
 
-                      border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(
+                      border: const OutlineInputBorder(),
+                      focusedBorder: const OutlineInputBorder(
                         borderSide: BorderSide(
                           color: Colors.blue,
                           width: 2.0,
@@ -2383,7 +2385,7 @@ class SelectBranchScreen extends StatelessWidget {
             ),
           ),
         ),
-        SizedBox(height: 20),
+        const SizedBox(height: 20),
         Row(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
@@ -2391,7 +2393,7 @@ class SelectBranchScreen extends StatelessWidget {
               'مكان التدريب:',
               textAlign: TextAlign.right,
               style: TextStyle(
-                color: Color(0xFF333333),
+                color: const Color(0xFF333333),
                 fontSize: 16.sp,
                 fontFamily: 'IBM Plex Sans Arabic',
                 fontWeight: FontWeight.w400,
@@ -2464,7 +2466,7 @@ class InfoScreen extends StatelessWidget {
                       child: Text(
                         ':المدربين',
                         style: TextStyle(
-                          color: Color(0xFF333333),
+                          color: const Color(0xFF333333),
                           fontSize: 14.sp,
                           fontFamily: 'IBM Plex Sans Arabic',
                           fontWeight: FontWeight.w400,
@@ -2474,13 +2476,13 @@ class InfoScreen extends StatelessWidget {
                     ),
                   ],
                 )
-                    : SizedBox(),
+                    : const SizedBox(),
 
                 // SizedBox(
                 //   height: 10.h,
                 // ),
                 ListView.separated(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   separatorBuilder: (context, index) => //5
                   SizedBox(
                     height: 10.h,
@@ -2509,7 +2511,7 @@ class InfoScreen extends StatelessWidget {
                             width: 25.w,
                             height: 25.h,
                             clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(),
+                            decoration: const BoxDecoration(),
                             child: Stack(
                               children: [
                                 //svg image delete which is svg image images/delete-2_svgrepo.com.svg
@@ -2571,7 +2573,7 @@ class InfoScreen extends StatelessWidget {
                       child: Text(
                         ':الطلاب',
                         style: TextStyle(
-                          color: Color(0xFF333333),
+                          color: const Color(0xFF333333),
                           fontSize: 14.sp,
                           fontFamily: 'IBM Plex Sans Arabic',
                           fontWeight: FontWeight.w400,
@@ -2584,10 +2586,10 @@ class InfoScreen extends StatelessWidget {
                     ),
                   ],
                 )
-                    : SizedBox(),
+                    : const SizedBox(),
 
                 ListView.separated(
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   separatorBuilder: (context, index) => //5
                   SizedBox(
                     height: 10.h,
@@ -2613,7 +2615,7 @@ class InfoScreen extends StatelessWidget {
                             width: 25.w,
                             height: 25.h,
                             clipBehavior: Clip.antiAlias,
-                            decoration: BoxDecoration(),
+                            decoration: const BoxDecoration(),
                             child: Stack(
                               children: [
                                 //svg image delete which is svg image images/delete-2_svgrepo.com.svg
@@ -2698,7 +2700,7 @@ class InfoScreen extends StatelessWidget {
                       child: Text(
                         ':اقصى عدد للمتدربين',
                         style: TextStyle(
-                          color: Color(0xFF333333),
+                          color: const Color(0xFF333333),
                           fontSize: 14.sp,
                           fontFamily: 'IBM Plex Sans Arabic',
                           fontWeight: FontWeight.w400,
@@ -2734,7 +2736,7 @@ class InfoScreen extends StatelessWidget {
                     ),
                   ],
                 )
-                    : SizedBox(),
+                    : const SizedBox(),
 
                 //
                 //
@@ -2743,7 +2745,7 @@ class InfoScreen extends StatelessWidget {
                 BlocBuilder<ManageAttendenceCubit, ManageAttendenceState>(
                   builder: (context, state) {
                     return ManageAttendenceCubit.get(context).selectedBranch == null
-                        ? SizedBox()
+                        ? const SizedBox()
                         : Column(
                       children: [
                         SizedBox(
@@ -2755,7 +2757,7 @@ class InfoScreen extends StatelessWidget {
                             //:مكان التدريب'
                             ':مكان التدريب',
                             style: TextStyle(
-                              color: Color(0xFF333333),
+                              color: const Color(0xFF333333),
                               fontSize: 14.sp,
                               fontFamily: 'IBM Plex Sans Arabic',
                               fontWeight: FontWeight.w400,
@@ -2850,7 +2852,7 @@ class InfoScreen extends StatelessWidget {
                     .times
                     .values
                     .every((time) => time['start'] == null)
-                    ? SizedBox()
+                    ? const SizedBox()
                     : Column(
                   children: [
                     Row(
@@ -2860,7 +2862,7 @@ class InfoScreen extends StatelessWidget {
                           ':التوقيات',
                           textAlign: TextAlign.right,
                           style: TextStyle(
-                            color: Color(0xFF333333),
+                            color: const Color(0xFF333333),
                             fontSize: 14.sp,
                             fontFamily: 'IBM Plex Sans Arabic',
                             fontWeight: FontWeight.w400,
@@ -2870,7 +2872,7 @@ class InfoScreen extends StatelessWidget {
                       ],
                     ),
                     ListView.separated(
-                      physics: NeverScrollableScrollPhysics(),
+                      physics: const NeverScrollableScrollPhysics(),
                       separatorBuilder: (context, index) => //5
                       SizedBox(
                         height: 5.h,

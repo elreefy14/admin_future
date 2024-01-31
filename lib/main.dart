@@ -8,7 +8,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_remote_config/firebase_remote_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,8 +20,8 @@ import 'core/constants/routes_manager.dart';
 // }
 
 late String mainRoute;
-final remoteConfig = //firabase remote config
-FirebaseRemoteConfig.instance;
+//final remoteConfig = //firabase remote config
+//FirebaseRemoteConfig.instance;
 
 Future<void> main() async {
   //await initializeDateFormatting('ar', null);
@@ -97,14 +96,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => AddGroupCubit(
-        ),
+        BlocProvider(create: (context) => SignUpCubit()
+            ..getBranches()
+        //  lazy: false,
+        ),BlocProvider(create: (context) => AddGroupCubit(),
         //  lazy: false,
         ),
-        BlocProvider(create: (context) => SignUpCubit()
-        // ..addBranches()
-          ..getBranches()
-        ),
+
         BlocProvider(create: (context) => ManageUsersCubit()
         //    ,lazy: false
         ),
